@@ -1,3 +1,3 @@
-# react-native-starter
+# Pos
 
-Expo react native starter, with state management, firebase, auth, navigation, typescript
+Pos SAAS
