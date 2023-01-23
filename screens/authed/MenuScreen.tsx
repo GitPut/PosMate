@@ -1,17 +1,32 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
-import ListItem from "components/ListItem";
+import { userStoreState } from "state/state";
+import DisplayTest from "components/DisplayTest";
 
-const MenuScreen = ({ section, products }) => {
-  const sectionProducts = products.filter(
-    (current) => current.category == section
-  );
+const MenuScreen = ({ section, catalog }) => {
+  const InnerBlock = () => {
+    if (catalog.products) {
+      if (catalog.products.length > 0) {
+        if (!section) {
+          return catalog.products
+            .filter((e) => e.catagory === catalog.categories[0])
+            .map((product, index) => (
+              <DisplayTest product={product} productIndex={index} key={index} />
+            ));
+        } else {
+          return catalog.products
+            .filter((e) => e.catagory === section)
+            .map((product, index) => (
+              <DisplayTest product={product} productIndex={index} key={index} />
+            ));
+        }
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
-      {sectionProducts.map((item) => (
-        <ListItem item={item} key={item.name} />
-      ))}
+      <InnerBlock />
     </View>
   );
 };

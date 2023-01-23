@@ -5,7 +5,7 @@ import { cartState, setCartState } from "state/state";
 import { Switch } from "react-native-gesture-handler";
 
 const CashScreen = ({ setCashModal, GetTrans, total, setChangeDue }) => {
-  const [cash, setCash] = useState('');
+  const [cash, setCash] = useState("");
 
   return (
     <ScrollView style={styles.modalContainer}>
@@ -17,14 +17,23 @@ const CashScreen = ({ setCashModal, GetTrans, total, setChangeDue }) => {
         label="Enter Cash Given"
         variant="outlined"
         style={styles.input}
-        onChangeText={(val) => {setCash(val); setChangeDue((parseFloat(val) - total).toFixed(2))}}
+        onChangeText={(val) => {
+          setCash(val);
+          setChangeDue((parseFloat(val) - total).toFixed(2));
+        }}
         autoCorrect={false}
         value={cash}
       />
-      <Text>Change Due: {parseFloat(cash) > total && (parseFloat(cash) - total).toFixed(2)}</Text>
+      <Text>
+        Change Due:{" "}
+        {parseFloat(cash) > total && (parseFloat(cash) - total).toFixed(2)}
+      </Text>
       <Button
         title="Print"
-        onPress={() => {GetTrans("Cash"); setCashModal(false)}}
+        onPress={() => {
+          GetTrans("Cash");
+          setCashModal(false);
+        }}
         contentContainerStyle={styles.btn}
         style={{ margin: 25 }}
       />
@@ -63,6 +72,7 @@ const styles = StyleSheet.create({
   },
   touchable: {
     margin: 25,
+    width: 300,
   },
   modalContainer: {
     padding: 50,

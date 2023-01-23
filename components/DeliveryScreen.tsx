@@ -4,8 +4,18 @@ import { Button, TextInput } from "@react-native-material/core";
 import { cartState, setCartState } from "state/state";
 import { Switch } from "react-native-gesture-handler";
 
-const DeliveryScreen = ({ setDeliveryModal, setOngoingDelivery, setName, setPhone, setAddress, name, phone, address, deliveryChecked, setDeliveryChecked }) => {
-
+const DeliveryScreen = ({
+  setDeliveryModal,
+  setOngoingDelivery,
+  setName,
+  setPhone,
+  setAddress,
+  name,
+  phone,
+  address,
+  deliveryChecked,
+  setDeliveryChecked,
+}) => {
   return (
     <ScrollView style={styles.modalContainer}>
       <View style={styles.sizeRow}>
@@ -48,14 +58,20 @@ const DeliveryScreen = ({ setDeliveryModal, setOngoingDelivery, setName, setPhon
       )}
       <Button
         title="Order"
-       // onPress={GetTrans}
-       onPress={() => {setDeliveryModal(false);setOngoingDelivery(true)}}
+        // onPress={GetTrans}
+        onPress={() => {
+          setDeliveryModal(false);
+          setOngoingDelivery(true);
+        }}
         contentContainerStyle={styles.btn}
         style={{ margin: 25 }}
       />
       <Button
         title="Cancel"
-        onPress={() => {setDeliveryModal(false); setOngoingDelivery(null)}}
+        onPress={() => {
+          setDeliveryModal(false);
+          setOngoingDelivery(null);
+        }}
         contentContainerStyle={styles.btn}
         style={{ margin: 25 }}
       />
@@ -88,6 +104,7 @@ const styles = StyleSheet.create({
   },
   touchable: {
     margin: 25,
+    width: 300,
   },
   modalContainer: {
     padding: 50,

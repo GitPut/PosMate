@@ -15,3 +15,26 @@ export const setCartState = (val) => {
 export const addCartState = (val) => {
   cartState.set((prevState) => [...prevState, val]);
 };
+
+export const userStoreState = entity({ products: [], categories: [] });
+
+export const setUserStoreState = (val) => {
+  userStoreState.set(val);
+};
+
+export const transListState = entity([]);
+
+export const setTransListState = (val) => {
+  transListState.set(val);
+};
+
+export const woocommerceState = entity({
+  apiUrl: null,
+  ck: null,
+  cs: null,
+  useWoocommerce: false,
+});
+
+export const setWoocommerceState = (val) => {
+  woocommerceState.set(val);
+};
