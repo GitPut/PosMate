@@ -24,11 +24,11 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/endpoint', methods=['POST'])
-def endpoint():
+@app.route('/print', methods=['POST'])
+def print():
     data = request.get_json()
-    name = data.get('name')
-    # printData = data.get('printData')
+    # name = data.get('name')
+    printData = data.get('printData')
 
     # commands = printData
 
@@ -44,7 +44,7 @@ def endpoint():
     # finally:
     #     win32print.ClosePrinter(hPrinter)
 
-    response = jsonify({'message': 'Hello, ' + name})
+    response = jsonify({'message': 'Length of orders, ' + printData})
     return response
 
 

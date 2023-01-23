@@ -100,12 +100,22 @@ const RouteManager = () => {
               }
               return acc;
             }, []);
-
+console.log('looking')
             if (newArray.length > transList.length) {
+              console.log('Got new')
+              const printData = { printData: transList.length.toString()};
               updateTransList(newArray);
-              console.log("New array: ", newArray.length);
-              console.log(transList.length);
-              console.log("NEW ORDER: ", newArray);
+              fetch("http://localhost:8080/print", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(printData),
+              })
+                .then((response) => response.json())
+                .then((respData) => {
+                  console.log(respData);
+                });
             }
           })
           .catch((error) => {
@@ -114,7 +124,7 @@ const RouteManager = () => {
             );
             clearInterval(interval);
           });
-      }, 60000); // this will check for new orders every minute
+      }, 5000); // this will check for new orders every minute
       return () => clearInterval(interval);
     }
   }, [wooCredentials, transList]);
