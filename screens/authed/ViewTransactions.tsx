@@ -12,165 +12,165 @@ const ViewTransactions = () => {
     todaysReceipts: 0,
   });
 
-  useEffect(() => {
-    // GetTrans();
-    const reversed = res.transList.reverse();
-    setTransList(reversed);
-    const todaysReceiptValue = res.transList.reduce((accumulator, current) => {
-      const date = new Date(current.date);
-      if (date.toLocaleDateString() === today.toLocaleDateString()) {
-        return accumulator + parseFloat(current.total);
-      } else {
-        return accumulator;
-      }
-    }, 0);
-    const todaysReceipts = res.transList.reduce((accumulator, current) => {
-      const date = new Date(current.date);
-      if (date.toLocaleDateString() === today.toLocaleDateString()) {
-        return accumulator + 1;
-      } else {
-        return accumulator;
-      }
-    }, 0);
-    setTodaysDetails({
-      todaysReceiptValue: todaysReceiptValue.toFixed(2),
-      todaysReceipts: todaysReceipts,
-    });
-  }, []);
+  // useEffect(() => {
+  //   // GetTrans();
+  //   const reversed = res.transList.reverse();
+  //   setTransList(reversed);
+  //   const todaysReceiptValue = res.transList.reduce((accumulator, current) => {
+  //     const date = new Date(current.date);
+  //     if (date.toLocaleDateString() === today.toLocaleDateString()) {
+  //       return accumulator + parseFloat(current.total);
+  //     } else {
+  //       return accumulator;
+  //     }
+  //   }, 0);
+  //   const todaysReceipts = res.transList.reduce((accumulator, current) => {
+  //     const date = new Date(current.date);
+  //     if (date.toLocaleDateString() === today.toLocaleDateString()) {
+  //       return accumulator + 1;
+  //     } else {
+  //       return accumulator;
+  //     }
+  //   }, 0);
+  //   setTodaysDetails({
+  //     todaysReceiptValue: todaysReceiptValue.toFixed(2),
+  //     todaysReceipts: todaysReceipts,
+  //   });
+  // }, []);
 
-  const PrintTodaysTotal = () => {
-    const qz = require("qz-tray");
+  // const PrintTodaysTotal = () => {
+  //   const qz = require("qz-tray");
 
-    let data = [
-      "\x1B" + "\x40", // init
-      "\x1B" + "\x61" + "\x31", // center align
-      "Tomas Pizza",
-      "\x0A",
-      "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
-      "www.dreamcitypizza.com" + "\x0A", // text and line break
-      "(519) 650-0409" + "\x0A", // text and line break
-      today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
-      "\x0A",
-      "\x0A",
-      "\x0A",
-      "\x0A",
-      "\x1B" + "\x61" + "\x30", // left align
-      "\x0A" + "\x0A",
-      "Number Of Receipts: " + todaysDetails.todaysReceipts + "\x0A" + "\x0A",
-      "Sub-Total: " +
-        "$" +
-        (todaysDetails.todaysReceiptValue / 1.13).toFixed(2) +
-        "\x0A" +
-        "\x0A",
-      "Tax: " +
-        "$" +
-        ((todaysDetails.todaysReceiptValue / 1.13) * 0.13).toFixed(2) +
-        "\x0A" +
-        "\x0A",
-      "Total Including (13% Tax): " +
-        "$" +
-        todaysDetails.todaysReceiptValue +
-        "\x0A" +
-        "\x0A",
-      "------------------------------------------" + "\x0A",
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x1D" + "\x56" + "\x00",
-      "\x1D" + "\x56" + "\x30",
-    ];
+  //   let data = [
+  //     "\x1B" + "\x40", // init
+  //     "\x1B" + "\x61" + "\x31", // center align
+  //     "Tomas Pizza",
+  //     "\x0A",
+  //     "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
+  //     "www.dreamcitypizza.com" + "\x0A", // text and line break
+  //     "(519) 650-0409" + "\x0A", // text and line break
+  //     today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
+  //     "\x0A",
+  //     "\x0A",
+  //     "\x0A",
+  //     "\x0A",
+  //     "\x1B" + "\x61" + "\x30", // left align
+  //     "\x0A" + "\x0A",
+  //     "Number Of Receipts: " + todaysDetails.todaysReceipts + "\x0A" + "\x0A",
+  //     "Sub-Total: " +
+  //       "$" +
+  //       (todaysDetails.todaysReceiptValue / 1.13).toFixed(2) +
+  //       "\x0A" +
+  //       "\x0A",
+  //     "Tax: " +
+  //       "$" +
+  //       ((todaysDetails.todaysReceiptValue / 1.13) * 0.13).toFixed(2) +
+  //       "\x0A" +
+  //       "\x0A",
+  //     "Total Including (13% Tax): " +
+  //       "$" +
+  //       todaysDetails.todaysReceiptValue +
+  //       "\x0A" +
+  //       "\x0A",
+  //     "------------------------------------------" + "\x0A",
+  //     "\x0A", // line break
+  //     "\x0A", // line break
+  //     "\x0A", // line break
+  //     "\x0A", // line break
+  //     "\x0A", // line break
+  //     "\x0A", // line break
+  //     "\x1D" + "\x56" + "\x00",
+  //     "\x1D" + "\x56" + "\x30",
+  //   ];
 
-    qz.websocket
-      .connect()
-      .then(function () {
-        let config = qz.configs.create("jZebra");
-        return qz.print(config, data);
-      })
-      .then(qz.websocket.disconnect)
-      .catch(function (err) {
-        console.error(err);
-      });
-  };
+  //   qz.websocket
+  //     .connect()
+  //     .then(function () {
+  //       let config = qz.configs.create("jZebra");
+  //       return qz.print(config, data);
+  //     })
+  //     .then(qz.websocket.disconnect)
+  //     .catch(function (err) {
+  //       console.error(err);
+  //     });
+  // };
 
-  const Print = () => {
-    const qz = require("qz-tray");
+  // const Print = () => {
+  //   const qz = require("qz-tray");
 
-    const todaysReceiptsList = transList.filter(
-      (i) =>
-        new Date(i.date).toLocaleDateString() === today.toLocaleDateString()
-    );
+  //   const todaysReceiptsList = transList.filter(
+  //     (i) =>
+  //       new Date(i.date).toLocaleDateString() === today.toLocaleDateString()
+  //   );
 
-    let data = [];
+  //   let data = [];
 
-    todaysReceiptsList.forEach((element) => {
-      let total = 0;
-      data.push(
-        "\x1B" + "\x40", // init
-        "\x1B" + "\x61" + "\x31", // center align
-        "Tomas Pizza",
-        "\x0A",
-        "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
-        "www.dreamcitypizza.com" + "\x0A", // text and line break
-        "(519) 650-0409" + "\x0A", // text and line break
-        today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
-        "\x0A",
-        `Transaction # ${element.transNum}` + "\x0A",
-        "\x0A",
-        "\x0A",
-        "\x0A",
-        "\x1B" + "\x61" + "\x30" // left align
-      );
+  //   todaysReceiptsList.forEach((element) => {
+  //     let total = 0;
+  //     data.push(
+  //       "\x1B" + "\x40", // init
+  //       "\x1B" + "\x61" + "\x31", // center align
+  //       "Tomas Pizza",
+  //       "\x0A",
+  //       "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
+  //       "www.dreamcitypizza.com" + "\x0A", // text and line break
+  //       "(519) 650-0409" + "\x0A", // text and line break
+  //       today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
+  //       "\x0A",
+  //       `Transaction # ${element.transNum}` + "\x0A",
+  //       "\x0A",
+  //       "\x0A",
+  //       "\x0A",
+  //       "\x1B" + "\x61" + "\x30" // left align
+  //     );
 
-      element.cart?.map((cartItem) => {
-        total += cartItem.price;
-        data.push(`Name: ${cartItem.name}`);
-        data.push("\x0A");
-        data.push(`Quantity: ${cartItem.quantity}`);
-        data.push("\x0A");
-        data.push(`Price: $${cartItem.price}`);
+  //     element.cart?.map((cartItem) => {
+  //       total += cartItem.price;
+  //       data.push(`Name: ${cartItem.name}`);
+  //       data.push("\x0A");
+  //       data.push(`Quantity: ${cartItem.quantity}`);
+  //       data.push("\x0A");
+  //       data.push(`Price: $${cartItem.price}`);
 
-        if (cartItem.options) {
-          cartItem.options?.map((option) => {
-            data.push(option);
-            data.push("\x0A");
-          });
-        } else {
-          data.push("\x0A" + "\x0A");
-        }
-      });
+  //       if (cartItem.options) {
+  //         cartItem.options?.map((option) => {
+  //           data.push(option);
+  //           data.push("\x0A");
+  //         });
+  //       } else {
+  //         data.push("\x0A" + "\x0A");
+  //       }
+  //     });
 
-      data.push(
-        "\x0A",
-        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-        "\x0A" + "\x0A",
-        "Payment Method: " + element.method + "\x0A" + "\x0A",
-        "Total Including (13% Tax): " + "$" + element.total + "\x0A" + "\x0A",
-        "------------------------------------------" + "\x0A",
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A" // line break
-      );
-    });
+  //     data.push(
+  //       "\x0A",
+  //       "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+  //       "\x0A" + "\x0A",
+  //       "Payment Method: " + element.method + "\x0A" + "\x0A",
+  //       "Total Including (13% Tax): " + "$" + element.total + "\x0A" + "\x0A",
+  //       "------------------------------------------" + "\x0A",
+  //       "\x0A", // line break
+  //       "\x0A", // line break
+  //       "\x0A", // line break
+  //       "\x0A", // line break
+  //       "\x0A", // line break
+  //       "\x0A" // line break
+  //     );
+  //   });
 
-    data.push("\x1D" + "\x56" + "\x00", "\x1D" + "\x56" + "\x30");
+  //   data.push("\x1D" + "\x56" + "\x00", "\x1D" + "\x56" + "\x30");
 
-    qz.websocket
-      .connect()
-      .then(function () {
-        let config = qz.configs.create("jZebra");
-        return qz.print(config, data);
-      })
-      .then(qz.websocket.disconnect)
-      .catch(function (err) {
-        console.error(err);
-      });
-  };
+  //   qz.websocket
+  //     .connect()
+  //     .then(function () {
+  //       let config = qz.configs.create("jZebra");
+  //       return qz.print(config, data);
+  //     })
+  //     .then(qz.websocket.disconnect)
+  //     .catch(function (err) {
+  //       console.error(err);
+  //     });
+  // };
 
   return (
     <View style={styles.container}>
@@ -191,14 +191,14 @@ const ViewTransactions = () => {
         <Button
           style={{ height: 40, alignItems: "center", justifyContent: "center" }}
           title="Print Todays Receipts"
-          onPress={PrintTodaysTotal}
+          // onPress={PrintTodaysTotal}
         />
         <Text style={{ textAlign: "center", margin: 25 }}>
           Todays Total Receipts: {todaysDetails.todaysReceipts}
         </Text>
       </View>
       <View style={styles.contentContainer}>
-        {transList &&
+        {/* {transList &&
           transList?.map((element, index) => {
             const date = new Date(element.date);
             // if (date.toLocaleDateString() === today.toLocaleDateString()) {
@@ -302,7 +302,7 @@ const ViewTransactions = () => {
                 />
               </View>
             );
-          })}
+          })} */}
       </View>
     </View>
   );

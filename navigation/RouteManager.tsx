@@ -101,20 +101,68 @@ const RouteManager = () => {
               return acc;
             }, []);
             if (newArray.length > transList.length) {
-              console.log('Got new')
-              const printData = { printData: transList.length.toString()};
+              const newItems = newArray.splice(
+                transList.length - 1,
+                newArray.length - transList.length
+              );
+
+              // if (newItems.length > 1) {
+              //   newItems.forEach((e) => {
+              //     const printData = { printData: e.transaction_id };
+              //     fetch("http://localhost:8080/print", {
+              //       method: "POST",
+              //       headers: {
+              //         "Content-Type": "application/json",
+              //       },
+              //       body: JSON.stringify(printData),
+              //     })
+              //       .then((response) => response.json())
+              //       .then((respData) => {
+              //         console.log(respData);
+              //       });
+              //   });
+              // } else {
+              //       const printData = [
+              //         "\x1B" + "\x40", // init
+              //         "\x1B" + "\x61" + "\x31", // center align
+              //         "Dream City Pizza",
+              //         "\x0A",
+              //         "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
+              //         "www.dreamcitypizza.com" + "\x0A", // text and line break
+              //         "(519) 650-0409" + "\x0A", // text and line break
+              //         "\x1B" + "\x61" + "\x30", // left align
+              //       ];
+
+              //   newItems[0].line_items.forEach(element => {
+              //     printData.push('Name: ', element.name)
+              //     data.push("\x0A");
+              //     printData.push("Quantity: ", element.quantity);
+              //     data.push("\x0A");
+              //       })
+
+              //       data.push(
+              //         "\x0A", // line break
+              //         "\x0A", // line break
+              //         "\x0A", // line break
+              //         "\x0A", // line break
+              //         "\x0A", // line break
+              //         "\x0A", // line break
+              //         "\x1D" + "\x56" + "\x30"
+              //       );
+
+              //   fetch("http://localhost:8080/print", {
+              //     method: "POST",
+              //     headers: {
+              //       "Content-Type": "application/json",
+              //     },
+              //     body: JSON.stringify(printData),
+              //   })
+              //     .then((response) => response.json())
+              //     .then((respData) => {
+              //       console.log(respData);
+              //     });
+              //}
               updateTransList(newArray);
-              fetch("http://localhost:8080/print", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(printData),
-              })
-                .then((response) => response.json())
-                .then((respData) => {
-                  console.log(respData);
-                });
             }
           })
           .catch((error) => {
