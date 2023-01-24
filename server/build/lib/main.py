@@ -11,17 +11,29 @@ from logging.handlers import TimedRotatingFileHandler
 from threading import Timer
 import shutil
 import os
+import win32com.client
 
 username = os.getlogin()
 
-# Define the MSI package name
-msi_name = 'C:\\Users\\' + username + '\\Desktop\\PosMate.lnk'
+currentLocation = os.getcwd()
 
-# Define the startup folder path
-startup_folder = 'C:\\Users\\'+ username +'\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup'
+path = os.path.join('C:\\Users\\'+ username +'\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup', 'PosMate.lnk')
+target = currentLocation + "\\main.exe"
+icon = currentLocation + "\\main.exe"
+shell = win32com.client.Dispatch("WScript.Shell")
+shortcut = shell.CreateShortCut(path)
+shortcut.Targetpath = target
+shortcut.IconLocation = icon
+shortcut.save()
 
-# Copy the MSI package to the startup folder shutil.copy(msi_name, startup_folder)
-shutil.copy(msi_name, startup_folder)
+# # Define the MSI package name
+# msi_name = 'C:\\Users\\' + username + '\\Desktop\\PosMate.lnk'
+
+# # Define the startup folder path
+# startup_folder = 'C:\\Users\\'+ username +'\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup'
+
+# # Copy the MSI package to the startup folder shutil.copy(msi_name, startup_folder)
+# shutil.copy(msi_name, startup_folder)
 
 Path("log").mkdir(parents=True, exist_ok=True)
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")

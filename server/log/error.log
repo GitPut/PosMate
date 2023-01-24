@@ -44,3 +44,19 @@
 2023-01-24 12:11:15,447 - INFO - 127.0.0.1 - - [24/Jan/2023 12:11:15] "POST /print HTTP/1.1" 200 -
 2023-01-24 12:29:03,285 - INFO - 127.0.0.1 - - [24/Jan/2023 12:29:03] "OPTIONS /print HTTP/1.1" 200 -
 2023-01-24 12:29:03,764 - INFO - 127.0.0.1 - - [24/Jan/2023 12:29:03] "POST /print HTTP/1.1" 200 -
+2023-01-24 12:54:29,860 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.0.0.134:8080
+2023-01-24 12:54:29,860 - INFO - [33mPress CTRL+C to quit[0m
+2023-01-24 12:54:29,864 - INFO -  * Restarting with stat
+2023-01-24 12:54:30,257 - WARNING -  * Debugger is active!
+2023-01-24 12:54:30,262 - INFO -  * Debugger PIN: 117-705-314
+2023-01-24 12:55:02,437 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.0.0.134:8080
+2023-01-24 12:55:02,437 - INFO - [33mPress CTRL+C to quit[0m
+2023-01-24 12:55:02,444 - INFO -  * Restarting with stat
+2023-01-24 12:55:02,849 - WARNING -  * Debugger is active!
+2023-01-24 12:55:02,854 - INFO -  * Debugger PIN: 117-705-314
