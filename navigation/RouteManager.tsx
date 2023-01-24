@@ -75,6 +75,7 @@ const RouteManager = () => {
   }, [userS]);
 
   useEffect(() => {
+    console.log(transList);
     if (wooCredentials.useWoocommerce === true) {
       const interval = setInterval(() => {
         fetch(wooCredentials.apiUrl, {
@@ -101,68 +102,166 @@ const RouteManager = () => {
               return acc;
             }, []);
             if (newArray.length > transList.length) {
-              const newItems = newArray.splice(
-                transList.length - 1,
+              const newItems = structuredClone(newArray).splice(
+                transList.length,
                 newArray.length - transList.length
               );
 
-              // if (newItems.length > 1) {
-              //   newItems.forEach((e) => {
-              //     const printData = { printData: e.transaction_id };
-              //     fetch("http://localhost:8080/print", {
-              //       method: "POST",
-              //       headers: {
-              //         "Content-Type": "application/json",
-              //       },
-              //       body: JSON.stringify(printData),
-              //     })
-              //       .then((response) => response.json())
-              //       .then((respData) => {
-              //         console.log(respData);
-              //       });
-              //   });
-              // } else {
-              //       const printData = [
-              //         "\x1B" + "\x40", // init
-              //         "\x1B" + "\x61" + "\x31", // center align
-              //         "Dream City Pizza",
-              //         "\x0A",
-              //         "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
-              //         "www.dreamcitypizza.com" + "\x0A", // text and line break
-              //         "(519) 650-0409" + "\x0A", // text and line break
-              //         "\x1B" + "\x61" + "\x30", // left align
-              //       ];
-
-              //   newItems[0].line_items.forEach(element => {
-              //     printData.push('Name: ', element.name)
-              //     data.push("\x0A");
-              //     printData.push("Quantity: ", element.quantity);
-              //     data.push("\x0A");
-              //       })
-
-              //       data.push(
-              //         "\x0A", // line break
-              //         "\x0A", // line break
-              //         "\x0A", // line break
-              //         "\x0A", // line break
-              //         "\x0A", // line break
-              //         "\x0A", // line break
-              //         "\x1D" + "\x56" + "\x30"
-              //       );
-
-              //   fetch("http://localhost:8080/print", {
-              //     method: "POST",
-              //     headers: {
-              //       "Content-Type": "application/json",
-              //     },
-              //     body: JSON.stringify(printData),
-              //   })
-              //     .then((response) => response.json())
-              //     .then((respData) => {
-              //       console.log(respData);
-              //     });
-              //}
               updateTransList(newArray);
+
+              if (newItems.length > 1) {
+                newItems.forEach((e) => {
+                  const printData = [];
+
+                  printData.push(
+                    "\x1B" + "\x40", // init
+                    "\x1B" + "\x61" + "\x31", // center align
+                    "Tomas Pizza",
+                    "\x0A",
+                    "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
+                    "www.dreamcitypizza.com" + "\x0A", // text and line break
+                    "(519) 650-0409" + "\x0A", // text and line break
+                    e.date_created + "\x0A",
+                    "\x0A",
+                    "Online Order" + "\x0A", // text and line break
+                    `Transaction # ${e.number}` + "\x0A",
+                    "\x0A",
+                    "\x0A",
+                    "\x0A",
+                    "\x1B" + "\x61" + "\x30" // left align
+                  );
+
+                  e.line_items?.map((cartItem) => {
+                    printData.push(`Name: ${cartItem.name}`);
+                    printData.push("\x0A");
+                    printData.push(`Quantity: ${cartItem.quantity}`);
+                    printData.push("\x0A");
+                    printData.push(`Price: $${cartItem.price}`);
+
+                    if (cartItem.meta_data) {
+                      cartItem.meta_data?.map((meta) => {
+                        printData.push(`${meta.key} : ${meta.value}`);
+                        printData.push("\x0A");
+                      });
+                    } else {
+                      printData.push("\x0A" + "\x0A");
+                    }
+                  });
+
+                  printData.push(
+                    "\x0A",
+                    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+                    "\x0A" + "\x0A",
+                    "Payment Method: " +
+                      e.payment_method_title +
+                      "\x0A" +
+                      "\x0A",
+                    "Total Including (13% Tax): " +
+                      "$" +
+                      (parseFloat(e.total) + parseFloat(e.total_tax)) +
+                      "\x0A" +
+                      "\x0A",
+                    "------------------------------------------" + "\x0A",
+                    "\x0A", // line break
+                    "\x0A", // line break
+                    "\x0A", // line break
+                    "\x0A", // line break
+                    "\x0A", // line break
+                    "\x0A" // line break
+                  );
+
+                  printData.push(
+                    "\x1D" + "\x56" + "\x00",
+                    "\x1D" + "\x56" + "\x30"
+                  );
+
+                  fetch("http://localhost:8080/print", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(printData),
+                  })
+                    .then((response) => response.json())
+                    .then((respData) => {
+                      console.log(respData);
+                    });
+                });
+              } else {
+                const e = newItems[0];
+                const printData = [];
+
+                printData.push(
+                  "\x1B" + "\x40", // init
+                  "\x1B" + "\x61" + "\x31", // center align
+                  "Tomas Pizza",
+                  "\x0A",
+                  "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
+                  "www.dreamcitypizza.com" + "\x0A", // text and line break
+                  "(519) 650-0409" + "\x0A", // text and line break
+                  e.date_created + "\x0A",
+                  "\x0A",
+                  "Online Order" + "\x0A", // text and line break
+                  `Transaction # ${e.number}` + "\x0A",
+                  "\x0A",
+                  "\x0A",
+                  "\x0A",
+                  "\x1B" + "\x61" + "\x30" // left align
+                );
+
+                e.line_items?.map((cartItem) => {
+                  printData.push(`Name: ${cartItem.name}`);
+                  printData.push("\x0A");
+                  printData.push(`Quantity: ${cartItem.quantity}`);
+                  printData.push("\x0A");
+                  printData.push(`Price: $${cartItem.price}`);
+
+                  if (cartItem.meta_data) {
+                    cartItem.meta_data?.map((meta) => {
+                      printData.push(`${meta.key} : ${meta.value}`);
+                      printData.push("\x0A");
+                    });
+                  } else {
+                    printData.push("\x0A" + "\x0A");
+                  }
+                });
+
+                printData.push(
+                  "\x0A",
+                  "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+                  "\x0A" + "\x0A",
+                  "Payment Method: " + e.payment_method_title + "\x0A" + "\x0A",
+                  "Total Including (13% Tax): " +
+                    "$" +
+                    (parseFloat(e.total) + parseFloat(e.total_tax)) +
+                    "\x0A" +
+                    "\x0A",
+                  "------------------------------------------" + "\x0A",
+                  "\x0A", // line break
+                  "\x0A", // line break
+                  "\x0A", // line break
+                  "\x0A", // line break
+                  "\x0A", // line break
+                  "\x0A" // line break
+                );
+
+                printData.push(
+                  "\x1D" + "\x56" + "\x00",
+                  "\x1D" + "\x56" + "\x30"
+                );
+
+                fetch("http://localhost:8080/print", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(printData),
+                })
+                  .then((response) => response.json())
+                  .then((respData) => {
+                    console.log(respData);
+                  });
+              }
             }
           })
           .catch((error) => {

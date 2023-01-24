@@ -17,22 +17,6 @@ const HomeScreen = () => {
   const [section, setSection] = useState();
   const [settings, setSettings] = useState(false);
 
-  const Test = () => {
-    const data = { name: "John" };
-
-    fetch("http://localhost:8080/endpoint", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      });
-  };
-
   // useEffect(() => {
   //   const socket = io("http://localhost:8443");
   //   socket.on("connect", () => console.log(socket.id));
@@ -251,12 +235,6 @@ const HomeScreen = () => {
             localStorage.setItem("localScreen", "transList");
           }}
           title="Transaction"
-        />
-        <Button
-          titleStyle={{ color: "black", fontWeight: "700" }}
-          style={{ backgroundColor: "white" }}
-          onPress={Test}
-          title="Test"
         />
         <Button
           titleStyle={{ color: "black", fontWeight: "700" }}
