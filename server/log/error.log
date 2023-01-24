@@ -1,0 +1,46 @@
+2023-01-24 10:58:14,153 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.0.0.195:8080
+2023-01-24 10:58:14,153 - INFO - [33mPress CTRL+C to quit[0m
+2023-01-24 10:58:14,158 - INFO -  * Restarting with stat
+2023-01-24 10:58:14,463 - WARNING -  * Debugger is active!
+2023-01-24 10:58:14,469 - INFO -  * Debugger PIN: 117-705-314
+2023-01-24 10:58:29,604 - INFO -  * Detected change in 'C:\\Users\\admin\\OneDrive - George Brown College\\Desktop\\PosMate\\server\\main.py', reloading
+2023-01-24 10:58:29,640 - INFO -  * Restarting with stat
+2023-01-24 10:58:29,971 - WARNING -  * Debugger is active!
+2023-01-24 10:58:29,976 - INFO -  * Debugger PIN: 117-705-314
+2023-01-24 10:58:31,879 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.0.0.195:8080
+2023-01-24 10:58:31,879 - INFO - [33mPress CTRL+C to quit[0m
+2023-01-24 10:58:31,884 - INFO -  * Restarting with stat
+2023-01-24 10:58:32,185 - WARNING -  * Debugger is active!
+2023-01-24 10:58:32,190 - INFO -  * Debugger PIN: 117-705-314
+2023-01-24 10:58:47,148 - INFO - 127.0.0.1 - - [24/Jan/2023 10:58:47] "[31m[1mGET /print HTTP/1.1[0m" 405 -
+2023-01-24 10:58:47,199 - INFO - 127.0.0.1 - - [24/Jan/2023 10:58:47] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2023-01-24 10:59:15,504 - INFO -  * Detected change in 'C:\\Users\\admin\\OneDrive - George Brown College\\Desktop\\PosMate\\server\\main.py', reloading
+2023-01-24 10:59:15,549 - INFO -  * Restarting with stat
+2023-01-24 11:41:33,019 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.0.0.195:8080
+2023-01-24 11:41:33,020 - INFO - [33mPress CTRL+C to quit[0m
+2023-01-24 11:41:33,024 - INFO -  * Restarting with stat
+2023-01-24 11:41:33,371 - WARNING -  * Debugger is active!
+2023-01-24 11:41:33,376 - INFO -  * Debugger PIN: 117-705-314
+2023-01-24 11:48:28,452 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.0.0.195:8080
+2023-01-24 11:48:28,452 - INFO - [33mPress CTRL+C to quit[0m
+2023-01-24 11:48:28,456 - INFO -  * Restarting with stat
+2023-01-24 11:48:28,805 - WARNING -  * Debugger is active!
+2023-01-24 11:48:28,816 - INFO -  * Debugger PIN: 117-705-314
+2023-01-24 11:51:36,002 - INFO - 127.0.0.1 - - [24/Jan/2023 11:51:36] "OPTIONS /print HTTP/1.1" 200 -
+2023-01-24 11:51:36,747 - INFO - 127.0.0.1 - - [24/Jan/2023 11:51:36] "POST /print HTTP/1.1" 200 -
+2023-01-24 12:11:14,979 - INFO - 127.0.0.1 - - [24/Jan/2023 12:11:14] "OPTIONS /print HTTP/1.1" 200 -
+2023-01-24 12:11:15,447 - INFO - 127.0.0.1 - - [24/Jan/2023 12:11:15] "POST /print HTTP/1.1" 200 -
+2023-01-24 12:29:03,285 - INFO - 127.0.0.1 - - [24/Jan/2023 12:29:03] "OPTIONS /print HTTP/1.1" 200 -
+2023-01-24 12:29:03,764 - INFO - 127.0.0.1 - - [24/Jan/2023 12:29:03] "POST /print HTTP/1.1" 200 -

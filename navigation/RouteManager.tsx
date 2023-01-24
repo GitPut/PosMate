@@ -75,7 +75,6 @@ const RouteManager = () => {
   }, [userS]);
 
   useEffect(() => {
-    console.log(transList);
     if (wooCredentials.useWoocommerce === true) {
       const interval = setInterval(() => {
         fetch(wooCredentials.apiUrl, {
