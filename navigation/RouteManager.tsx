@@ -100,7 +100,6 @@ const RouteManager = () => {
               }
               return acc;
             }, []);
-console.log('looking')
             if (newArray.length > transList.length) {
               console.log('Got new')
               const printData = { printData: transList.length.toString()};

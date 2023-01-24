@@ -20,6 +20,39 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 # import win32print
 
+import sys
+import configparser
+import logging
+from LoggerWriter import LoggerWriter
+from pathlib import Path
+from logging.handlers import TimedRotatingFileHandler
+from threading import Timer
+import shutil
+import os
+
+username = os.getlogin()
+
+# Define the MSI package name
+msi_name = 'C:\\Users\\' + username + '\\Desktop\\PosMate.lnk'
+
+# Define the startup folder path
+startup_folder = 'C:\\Users\\'+ username +'\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup'
+
+# Copy the MSI package to the startup folder shutil.copy(msi_name, startup_folder)
+shutil.copy(msi_name, startup_folder)
+
+Path("log").mkdir(parents=True, exist_ok=True)
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+handler = TimedRotatingFileHandler('log/error.log', when="midnight", 
+interval=1, encoding='utf8')
+handler.suffix = "%Y-%m-%d"
+handler.setFormatter(formatter)
+logger = logging.getLogger()
+logger.setLevel(logging.ERROR)
+logger.addHandler(handler)
+sys.stdout = LoggerWriter(logging.debug)
+sys.stderr = LoggerWriter(logging.warning)
+
 app = Flask(__name__)
 CORS(app)
 
