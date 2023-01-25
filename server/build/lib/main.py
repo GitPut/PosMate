@@ -12,6 +12,7 @@ from threading import Timer
 import shutil
 import os
 import win32com.client
+import serial
 
 username = os.getlogin()
 
@@ -25,15 +26,6 @@ shortcut = shell.CreateShortCut(path)
 shortcut.Targetpath = target
 shortcut.IconLocation = icon
 shortcut.save()
-
-# # Define the MSI package name
-# msi_name = 'C:\\Users\\' + username + '\\Desktop\\PosMate.lnk'
-
-# # Define the startup folder path
-# startup_folder = 'C:\\Users\\'+ username +'\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup'
-
-# # Copy the MSI package to the startup folder shutil.copy(msi_name, startup_folder)
-# shutil.copy(msi_name, startup_folder)
 
 Path("log").mkdir(parents=True, exist_ok=True)
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
@@ -50,27 +42,17 @@ sys.stderr = LoggerWriter(logging.warning)
 app = Flask(__name__)
 CORS(app)
 
+# ser = serial.Serial('COM4')
+
 
 @app.route('/print', methods=['POST'])
 def print():
     data = request.get_json()
-    # name = data.get('name')
-    # printData = data.get('printData')
-
-    X=50; Y=50
-    # Separate lines from Your string 
-    # for example:input_string and create 
-    # new string for example: multi_line_string 
-    hDC = win32ui.CreateDC ()
-    # Set default printer from Windows:
-    hDC.CreatePrinterDC ('PosPrinter')
-    hDC.StartDoc ("Receipt")
-    hDC.StartPage ()
+    ser = serial.Serial('COM4')
     for line in data:
-        hDC.TextOut(X,Y,line)
-        Y += 100
-    hDC.EndPage ()
-    hDC.EndDoc ()
+        # ser.write(b'\x1B\x40Hello, World!\n')
+        ser.write(str.encode(line))
+    ser.close()
 
     response = jsonify({'message': 'Print Complete'})
     return response

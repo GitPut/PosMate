@@ -4,7 +4,7 @@ import shutil
 
 # USE THIS TO BUILD INSTALLER python setup.py bdist_msi
 
-company_name = "My Company Name"
+company_name = "Micton"
 product_name = "PosMate"
 
 bdist_msi_options = {

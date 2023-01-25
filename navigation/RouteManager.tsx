@@ -113,7 +113,7 @@ const RouteManager = () => {
                   const printData = [];
 
                   printData.push(
-                    "\x1B" + "\x40", // init
+                    "\x1B\x40", // init
                     "\x1B" + "\x61" + "\x31", // center align
                     "Tomas Pizza",
                     "\x0A",
@@ -131,16 +131,33 @@ const RouteManager = () => {
                   );
 
                   e.line_items?.map((cartItem) => {
+                    printData.push("\x0A");
                     printData.push(`Name: ${cartItem.name}`);
                     printData.push("\x0A");
                     printData.push(`Quantity: ${cartItem.quantity}`);
                     printData.push("\x0A");
                     printData.push(`Price: $${cartItem.price}`);
+                     printData.push("\x0A");
 
                     if (cartItem.meta_data) {
-                      cartItem.meta_data?.map((meta) => {
-                        printData.push(`${meta.key} : ${meta.value}`);
-                        printData.push("\x0A");
+                      cartItem.meta_data?.map((meta, index) => {
+                        if(index === 0){
+                          printData.push(`${meta.key} : ${meta.value}`);
+                        if(cartItem.meta_data[index + 1].key !== meta.key){
+printData.push("\x0A");
+}
+                        } else{
+                        if(index !== cartItem.meta_data.length - 1){
+if(cartItem.meta_data[index - 1].key === meta.key){
+  printData.push(` , ${meta.value}`);
+} else{
+  printData.push(`${meta.key} : ${meta.value}`);
+}
+
+if(cartItem.meta_data[index + 1].key !== meta.key){
+  printData.push("\x0A");
+}
+                        }}
                       });
                     } else {
                       printData.push("\x0A" + "\x0A");
@@ -171,7 +188,6 @@ const RouteManager = () => {
 
                   printData.push(
                     "\x1D" + "\x56" + "\x00",
-                    "\x1D" + "\x56" + "\x30"
                   );
 
                   fetch("http://localhost:8080/print", {
@@ -209,16 +225,33 @@ const RouteManager = () => {
                 );
 
                 e.line_items?.map((cartItem) => {
+                  printData.push("\x0A");
                   printData.push(`Name: ${cartItem.name}`);
                   printData.push("\x0A");
                   printData.push(`Quantity: ${cartItem.quantity}`);
                   printData.push("\x0A");
                   printData.push(`Price: $${cartItem.price}`);
+                   printData.push("\x0A");
 
-                  if (cartItem.meta_data) {
-                    cartItem.meta_data?.map((meta) => {
-                      printData.push(`${meta.key} : ${meta.value}`);
-                      printData.push("\x0A");
+                   if (cartItem.meta_data) {
+                    cartItem.meta_data?.map((meta, index) => {
+                      if(index === 0){
+                        printData.push(`${meta.key} : ${meta.value}`);
+                      if(cartItem.meta_data[index + 1].key !== meta.key){
+printData.push("\x0A");
+}
+                      } else{
+                      if(index !== cartItem.meta_data.length - 1){
+if(cartItem.meta_data[index - 1].key === meta.key){
+printData.push(` , ${meta.value}`);
+} else{
+printData.push(`${meta.key} : ${meta.value}`);
+}
+
+if(cartItem.meta_data[index + 1].key !== meta.key){
+printData.push("\x0A");
+}
+                      }}
                     });
                   } else {
                     printData.push("\x0A" + "\x0A");
@@ -246,7 +279,6 @@ const RouteManager = () => {
 
                 printData.push(
                   "\x1D" + "\x56" + "\x00",
-                  "\x1D" + "\x56" + "\x30"
                 );
 
                 fetch("http://localhost:8080/print", {
