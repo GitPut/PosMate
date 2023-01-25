@@ -1,18 +1,43 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS
-from win32 import win32gui
-import win32ui, win32con, win32api
-import sys
-import configparser
-import logging
-from LoggerWriter import LoggerWriter
-from pathlib import Path
-from logging.handlers import TimedRotatingFileHandler
-from threading import Timer
-import shutil
+# from flask import Flask, jsonify, request
+# from flask_cors import CORS
+# from win32 import win32gui
+# import win32ui, win32con, win32api
+# import sys
+# import configparser
+# import logging
+# from LoggerWriter import LoggerWriter
+# from pathlib import Path
+# from logging.handlers import TimedRotatingFileHandler
+# from threading import Timer
+# import shutil
+# import os
+# import win32com.client
+# import serial
 import os
-import win32com.client
-import serial
+import sys
+import shutil
+import sysconfig
+import winreg
+from win32com.client import Dispatch
+
+def get_reg(name,path):
+    # Read variable from Windows Registry
+    # From http://stackoverflow.com/a/35286642
+    try:
+        registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, path, 0,
+                                       winreg.KEY_READ)
+        value, regtype = winreg.QueryValueEx(registry_key, name)
+        winreg.CloseKey(registry_key)
+        return value
+    except WindowsError:
+        return None
+
+
+# Read location of Windows desktop folder from registry
+regName = 'Desktop'
+regPath = r'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders'
+desktopFolder = os.path.normpath(get_reg(regName,regPath))
+print(desktopFolder)
 
 # username = os.getlogin()
 
@@ -48,24 +73,24 @@ import serial
 # sys.stdout = LoggerWriter(logging.debug)
 # sys.stderr = LoggerWriter(logging.warning)
 
-app = Flask(__name__)
-CORS(app)
+# app = Flask(__name__)
+# CORS(app)
 
-# ser = serial.Serial('COM4')
-
-
-@app.route('/print', methods=['POST'])
-def print():
-    data = request.get_json()
-    ser = serial.Serial('COM4')
-    for line in data:
-        # ser.write(b'\x1B\x40Hello, World!\n')
-        ser.write(str.encode(line))
-    ser.close()
-
-    response = jsonify({'message': 'Print Complete'})
-    return response
+# # ser = serial.Serial('COM4')
 
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080)
+# @app.route('/print', methods=['POST'])
+# def print():
+#     data = request.get_json()
+#     ser = serial.Serial('COM4')
+#     for line in data:
+#         # ser.write(b'\x1B\x40Hello, World!\n')
+#         ser.write(str.encode(line))
+#     ser.close()
+
+#     response = jsonify({'message': 'Print Complete'})
+#     return response
+
+
+# if __name__ == '__main__':
+#     app.run(debug=True, host='0.0.0.0', port=8080)

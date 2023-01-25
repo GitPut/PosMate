@@ -83,3 +83,35 @@
 2023-01-24 18:52:37,521 - INFO -  * Restarting with stat
 2023-01-24 18:54:21,818 - INFO -  * Restarting with stat
 2023-01-24 19:36:48,446 - INFO -  * Restarting with stat
+2023-01-24 21:28:27,649 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.0.0.195:8080
+2023-01-24 21:28:27,650 - INFO - [33mPress CTRL+C to quit[0m
+2023-01-24 21:28:27,654 - INFO -  * Restarting with stat
+2023-01-24 21:28:27,999 - WARNING -  * Debugger is active!
+2023-01-24 21:28:28,010 - INFO -  * Debugger PIN: 117-705-314
+2023-01-24 21:39:44,797 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.0.0.195:8080
+2023-01-24 21:39:44,798 - INFO - [33mPress CTRL+C to quit[0m
+2023-01-24 21:39:44,802 - INFO -  * Restarting with stat
+2023-01-24 21:39:45,144 - WARNING -  * Debugger is active!
+2023-01-24 21:39:45,154 - INFO -  * Debugger PIN: 117-705-314
+2023-01-24 22:43:04,913 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.0.0.195:8080
+2023-01-24 22:43:04,914 - INFO - [33mPress CTRL+C to quit[0m
+2023-01-24 22:43:04,918 - INFO -  * Restarting with stat
+2023-01-24 22:43:05,261 - WARNING -  * Debugger is active!
+2023-01-24 22:43:05,271 - INFO -  * Debugger PIN: 117-705-314
+2023-01-24 23:17:14,569 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.0.0.195:8080
+2023-01-24 23:17:14,569 - INFO - [33mPress CTRL+C to quit[0m
+2023-01-24 23:17:14,573 - INFO -  * Restarting with stat
+2023-01-24 23:17:14,922 - WARNING -  * Debugger is active!
+2023-01-24 23:17:14,927 - INFO -  * Debugger PIN: 117-705-314

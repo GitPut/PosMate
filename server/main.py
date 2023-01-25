@@ -13,19 +13,46 @@ import shutil
 import os
 import win32com.client
 import serial
+import sys
+import shutil
+import sysconfig
+import winreg
+from win32com.client import Dispatch
+
+def get_reg(name,path):
+    # Read variable from Windows Registry
+    # From http://stackoverflow.com/a/35286642
+    try:
+        registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, path, 0,
+                                       winreg.KEY_READ)
+        value, regtype = winreg.QueryValueEx(registry_key, name)
+        winreg.CloseKey(registry_key)
+        return value
+    except WindowsError:
+        return None
+
+
+# Read location of Windows desktop folder from registry
+regName = 'Desktop'
+regPath = r'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders'
+
+desktopFolder = os.path.normpath(get_reg(regName,regPath))
 
 username = os.getlogin()
 
 currentLocation = os.getcwd()
 
 path = os.path.join('C:\\Users\\'+ username +'\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup', 'PosMate.lnk')
-target = currentLocation + "\\main.exe"
-icon = currentLocation + "\\main.exe"
-shell = win32com.client.Dispatch("WScript.Shell")
-shortcut = shell.CreateShortCut(path)
-shortcut.Targetpath = target
-shortcut.IconLocation = icon
-shortcut.save()
+
+if os.path.isfile(path) == False :
+    # Define the MSI package name
+    msi_name = desktopFolder + '\\PosMate.lnk'
+
+    # Define the startup folder path
+    startup_folder = 'C:\\Users\\'+ username +'\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup'
+
+    # Copy the MSI package to the startup folder shutil.copy(msi_name, startup_folder)
+    shutil.copy(msi_name, startup_folder)
 
 Path("log").mkdir(parents=True, exist_ok=True)
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
