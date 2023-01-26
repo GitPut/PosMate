@@ -236,11 +236,11 @@ const CartScreen = () => {
     let data = [
       "\x1B" + "\x40", // init
       "\x1B" + "\x61" + "\x31", // center align
-      "Tomas Pizza",
+      storeDetails.name,
       "\x0A",
-      "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
-      "www.dreamcitypizza.com" + "\x0A", // text and line break
-      "(519) 650-0409" + "\x0A", // text and line break
+      storeDetails.address + "\x0A",
+      storeDetails.website + "\x0A", // text and line break
+      storeDetails.phoneNumber + "\x0A", // text and line break
       today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
       "\x0A",
       `Transaction # ${transNum}` + "\x0A",

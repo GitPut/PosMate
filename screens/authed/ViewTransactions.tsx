@@ -11,7 +11,7 @@ const ViewTransactions = () => {
     todaysReceiptValue: 0,
     todaysReceipts: 0,
   });
-  const storeDetails = storeDetailState.use()
+  const storeDetails = storeDetailState.use();
 
   useEffect(() => {
     local
@@ -142,7 +142,7 @@ const ViewTransactions = () => {
         <Button
           style={{ height: 40, alignItems: "center", justifyContent: "center" }}
           title="Print Todays Receipts"
-          // onPress={PrintTodaysTotal}
+          onPress={PrintTodaysTotal}
         />
         <Text style={{ textAlign: "center", margin: 25 }}>
           Todays Total Receipts: {todaysDetails.todaysReceipts}
@@ -190,80 +190,80 @@ const ViewTransactions = () => {
                 <Button
                   title="Print"
                   onPress={() => {
-                    if(element.date){
-                    let total = 0;
+                    if (element.date) {
+                      let total = 0;
 
-                    let data = [
-                      "\x1B" + "\x40", // init
-                      "\x1B" + "\x61" + "\x31", // center align
-                      storeDetails.name,
-                      "\x0A",
-                      storeDetails.address + "\x0A",
-                      storeDetails.website + "\x0A", // text and line break
-                      storeDetails.phoneNumber + "\x0A", // text and line break
-                      date.toLocaleDateString() +
-                        " " +
-                        date.toLocaleTimeString() +
+                      let data = [
+                        "\x1B" + "\x40", // init
+                        "\x1B" + "\x61" + "\x31", // center align
+                        storeDetails.name,
                         "\x0A",
-                      "\x0A",
-                      `Transaction # ${element.transNum}` + "\x0A",
-                      "\x0A",
-                      "\x0A",
-                      "\x0A",
-                      "\x1B" + "\x61" + "\x30", // left align
-                    ];
+                        storeDetails.address + "\x0A",
+                        storeDetails.website + "\x0A", // text and line break
+                        storeDetails.phoneNumber + "\x0A", // text and line break
+                        date.toLocaleDateString() +
+                          " " +
+                          date.toLocaleTimeString() +
+                          "\x0A",
+                        "\x0A",
+                        `Transaction # ${element.transNum}` + "\x0A",
+                        "\x0A",
+                        "\x0A",
+                        "\x0A",
+                        "\x1B" + "\x61" + "\x30", // left align
+                      ];
 
-                    element.cart?.map((cartItem) => {
-                      total += parseFloat(cartItem.price);
-                      data.push(`Name: ${cartItem.name}`);
-                      data.push("\x0A");
-                      data.push(`Price: $${cartItem.price}`);
-
-                      if (cartItem.options) {
+                      element.cart?.map((cartItem) => {
+                        total += parseFloat(cartItem.price);
+                        data.push(`Name: ${cartItem.name}`);
                         data.push("\x0A");
-                        cartItem.options?.map((option) => {
-                          data.push(option);
+                        data.push(`Price: $${cartItem.price}`);
+
+                        if (cartItem.options) {
                           data.push("\x0A");
-                        });
-                      }
-                      data.push("\x0A" + "\x0A");
-                    });
+                          cartItem.options?.map((option) => {
+                            data.push(option);
+                            data.push("\x0A");
+                          });
+                        }
+                        data.push("\x0A" + "\x0A");
+                      });
 
-                    total = total * 1.13;
-                    total = total.toFixed(2);
+                      total = total * 1.13;
+                      total = total.toFixed(2);
 
-                    //push ending
-                    data.push(
-                      "\x0A",
-                      "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-                      "\x0A" + "\x0A",
-                      "Total Including (13% Tax): " +
-                        "$" +
-                        total +
-                        "\x0A" +
+                      //push ending
+                      data.push(
                         "\x0A",
-                      "------------------------------------------" + "\x0A",
-                      "\x0A", // line break
-                      "\x0A", // line break
-                      "\x0A", // line break
-                      "\x0A", // line break
-                      "\x0A", // line break
-                      "\x0A", // line break
-                      //"\x1D" + "\x56" + "\x00",
-                      "\x1D" + "\x56" + "\x30"
-                    );
+                        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+                        "\x0A" + "\x0A",
+                        "Total Including (13% Tax): " +
+                          "$" +
+                          total +
+                          "\x0A" +
+                          "\x0A",
+                        "------------------------------------------" + "\x0A",
+                        "\x0A", // line break
+                        "\x0A", // line break
+                        "\x0A", // line break
+                        "\x0A", // line break
+                        "\x0A", // line break
+                        "\x0A", // line break
+                        //"\x1D" + "\x56" + "\x00",
+                        "\x1D" + "\x56" + "\x30"
+                      );
 
-                    fetch("http://localhost:8080/print", {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify(data),
-                    })
-                      .then((response) => response.json())
-                      .then((respData) => {
-                        console.log(respData);
+                      fetch("http://localhost:8080/print", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data),
                       })
+                        .then((response) => response.json())
+                        .then((respData) => {
+                          console.log(respData);
+                        })
                         .catch((e) => alert("Error with printer"));
                     } else {
                       const printData = [];
@@ -327,19 +327,31 @@ const ViewTransactions = () => {
                         }
                       });
 
-                      printData.push(`Shipping:`);
+                      printData.push("\x0A");
+                      printData.push("\x0A");
+                      printData.push(`Customer Details:`);
+                      printData.push("\x0A");
                       printData.push(`Address: ${element.shipping.address_1}`);
+                      printData.push("\x0A");
                       printData.push(`City: ${element.shipping.city}`);
-                      printData.push(`Zip/Postal Code: ${element.shipping.postcode}`);
-                      printData.push(`Province/State: ${element.shipping.state}`);
+                      printData.push("\x0A");
+                      printData.push(
+                        `Zip/Postal Code: ${element.shipping.postcode}`
+                      );
+                      printData.push("\x0A");
+                      printData.push(
+                        `Province/State: ${element.shipping.state}`
+                      );
+                      printData.push("\x0A");
                       printData.push(
                         `Name: ${element.shipping.first_name} ${element.shipping.last_name}`
                       );
                       printData.push("\x0A");
-
                       element.shipping_lines.map((line) =>
                         printData.push(`Shipping Method: ${line.method_title}`)
                       );
+                      printData.push("\x0A");
+                      printData.push("\x0A");
 
                       printData.push(
                         "\x0A",
@@ -352,7 +364,8 @@ const ViewTransactions = () => {
                         "Total Including (13% Tax): " +
                           "$" +
                           (
-                            parseFloat(element.total) + parseFloat(element.total_tax)
+                            parseFloat(element.total) +
+                            parseFloat(element.total_tax)
                           ).toFixed(2) +
                           "\x0A" +
                           "\x0A",
@@ -379,7 +392,7 @@ const ViewTransactions = () => {
                           console.log(respData);
                         })
                         .catch((e) => alert("Error with printer"));
-                      }
+                    }
                   }}
                 />
               </View>

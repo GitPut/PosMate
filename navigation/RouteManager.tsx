@@ -71,6 +71,12 @@ const RouteManager = () => {
             categories: doc.data().categories,
           });
           setTransListState(doc.data().transList);
+          if (doc.data().wooCredentials) {
+            setWoocommerceState(doc.data().wooCredentials);
+          }
+          if (doc.data().storeDetails) {
+            setStoreDetailState(doc.data().storeDetails);
+          }
           setTimeout(() => {
             setloading(false);
           }, 1);
@@ -174,19 +180,27 @@ const RouteManager = () => {
                     }
                   });
 
-                  printData.push(`Shipping:`);
+                  printData.push("\x0A");
+                  printData.push("\x0A");
+                  printData.push(`Customer Details:`);
+                  printData.push("\x0A");
                   printData.push(`Address: ${e.shipping.address_1}`);
+                  printData.push("\x0A");
                   printData.push(`City: ${e.shipping.city}`);
+                  printData.push("\x0A");
                   printData.push(`Zip/Postal Code: ${e.shipping.postcode}`);
+                  printData.push("\x0A");
                   printData.push(`Province/State: ${e.shipping.state}`);
+                  printData.push("\x0A");
                   printData.push(
                     `Name: ${e.shipping.first_name} ${e.shipping.last_name}`
                   );
                   printData.push("\x0A");
-
                   e.shipping_lines.map((line) =>
                     printData.push(`Shipping Method: ${line.method_title}`)
                   );
+                  printData.push("\x0A");
+                  printData.push("\x0A");
 
                   printData.push(
                     "\x0A",
@@ -284,19 +298,27 @@ const RouteManager = () => {
                   }
                 });
 
-                printData.push(`Shipping:`);
-                printData.push(`Address: ${e.shipping.address_1}`);
-                printData.push(`City: ${e.shipping.city}`);
-                printData.push(`Zip/Postal Code: ${e.shipping.postcode}`);
-                printData.push(`Province/State: ${e.shipping.state}`);
-                printData.push(
-                  `Name: ${e.shipping.first_name} ${e.shipping.last_name}`
-                );
-                printData.push("\x0A");
-
-                e.shipping_lines.map((line) =>
-                  printData.push(`Shipping Method: ${line.method_title}`)
-                );
+                 printData.push("\x0A");
+                 printData.push("\x0A");
+                 printData.push(`Customer Details:`);
+                 printData.push("\x0A");
+                 printData.push(`Address: ${e.shipping.address_1}`);
+                 printData.push("\x0A");
+                 printData.push(`City: ${e.shipping.city}`);
+                 printData.push("\x0A");
+                 printData.push(`Zip/Postal Code: ${e.shipping.postcode}`);
+                 printData.push("\x0A");
+                 printData.push(`Province/State: ${e.shipping.state}`);
+                 printData.push("\x0A");
+                 printData.push(
+                   `Name: ${e.shipping.first_name} ${e.shipping.last_name}`
+                 );
+                 printData.push("\x0A");
+                 e.shipping_lines.map((line) =>
+                   printData.push(`Shipping Method: ${line.method_title}`)
+                 );
+                 printData.push("\x0A");
+                 printData.push("\x0A");
 
                 printData.push(
                   "\x0A",
