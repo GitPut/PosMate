@@ -38,3 +38,14 @@ export const woocommerceState = entity({
 export const setWoocommerceState = (val) => {
   woocommerceState.set(val);
 };
+
+export const storeDetailState = entity({
+  name: null,
+  address: null,
+  phoneNumber: null,
+  website: null
+});
+
+export const setStoreDetailState = (val) => {
+  storeDetailState.set(val);
+};
