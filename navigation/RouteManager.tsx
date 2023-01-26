@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import MainAuthed from "./authed/MainAuthed";
 import {
+  setStoreDetailState,
   setTransListState,
   setUserState,
   setUserStoreState,
   setWoocommerceState,
+  storeDetailState,
   transListState,
   userState,
   woocommerceState,
@@ -19,6 +21,7 @@ const RouteManager = () => {
   const userS = userState.use();
   const wooCredentials = woocommerceState.use();
   const transList = transListState.use();
+  const storeDetails = storeDetailState.use();
   const [loading, setloading] = useState(true);
 
   useEffect(() => {
@@ -38,6 +41,9 @@ const RouteManager = () => {
             }
             if (doc.data().wooCredentials) {
               setWoocommerceState(doc.data().wooCredentials);
+            }
+            if (doc.data().storeDetails) {
+              setStoreDetailState(doc.data().storeDetails);
             }
           });
         setTimeout(() => {
@@ -114,11 +120,11 @@ const RouteManager = () => {
                   printData.push(
                     "\x1B\x40", // init
                     "\x1B" + "\x61" + "\x31", // center align
-                    "Tomas Pizza",
+                    storeDetails.name,
                     "\x0A",
-                    "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
-                    "www.dreamcitypizza.com" + "\x0A", // text and line break
-                    "(519) 650-0409" + "\x0A", // text and line break
+                    storeDetails.address + "\x0A",
+                    storeDetails.website + "\x0A", // text and line break
+                    storeDetails.phoneNumber + "\x0A", // text and line break
                     e.date_created + "\x0A",
                     "\x0A",
                     "Online Order" + "\x0A", // text and line break
@@ -218,7 +224,8 @@ const RouteManager = () => {
                     .then((response) => response.json())
                     .then((respData) => {
                       console.log(respData);
-                    });
+                    })
+                    .catch((e) => alert("Error with printer"));
                 });
               } else {
                 const e = newItems[0];
@@ -227,11 +234,11 @@ const RouteManager = () => {
                 printData.push(
                   "\x1B" + "\x40", // init
                   "\x1B" + "\x61" + "\x31", // center align
-                  "Tomas Pizza",
+                  storeDetails.name,
                   "\x0A",
-                  "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
-                  "www.dreamcitypizza.com" + "\x0A", // text and line break
-                  "(519) 650-0409" + "\x0A", // text and line break
+                  storeDetails.address + "\x0A",
+                  storeDetails.website + "\x0A", // text and line break
+                  storeDetails.phoneNumber + "\x0A", // text and line break
                   e.date_created + "\x0A",
                   "\x0A",
                   "Online Order" + "\x0A", // text and line break
@@ -322,7 +329,8 @@ const RouteManager = () => {
                   .then((response) => response.json())
                   .then((respData) => {
                     console.log(respData);
-                  });
+                  })
+                  .catch((e) => alert("Error with printer"));
               }
             }
           })

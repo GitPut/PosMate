@@ -12,6 +12,7 @@ import {
   cartSubState,
   setCartState,
   setTransListState,
+  storeDetailState,
   transListState,
 } from "state/state";
 import { Button } from "@react-native-material/core";
@@ -32,6 +33,7 @@ const CartScreen = () => {
   const [changeDue, setChangeDue] = useState();
   const cart = cartState.use();
   const transList = transListState.use();
+  const storeDetails = storeDetailState.use();
   const [cartSub, setCartSub] = useState(0);
 
   useEffect(() => {
@@ -48,9 +50,9 @@ const CartScreen = () => {
 
   const AddToList = async (payload) => {
     const local = structuredClone(transList);
-    local.push(payload);
+    local.unshift(payload);
     updateTransList(local);
-    setTransListState(local);
+    //setTransListState(local);
   };
 
   const Print = (method) => {
@@ -62,11 +64,11 @@ const CartScreen = () => {
       let data = [
         "\x1B" + "\x40", // init
         "\x1B" + "\x61" + "\x31", // center align
-        "Tomas Pizza",
+        storeDetails.name,
         "\x0A",
-        "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
-        "www.dreamcitypizza.com" + "\x0A", // text and line break
-        "(519) 650-0409" + "\x0A", // text and line break
+        storeDetails.address + "\x0A",
+        storeDetails.website + "\x0A", // text and line break
+        storeDetails.phoneNumber + "\x0A", // text and line break
         today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
         "\x0A",
         `Transaction # ${transNum}` + "\x0A",
@@ -128,7 +130,8 @@ const CartScreen = () => {
         .then((response) => response.json())
         .then((respData) => {
           console.log(respData);
-        });
+        })
+        .catch((e) => alert("Error with printer"));
 
       AddToList({
         date: today,
@@ -148,11 +151,11 @@ const CartScreen = () => {
       let data = [
         "\x1B" + "\x40", // init
         "\x1B" + "\x61" + "\x31", // center align
-        "Tomas Pizza",
+        storeDetails.name,
         "\x0A",
-        "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
-        "www.dreamcitypizza.com" + "\x0A", // text and line break
-        "(519) 650-0409" + "\x0A", // text and line break
+        storeDetails.address + "\x0A",
+        storeDetails.website + "\x0A", // text and line break
+        storeDetails.phoneNumber + "\x0A", // text and line break
         today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
         "\x0A",
         `Transaction # ${transNum}` + "\x0A",
@@ -212,7 +215,8 @@ const CartScreen = () => {
         .then((response) => response.json())
         .then((respData) => {
           console.log(respData);
-        });
+        })
+        .catch((e) => alert("Error with printer"));
 
       AddToList({
         date: today,
@@ -315,7 +319,8 @@ const CartScreen = () => {
       .then((response) => response.json())
       .then((respData) => {
         console.log(respData);
-      });
+      })
+      .catch((e) => alert("Error with printer"));
 
     AddToList({
       date: today,

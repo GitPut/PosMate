@@ -1,49 +1,55 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { Button, TextInput } from "@react-native-material/core";
+import { storeDetailState } from "state/state";
 
 const ChangeScreen = ({ setChangeModal }) => {
   const [total, setTotal] = useState("");
   const [cash, setCash] = useState("");
+  const storeDetails = storeDetailState.use();
 
   const openCash = () => {
-    const qz = require("qz-tray");
-    qz.websocket
-      .connect()
-      .then(function () {
-        let config = qz.configs.create("jZebra");
-        return qz.print(config, [
-          "\x1B" + "\x40", // init
-          "\x1B" + "\x61" + "\x31", // center align
-          "Tomas Pizza",
-          "\x0A",
-          "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
-          "www.dreamcitypizza.com" + "\x0A", // text and line break
-          "(519) 650-0409" + "\x0A", // text and line break
-          "\x0A",
-          "\x0A",
-          "\x0A",
-          "\x0A",
-          "\x1B" + "\x61" + "\x30", // left align
-          `Total: $${total}` + "\x0A",
-          `Cash Given: $${cash}` + "\x0A",
-          `Change Due: $${(parseFloat(cash) - total).toFixed(2)}` + "\x0A",
-          "------------------------------------------" + "\x0A",
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          //"\x1D" + "\x56" + "\x00",
-          "\x1D" + "\x56" + "\x30",
-          "\x10" + "\x14" + "\x01" + "\x00" + "\x05",
-        ]);
+    const data = [
+      "\x1B" + "\x40", // init
+      "\x1B" + "\x61" + "\x31", // center align
+      storeDetails.name,
+      "\x0A",
+      storeDetails.address + "\x0A",
+      storeDetails.website + "\x0A", // text and line break
+      storeDetails.phoneNumber + "\x0A", // text and line break
+      "\x0A",
+      "\x0A",
+      "\x0A",
+      "\x0A",
+      "\x1B" + "\x61" + "\x30", // left align
+      `Total: $${total}` + "\x0A",
+      `Cash Given: $${cash}` + "\x0A",
+      `Change Due: $${(parseFloat(cash) - parseFloat(total)).toFixed(2)}` +
+        "\x0A",
+      "------------------------------------------" + "\x0A",
+      "\x0A", // line break
+      "\x0A", // line break
+      "\x0A", // line break
+      "\x0A", // line break
+      "\x0A", // line break
+      "\x0A", // line break
+      //"\x1D" + "\x56" + "\x00",
+      "\x1D" + "\x56" + "\x30",
+      "\x10" + "\x14" + "\x01" + "\x00" + "\x05",
+    ];
+
+    fetch("http://localhost:8080/print", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((respData) => {
+        console.log(respData);
       })
-      .then(qz.websocket.disconnect)
-      .catch(function (err) {
-        console.error(err);
-      });
+      .catch((e) => alert("Error with printer"));
   };
 
   return (

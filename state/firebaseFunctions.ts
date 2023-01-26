@@ -41,3 +41,9 @@ export const updateTransList = (transList) => {
     transList: transList,
   });
 };
+
+export const updateStoreDetails = (storeDetails) => {
+  db.collection("users").doc(auth.currentUser?.uid).update({
+    storeDetails: storeDetails,
+  });
+};
