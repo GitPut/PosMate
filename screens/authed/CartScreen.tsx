@@ -7,11 +7,18 @@ import {
   Dimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { cartState, cartSubState, setCartState } from "state/state";
+import {
+  cartState,
+  cartSubState,
+  setCartState,
+  setTransListState,
+  transListState,
+} from "state/state";
 import { Button } from "@react-native-material/core";
 import DeliveryScreen from "components/DeliveryScreen";
 import CashScreen from "components/CashScreen";
 import ChangeScreen from "components/ChangeScreen";
+import { updateTransList } from "state/firebaseFunctions";
 
 const CartScreen = () => {
   const [deliveryModal, setDeliveryModal] = useState(false);
@@ -24,6 +31,7 @@ const CartScreen = () => {
   const [deliveryChecked, setDeliveryChecked] = useState(false);
   const [changeDue, setChangeDue] = useState();
   const cart = cartState.use();
+  const transList = transListState.use();
   const [cartSub, setCartSub] = useState(0);
 
   useEffect(() => {
@@ -38,23 +46,17 @@ const CartScreen = () => {
     }
   }, [cart]);
 
-  const GetTrans = async (method) => {
-    // const socket = io("http://localhost:8443");
-    // socket.emit("getTrans");
-    // socket.on("getTrans", (res) => {
-    //   Print(method, parseInt(res.transList.length));
-    // });
-  };
-
   const AddToList = async (payload) => {
-    // const socket = io("http://localhost:8443");
-    // socket.emit("addTrans", payload);
+    const local = structuredClone(transList);
+    local.push(payload);
+    updateTransList(local);
+    setTransListState(local);
   };
 
-  const Print = (method, transNum) => {
+  const Print = (method) => {
+    const transNum = transList.length + 1;
     if (method === "deliveryOrder") {
       let total = 5.5;
-      const qz = require("qz-tray");
       const today = new Date();
 
       let data = [
@@ -79,8 +81,6 @@ const CartScreen = () => {
       cart.map((cartItem) => {
         total += parseFloat(cartItem.price);
         data.push(`Name: ${cartItem.name}`);
-        data.push("\x0A");
-        data.push(`Quantity: ${cartItem.quantity}`);
         data.push("\x0A");
         data.push(`Price: $${cartItem.price}`);
 
@@ -118,6 +118,17 @@ const CartScreen = () => {
         "\x0A", // line break
         "\x1D" + "\x56" + "\x30"
       );
+      fetch("http://localhost:8080/print", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((respData) => {
+          console.log(respData);
+        });
 
       AddToList({
         date: today,
@@ -127,22 +138,11 @@ const CartScreen = () => {
         cart: cart,
       });
 
-      qz.websocket
-        .connect()
-        .then(function () {
-          let config = qz.configs.create("jZebra");
-          return qz.print(config, data);
-        })
-        .then(qz.websocket.disconnect)
-        .catch(function (err) {
-          console.error(err);
-        });
       setCartState([]);
       setDeliveryModal(false);
     }
     if (method === "pickupOrder") {
       let total = 0;
-      const qz = require("qz-tray");
       const today = new Date();
 
       let data = [
@@ -167,8 +167,6 @@ const CartScreen = () => {
       cart.map((cartItem) => {
         total += parseFloat(cartItem.price);
         data.push(`Name: ${cartItem.name}`);
-        data.push("\x0A");
-        data.push(`Quantity: ${cartItem.quantity}`);
         data.push("\x0A");
         data.push(`Price: $${cartItem.price}`);
 
@@ -204,6 +202,17 @@ const CartScreen = () => {
         "\x0A", // line break
         "\x1D" + "\x56" + "\x30"
       );
+      fetch("http://localhost:8080/print", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((respData) => {
+          console.log(respData);
+        });
 
       AddToList({
         date: today,
@@ -213,22 +222,11 @@ const CartScreen = () => {
         cart: cart,
       });
 
-      qz.websocket
-        .connect()
-        .then(function () {
-          let config = qz.configs.create("jZebra");
-          return qz.print(config, data);
-        })
-        .then(qz.websocket.disconnect)
-        .catch(function (err) {
-          console.error(err);
-        });
       setCartState([]);
       setDeliveryModal(false);
     }
 
     let total = 0;
-    const qz = require("qz-tray");
     const today = new Date();
 
     let data = [
@@ -252,7 +250,6 @@ const CartScreen = () => {
       total += parseFloat(cartItem.price);
       data.push(`Name: ${cartItem.name}`);
       data.push("\x0A");
-      data.push(`Quantity: ${cartItem.quantity}`);
       data.push("\x0A");
       data.push(`Price: $${cartItem.price}`);
 
@@ -308,6 +305,18 @@ const CartScreen = () => {
       );
     }
 
+    fetch("http://localhost:8080/print", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((respData) => {
+        console.log(respData);
+      });
+
     AddToList({
       date: today,
       transNum: transNum,
@@ -316,16 +325,6 @@ const CartScreen = () => {
       cart: cart,
     });
 
-    qz.websocket
-      .connect()
-      .then(function () {
-        let config = qz.configs.create("jZebra");
-        return qz.print(config, data);
-      })
-      .then(qz.websocket.disconnect)
-      .catch(function (err) {
-        console.error(err);
-      });
     setCartState([]);
   };
 
@@ -345,7 +344,7 @@ const CartScreen = () => {
         <Button
           title="Complete"
           onPress={() => {
-            GetTrans(deliveryChecked ? "deliveryOrder" : "pickupOrder");
+            Print(deliveryChecked ? "deliveryOrder" : "pickupOrder");
             setOngoingDelivery(null);
             setName(null);
             setPhone(null);
@@ -405,7 +404,7 @@ const CartScreen = () => {
           />
           <Button
             title="Card"
-            onPress={() => GetTrans("Card")}
+            onPress={() => Print("Card")}
             disabled={cart.length < 1 || ongoingDelivery}
             style={{ marginBottom: 20 }}
           />
@@ -433,7 +432,7 @@ const CartScreen = () => {
         <Modal visible={cashModal}>
           <CashScreen
             setCashModal={setCashModal}
-            GetTrans={() => GetTrans("Cash")}
+            GetTrans={() => Print("Cash")}
             total={(cartSub * 1.13).toFixed(2)}
             setChangeDue={setChangeDue}
           />

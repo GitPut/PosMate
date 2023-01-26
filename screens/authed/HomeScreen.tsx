@@ -168,6 +168,40 @@ const HomeScreen = () => {
             }}
             title="X"
           />
+          <Button
+            titleStyle={{ color: "black", fontWeight: "700" }}
+            style={{ backgroundColor: "white" }}
+            onPress={() => {
+              let data = [
+                "\x1B" + "\x40", // init
+                "\x1B" + "\x61" + "\x31", // center align
+                "Tomas Pizza",
+                "\x0A",
+                "#B4-200 Preston Pkwy, Cambridge" + "\x0A",
+                "www.dreamcitypizza.com" + "\x0A", // text and line break
+                "(519) 650-0409" + "\x0A", // text and line break
+                `Transaction # 1` + "\x0A",
+                "\x0A",
+                "Pickup Order" + "\x0A",
+                "\x0A",
+                "\x0A",
+                "\x0A",
+                "\x1B" + "\x61" + "\x30", // left align
+              ];
+              fetch("http://localhost:8080/print", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+              })
+                .then((response) => response.json())
+                .then((respData) => {
+                  console.log(respData);
+                });
+            }}
+            title="Test"
+          />
         </View>
       );
     }
