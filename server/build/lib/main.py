@@ -75,8 +75,10 @@ CORS(app)
 @app.route('/print', methods=['POST'])
 def print():
     data = request.get_json()
-    ser = serial.Serial('COM4')
-    for line in data:
+    printData = data.get('printData')
+    comSelected = data.get('comSelected')
+    ser = serial.Serial(comSelected)
+    for line in printData:
         # ser.write(b'\x1B\x40Hello, World!\n')
         ser.write(str.encode(line))
     ser.close()
