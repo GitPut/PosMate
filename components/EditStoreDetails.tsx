@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Button, Switch, TextInput } from "@react-native-material/core";
 import { setStoreDetailState, storeDetailState } from "state/state";
 import { updateStoreDetails } from "state/firebaseFunctions";
+import DropDown from "./DropDown";
 
 const EditStoreDetails = () => {
   const storeDetails = storeDetailState.use();
@@ -10,6 +11,7 @@ const EditStoreDetails = () => {
   const [phoneNumber, setphoneNumber] = useState(storeDetails.phoneNumber);
   const [address, setaddress] = useState(storeDetails.address);
   const [website, setwebsite] = useState(storeDetails.website);
+  const [com, setcom] = useState(storeDetails.comSelected);
 
   const handleDataUpdate = () => {
     if (name !== null && phoneNumber !== null && address !== null) {
@@ -18,12 +20,14 @@ const EditStoreDetails = () => {
         phoneNumber: phoneNumber,
         address: address,
         website: website,
+        comSelected: com,
       });
       updateStoreDetails({
         name: name,
         phoneNumber: phoneNumber,
         address: address,
         website: website,
+        comSelected: com,
       });
     }
   };
@@ -56,6 +60,12 @@ const EditStoreDetails = () => {
         onChangeText={(val) => setaddress(val)}
         style={{ margin: 10 }}
         value={address}
+      />
+      <DropDown
+        options={["COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "What Cum?"]}
+        label="Pick Printer COM"
+        value={com}
+        setValue={setcom}
       />
       <Button title="Save" onPress={handleDataUpdate} style={{ margin: 10 }} />
       {/* <Spinner isModalVisible={isModalVisible} /> */}

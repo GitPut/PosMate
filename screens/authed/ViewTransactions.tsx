@@ -114,7 +114,10 @@ const ViewTransactions = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        printData: data,
+        comSelected: storeDetails.comSelected,
+      }),
     })
       .then((response) => response.json())
       .then((respData) => {
@@ -258,7 +261,10 @@ const ViewTransactions = () => {
                         headers: {
                           "Content-Type": "application/json",
                         },
-                        body: JSON.stringify(data),
+                        body: JSON.stringify({
+                          printData: data,
+                          comSelected: storeDetails.comSelected,
+                        }),
                       })
                         .then((response) => response.json())
                         .then((respData) => {

@@ -43,7 +43,10 @@ const ChangeScreen = ({ setChangeModal }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        printData: data,
+        comSelected: storeDetails.comSelected,
+      }),
     })
       .then((response) => response.json())
       .then((respData) => {

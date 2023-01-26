@@ -233,7 +233,10 @@ const RouteManager = () => {
                     headers: {
                       "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(printData),
+                    body: JSON.stringify({
+                      printData: printData,
+                      comSelected: storeDetails.comSelected,
+                    }),
                   })
                     .then((response) => response.json())
                     .then((respData) => {
@@ -298,27 +301,27 @@ const RouteManager = () => {
                   }
                 });
 
-                 printData.push("\x0A");
-                 printData.push("\x0A");
-                 printData.push(`Customer Details:`);
-                 printData.push("\x0A");
-                 printData.push(`Address: ${e.shipping.address_1}`);
-                 printData.push("\x0A");
-                 printData.push(`City: ${e.shipping.city}`);
-                 printData.push("\x0A");
-                 printData.push(`Zip/Postal Code: ${e.shipping.postcode}`);
-                 printData.push("\x0A");
-                 printData.push(`Province/State: ${e.shipping.state}`);
-                 printData.push("\x0A");
-                 printData.push(
-                   `Name: ${e.shipping.first_name} ${e.shipping.last_name}`
-                 );
-                 printData.push("\x0A");
-                 e.shipping_lines.map((line) =>
-                   printData.push(`Shipping Method: ${line.method_title}`)
-                 );
-                 printData.push("\x0A");
-                 printData.push("\x0A");
+                printData.push("\x0A");
+                printData.push("\x0A");
+                printData.push(`Customer Details:`);
+                printData.push("\x0A");
+                printData.push(`Address: ${e.shipping.address_1}`);
+                printData.push("\x0A");
+                printData.push(`City: ${e.shipping.city}`);
+                printData.push("\x0A");
+                printData.push(`Zip/Postal Code: ${e.shipping.postcode}`);
+                printData.push("\x0A");
+                printData.push(`Province/State: ${e.shipping.state}`);
+                printData.push("\x0A");
+                printData.push(
+                  `Name: ${e.shipping.first_name} ${e.shipping.last_name}`
+                );
+                printData.push("\x0A");
+                e.shipping_lines.map((line) =>
+                  printData.push(`Shipping Method: ${line.method_title}`)
+                );
+                printData.push("\x0A");
+                printData.push("\x0A");
 
                 printData.push(
                   "\x0A",
@@ -346,7 +349,10 @@ const RouteManager = () => {
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify(printData),
+                  body: JSON.stringify({
+                    printData: printData,
+                    comSelected: storeDetails.comSelected,
+                  }),
                 })
                   .then((response) => response.json())
                   .then((respData) => {
