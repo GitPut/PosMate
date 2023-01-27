@@ -111,7 +111,14 @@ const RouteManager = () => {
               }
               return acc;
             }, []);
+
+// console.log('checking')
+// console.log('translist: ', transList)
+// console.log('data: ', data)
+// console.log('new array: ', newArray)
+
             if (newArray.length > transList.length) {
+              console.log('new item')
               const newItems = structuredClone(newArray).splice(
                 transList.length,
                 newArray.length - transList.length
@@ -366,7 +373,7 @@ const RouteManager = () => {
             alert(
               "Error has errored with woocommerce api. Try refreshing or updating creditials"
             );
-            clearInterval(interval);
+            //clearInterval(interval);
           });
       }, 5000); // this will check for new orders every minute
       return () => clearInterval(interval);

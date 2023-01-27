@@ -38,7 +38,7 @@ const ViewTransactions = () => {
         date = new Date(current.date.seconds * 1000);
       } else {
         date = new Date(current.date_created);
-        console.log("seconds is: ", date.getTime() / 1000);
+        // console.log("seconds is: ", date.getTime() / 1000);
       }
       if (date.toLocaleDateString() === today.toLocaleDateString()) {
         return accumulator + parseFloat(current.total);
