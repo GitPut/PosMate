@@ -31,7 +31,7 @@ const EditProductList = () => {
       <Text style={{ fontSize: 17, fontWeight: "600" }}>Current Products</Text>
       {catalog.categories.length > 0 ? (
         catalog.products.map((e, index) => {
-          const [productEditModal, setProductEditModal] = useState(false);
+           const [productEditModal, setProductEditModal] = useState(false);
           return (
             <View
               style={{
