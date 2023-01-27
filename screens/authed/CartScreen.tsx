@@ -146,8 +146,7 @@ const CartScreen = () => {
 
       setCartState([]);
       setDeliveryModal(false);
-    }
-    if (method === "pickupOrder") {
+    } else if (method === "pickupOrder") {
       let total = 0;
       const today = new Date();
 
@@ -234,110 +233,110 @@ const CartScreen = () => {
 
       setCartState([]);
       setDeliveryModal(false);
-    }
-
-    let total = 0;
-    const today = new Date();
-
-    let data = [
-      "\x1B" + "\x40", // init
-      "\x1B" + "\x61" + "\x31", // center align
-      storeDetails.name,
-      "\x0A",
-      storeDetails.address + "\x0A",
-      storeDetails.website + "\x0A", // text and line break
-      storeDetails.phoneNumber + "\x0A", // text and line break
-      today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
-      "\x0A",
-      `Transaction # ${transNum}` + "\x0A",
-      "\x0A",
-      "\x0A",
-      "\x0A",
-      "\x1B" + "\x61" + "\x30", // left align
-    ];
-
-    cart.map((cartItem) => {
-      total += parseFloat(cartItem.price);
-      data.push(`Name: ${cartItem.name}`);
-      data.push("\x0A");
-      data.push("\x0A");
-      data.push(`Price: $${cartItem.price}`);
-
-      if (cartItem.options) {
-        data.push("\x0A");
-        cartItem.options.map((option) => {
-          data.push(option);
-          data.push("\x0A");
-        });
-      }
-      data.push("\x0A" + "\x0A");
-    });
-
-    total = total * 1.13;
-    total = total.toFixed(2);
-
-    if (method === "Cash") {
-      //push ending
-      data.push(
-        "\x0A",
-        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-        "\x0A" + "\x0A",
-        "Payment Method: " + method + "\x0A" + "\x0A",
-        "Total Including (13% Tax): " + "$" + total + "\x0A" + "\x0A",
-        "Change Due: " + "$" + changeDue + "\x0A" + "\x0A",
-        "------------------------------------------" + "\x0A",
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        //"\x1D" + "\x56" + "\x00",
-        "\x1D" + "\x56" + "\x30",
-        "\x10" + "\x14" + "\x01" + "\x00" + "\x05"
-      );
     } else {
-      data.push(
+      let total = 0;
+      const today = new Date();
+
+      let data = [
+        "\x1B" + "\x40", // init
+        "\x1B" + "\x61" + "\x31", // center align
+        storeDetails.name,
         "\x0A",
-        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-        "\x0A" + "\x0A",
-        "Payment Method: " + method + "\x0A" + "\x0A",
-        "Total Including (13% Tax): " + "$" + total + "\x0A" + "\x0A",
-        "------------------------------------------" + "\x0A",
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        //"\x1D" + "\x56" + "\x00",
-        "\x1D" + "\x56" + "\x30"
-      );
-    }
+        storeDetails.address + "\x0A",
+        storeDetails.website + "\x0A", // text and line break
+        storeDetails.phoneNumber + "\x0A", // text and line break
+        today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
+        "\x0A",
+        `Transaction # ${transNum}` + "\x0A",
+        "\x0A",
+        "\x0A",
+        "\x0A",
+        "\x1B" + "\x61" + "\x30", // left align
+      ];
 
-    fetch("http://localhost:8080/print", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        printData: data,
-        comSelected: storeDetails.comSelected,
-      }),
-    })
-      .then((response) => response.json())
-      .then((respData) => {
-        console.log(respData);
+      cart.map((cartItem) => {
+        total += parseFloat(cartItem.price);
+        data.push(`Name: ${cartItem.name}`);
+        data.push("\x0A");
+        data.push("\x0A");
+        data.push(`Price: $${cartItem.price}`);
+
+        if (cartItem.options) {
+          data.push("\x0A");
+          cartItem.options.map((option) => {
+            data.push(option);
+            data.push("\x0A");
+          });
+        }
+        data.push("\x0A" + "\x0A");
+      });
+
+      total = total * 1.13;
+      total = total.toFixed(2);
+
+      if (method === "Cash") {
+        //push ending
+        data.push(
+          "\x0A",
+          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+          "\x0A" + "\x0A",
+          "Payment Method: " + method + "\x0A" + "\x0A",
+          "Total Including (13% Tax): " + "$" + total + "\x0A" + "\x0A",
+          "Change Due: " + "$" + changeDue + "\x0A" + "\x0A",
+          "------------------------------------------" + "\x0A",
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          //"\x1D" + "\x56" + "\x00",
+          "\x1D" + "\x56" + "\x30",
+          "\x10" + "\x14" + "\x01" + "\x00" + "\x05"
+        );
+      } else {
+        data.push(
+          "\x0A",
+          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+          "\x0A" + "\x0A",
+          "Payment Method: " + method + "\x0A" + "\x0A",
+          "Total Including (13% Tax): " + "$" + total + "\x0A" + "\x0A",
+          "------------------------------------------" + "\x0A",
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          //"\x1D" + "\x56" + "\x00",
+          "\x1D" + "\x56" + "\x30"
+        );
+      }
+
+      fetch("http://localhost:8080/print", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          printData: data,
+          comSelected: storeDetails.comSelected,
+        }),
       })
-      .catch((e) => alert("Error with printer"));
+        .then((response) => response.json())
+        .then((respData) => {
+          console.log(respData);
+        })
+        .catch((e) => alert("Error with printer"));
 
-    AddToList({
-      date: today,
-      transNum: transNum,
-      total: total,
-      method: method,
-      cart: cart,
-    });
+      AddToList({
+        date: today,
+        transNum: transNum,
+        total: total,
+        method: method,
+        cart: cart,
+      });
+    }
 
     setCartState([]);
   };

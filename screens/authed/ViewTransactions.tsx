@@ -105,7 +105,6 @@ const ViewTransactions = () => {
       "\x0A", // line break
       "\x0A", // line break
       "\x0A", // line break
-      "\x1D" + "\x56" + "\x00",
       "\x1D" + "\x56" + "\x30",
     ];
 
@@ -391,7 +390,10 @@ const ViewTransactions = () => {
                         headers: {
                           "Content-Type": "application/json",
                         },
-                        body: JSON.stringify(printData),
+                        body: JSON.stringify({
+                          printData: printData,
+                          comSelected: storeDetails.comSelected,
+                        }),
                       })
                         .then((response) => response.json())
                         .then((respData) => {
@@ -407,111 +409,6 @@ const ViewTransactions = () => {
         ) : (
           <Text>No receipts yet</Text>
         )}
-        {/* {transList &&
-          transList?.map((element, index) => {
-            const date = new Date(element.date);
-            // if (date.toLocaleDateString() === today.toLocaleDateString()) {
-            //   setTodaysDetails((prevState) => prevState + 1);
-            // }
-            return (
-              <View
-                style={{ backgroundColor: "grey", padding: 30, margin: 10 }}
-                key={index}
-              >
-                {element.cart?.map((cartItem, index) => (
-                  <View style={{ marginBottom: 20 }} key={index}>
-                    <Text>Name: {cartItem.name}</Text>
-                    <Text>Quantity: {cartItem.quantity}</Text>
-                    <Text>Price: {cartItem.price}</Text>
-                    <Text>Date: {date.toLocaleDateString()}</Text>
-                    {cartItem.options &&
-                      cartItem.options?.map((option) => <Text>{option}</Text>)}
-                  </View>
-                ))}
-                <Button
-                  title="Print"
-                  onPress={() => {
-                    let total = 0;
-                    const qz = require("qz-tray");
-                    const today = new Date();
-
-                    let data = [
-                      "\x1B" + "\x40", // init
-                      "\x1B" + "\x61" + "\x31", // center align
-                      storeDetails.name,
-                      "\x0A",
-                      storeDetails.address + "\x0A",
-                      storeDetails.website + "\x0A", // text and line break
-                      storeDetails.phoneNumber + "\x0A", // text and line break
-                      today.toLocaleDateString() +
-                        " " +
-                        today.toLocaleTimeString() +
-                        "\x0A",
-                      "\x0A",
-                      `Transaction # ${element.transNum}` + "\x0A",
-                      "\x0A",
-                      "\x0A",
-                      "\x0A",
-                      "\x1B" + "\x61" + "\x30", // left align
-                    ];
-
-                    element.cart?.map((cartItem) => {
-                      total += parseFloat(cartItem.price);
-                      data.push(`Name: ${cartItem.name}`);
-                      data.push("\x0A");
-                      data.push(`Quantity: ${cartItem.quantity}`);
-                      data.push("\x0A");
-                      data.push(`Price: $${cartItem.price}`);
-
-                      if (cartItem.options) {
-                        data.push("\x0A");
-                        cartItem.options?.map((option) => {
-                          data.push(option);
-                          data.push("\x0A");
-                        });
-                      }
-                      data.push("\x0A" + "\x0A");
-                    });
-
-                    total = total * 1.13;
-                    total = total.toFixed(2);
-
-                    //push ending
-                    data.push(
-                      "\x0A",
-                      "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-                      "\x0A" + "\x0A",
-                      "Total Including (13% Tax): " +
-                        "$" +
-                        total +
-                        "\x0A" +
-                        "\x0A",
-                      "------------------------------------------" + "\x0A",
-                      "\x0A", // line break
-                      "\x0A", // line break
-                      "\x0A", // line break
-                      "\x0A", // line break
-                      "\x0A", // line break
-                      "\x0A", // line break
-                      //"\x1D" + "\x56" + "\x00",
-                      "\x1D" + "\x56" + "\x30"
-                    );
-
-                    qz.websocket
-                      .connect()
-                      .then(function () {
-                        let config = qz.configs.create("jZebra");
-                        return qz.print(config, data);
-                      })
-                      .then(qz.websocket.disconnect)
-                      .catch(function (err) {
-                        console.error(err);
-                      });
-                  }}
-                />
-              </View>
-            );
-          })} */}
       </View>
     </View>
   );

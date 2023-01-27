@@ -33,6 +33,7 @@ const AddProduct = ({
     index: null,
     inputName: null,
     innerList: null,
+    cursor: null,
   });
 
   function handleDataUpdate(copyProductData) {
@@ -52,13 +53,13 @@ const AddProduct = ({
     setisModalVisible(true);
   }
 
-  useEffect(() => {
-    const scrollPosition = sessionStorage.getItem("scrollPosition");
-    if (scrollPosition) {
-      window.scrollTo(0, parseInt(scrollPosition));
-      sessionStorage.removeItem("scrollPosition");
-    }
-  }, [newProduct]);
+  // useEffect(() => {
+  //   const scrollPosition = sessionStorage.getItem("scrollPosition");
+  //   if (scrollPosition) {
+  //     window.scrollTo(0, parseInt(scrollPosition));
+  //     sessionStorage.removeItem("scrollPosition");
+  //   }
+  // }, [newProduct]);
 
   const OptionsAddingSection = () => {
     return (
@@ -107,7 +108,13 @@ const AddProduct = ({
                     ...e,
                     label: e.label + " Copy",
                   });
-
+                  // setautoFocusOn({
+                  //   index: copy.options.length - 1,
+                  //   inputName: "label",
+                  //   innerList: false,
+                  //   // cursor: e.target.selectionStart,
+                  //   // cursorEnd: e.target.selectionEnd,
+                  // });
                   setnewProduct((prevState) => ({
                     ...prevState,
                     options: copy.options,
@@ -147,19 +154,26 @@ const AddProduct = ({
               </TouchableOpacity>
               <TextInput
                 placeholder="Enter Select List Label"
-                onChangeText={(val) => {
+                onChange={(e) => {
+                  const val = e.nativeEvent.text;
                   const newOptionsList = [...newProduct.options];
                   newOptionsList[index].label = val;
                   setautoFocusOn({
                     index: index,
                     inputName: "label",
                     innerList: false,
+                    cursor: e.target.selectionStart,
+                    cursorEnd: e.target.selectionEnd,
                   });
-                  sessionStorage.setItem("scrollPosition", window.pageYOffset);
+                  // sessionStorage.setItem("scrollPosition", window.pageYOffset);
                   setnewProduct((prevState) => ({
                     ...prevState,
                     options: newOptionsList,
                   }));
+                }}
+                onFocus={(e) => {
+                  e.target.selectionStart = autoFocusOn.cursor;
+                  e.target.selectionEnd = autoFocusOn.cursorEnd;
                 }}
                 value={e.label}
                 autoFocus={
@@ -171,19 +185,26 @@ const AddProduct = ({
               />
               <TextInput
                 placeholder="Enter Number Of Selectable; If There Is"
-                onChangeText={(val) => {
+                onChange={(e) => {
+                  const val = e.nativeEvent.text;
                   const newOptionsList = [...newProduct.options];
                   newOptionsList[index].numOfSelectable = val;
                   setautoFocusOn({
                     index: index,
                     inputName: "numOfSelectable",
                     innerList: false,
+                    cursor: e.target.selectionStart,
+                    cursorEnd: e.target.selectionEnd,
                   });
-                  sessionStorage.setItem("scrollPosition", window.pageYOffset);
+                  // sessionStorage.setItem("scrollPosition", window.pageYOffset);
                   setnewProduct((prevState) => ({
                     ...prevState,
                     options: newOptionsList,
                   }));
+                }}
+                onFocus={(e) => {
+                  e.target.selectionStart = autoFocusOn.cursor;
+                  e.target.selectionEnd = autoFocusOn.cursorEnd;
                 }}
                 value={e.numOfSelectable}
                 autoFocus={
@@ -204,52 +225,70 @@ const AddProduct = ({
                   >
                     <TextInput
                       placeholder="Enter Option Label"
-                      onChangeText={(val) => {
+                      onChange={(e) => {
+                        const val = e.nativeEvent.text;
                         const newOptionsList = structuredClone(newProduct);
                         newOptionsList.options[index].optionsList[
                           indexInnerList
                         ].label = val;
                         setautoFocusOn({
-                          index: indexInnerList,
+                          index: index,
                           inputName: "label",
                           innerList: true,
+                          indexInnerList: indexInnerList,
+                          cursor: e.target.selectionStart,
+                          cursorEnd: e.target.selectionEnd,
                         });
-                        sessionStorage.setItem(
-                          "scrollPosition",
-                          window.pageYOffset
-                        );
+                        // sessionStorage.setItem(
+                        //   "scrollPosition",
+                        //   window.pageYOffset
+                        // );
                         setnewProduct(newOptionsList);
+                      }}
+                      onFocus={(e) => {
+                        e.target.selectionStart = autoFocusOn.cursor;
+                        e.target.selectionEnd = autoFocusOn.cursorEnd;
                       }}
                       value={eInnerList.label}
                       autoFocus={
-                        autoFocusOn.index === indexInnerList &&
+                        autoFocusOn.index === index &&
                         autoFocusOn.innerList === true &&
-                        autoFocusOn.inputName === "label"
+                        autoFocusOn.inputName === "label" &&
+                        autoFocusOn.indexInnerList === indexInnerList
                       }
                     />
                     <TextInput
                       placeholder="Enter price increase"
-                      onChangeText={(val) => {
+                      onChange={(e) => {
+                        const val = e.nativeEvent.text;
                         const newOptionsList = structuredClone(newProduct);
                         newOptionsList.options[index].optionsList[
                           indexInnerList
                         ].priceIncrease = val;
                         setautoFocusOn({
-                          index: indexInnerList,
+                          index: index,
                           inputName: "priceIncrease",
                           innerList: true,
+                          indexInnerList: indexInnerList,
+                          cursor: e.target.selectionStart,
+                          cursorEnd: e.target.selectionEnd,
                         });
-                        sessionStorage.setItem(
-                          "scrollPosition",
-                          window.pageYOffset
-                        );
+                        // sessionStorage.setItem(
+                        //   "scrollPosition",
+                        //   window.pageYOffset
+                        // );
                         setnewProduct(newOptionsList);
+                      }}
+                      onFocus={(e) => {
+                        e.target.selectionStart = autoFocusOn.cursor;
+                        e.target.selectionEnd = autoFocusOn.cursorEnd;
                       }}
                       value={eInnerList.priceIncrease}
                       autoFocus={
-                        autoFocusOn.index === indexInnerList &&
+                        autoFocusOn.index === index &&
                         autoFocusOn.innerList === true &&
-                        autoFocusOn.inputName === "priceIncrease"
+                        autoFocusOn.inputName === "priceIncrease" &&
+                        autoFocusOn.indexInnerList === indexInnerList
                       }
                       style={{ marginLeft: 20, marginRight: 20 }}
                     />
@@ -297,11 +336,13 @@ const AddProduct = ({
                     options: newOptionsList,
                   }));
                   setautoFocusOn({
-                    index: newOptionsList[index].optionsList.length - 1,
+                    index: index,
                     inputName: "label",
                     innerList: true,
+                    indexInnerList:
+                      newOptionsList[index].optionsList.length - 1,
                   });
-                  sessionStorage.setItem("scrollPosition", window.pageYOffset);
+                  // sessionStorage.setItem("scrollPosition", window.pageYOffset);
                 }}
                 style={{ marginBottom: 25 }}
               />
@@ -323,14 +364,15 @@ const AddProduct = ({
                         ...prevState,
                         options: newOptionsList,
                       }));
-                      sessionStorage.setItem(
-                        "scrollPosition",
-                        window.pageYOffset
-                      );
+                      // sessionStorage.setItem(
+                      //   "scrollPosition",
+                      //   window.pageYOffset
+                      // );
                       setautoFocusOn({
                         index: null,
                         inputName: null,
                         innerList: null,
+                        indexInnerList: null,
                       });
                     }}
                     value={e.selectedCaseKey}
@@ -347,15 +389,16 @@ const AddProduct = ({
                         ...prevState,
                         options: newOptionsList,
                       }));
-                      sessionStorage.setItem(
-                        "scrollPosition",
-                        window.pageYOffset
-                      );
+                      // sessionStorage.setItem(
+                      //   "scrollPosition",
+                      //   window.pageYOffset
+                      // );
 
                       setautoFocusOn({
                         index: null,
                         inputName: null,
                         innerList: null,
+                        indexInnerList: null,
                       });
                     }}
                     value={e.selectedCaseValue}
@@ -369,7 +412,7 @@ const AddProduct = ({
         <Button
           title="Add Product Option"
           onPress={() => {
-            sessionStorage.setItem("scrollPosition", window.pageYOffset);
+            // sessionStorage.setItem("scrollPosition", window.pageYOffset);
 
             setnewProduct((prevState) => ({
               ...prevState,
@@ -390,6 +433,7 @@ const AddProduct = ({
               index: newProduct.options.length,
               inputName: "label",
               innerList: false,
+              indexInnerList: null,
             });
           }}
           style={{ marginBottom: 25 }}
