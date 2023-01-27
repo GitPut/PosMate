@@ -94,13 +94,14 @@ const RouteManager = () => {
           url: wooCredentials.apiUrl,
           consumerKey: wooCredentials.ck,
           consumerSecret: wooCredentials.cs,
+          wpAPI: true,
+  version: 'wc/v1'
         });
 
         WooCommerce.get("orders", function (err, data, res) {
           if (err) {
             console.log(err);
           } else {
-            console.log(JSON.parse(res));
 
             const array1 = transList;
             const array2 = JSON.parse(res);
@@ -115,12 +116,13 @@ const RouteManager = () => {
               return acc;
             }, []);
 
-            // console.log('checking')
-            // console.log('translist: ', transList)
-            // console.log('data: ', data)
-            // console.log('new array: ', newArray)
+            //console.log('checking')
+           // console.log('translist: ', transList.filter(e => e.transaction_id))
+            console.log('res: ', JSON.parse(res))
+            console.log('data: ', data)
+           // console.log('new array: ', newArray)
 
-            if (newArray.length > transList.length) {
+            if (JSON.parse(res).length > transList.filter(e => e.transaction_id).length) {
               console.log("new item");
               const newItems = structuredClone(newArray).splice(
                 transList.length,
