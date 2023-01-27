@@ -16,7 +16,6 @@ import { updateData } from "state/firebaseFunctions";
 const EditProductList = () => {
   const catalog = userStoreState.use();
   const [productModal, setProductModal] = useState(false);
-  const [productEditModal, setProductEditModal] = useState(false);
   const [isModalVisible, setisModalVisible] = useState(false);
 
   function handleRemoveCatagory(index) {
@@ -32,6 +31,7 @@ const EditProductList = () => {
       <Text style={{ fontSize: 17, fontWeight: "600" }}>Current Products</Text>
       {catalog.categories.length > 0 ? (
         catalog.products.map((e, index) => {
+          const [productEditModal, setProductEditModal] = useState(false);
           return (
             <View
               style={{
