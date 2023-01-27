@@ -115,37 +115,36 @@ const RouteManager = () => {
           }
         };
 
-        getOrders();
+        getOrders().then(() => {
 
-        if (orders.length > 0) {
           const array1 = transList;
           const array2 = orders;
 
           const newArray = [];
 
           array1.concat(array2).reduce(function (acc, curr) {
-            if (!acc.includes(curr.transaction_id)) {
-              acc.push(curr.transaction_id);
+            if (!acc.includes(curr.id)) {
+              acc.push(curr.id);
               newArray.push(curr);
             }
             return acc;
           }, []);
 
           //console.log('checking')
-          // console.log('translist: ', transList.filter(e => e.transaction_id))
+          // console.log('translist: ', transList.filter(e => e.id))
           // console.log('res: ', orders)
           // console.log('data: ', data)
-          // console.log('new array: ', newArray)
+          console.log('new array: ', newArray)
 
           if (
-            orders.length > transList.filter((e) => e.transaction_id).length
+            newArray.length > transList.length
           ) {
             console.log("new item");
             const newItems = structuredClone(newArray).splice(
               transList.length,
               newArray.length - transList.length
             );
-
+console.log('NEW ITEMS ', newItems)
             updateTransList(newArray);
 
             if (newItems.length > 1) {
@@ -248,7 +247,7 @@ const RouteManager = () => {
 
                 printData.push("\x1D" + "\x56" + "\x00");
 
-                fetch("http://localhost:8080/print", {
+                async() => await fetch("http://localhost:8080/print", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
@@ -262,7 +261,7 @@ const RouteManager = () => {
                   .then((respData) => {
                     console.log(respData);
                   })
-                  .catch((e) => alert("Error with printer"));
+                  .catch((e) => console.log("Error with printer"));
               });
             } else {
               const e = newItems[0];
@@ -381,7 +380,7 @@ const RouteManager = () => {
                 .catch((e) => alert("Error with printer"));
             }
           }
-        }
+        })
       }, 5000); // this will check for new orders every minute
       return () => clearInterval(interval);
     }
