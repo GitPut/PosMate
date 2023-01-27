@@ -58,7 +58,8 @@ const CartScreen = () => {
   const Print = (method) => {
     const transNum = transList.length + 1;
     if (method === "deliveryOrder") {
-      let total = 5.5;
+      let total =
+        storeDetails.deliveryPrice > 0 ? storeDetails.deliveryPrice : 0;
       const today = new Date();
 
       let data = [
@@ -73,7 +74,7 @@ const CartScreen = () => {
         "\x0A",
         `Transaction # ${transNum}` + "\x0A",
         "\x0A",
-        "Delivery Order: $5.50 Fee" + "\x0A",
+        `Delivery Order: $${storeDetails.deliveryPrice} Fee` + "\x0A",
         "\x0A",
         "\x0A",
         "\x0A",

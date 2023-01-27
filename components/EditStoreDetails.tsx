@@ -11,6 +11,7 @@ const EditStoreDetails = () => {
   const [phoneNumber, setphoneNumber] = useState(storeDetails.phoneNumber);
   const [address, setaddress] = useState(storeDetails.address);
   const [website, setwebsite] = useState(storeDetails.website);
+  const [deliveryPrice, setdeliveryPrice] = useState(storeDetails.deliveryPrice);
   const [com, setcom] = useState(storeDetails.comSelected);
 
   const handleDataUpdate = () => {
@@ -20,6 +21,7 @@ const EditStoreDetails = () => {
         phoneNumber: phoneNumber,
         address: address,
         website: website,
+        deliveryPrice: deliveryPrice,
         comSelected: com,
       });
       updateStoreDetails({
@@ -27,6 +29,7 @@ const EditStoreDetails = () => {
         phoneNumber: phoneNumber,
         address: address,
         website: website,
+        deliveryPrice: deliveryPrice,
         comSelected: com,
       });
     }
@@ -60,6 +63,12 @@ const EditStoreDetails = () => {
         onChangeText={(val) => setaddress(val)}
         style={{ margin: 10 }}
         value={address}
+      />
+      <TextInput
+        placeholder="Enter Store Address"
+        onChangeText={(val) => setdeliveryPrice(val)}
+        style={{ margin: 10 }}
+        value={deliveryPrice}
       />
       <DropDown
         options={["COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "What Cum?"]}

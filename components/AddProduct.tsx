@@ -34,6 +34,7 @@ const AddProduct = ({
     inputName: null,
     innerList: null,
     cursor: null,
+    cursorEnd: null,
   });
 
   function handleDataUpdate(copyProductData) {
@@ -108,13 +109,13 @@ const AddProduct = ({
                     ...e,
                     label: e.label + " Copy",
                   });
-                  // setautoFocusOn({
-                  //   index: copy.options.length - 1,
-                  //   inputName: "label",
-                  //   innerList: false,
-                  //   // cursor: e.target.selectionStart,
-                  //   // cursorEnd: e.target.selectionEnd,
-                  // });
+                  setautoFocusOn({
+                    index: null,
+                    inputName: null,
+                    innerList: null,
+                    cursor: null,
+                    cursorEnd: null,
+                  });
                   setnewProduct((prevState) => ({
                     ...prevState,
                     options: copy.options,
