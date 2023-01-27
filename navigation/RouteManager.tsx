@@ -88,19 +88,22 @@ const RouteManager = () => {
   useEffect(() => {
     if (wooCredentials.useWoocommerce === true) {
       const interval = setInterval(() => {
-        fetch(wooCredentials.apiUrl, {
-          headers: {
-            Authorization:
-              "Basic " + btoa(`${wooCredentials.ck}:${wooCredentials.cs}`),
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            // do something with the data, like checking for new orders
-            //console.log(data);
+        const WooCommerceAPI = require("woocommerce-api");
+
+        const WooCommerce = new WooCommerceAPI({
+          url: wooCredentials.apiUrl,
+          consumerKey: wooCredentials.ck,
+          consumerSecret: wooCredentials.cs,
+        });
+
+        WooCommerce.get("orders", function (err, data, res) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(JSON.parse(res));
 
             const array1 = transList;
-            const array2 = data;
+            const array2 = JSON.parse(res);
 
             const newArray = [];
 
@@ -112,13 +115,13 @@ const RouteManager = () => {
               return acc;
             }, []);
 
-// console.log('checking')
-// console.log('translist: ', transList)
-// console.log('data: ', data)
-// console.log('new array: ', newArray)
+            // console.log('checking')
+            // console.log('translist: ', transList)
+            // console.log('data: ', data)
+            // console.log('new array: ', newArray)
 
             if (newArray.length > transList.length) {
-              console.log('new item')
+              console.log("new item");
               const newItems = structuredClone(newArray).splice(
                 transList.length,
                 newArray.length - transList.length
@@ -368,13 +371,8 @@ const RouteManager = () => {
                   .catch((e) => alert("Error with printer"));
               }
             }
-          })
-          .catch((error) => {
-            alert(
-              "Error has errored with woocommerce api. Try refreshing or updating creditials"
-            );
-            //clearInterval(interval);
-          });
+          }
+        });
       }, 5000); // this will check for new orders every minute
       return () => clearInterval(interval);
     }
