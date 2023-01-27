@@ -95,173 +95,65 @@ const RouteManager = () => {
           consumerKey: wooCredentials.ck,
           consumerSecret: wooCredentials.cs,
           wpAPI: true,
-  version: 'wc/v1'
+          version: "wc/v1",
         });
 
-        WooCommerce.get("orders", function (err, data, res) {
-          if (err) {
-            console.log(err);
+        let page = 1;
+        let orders = [];
+
+        const getOrders = async () => {
+          const response = await WooCommerce.getAsync(
+            `orders?page=${page}&per_page=100`
+          );
+          const data = JSON.parse(response.body);
+          orders = [...orders, ...data];
+          if (data.length === 100) {
+            page++;
+            getOrders();
           } else {
+            console.log(orders);
+          }
+        };
 
-            const array1 = transList;
-            const array2 = JSON.parse(res);
+        getOrders();
 
-            const newArray = [];
+        if (orders.length > 0) {
+          const array1 = transList;
+          const array2 = orders;
 
-            array1.concat(array2).reduce(function (acc, curr) {
-              if (!acc.includes(curr.transaction_id)) {
-                acc.push(curr.transaction_id);
-                newArray.push(curr);
-              }
-              return acc;
-            }, []);
+          const newArray = [];
 
-            //console.log('checking')
-           // console.log('translist: ', transList.filter(e => e.transaction_id))
-            console.log('res: ', JSON.parse(res))
-            console.log('data: ', data)
-           // console.log('new array: ', newArray)
+          array1.concat(array2).reduce(function (acc, curr) {
+            if (!acc.includes(curr.transaction_id)) {
+              acc.push(curr.transaction_id);
+              newArray.push(curr);
+            }
+            return acc;
+          }, []);
 
-            if (JSON.parse(res).length > transList.filter(e => e.transaction_id).length) {
-              console.log("new item");
-              const newItems = structuredClone(newArray).splice(
-                transList.length,
-                newArray.length - transList.length
-              );
+          //console.log('checking')
+          // console.log('translist: ', transList.filter(e => e.transaction_id))
+          // console.log('res: ', orders)
+          // console.log('data: ', data)
+          // console.log('new array: ', newArray)
 
-              updateTransList(newArray);
+          if (
+            orders.length > transList.filter((e) => e.transaction_id).length
+          ) {
+            console.log("new item");
+            const newItems = structuredClone(newArray).splice(
+              transList.length,
+              newArray.length - transList.length
+            );
 
-              if (newItems.length > 1) {
-                newItems.forEach((e) => {
-                  const printData = [];
+            updateTransList(newArray);
 
-                  printData.push(
-                    "\x1B\x40", // init
-                    "\x1B" + "\x61" + "\x31", // center align
-                    storeDetails.name,
-                    "\x0A",
-                    storeDetails.address + "\x0A",
-                    storeDetails.website + "\x0A", // text and line break
-                    storeDetails.phoneNumber + "\x0A", // text and line break
-                    e.date_created + "\x0A",
-                    "\x0A",
-                    "Online Order" + "\x0A", // text and line break
-                    `Transaction # ${e.number}` + "\x0A",
-                    "\x0A",
-                    "\x0A",
-                    "\x0A",
-                    "\x1B" + "\x61" + "\x30" // left align
-                  );
-
-                  e.line_items?.map((cartItem) => {
-                    printData.push("\x0A");
-                    printData.push(`Name: ${cartItem.name}`);
-                    printData.push("\x0A");
-                    printData.push(`Quantity: ${cartItem.quantity}`);
-                    printData.push("\x0A");
-                    printData.push(`Price: $${cartItem.price}`);
-                    printData.push("\x0A");
-
-                    if (cartItem.meta_data) {
-                      cartItem.meta_data?.map((meta, index) => {
-                        if (index === 0) {
-                          printData.push(`${meta.key} : ${meta.value}`);
-                          if (cartItem.meta_data[index + 1].key !== meta.key) {
-                            printData.push("\x0A");
-                          }
-                        } else {
-                          if (index !== cartItem.meta_data.length - 1) {
-                            if (
-                              cartItem.meta_data[index - 1].key === meta.key
-                            ) {
-                              printData.push(` , ${meta.value}`);
-                            } else {
-                              printData.push(`${meta.key} : ${meta.value}`);
-                            }
-
-                            if (
-                              cartItem.meta_data[index + 1].key !== meta.key
-                            ) {
-                              printData.push("\x0A");
-                            }
-                          }
-                        }
-                      });
-                    } else {
-                      printData.push("\x0A" + "\x0A");
-                    }
-                  });
-
-                  printData.push("\x0A");
-                  printData.push("\x0A");
-                  printData.push(`Customer Details:`);
-                  printData.push("\x0A");
-                  printData.push(`Address: ${e.shipping.address_1}`);
-                  printData.push("\x0A");
-                  printData.push(`City: ${e.shipping.city}`);
-                  printData.push("\x0A");
-                  printData.push(`Zip/Postal Code: ${e.shipping.postcode}`);
-                  printData.push("\x0A");
-                  printData.push(`Province/State: ${e.shipping.state}`);
-                  printData.push("\x0A");
-                  printData.push(
-                    `Name: ${e.shipping.first_name} ${e.shipping.last_name}`
-                  );
-                  printData.push("\x0A");
-                  e.shipping_lines.map((line) =>
-                    printData.push(`Shipping Method: ${line.method_title}`)
-                  );
-                  printData.push("\x0A");
-                  printData.push("\x0A");
-
-                  printData.push(
-                    "\x0A",
-                    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-                    "\x0A" + "\x0A",
-                    "Payment Method: " +
-                      e.payment_method_title +
-                      "\x0A" +
-                      "\x0A",
-                    "Total Including (13% Tax): " +
-                      "$" +
-                      (parseFloat(e.total) + parseFloat(e.total_tax)).toFixed(
-                        2
-                      ) +
-                      "\x0A" +
-                      "\x0A",
-                    "------------------------------------------" + "\x0A",
-                    "\x0A", // line break
-                    "\x0A", // line break
-                    "\x0A", // line break
-                    "\x0A", // line break
-                    "\x0A", // line break
-                    "\x0A" // line break
-                  );
-
-                  printData.push("\x1D" + "\x56" + "\x00");
-
-                  fetch("http://localhost:8080/print", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      printData: printData,
-                      comSelected: storeDetails.comSelected,
-                    }),
-                  })
-                    .then((response) => response.json())
-                    .then((respData) => {
-                      console.log(respData);
-                    })
-                    .catch((e) => alert("Error with printer"));
-                });
-              } else {
-                const e = newItems[0];
+            if (newItems.length > 1) {
+              newItems.forEach((e) => {
                 const printData = [];
 
                 printData.push(
-                  "\x1B" + "\x40", // init
+                  "\x1B\x40", // init
                   "\x1B" + "\x61" + "\x31", // center align
                   storeDetails.name,
                   "\x0A",
@@ -371,10 +263,125 @@ const RouteManager = () => {
                     console.log(respData);
                   })
                   .catch((e) => alert("Error with printer"));
-              }
+              });
+            } else {
+              const e = newItems[0];
+              const printData = [];
+
+              printData.push(
+                "\x1B" + "\x40", // init
+                "\x1B" + "\x61" + "\x31", // center align
+                storeDetails.name,
+                "\x0A",
+                storeDetails.address + "\x0A",
+                storeDetails.website + "\x0A", // text and line break
+                storeDetails.phoneNumber + "\x0A", // text and line break
+                e.date_created + "\x0A",
+                "\x0A",
+                "Online Order" + "\x0A", // text and line break
+                `Transaction # ${e.number}` + "\x0A",
+                "\x0A",
+                "\x0A",
+                "\x0A",
+                "\x1B" + "\x61" + "\x30" // left align
+              );
+
+              e.line_items?.map((cartItem) => {
+                printData.push("\x0A");
+                printData.push(`Name: ${cartItem.name}`);
+                printData.push("\x0A");
+                printData.push(`Quantity: ${cartItem.quantity}`);
+                printData.push("\x0A");
+                printData.push(`Price: $${cartItem.price}`);
+                printData.push("\x0A");
+
+                if (cartItem.meta_data) {
+                  cartItem.meta_data?.map((meta, index) => {
+                    if (index === 0) {
+                      printData.push(`${meta.key} : ${meta.value}`);
+                      if (cartItem.meta_data[index + 1].key !== meta.key) {
+                        printData.push("\x0A");
+                      }
+                    } else {
+                      if (index !== cartItem.meta_data.length - 1) {
+                        if (cartItem.meta_data[index - 1].key === meta.key) {
+                          printData.push(` , ${meta.value}`);
+                        } else {
+                          printData.push(`${meta.key} : ${meta.value}`);
+                        }
+
+                        if (cartItem.meta_data[index + 1].key !== meta.key) {
+                          printData.push("\x0A");
+                        }
+                      }
+                    }
+                  });
+                } else {
+                  printData.push("\x0A" + "\x0A");
+                }
+              });
+
+              printData.push("\x0A");
+              printData.push("\x0A");
+              printData.push(`Customer Details:`);
+              printData.push("\x0A");
+              printData.push(`Address: ${e.shipping.address_1}`);
+              printData.push("\x0A");
+              printData.push(`City: ${e.shipping.city}`);
+              printData.push("\x0A");
+              printData.push(`Zip/Postal Code: ${e.shipping.postcode}`);
+              printData.push("\x0A");
+              printData.push(`Province/State: ${e.shipping.state}`);
+              printData.push("\x0A");
+              printData.push(
+                `Name: ${e.shipping.first_name} ${e.shipping.last_name}`
+              );
+              printData.push("\x0A");
+              e.shipping_lines.map((line) =>
+                printData.push(`Shipping Method: ${line.method_title}`)
+              );
+              printData.push("\x0A");
+              printData.push("\x0A");
+
+              printData.push(
+                "\x0A",
+                "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+                "\x0A" + "\x0A",
+                "Payment Method: " + e.payment_method_title + "\x0A" + "\x0A",
+                "Total Including (13% Tax): " +
+                  "$" +
+                  (parseFloat(e.total) + parseFloat(e.total_tax)).toFixed(2) +
+                  "\x0A" +
+                  "\x0A",
+                "------------------------------------------" + "\x0A",
+                "\x0A", // line break
+                "\x0A", // line break
+                "\x0A", // line break
+                "\x0A", // line break
+                "\x0A", // line break
+                "\x0A" // line break
+              );
+
+              printData.push("\x1D" + "\x56" + "\x00");
+
+              fetch("http://localhost:8080/print", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  printData: printData,
+                  comSelected: storeDetails.comSelected,
+                }),
+              })
+                .then((response) => response.json())
+                .then((respData) => {
+                  console.log(respData);
+                })
+                .catch((e) => alert("Error with printer"));
             }
           }
-        });
+        }
       }, 5000); // this will check for new orders every minute
       return () => clearInterval(interval);
     }
