@@ -18,6 +18,8 @@ const MyListItem = ({
   setnewProduct,
   newProduct,
   newProductOptions,
+  flatListRef,
+  yPosition,
 }) => {
   const memoizedItem = useMemo(() => item, [item]);
 
@@ -60,6 +62,10 @@ const MyListItem = ({
               ...prevState,
               options: newProductOptions.current,
             }));
+            flatListRef.current.scrollToOffset({
+              offset: yPosition,
+              animated: false,
+            });
           }}
         >
           <Text
@@ -80,6 +86,10 @@ const MyListItem = ({
               ...prevState,
               options: newProductOptions.current,
             }));
+            flatListRef.current.scrollToOffset({
+              offset: yPosition,
+              animated: false,
+            });
           }}
         >
           <Text
@@ -120,6 +130,10 @@ const MyListItem = ({
               ...prevState,
               options: newProductOptions.current,
             }));
+            flatListRef.current.scrollToOffset({
+              offset: yPosition,
+              animated: false,
+            });
           }}
           value={e.optionType}
           style={{ marginBottom: 25 }}
@@ -180,6 +194,10 @@ const MyListItem = ({
                     ...prevState,
                     options: newProductOptions.current,
                   }));
+                  flatListRef.current.scrollToOffset({
+                    offset: yPosition,
+                    animated: false,
+                  });
                 }}
               >
                 <Text
@@ -205,6 +223,10 @@ const MyListItem = ({
               ...prevState,
               options: newProductOptions.current,
             }));
+            flatListRef.current.scrollToOffset({
+              offset: yPosition,
+              animated: false,
+            });
           }}
           style={{ marginBottom: 25 }}
         />
@@ -271,22 +293,41 @@ const AddProduct = ({ route, navigation }) => {
       navigation.goBack();
     } else if (existingProduct) {
       let copy = structuredClone(catalog.products);
-      copy[existingProductIndex] = newProduct;
-
-      if (existingProduct !== newProduct) {
-        updateData([...catalog.categories], copy);
-        navigation.goBack();
-      }
+      const newProductUseRef = {
+        ...newProduct,
+        options: newProductOptions.current,
+      };
+      copy[existingProductIndex] = newProductUseRef;
+      updateData([...catalog.categories], copy);
+      navigation.goBack();
     } else {
       updateData([...catalog.categories], [...catalog.products, newProduct]);
       navigation.goBack();
     }
   }
 
+  const flatListRef = useRef(null);
+  const [yPosition, setYPosition] = useState(0);
+
+  // we set the height of item is fixed
+  const getItemLayout = (data, index) => ({
+    length: 400,
+    offset: 400 * index,
+    index,
+  }); 
+
   const OptionsAddingSection = () => {
     return (
       <View>
         <FlatList
+          ref={flatListRef}
+          getItemLayout={getItemLayout}
+          initialNumToRender={5}
+          maxToRenderPerBatch={10}
+          windowSize={10}
+          onScroll={(e) => {
+            setYPosition(e.nativeEvent.contentOffset.y);
+          }}
           data={newProduct.options}
           keyExtractor={(item) => item.id?.toString()}
           renderItem={({ item, index }) => (
@@ -296,6 +337,8 @@ const AddProduct = ({ route, navigation }) => {
               newProduct={newProduct}
               setnewProduct={setnewProduct}
               newProductOptions={newProductOptions}
+              flatListRef={flatListRef}
+              yPosition={yPosition}
             />
           )}
         />
@@ -315,6 +358,10 @@ const AddProduct = ({ route, navigation }) => {
               ...prevState,
               options: newProductOptions.current,
             }));
+            flatListRef.current.scrollToOffset({
+              offset: yPosition,
+              animated: false,
+            });
           }}
           style={{ marginBottom: 25 }}
         />
@@ -394,7 +441,9 @@ const AddProduct = ({ route, navigation }) => {
         <OptionsAddingSection />
         <Button
           title="Add/Save Product"
-          onPress={() => handleDataUpdate()}
+          onPress={() => {
+            handleDataUpdate();
+          }}
           style={{
             marginBottom: 25,
             marginTop: 25,

@@ -15,7 +15,6 @@ import { updateData } from "state/firebaseFunctions";
 
 const EditProductList = ({ navigation }) => {
   const catalog = userStoreState.use();
-  const [isModalVisible, setisModalVisible] = useState(false);
 
   function handleRemoveCatagory(index) {
     const localCatalog = structuredClone(catalog);
@@ -78,14 +77,6 @@ const EditProductList = ({ navigation }) => {
                   </Text>
                 </TouchableOpacity>
               </View>
-              {/* <Modal visible={productEditModal}>
-                <TestAdd
-                  setProductModal={setProductEditModal}
-                  setisModalVisible={setisModalVisible}
-                  existingProduct={e}
-                  existingProductIndex={index}
-                />
-              </Modal> */}
             </View>
           );
         })
@@ -101,17 +92,10 @@ const EditProductList = ({ navigation }) => {
       )}
       <Button
         title="Add New Product"
-        // onPress={() => setProductModal(true)}
         onPress={() => navigation.navigate("AddProduct")}
         style={{ margin: 10 }}
         disabled={catalog.categories.length < 1}
       />
-      {/* <Modal visible={productModal}>
-        <TestAdd
-          setProductModal={setProductModal}
-          setisModalVisible={setisModalVisible}
-        />
-      </Modal> */}
       {/* <Spinner isModalVisible={isModalVisible} /> */}
     </ScrollView>
   );
