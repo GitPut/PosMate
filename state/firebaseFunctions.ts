@@ -15,6 +15,15 @@ export const signUp = (email, password) =>
             products: [],
             categories: [],
             wooCredentials: { ck: null, cs: null, useWoocommerce: false },
+            transList: [],
+            storeDetails: {
+              name: null,
+              address: null,
+              phoneNumber: null,
+              website: null,
+              comSelected: null,
+              deliveryPrice: null,
+            },
             //company name
             //adddress
             //etc
@@ -24,9 +33,15 @@ export const signUp = (email, password) =>
     .catch((e) => console.log(e));
 
 export const updateData = (categories, products) => {
-  db.collection("users").doc(auth.currentUser?.uid).update({
-    products: products,
-    categories: categories,
+  return new Promise((resolve, reject) => {
+    db.collection("users")
+      .doc(auth.currentUser?.uid)
+      .update({
+        products: products,
+        categories: categories,
+      })
+      .then(() => resolve("Promise resolved!"))
+      .catch(() => reject("Promise rejected!"));
   });
 };
 

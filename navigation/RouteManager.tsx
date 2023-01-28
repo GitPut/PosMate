@@ -70,7 +70,9 @@ const RouteManager = () => {
             products: doc.data().products,
             categories: doc.data().categories,
           });
-          setTransListState(doc.data().transList);
+          if (doc.data().transList) {
+            setTransListState(doc.data().transList);
+          }
           if (doc.data().wooCredentials) {
             setWoocommerceState(doc.data().wooCredentials);
           }
@@ -116,7 +118,6 @@ const RouteManager = () => {
         };
 
         getOrders().then(() => {
-
           const array1 = transList;
           const array2 = orders;
 
@@ -134,17 +135,15 @@ const RouteManager = () => {
           // console.log('translist: ', transList.filter(e => e.id))
           // console.log('res: ', orders)
           // console.log('data: ', data)
-          console.log('new array: ', newArray)
+          console.log("new array: ", newArray);
 
-          if (
-            newArray.length > transList.length
-          ) {
+          if (newArray.length > transList.length) {
             console.log("new item");
             const newItems = structuredClone(newArray).splice(
               transList.length,
               newArray.length - transList.length
             );
-console.log('NEW ITEMS ', newItems)
+            console.log("NEW ITEMS ", newItems);
             updateTransList(newArray);
 
             if (newItems.length > 1) {
@@ -247,21 +246,22 @@ console.log('NEW ITEMS ', newItems)
 
                 printData.push("\x1D" + "\x56" + "\x00");
 
-                async() => await fetch("http://localhost:8080/print", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    printData: printData,
-                    comSelected: storeDetails.comSelected,
-                  }),
-                })
-                  .then((response) => response.json())
-                  .then((respData) => {
-                    console.log(respData);
+                async () =>
+                  await fetch("http://localhost:8080/print", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      printData: printData,
+                      comSelected: storeDetails.comSelected,
+                    }),
                   })
-                  .catch((e) => console.log("Error with printer"));
+                    .then((response) => response.json())
+                    .then((respData) => {
+                      console.log(respData);
+                    })
+                    .catch((e) => console.log("Error with printer"));
               });
             } else {
               const e = newItems[0];
@@ -380,7 +380,7 @@ console.log('NEW ITEMS ', newItems)
                 .catch((e) => alert("Error with printer"));
             }
           }
-        })
+        });
       }, 5000); // this will check for new orders every minute
       return () => clearInterval(interval);
     }

@@ -56,10 +56,12 @@ const CartScreen = () => {
   };
 
   const Print = (method) => {
-    const transNum = transList.length + 1;
+    const transNum = transList?.length + 1;
     if (method === "deliveryOrder") {
       let total =
-        storeDetails.deliveryPrice > 0 ? storeDetails.deliveryPrice : 0;
+        storeDetails.deliveryPrice > 0
+          ? parseFloat(storeDetails.deliveryPrice)
+          : 0;
       const today = new Date();
 
       let data = [

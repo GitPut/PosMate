@@ -11,7 +11,9 @@ const EditStoreDetails = () => {
   const [phoneNumber, setphoneNumber] = useState(storeDetails.phoneNumber);
   const [address, setaddress] = useState(storeDetails.address);
   const [website, setwebsite] = useState(storeDetails.website);
-  const [deliveryPrice, setdeliveryPrice] = useState(storeDetails.deliveryPrice);
+  const [deliveryPrice, setdeliveryPrice] = useState(
+    storeDetails.deliveryPrice
+  );
   const [com, setcom] = useState(storeDetails.comSelected);
 
   const handleDataUpdate = () => {
@@ -65,7 +67,7 @@ const EditStoreDetails = () => {
         value={address}
       />
       <TextInput
-        placeholder="Enter Store Address"
+        placeholder="Enter Delivery Price"
         onChangeText={(val) => setdeliveryPrice(val)}
         style={{ margin: 10 }}
         value={deliveryPrice}

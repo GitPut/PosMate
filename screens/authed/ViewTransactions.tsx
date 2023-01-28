@@ -5,7 +5,7 @@ import { storeDetailState, transListState } from "state/state";
 
 const ViewTransactions = () => {
   const local = transListState.use();
-  const [transList, settransList] = useState();
+  const [transList, settransList] = useState([]);
   const today = new Date();
   const [todaysDetails, setTodaysDetails] = useState({
     todaysReceiptValue: 0,
@@ -14,57 +14,59 @@ const ViewTransactions = () => {
   const storeDetails = storeDetailState.use();
 
   useEffect(() => {
-    local
-      .sort(function (a, b) {
-        if (a.date && b.date) {
-          return a.date.seconds - b.date.seconds;
-        } else if (a.date && b.date_created) {
-          const bDate = new Date(b.date_created).getTime() / 1000;
-          return a.date.seconds - bDate;
-        } else if (a.date_created && b.date) {
-          const aDate = new Date(a.date_created).getTime() / 1000;
-          return aDate - b.date.seconds;
+    if (local?.length > 0) {
+      local
+        .sort(function (a, b) {
+          if (a.date && b.date) {
+            return a.date.seconds - b.date.seconds;
+          } else if (a.date && b.date_created) {
+            const bDate = new Date(b.date_created).getTime() / 1000;
+            return a.date.seconds - bDate;
+          } else if (a.date_created && b.date) {
+            const aDate = new Date(a.date_created).getTime() / 1000;
+            return aDate - b.date.seconds;
+          } else {
+            const aDate = new Date(a.date_created).getTime() / 1000;
+            const bDate = new Date(b.date_created).getTime() / 1000;
+            return aDate - bDate;
+          }
+        })
+        .reverse();
+      settransList(local);
+      const todaysReceiptValue = local.reduce((accumulator, current) => {
+        let date;
+        if (current.date) {
+          date = new Date(current.date.seconds * 1000);
         } else {
-          const aDate = new Date(a.date_created).getTime() / 1000;
-          const bDate = new Date(b.date_created).getTime() / 1000;
-          return aDate - bDate;
+          date = new Date(current.date_created);
+          // console.log("seconds is: ", date.getTime() / 1000);
         }
-      })
-      .reverse();
-    settransList(local);
-    const todaysReceiptValue = local.reduce((accumulator, current) => {
-      let date;
-      if (current.date) {
-        date = new Date(current.date.seconds * 1000);
-      } else {
-        date = new Date(current.date_created);
-        // console.log("seconds is: ", date.getTime() / 1000);
-      }
-      if (date.toLocaleDateString() === today.toLocaleDateString()) {
-        return accumulator + parseFloat(current.total);
-      } else {
-        return accumulator;
-      }
-    }, 0);
-    const todaysReceipts = local.reduce((accumulator, current) => {
-      let date;
-      if (current.date) {
-        date = new Date(current.date.seconds * 1000);
-      } else {
-        date = new Date(current.date_created);
-      }
+        if (date.toLocaleDateString() === today.toLocaleDateString()) {
+          return accumulator + parseFloat(current.total);
+        } else {
+          return accumulator;
+        }
+      }, 0);
+      const todaysReceipts = local.reduce((accumulator, current) => {
+        let date;
+        if (current.date) {
+          date = new Date(current.date.seconds * 1000);
+        } else {
+          date = new Date(current.date_created);
+        }
 
-      if (date.toLocaleDateString() === today.toLocaleDateString()) {
-        return accumulator + 1;
-      } else {
-        return accumulator;
-      }
-    }, 0);
-    setTodaysDetails({
-      todaysReceiptValue: todaysReceiptValue.toFixed(2),
-      todaysReceipts: todaysReceipts,
-    });
-  }, []);
+        if (date.toLocaleDateString() === today.toLocaleDateString()) {
+          return accumulator + 1;
+        } else {
+          return accumulator;
+        }
+      }, 0);
+      setTodaysDetails({
+        todaysReceiptValue: todaysReceiptValue.toFixed(2),
+        todaysReceipts: todaysReceipts,
+      });
+    }
+  }, [local]);
 
   const PrintTodaysTotal = () => {
     let data = [

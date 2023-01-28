@@ -45,9 +45,15 @@ export const storeDetailState = entity({
   phoneNumber: null,
   website: null,
   comSelected: null,
-  deliveryPrice: null
+  deliveryPrice: null,
 });
 
 export const setStoreDetailState = (val) => {
   storeDetailState.set(val);
+};
+
+export const sectionState = entity(null);
+
+export const setsectionState = (val) => {
+  sectionState.set(val);
 };

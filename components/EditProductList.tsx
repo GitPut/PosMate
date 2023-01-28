@@ -9,13 +9,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { userStoreState } from "state/state";
 import { Button, TextInput } from "@react-native-material/core";
-import AddProduct from "./AddProduct";
+import TestAdd from "./TestAdd";
 import Spinner from "./Spinner";
 import { updateData } from "state/firebaseFunctions";
 
-const EditProductList = () => {
+const EditProductList = ({ navigation }) => {
   const catalog = userStoreState.use();
-  const [productModal, setProductModal] = useState(false);
   const [isModalVisible, setisModalVisible] = useState(false);
 
   function handleRemoveCatagory(index) {
@@ -23,7 +22,7 @@ const EditProductList = () => {
     localCatalog.products.splice(index, 1);
 
     updateData(localCatalog.categories, localCatalog.products);
-    setisModalVisible(true);
+    // setisModalVisible(true);
   }
 
   return (
@@ -31,7 +30,6 @@ const EditProductList = () => {
       <Text style={{ fontSize: 17, fontWeight: "600" }}>Current Products</Text>
       {catalog.categories.length > 0 ? (
         catalog.products.map((e, index) => {
-           const [productEditModal, setProductEditModal] = useState(false);
           return (
             <View
               style={{
@@ -53,7 +51,13 @@ const EditProductList = () => {
               >
                 <Button
                   title="Edit"
-                  onPress={() => setProductEditModal(true)}
+                  // onPress={() => setProductEditModal(true)}
+                  onPress={() =>
+                    navigation.navigate("AddProduct", {
+                      existingProduct: e,
+                      existingProductIndex: index,
+                    })
+                  }
                   style={{ margin: 10 }}
                 />
                 <TouchableOpacity
@@ -74,14 +78,14 @@ const EditProductList = () => {
                   </Text>
                 </TouchableOpacity>
               </View>
-              <Modal visible={productEditModal}>
-                <AddProduct
+              {/* <Modal visible={productEditModal}>
+                <TestAdd
                   setProductModal={setProductEditModal}
                   setisModalVisible={setisModalVisible}
                   existingProduct={e}
                   existingProductIndex={index}
                 />
-              </Modal>
+              </Modal> */}
             </View>
           );
         })
@@ -97,17 +101,18 @@ const EditProductList = () => {
       )}
       <Button
         title="Add New Product"
-        onPress={() => setProductModal(true)}
+        // onPress={() => setProductModal(true)}
+        onPress={() => navigation.navigate("AddProduct")}
         style={{ margin: 10 }}
         disabled={catalog.categories.length < 1}
       />
-      <Modal visible={productModal}>
-        <AddProduct
+      {/* <Modal visible={productModal}>
+        <TestAdd
           setProductModal={setProductModal}
           setisModalVisible={setisModalVisible}
         />
-      </Modal>
-      <Spinner isModalVisible={isModalVisible} />
+      </Modal> */}
+      {/* <Spinner isModalVisible={isModalVisible} /> */}
     </ScrollView>
   );
 };

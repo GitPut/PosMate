@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { userStoreState } from "state/state";
 import { Button } from "@react-native-material/core";
 import { addCartState } from "state/state";
+import ProductOptionDropDown from "./ProductOptionDropDown";
 
 const DisplayTest = ({ product, productIndex }) => {
   const myObj = product;
@@ -18,6 +19,14 @@ const DisplayTest = ({ product, productIndex }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const DisplayOption = ({ e, index }) => {
+    const [optionVal, setoptionVal] = useState();
+
+    const selectedList = e.optionsList.filter((checkOp) => checkOp.selected);
+
+    if (selectedList.length > 0 && !optionVal) {
+      setoptionVal(selectedList[0]);
+    }
+
     let isSelected = false;
 
     const selectedCaseList = myObjProfile.options.filter(
@@ -37,82 +46,150 @@ const DisplayTest = ({ product, productIndex }) => {
     }
 
     if (e.selectedCaseKey === null || isSelected) {
-      return (
-        <View style={{ marginBottom: 25 }} key={index}>
-          <Text style={{ fontWeight: "700", fontSize: 18 }}>
-            Label: {e.label}
-          </Text>
-          {e.optionsList.map((selection, listIndex) => {
-            return (
-              <TouchableOpacity
-                key={listIndex}
-                style={[
-                  myObjProfile.options[index].optionsList[listIndex].selected ==
-                  true
-                    ? {
-                        backgroundColor: "green",
-                      }
-                    : {
-                        borderColor: "black",
-                        borderWidth: 2,
-                      },
-                  {
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    padding: 10,
-                    margin: 5,
-                  },
-                ]}
-                onPress={() => {
-                  const newMyObjProfile = structuredClone(myObjProfile);
-                  if (
-                    !newMyObjProfile.options[index].optionsList[listIndex]
-                      .selected == false
-                  ) {
-                    newMyObjProfile.options[index].optionsList[
-                      listIndex
-                    ].selected = false;
-                    settotal(
-                      (prevState) =>
-                        parseFloat(prevState) -
-                        parseFloat(
-                          newMyObjProfile.options[index].optionsList[listIndex]
-                            .priceIncrease
-                        )
-                    );
-                  } else {
-                    if (
-                      newMyObjProfile.options[index].optionsList.filter(
-                        (op) => op.selected === true
-                      ).length < parseInt(e.numOfSelectable) ||
-                      !e.numOfSelectable
-                    ) {
+      if (e.optionType?.toLowerCase() === "dropdown") {
+        console.log("E ", e);
+        return (
+          <View
+            style={{
+              marginBottom: 25,
+              width: "100%",
+            }}
+            key={index}
+          >
+            <Text style={{ fontWeight: "700", fontSize: 18 }}>
+              Label: {e.label}
+            </Text>
+            <ProductOptionDropDown
+              label={e.label}
+              options={e.optionsList}
+              setValue={({ option, listIndex }) => {
+                const newMyObjProfile = structuredClone(myObjProfile);
+                newMyObjProfile.options[index].optionsList.forEach(
+                  (element, indexOfOl) => {
+                    if (element.selected) {
                       newMyObjProfile.options[index].optionsList[
-                        listIndex
-                      ].selected = true;
+                        indexOfOl
+                      ].selected = false;
                       settotal(
                         (prevState) =>
-                          parseFloat(prevState) +
+                          parseFloat(prevState) -
                           parseFloat(
                             newMyObjProfile.options[index].optionsList[
-                              listIndex
+                              indexOfOl
                             ].priceIncrease
                           )
                       );
                     }
                   }
-                  setmyObjProfile(newMyObjProfile);
-                }}
-              >
-                <Text style={styles.h2Black}>Name: {selection.label}</Text>
-                <Text style={styles.h2Black}>
-                  Price: ${selection.priceIncrease}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      );
+                );
+
+                newMyObjProfile.options[index].optionsList[listIndex].selected =
+                  true;
+                settotal(
+                  (prevState) =>
+                    parseFloat(prevState) +
+                    parseFloat(
+                      newMyObjProfile.options[index].optionsList[listIndex]
+                        .priceIncrease
+                    )
+                );
+                console.log(option);
+
+                setoptionVal(option);
+                setmyObjProfile(newMyObjProfile);
+              }}
+              value={optionVal}
+              style={{ marginBottom: 25 }}
+            />
+          </View>
+        );
+      } else {
+        return (
+          <View
+            style={{
+              marginBottom: 25,
+              flexWrap: "wrap",
+              width: "100%",
+            }}
+            key={index}
+          >
+            <Text style={{ fontWeight: "700", fontSize: 18 }}>
+              Label: {e.label}
+            </Text>
+            <View style={{ flexWrap: "wrap", flexDirection: "row" }}>
+              {e.optionsList.map((selection, listIndex) => {
+                return (
+                  <TouchableOpacity
+                    key={listIndex}
+                    style={[
+                      myObjProfile.options[index].optionsList[listIndex]
+                        .selected == true && {
+                        backgroundColor: "green",
+                      },
+                      {
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        padding: 10,
+                        margin: 5,
+                        borderColor: "black",
+                        borderWidth: 2,
+                        // width: "50%",
+                      },
+                    ]}
+                    onPress={() => {
+                      const newMyObjProfile = structuredClone(myObjProfile);
+                      if (
+                        !newMyObjProfile.options[index].optionsList[listIndex]
+                          .selected == false
+                      ) {
+                        newMyObjProfile.options[index].optionsList[
+                          listIndex
+                        ].selected = false;
+                        settotal(
+                          (prevState) =>
+                            parseFloat(prevState) -
+                            parseFloat(
+                              newMyObjProfile.options[index].optionsList[
+                                listIndex
+                              ].priceIncrease
+                            )
+                        );
+                      } else {
+                        if (
+                          newMyObjProfile.options[index].optionsList.filter(
+                            (op) => op.selected === true
+                          ).length < parseInt(e.numOfSelectable) ||
+                          !e.numOfSelectable
+                        ) {
+                          newMyObjProfile.options[index].optionsList[
+                            listIndex
+                          ].selected = true;
+                          settotal(
+                            (prevState) =>
+                              parseFloat(prevState) +
+                              parseFloat(
+                                newMyObjProfile.options[index].optionsList[
+                                  listIndex
+                                ].priceIncrease
+                              )
+                          );
+                        }
+                      }
+                      setmyObjProfile(newMyObjProfile);
+                    }}
+                  >
+                    <Text style={styles.h2Black}>Name: {selection.label}</Text>
+                    <View style={{ width: 20 }} />
+                    <Text style={styles.h2Black}>
+                      Price: ${selection.priceIncrease}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        );
+      }
     } else if (isSelected === false) {
       const newMyObjProfile = structuredClone(myObjProfile);
       let newSubtract = 0;
@@ -186,7 +263,7 @@ const DisplayTest = ({ product, productIndex }) => {
           <Text style={[{ marginBottom: 25 }, styles.h2Black]}>
             Price: {total}
           </Text>
-          {myObj.options.map((e, index) => (
+          {myObjProfile.options.map((e, index) => (
             <DisplayOption e={e} index={index} key={index} />
           ))}
           <Button title="Add To Cart" onPress={AddToCart} style={styles.btn} />
