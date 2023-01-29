@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { userStoreState } from "state/state";
-import { Button } from "@react-native-material/core";
+import { Button, TextInput } from "@react-native-material/core";
 import { addCartState } from "state/state";
 import ProductOptionDropDown from "./ProductOptionDropDown";
 
@@ -17,6 +17,7 @@ const DisplayTest = ({ product, productIndex }) => {
   const [myObjProfile, setmyObjProfile] = useState(myObj);
   const [total, settotal] = useState(myObj.price);
   const [modalVisible, setModalVisible] = useState(false);
+  const [extraInput, setextraInput] = useState();
 
   const DisplayOption = ({ e, index }) => {
     const [optionVal, setoptionVal] = useState();
@@ -47,7 +48,6 @@ const DisplayTest = ({ product, productIndex }) => {
 
     if (e.selectedCaseKey === null || isSelected) {
       if (e.optionType?.toLowerCase() === "dropdown") {
-        console.log("E ", e);
         return (
           <View
             style={{
@@ -70,14 +70,19 @@ const DisplayTest = ({ product, productIndex }) => {
                       newMyObjProfile.options[index].optionsList[
                         indexOfOl
                       ].selected = false;
-                      settotal(
-                        (prevState) =>
+                      settotal((prevState) =>
+                        (
                           parseFloat(prevState) -
                           parseFloat(
                             newMyObjProfile.options[index].optionsList[
                               indexOfOl
-                            ].priceIncrease
+                            ].priceIncrease !== null
+                              ? newMyObjProfile.options[index].optionsList[
+                                  indexOfOl
+                                ].priceIncrease
+                              : 0
                           )
+                        ).toFixed(2)
                       );
                     }
                   }
@@ -85,13 +90,17 @@ const DisplayTest = ({ product, productIndex }) => {
 
                 newMyObjProfile.options[index].optionsList[listIndex].selected =
                   true;
-                settotal(
-                  (prevState) =>
+                settotal((prevState) =>
+                  (
                     parseFloat(prevState) +
                     parseFloat(
                       newMyObjProfile.options[index].optionsList[listIndex]
-                        .priceIncrease
+                        .priceIncrease !== null
+                        ? newMyObjProfile.options[index].optionsList[listIndex]
+                            .priceIncrease
+                        : 0
                     )
+                  ).toFixed(2)
                 );
                 console.log(option);
 
@@ -145,14 +154,19 @@ const DisplayTest = ({ product, productIndex }) => {
                         newMyObjProfile.options[index].optionsList[
                           listIndex
                         ].selected = false;
-                        settotal(
-                          (prevState) =>
+                        settotal((prevState) =>
+                          (
                             parseFloat(prevState) -
                             parseFloat(
                               newMyObjProfile.options[index].optionsList[
                                 listIndex
-                              ].priceIncrease
+                              ].priceIncrease !== null
+                                ? newMyObjProfile.options[index].optionsList[
+                                    listIndex
+                                  ].priceIncrease
+                                : 0
                             )
+                          ).toFixed(2)
                         );
                       } else {
                         if (
@@ -164,14 +178,19 @@ const DisplayTest = ({ product, productIndex }) => {
                           newMyObjProfile.options[index].optionsList[
                             listIndex
                           ].selected = true;
-                          settotal(
-                            (prevState) =>
+                          settotal((prevState) =>
+                            (
                               parseFloat(prevState) +
                               parseFloat(
                                 newMyObjProfile.options[index].optionsList[
                                   listIndex
-                                ].priceIncrease
+                                ].priceIncrease !== null
+                                  ? newMyObjProfile.options[index].optionsList[
+                                      listIndex
+                                    ].priceIncrease
+                                  : 0
                               )
+                            ).toFixed(2)
                           );
                         }
                       }
@@ -181,7 +200,10 @@ const DisplayTest = ({ product, productIndex }) => {
                     <Text style={styles.h2Black}>Name: {selection.label}</Text>
                     <View style={{ width: 20 }} />
                     <Text style={styles.h2Black}>
-                      Price: ${selection.priceIncrease}
+                      Price: $
+                      {selection.priceIncrease !== null
+                        ? selection.priceIncrease
+                        : 0}
                     </Text>
                   </TouchableOpacity>
                 );
@@ -198,7 +220,9 @@ const DisplayTest = ({ product, productIndex }) => {
           if (item.selected === true) {
             newSubtract += parseFloat(
               newMyObjProfile.options[index].optionsList[indexOfItem]
-                .priceIncrease
+                .priceIncrease !== null
+                ? priceIncrease
+                : 0
             );
             newMyObjProfile.options[index].optionsList[indexOfItem].selected =
               false;
@@ -206,7 +230,9 @@ const DisplayTest = ({ product, productIndex }) => {
         }
       );
       if (newSubtract > 0) {
-        settotal((prevState) => parseFloat(prevState) - newSubtract);
+        settotal((prevState) =>
+          (parseFloat(prevState) - newSubtract).toFixed(2)
+        );
         setmyObjProfile(newMyObjProfile);
       }
     }
@@ -240,14 +266,16 @@ const DisplayTest = ({ product, productIndex }) => {
 
     addCartState({
       name: myObjProfile.name,
-      price: total.toFixed(2),
+      price: total,
       description: myObj.description,
       options: opsArray,
+      extraDetails: extraInput,
     });
 
     setModalVisible(false);
     setmyObjProfile(myObj);
     settotal(myObjProfile.price);
+    setextraInput();
   };
 
   return (
@@ -257,15 +285,27 @@ const DisplayTest = ({ product, productIndex }) => {
         onPress={() => setModalVisible(true)}
         style={styles.touchable}
       />
-      <Modal visible={modalVisible}>
+      {/* <Modal visible={modalVisible}> */}
+      {modalVisible && (
         <ScrollView style={styles.modalContainer}>
           <Text style={styles.h2Black}>Name: {myObj.name}</Text>
+          {myObj.description && (
+            <Text style={styles.h2Black}>Name: {myObj.description}</Text>
+          )}
           <Text style={[{ marginBottom: 25 }, styles.h2Black]}>
             Price: {total}
           </Text>
           {myObjProfile.options.map((e, index) => (
             <DisplayOption e={e} index={index} key={index} />
           ))}
+          <TextInput
+            placeholder="Write any extra info here.."
+            multiline={true}
+            onChangeText={(val) => setextraInput(val)}
+            value={extraInput}
+            style={{ marginTop: 15, marginBottom: 15 }}
+            inputStyle={{ padding: 10 }}
+          />
           <Button title="Add To Cart" onPress={AddToCart} style={styles.btn} />
           <Button
             title="Close"
@@ -273,7 +313,8 @@ const DisplayTest = ({ product, productIndex }) => {
             style={styles.btn}
           />
         </ScrollView>
-      </Modal>
+      )}
+      {/* </Modal> */}
     </View>
   );
 };

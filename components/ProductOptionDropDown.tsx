@@ -9,7 +9,13 @@ const ProductOptionDropDown = ({ label, options, setValue, value, style }) => {
   return (
     <View style={[styles.container, style]}>
       <ListItem
-        title={value ? `${value.label} : $${value.priceIncrease}` : label}
+        title={
+          value
+            ? `${value.label} : $${
+                value.priceIncrease !== null ? value.priceIncrease : 0
+              }`
+            : label
+        }
         trailing={(props) => (
           <Icon name={show ? "chevron-up" : "chevron-down"} {...props} />
         )}
@@ -19,9 +25,18 @@ const ProductOptionDropDown = ({ label, options, setValue, value, style }) => {
         <>
           {options.map((option, listIndex) => (
             <ListItem
-              title={`${option.label} : $${option.priceIncrease}`}
+              title={`${option.label} : $${
+                option.priceIncrease !== null ? option.priceIncrease : 0
+              }`}
               onPress={() => {
-                setValue({ option: option, listIndex: listIndex });
+                setValue({
+                  option: {
+                    label: option.label,
+                    priceIncrease:
+                      option.priceIncrease !== null ? option.priceIncrease : 0,
+                  },
+                  listIndex: listIndex,
+                });
                 setShow(false);
               }}
             />

@@ -86,8 +86,12 @@ const CartScreen = () => {
       cart.map((cartItem) => {
         total += parseFloat(cartItem.price);
         data.push(`Name: ${cartItem.name}`);
-        data.push("\x0A");
         data.push(`Price: $${cartItem.price}`);
+
+        if (cartItem.description) {
+          data.push(cartItem.description);
+          data.push("\x0A");
+        }
 
         if (cartItem.options) {
           data.push("\x0A");
@@ -96,6 +100,12 @@ const CartScreen = () => {
             data.push("\x0A");
           });
         }
+
+        if (cartItem.extraDetails) {
+          data.push(cartItem.extraDetails);
+          data.push("\x0A");
+        }
+
         data.push("\x0A" + "\x0A");
       });
 
@@ -175,8 +185,12 @@ const CartScreen = () => {
       cart.map((cartItem) => {
         total += parseFloat(cartItem.price);
         data.push(`Name: ${cartItem.name}`);
-        data.push("\x0A");
         data.push(`Price: $${cartItem.price}`);
+
+        if (cartItem.description) {
+          data.push(cartItem.description);
+          data.push("\x0A");
+        }
 
         if (cartItem.options) {
           data.push("\x0A");
@@ -185,6 +199,12 @@ const CartScreen = () => {
             data.push("\x0A");
           });
         }
+
+        if (cartItem.extraDetails) {
+          data.push(cartItem.extraDetails);
+          data.push("\x0A");
+        }
+
         data.push("\x0A" + "\x0A");
       });
 
@@ -261,8 +281,12 @@ const CartScreen = () => {
         total += parseFloat(cartItem.price);
         data.push(`Name: ${cartItem.name}`);
         data.push("\x0A");
-        data.push("\x0A");
         data.push(`Price: $${cartItem.price}`);
+
+        if (cartItem.description) {
+          data.push(cartItem.description);
+          data.push("\x0A");
+        }
 
         if (cartItem.options) {
           data.push("\x0A");
@@ -271,6 +295,12 @@ const CartScreen = () => {
             data.push("\x0A");
           });
         }
+
+        if (cartItem.extraDetails) {
+          data.push(cartItem.extraDetails);
+          data.push("\x0A");
+        }
+
         data.push("\x0A" + "\x0A");
       });
 
@@ -396,6 +426,7 @@ const CartScreen = () => {
               )}
               {cartItem.options &&
                 cartItem.options.map((option) => <Text>{option}</Text>)}
+              {cartItem.extraDetails && <Text>{cartItem.extraDetails}</Text>}
               <Text
                 style={{ color: "blue" }}
                 onPress={() => {

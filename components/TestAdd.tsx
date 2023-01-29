@@ -11,6 +11,7 @@ import { Button, TextInput } from "@react-native-material/core";
 import DropDown from "./DropDown";
 import { userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
+import OptionView from "./OptionView";
 
 const MyListItem = ({
   item,
@@ -18,54 +19,37 @@ const MyListItem = ({
   setnewProduct,
   newProduct,
   newProductOptions,
-  flatListRef,
-  yPosition,
+  indexOn,
+  setindexOn,
+  setcurrentY,
 }) => {
   const memoizedItem = useMemo(() => item, [item]);
 
-  const [optionLblsValues, setoptionLblsValues] = useState([]);
-  const [e, sete] = useState(memoizedItem);
-  var optionLbls = newProduct.options.map(function (el) {
-    if (el.label !== e.label && el.label !== null) {
-      return el.label;
-    }
-  });
-
-  useEffect(() => {
-    if (e.selectedCaseKey !== null) {
-      const local = newProduct.options.filter(
-        (localE) => localE.label == e.selectedCaseKey
-      );
-      const optionLblsValuesLocal = local[0].optionsList.map(function (el) {
-        return el.label;
-      });
-      setoptionLblsValues(optionLblsValuesLocal);
-    }
-  }, [e]);
-
-  return (
-    <View>
-      <View
+  if (indexOn !== index) {
+    return (
+      <TouchableOpacity
+        onPress={() => setindexOn(index)}
         style={{
           padding: 25,
           margin: 15,
           backgroundColor: "lightgrey",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          height: 100,
         }}
       >
+        <Text>{memoizedItem.label}</Text>
         <TouchableOpacity
           onPress={() => {
             newProductOptions.current.push({
-              ...e,
-              label: e.label + " Copy",
+              ...memoizedItem,
+              label: memoizedItem.label + " Copy",
             });
             setnewProduct((prevState) => ({
               ...prevState,
               options: newProductOptions.current,
             }));
-            flatListRef.current.scrollToOffset({
-              offset: yPosition,
-              animated: false,
-            });
+            setindexOn(newProductOptions.current.length - 1);
           }}
         >
           <Text
@@ -86,10 +70,7 @@ const MyListItem = ({
               ...prevState,
               options: newProductOptions.current,
             }));
-            flatListRef.current.scrollToOffset({
-              offset: yPosition,
-              animated: false,
-            });
+            setindexOn(indexOn - 1);
           }}
         >
           <Text
@@ -102,172 +83,246 @@ const MyListItem = ({
             X
           </Text>
         </TouchableOpacity>
-        <TextInput
-          placeholder="Enter Select List Label"
-          onChangeText={(val) => {
-            sete((prevState) => ({ ...prevState, label: val }));
-            newProductOptions.current[index].label = val;
+      </TouchableOpacity>
+    );
+  } else {
+    const [optionLblsValues, setoptionLblsValues] = useState([]);
+    const [e, sete] = useState(memoizedItem);
+    var optionLbls = newProduct.options.map(function (el) {
+      if (el.label !== e.label && el.label !== null) {
+        return el.label;
+      }
+    });
+
+    useEffect(() => {
+      if (e.selectedCaseKey !== null) {
+        const local = newProduct.options.filter(
+          (localE) => localE.label == e.selectedCaseKey
+        );
+        const optionLblsValuesLocal =
+          local.length > 0 &&
+          local[0].optionsList.map(function (el) {
+            return el.label;
+          });
+        setoptionLblsValues(optionLblsValuesLocal);
+      }
+    }, [e]);
+
+    return (
+      <View>
+        <View
+          style={{
+            padding: 25,
+            margin: 15,
+            backgroundColor: "lightgrey",
           }}
-          value={e.label}
-          style={{ marginBottom: 25 }}
-        />
-        {/* optionType */}
-        <DropDown
-          label="Option Type"
-          options={["Standard", "Dropdown"]}
-          setValue={(val) => {
-            // sete((prevState) => ({
-            //   ...prevState,
-            //   optionType: val,
-            // }));
-            if (e.optionType) {
-              newProductOptions.current[index].optionType = val;
-            } else {
-              newProductOptions.current[index] = { ...e, optionType: val };
-              console.log(newProductOptions.current[index].optionType);
-            }
-            setnewProduct((prevState) => ({
-              ...prevState,
-              options: newProductOptions.current,
-            }));
-            flatListRef.current.scrollToOffset({
-              offset: yPosition,
-              animated: false,
-            });
-          }}
-          value={e.optionType}
-          style={{ marginBottom: 25 }}
-        />
-        <TextInput
-          placeholder="Enter Number Of Selectable; If There Is"
-          onChangeText={(val) => {
-            sete((prevState) => ({ ...prevState, numOfSelectable: val }));
-            newProductOptions.current[index].numOfSelectable = val;
-          }}
-          value={e.numOfSelectable}
-          style={{ marginBottom: 25 }}
-        />
-        {e.optionsList.map((eInnerListStart, indexInnerList) => {
-          const [eInnerList, seteInnerList] = useState(eInnerListStart);
-          return (
+        >
+          <TouchableOpacity
+            onPress={() => {
+              newProductOptions.current.push({
+                ...e,
+                label: e.label + " Copy",
+              });
+              setnewProduct((prevState) => ({
+                ...prevState,
+                options: newProductOptions.current,
+              }));
+              setindexOn(newProductOptions.current.length - 1);
+            }}
+          >
+            <Text
+              style={{
+                marginBottom: 25,
+                fontWeight: "700",
+                color: "red",
+              }}
+            >
+              Copy
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              newProductOptions.current.splice(index, 1);
+
+              setnewProduct((prevState) => ({
+                ...prevState,
+                options: newProductOptions.current,
+              }));
+              setindexOn(null);
+            }}
+          >
+            <Text
+              style={{
+                marginBottom: 25,
+                fontWeight: "700",
+                color: "red",
+              }}
+            >
+              X
+            </Text>
+          </TouchableOpacity>
+          <TextInput
+            placeholder="Enter Select List Label"
+            onChangeText={(val) => {
+              sete((prevState) => ({ ...prevState, label: val }));
+              newProductOptions.current[index].label = val;
+            }}
+            value={e.label}
+            style={{ marginBottom: 25 }}
+          />
+          {/* optionType */}
+          <DropDown
+            label="Option Type"
+            options={["Standard", "Dropdown"]}
+            setValue={(val) => {
+              // sete((prevState) => ({
+              //   ...prevState,
+              //   optionType: val,
+              // }));
+              if (e.optionType) {
+                newProductOptions.current[index].optionType = val;
+              } else {
+                newProductOptions.current[index] = { ...e, optionType: val };
+                console.log(newProductOptions.current[index].optionType);
+              }
+              setnewProduct((prevState) => ({
+                ...prevState,
+                options: newProductOptions.current,
+              }));
+            }}
+            value={e.optionType}
+            style={{ marginBottom: 25 }}
+          />
+          <TextInput
+            placeholder="Enter Number Of Selectable; If There Is"
+            onChangeText={(val) => {
+              sete((prevState) => ({ ...prevState, numOfSelectable: val }));
+              newProductOptions.current[index].numOfSelectable = val;
+            }}
+            value={e.numOfSelectable}
+            style={{ marginBottom: 25 }}
+          />
+          {e.optionsList.map((eInnerListStart, indexInnerList) => {
+            const [eInnerList, seteInnerList] = useState(eInnerListStart);
+            return (
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginBottom: 25,
+                  alignItems: "center",
+                }}
+              >
+                <TextInput
+                  placeholder="Enter Option Label"
+                  onChangeText={(val) => {
+                    newProductOptions.current[index].optionsList[
+                      indexInnerList
+                    ].label = val;
+                    seteInnerList((prevState) => ({
+                      ...prevState,
+                      label: val,
+                    }));
+                  }}
+                  value={eInnerList.label}
+                />
+                <TextInput
+                  placeholder="Enter price increase"
+                  onChangeText={(val) => {
+                    newProductOptions.current[index].optionsList[
+                      indexInnerList
+                    ].priceIncrease = val;
+                    seteInnerList((prevState) => ({
+                      ...prevState,
+                      priceIncrease: val,
+                    }));
+                  }}
+                  value={eInnerList.priceIncrease}
+                  style={{ marginLeft: 20, marginRight: 20 }}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    newProductOptions.current[index].optionsList.splice(
+                      indexInnerList,
+                      1
+                    );
+                    setnewProduct((prevState) => ({
+                      ...prevState,
+                      options: newProductOptions.current,
+                    }));
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontWeight: "700",
+                      color: "red",
+                    }}
+                  >
+                    X
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+          <Button
+            title="Add Option Choice"
+            onPress={() => {
+              newProductOptions.current[index].optionsList.push({
+                label: null,
+                priceIncrease: null,
+              });
+              setcurrentY(window.pageYOffset);
+              setnewProduct((prevState) => ({
+                ...prevState,
+                options: newProductOptions.current,
+              }));
+            }}
+            style={{ marginBottom: 25 }}
+          />
+          {optionLbls.length > 1 && (
             <View
               style={{
                 flexDirection: "row",
+                justifyContent: "space-between",
                 marginBottom: 25,
-                alignItems: "center",
               }}
             >
-              <TextInput
-                placeholder="Enter Option Label"
-                onChangeText={(val) => {
-                  newProductOptions.current[index].optionsList[
-                    indexInnerList
-                  ].label = val;
-                  seteInnerList((prevState) => ({
-                    ...prevState,
-                    label: val,
-                  }));
+              <DropDown
+                label="Show if..."
+                options={optionLbls}
+                setValue={(val) => {
+                  sete((prevState) => ({ ...prevState, selectedCaseKey: val }));
+                  newProductOptions.current[index].selectedCaseKey = val;
                 }}
-                value={eInnerList.label}
+                value={e.selectedCaseKey}
+                style={{ marginBottom: 25 }}
               />
-              <TextInput
-                placeholder="Enter price increase"
-                onChangeText={(val) => {
-                  newProductOptions.current[index].optionsList[
-                    indexInnerList
-                  ].priceIncrease = val;
-                  seteInnerList((prevState) => ({
+              <Text>"="</Text>
+              <DropDown
+                label="Show if..."
+                options={optionLblsValues}
+                setValue={(val) => {
+                  sete((prevState) => ({
                     ...prevState,
-                    priceIncrease: val,
+                    selectedCaseValue: val,
                   }));
+                  newProductOptions.current[index].selectedCaseValue = val;
                 }}
-                value={eInnerList.priceIncrease}
-                style={{ marginLeft: 20, marginRight: 20 }}
+                value={e.selectedCaseValue}
+                style={{ marginBottom: 25 }}
               />
-              <TouchableOpacity
-                onPress={() => {
-                  newProductOptions.current[index].optionsList.splice(
-                    indexInnerList,
-                    1
-                  );
-                  setnewProduct((prevState) => ({
-                    ...prevState,
-                    options: newProductOptions.current,
-                  }));
-                  flatListRef.current.scrollToOffset({
-                    offset: yPosition,
-                    animated: false,
-                  });
-                }}
-              >
-                <Text
-                  style={{
-                    fontWeight: "700",
-                    color: "red",
-                  }}
-                >
-                  X
-                </Text>
-              </TouchableOpacity>
             </View>
-          );
-        })}
-        <Button
-          title="Add Option Choice"
-          onPress={() => {
-            newProductOptions.current[index].optionsList.push({
-              label: null,
-              priceIncrease: null,
-            });
-            setnewProduct((prevState) => ({
-              ...prevState,
-              options: newProductOptions.current,
-            }));
-            flatListRef.current.scrollToOffset({
-              offset: yPosition,
-              animated: false,
-            });
-          }}
-          style={{ marginBottom: 25 }}
-        />
-        {optionLbls.length > 1 && (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginBottom: 25,
-            }}
-          >
-            <DropDown
-              label="Show if..."
-              options={optionLbls}
-              setValue={(val) => {
-                sete((prevState) => ({ ...prevState, selectedCaseKey: val }));
-                newProductOptions.current[index].selectedCaseKey = val;
-              }}
-              value={e.selectedCaseKey}
-              style={{ marginBottom: 25 }}
-            />
-            <Text>"="</Text>
-            <DropDown
-              label="Show if..."
-              options={optionLblsValues}
-              setValue={(val) => {
-                sete((prevState) => ({ ...prevState, selectedCaseValue: val }));
-                newProductOptions.current[index].selectedCaseValue = val;
-              }}
-              value={e.selectedCaseValue}
-              style={{ marginBottom: 25 }}
-            />
-          </View>
-        )}
+          )}
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
 };
 
 const AddProduct = ({ route, navigation }) => {
-  const { existingProduct, existingProductIndex } = route.params;
+  const { existingProduct, existingProductIndex } = route.params
+    ? route.params
+    : { existingProduct: null, existingProductIndex: null };
+
   const catalog = userStoreState.use();
   const [newProduct, setnewProduct] = useState(
     existingProduct
@@ -283,6 +338,16 @@ const AddProduct = ({ route, navigation }) => {
   const newProductOptions = useRef(
     existingProduct ? existingProduct.options : []
   );
+  const [indexOn, setindexOn] = useState(0);
+
+  // useEffect(() => {
+  //   //setTimeout(() => {
+  //   window.scrollTo({
+  //     top: currentY,
+  //     behavior: "instant",
+  //   });
+  //   //}, 500);
+  // }, [currentY]);
 
   function handleDataUpdate(copyProductData) {
     if (copyProductData) {
@@ -306,39 +371,32 @@ const AddProduct = ({ route, navigation }) => {
     }
   }
 
-  const flatListRef = useRef(null);
-  const [yPosition, setYPosition] = useState(0);
-
-  // we set the height of item is fixed
-  const getItemLayout = (data, index) => ({
-    length: 400,
-    offset: 400 * index,
-    index,
-  }); 
-
   const OptionsAddingSection = () => {
     return (
       <View>
         <FlatList
-          ref={flatListRef}
-          getItemLayout={getItemLayout}
-          initialNumToRender={5}
-          maxToRenderPerBatch={10}
-          windowSize={10}
-          onScroll={(e) => {
-            setYPosition(e.nativeEvent.contentOffset.y);
-          }}
+          // onLayout={() =>
+          //   window.scrollTo({
+          //     top: currentY,
+          //     behavior: "instant",
+          //   })
+          // }
+          getItemLayout={(data, index) => ({
+            length: index === indexOn ? 400 * data.optionsList?.length : 100,
+            offset: 400 * index,
+            index,
+          })}
           data={newProduct.options}
           keyExtractor={(item) => item.id?.toString()}
           renderItem={({ item, index }) => (
-            <MyListItem
+            <OptionView
               item={item}
               index={index}
               newProduct={newProduct}
               setnewProduct={setnewProduct}
               newProductOptions={newProductOptions}
-              flatListRef={flatListRef}
-              yPosition={yPosition}
+              indexOn={indexOn}
+              setindexOn={setindexOn}
             />
           )}
         />
@@ -358,10 +416,7 @@ const AddProduct = ({ route, navigation }) => {
               ...prevState,
               options: newProductOptions.current,
             }));
-            flatListRef.current.scrollToOffset({
-              offset: yPosition,
-              animated: false,
-            });
+            setindexOn(newProductOptions.current.length - 1);
           }}
           style={{ marginBottom: 25 }}
         />

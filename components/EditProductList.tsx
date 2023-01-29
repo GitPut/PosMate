@@ -45,9 +45,21 @@ const EditProductList = ({ navigation }) => {
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  width: "10%",
+                  width: "20%",
                 }}
               >
+                <Button
+                  title="Duplicate"
+                  onPress={() => {
+                    let copy = structuredClone(e);
+                    copy.name = copy.name + " Copy";
+                    updateData(
+                      [...catalog.categories],
+                      [...catalog.products, copy]
+                    );
+                  }}
+                  style={{ margin: 10 }}
+                />
                 <Button
                   title="Edit"
                   // onPress={() => setProductEditModal(true)}
