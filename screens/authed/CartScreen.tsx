@@ -50,9 +50,12 @@ const CartScreen = () => {
 
   const AddToList = async (payload) => {
     const local = structuredClone(transList);
-    local.unshift(payload);
+    //local.unshift(payload);
+    console.log("trans: ", local);
+    console.log("Payload: ", payload);
+    local.push(payload);
     updateTransList(local);
-    //setTransListState(local);
+   // setTransListState(local);
   };
 
   const Print = (method) => {
@@ -89,8 +92,8 @@ const CartScreen = () => {
         data.push(`Price: $${cartItem.price}`);
 
         if (cartItem.description) {
-          data.push(cartItem.description);
           data.push("\x0A");
+          data.push(cartItem.description);
         }
 
         if (cartItem.options) {
@@ -188,8 +191,8 @@ const CartScreen = () => {
         data.push(`Price: $${cartItem.price}`);
 
         if (cartItem.description) {
-          data.push(cartItem.description);
           data.push("\x0A");
+          data.push(cartItem.description);
         }
 
         if (cartItem.options) {
@@ -284,8 +287,8 @@ const CartScreen = () => {
         data.push(`Price: $${cartItem.price}`);
 
         if (cartItem.description) {
-          data.push(cartItem.description);
           data.push("\x0A");
+          data.push(cartItem.description);
         }
 
         if (cartItem.options) {

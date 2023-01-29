@@ -6,14 +6,18 @@ import { Button } from "@react-native-material/core";
 import { sectionState, userStoreState } from "state/state";
 import { auth } from "state/firebaseConfig";
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const catalog = userStoreState.use();
-   const section = sectionState.use();
+  const section = sectionState.use();
 
   const Screen = () => {
     return (
       <View style={{ flexDirection: "row", height: "100%" }}>
-        <MenuScreen catalog={catalog} section={section} />
+        <MenuScreen
+          catalog={catalog}
+          section={section}
+          navigation={navigation}
+        />
         <CartScreen />
       </View>
     );

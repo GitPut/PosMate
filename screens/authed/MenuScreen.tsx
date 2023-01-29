@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { userStoreState } from "state/state";
 import DisplayTest from "components/DisplayTest";
 
-const MenuScreen = ({ section, catalog }) => {
+const MenuScreen = ({ navigation,section, catalog }) => {
   const InnerBlock = () => {
     if (catalog.products) {
       if (catalog.products.length > 0) {
@@ -11,13 +11,13 @@ const MenuScreen = ({ section, catalog }) => {
           return catalog.products
             .filter((e) => e.catagory === catalog.categories[0])
             .map((product, index) => (
-              <DisplayTest product={product} productIndex={index} key={index} />
+              <DisplayTest product={product} productIndex={index} key={index} navigation={navigation} />
             ));
         } else {
           return catalog.products
             .filter((e) => e.catagory === section)
             .map((product, index) => (
-              <DisplayTest product={product} productIndex={index} key={index} />
+              <DisplayTest product={product} productIndex={index} key={index} navigation={navigation} />
             ));
         }
       }
