@@ -42,11 +42,11 @@ username = os.getlogin()
 
 currentLocation = os.getcwd()
 
-path = os.path.join('C:\\Users\\'+ username +'\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup', 'PosMate.lnk')
+path = os.path.join('C:\\Users\\'+ username +'\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup', 'DivinePos.lnk')
 
 if os.path.isfile(path) == False :
     # Define the MSI package name
-    msi_name = desktopFolder + '\\PosMate.lnk'
+    msi_name = desktopFolder + '\\DivinePos.lnk'
 
     # Define the startup folder path
     startup_folder = 'C:\\Users\\'+ username +'\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup'
