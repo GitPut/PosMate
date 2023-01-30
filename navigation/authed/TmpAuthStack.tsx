@@ -10,18 +10,24 @@ import AddCategory from "components/AddCategory";
 import ViewTransactions from "screens/authed/ViewTransactions";
 import CustomHeader from "components/CustomHeader";
 import ProductListing from "components/ProductListing";
+import SettingsHome from "screens/authed/SettingsHome";
 
 const Stack = createStackNavigator();
 
 export default function TmpAuthStack() {
   return (
     <Stack.Navigator
-      screenOptions={{
-        header: (props) => <CustomHeader {...props} />,
-        headerMode: "screen",
-      }}
+    // screenOptions={{
+    //   header: (props) => <CustomHeader {...props} />,
+    //   headerMode: "screen",
+    // }}
     >
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="SettingsHome" component={SettingsHome} />
       <Stack.Screen name="EditCategories" component={AddCategory} />
       <Stack.Screen name="EditProductList" component={EditProductList} />
       <Stack.Screen

@@ -5,6 +5,7 @@ import {
   Text,
   View,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -20,8 +21,12 @@ import DeliveryScreen from "components/DeliveryScreen";
 import CashScreen from "components/CashScreen";
 import ChangeScreen from "components/ChangeScreen";
 import { updateTransList } from "state/firebaseFunctions";
+import useWindowDimensions from "components/useWindowDimensions";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Foundation from "@expo/vector-icons/Foundation";
 
 const CartScreen = () => {
+  const { height, width } = useWindowDimensions();
   const [deliveryModal, setDeliveryModal] = useState(false);
   const [cashModal, setCashModal] = useState(false);
   const [changeModal, setChangeModal] = useState(false);
@@ -55,7 +60,7 @@ const CartScreen = () => {
     console.log("Payload: ", payload);
     local.push(payload);
     updateTransList(local);
-   // setTransListState(local);
+    // setTransListState(local);
   };
 
   const Print = (method) => {
@@ -380,18 +385,36 @@ const CartScreen = () => {
   const DeliveryBtn = () => {
     if (ongoingDelivery === null) {
       return (
-        <Button
-          title="Phone Order"
-          onPress={() => setDeliveryModal(true)}
-          disabled={cart.length > 0}
-          style={{ marginBottom: 20 }}
-        />
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            alignSelf: "center",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <TouchableOpacity
+            style={styles({ height, width }).cashButton}
+            onPress={() => setCashModal(true)}
+            disabled={cart.length < 1 || ongoingDelivery}
+          >
+            <Text style={styles({ height, width }).btnTxt}>Cash</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles({ height, width }).cardButton}
+            onPress={() => Print("Card")}
+            disabled={cart.length < 1 || ongoingDelivery}
+          >
+            <Text style={styles({ height, width }).btnTxt}>Cash</Text>
+          </TouchableOpacity>
+        </View>
       );
     }
     if (ongoingDelivery && cart.length > 0) {
       return (
-        <Button
-          title="Complete"
+        <TouchableOpacity
+          style={styles({ height, width }).bigButton}
           onPress={() => {
             Print(deliveryChecked ? "deliveryOrder" : "pickupOrder");
             setOngoingDelivery(null);
@@ -399,115 +422,258 @@ const CartScreen = () => {
             setPhone(null);
             setAddress(null);
           }}
-          style={{ marginBottom: 20 }}
-        />
+        >
+          <Text style={styles({ height, width }).btnTxt}>Complete</Text>
+        </TouchableOpacity>
       );
     } else {
       return (
-        <Button
-          title="Cancel"
+        <TouchableOpacity
+          style={styles({ height, width }).bigButton}
           onPress={() => setOngoingDelivery(null)}
-          style={{ marginBottom: 20 }}
-        />
+        >
+          <Text style={styles({ height, width }).btnTxt}>Cancel</Text>
+        </TouchableOpacity>
       );
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles({ height, width }).container}>
+      <View style={styles({ height, width }).cartHeader}>
+        <Text style={{ fontSize: 20, width: "50%" }}>Bill Total</Text>
+        <TouchableOpacity style={styles({ height, width }).iconContainer}>
+          <Ionicons name="person-add" size={26} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles({ height, width }).iconContainer}
+          onPress={() => setDeliveryModal(true)}
+          disabled={cart.length > 0}
+        >
+          <Foundation name="telephone" size={32} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles({ height, width }).iconContainer}
+          onPress={() => setChangeModal(true)}
+          disabled={cart.length > 0 || ongoingDelivery}
+        >
+          <Ionicons name="checkmark" size={32} color="white" />
+        </TouchableOpacity>
+      </View>
       <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}
+        contentContainerStyle={styles({ height, width }).contentContainer}
       >
         <View>
           {cart.map((cartItem, index) => (
-            <View style={{ marginBottom: 20 }}>
-              <Text>Name: {cartItem.name}</Text>
-              <Text>Price: {cartItem.price}</Text>
-              {cartItem.description && (
-                <Text>Description: {cartItem.description}</Text>
-              )}
-              {cartItem.options &&
-                cartItem.options.map((option) => <Text>{option}</Text>)}
-              {cartItem.extraDetails && <Text>{cartItem.extraDetails}</Text>}
-              <Text
-                style={{ color: "blue" }}
-                onPress={() => {
-                  const local = structuredClone(cart);
-                  local.splice(index, 1);
-                  setCartState(local);
+            <View
+              style={{
+                backgroundColor: "white",
+                shadowColor: "rgba(0,0,0,1)",
+                shadowOffset: {
+                  width: 3,
+                  height: 3,
+                },
+                elevation: 30,
+                shadowOpacity: 0.07,
+                shadowRadius: 10,
+                marginBottom: 20,
+                padding: 15,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 10,
                 }}
               >
-                Remove
+                <View style={{ width: "33%" }}>
+                  <View
+                    style={{
+                      backgroundColor: "#E6E6E6",
+                      width: 50,
+                      height: 50,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={styles({ height, width }).headerTxt}>
+                      {index + 1}
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    width: "33%",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={styles({ height, width }).headerTxt}>
+                    {cartItem.name}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    width: "33%",
+                    alignItems: "flex-end",
+                  }}
+                >
+                  <Text
+                    style={{ color: "red", fontSize: 15, fontWeight: "600" }}
+                    onPress={() => {
+                      const local = structuredClone(cart);
+                      local.splice(index, 1);
+                      setCartState(local);
+                    }}
+                  >
+                    X
+                  </Text>
+                </View>
+              </View>
+              <Text style={styles({ height, width }).innerTxt}>
+                Price: ${cartItem.price}
               </Text>
+              {cartItem.description && (
+                <Text style={styles({ height, width }).innerTxt}>
+                  Description: {cartItem.description}
+                </Text>
+              )}
+              {cartItem.options &&
+                cartItem.options.map((option) => (
+                  <Text style={styles({ height, width }).innerTxt}>
+                    {option}
+                  </Text>
+                ))}
+              {cartItem.extraDetails && (
+                <Text style={styles({ height, width }).innerTxt}>
+                  Extra Info: {cartItem.extraDetails}
+                </Text>
+              )}
             </View>
           ))}
         </View>
-        <View>
-          <Text>Sub: {cartSub.toFixed(2)}</Text>
-          <Text>Total: {(cartSub * 1.13).toFixed(2)}</Text>
-          <Button
-            title="Cash"
-            onPress={() => setCashModal(true)}
-            disabled={cart.length < 1 || ongoingDelivery}
-            style={{ marginBottom: 20 }}
-          />
-          <Button
-            title="Card"
-            onPress={() => Print("Card")}
-            disabled={cart.length < 1 || ongoingDelivery}
-            style={{ marginBottom: 20 }}
-          />
-          <DeliveryBtn />
-          <Button
-            title="Change"
-            onPress={() => setChangeModal(true)}
-            disabled={cart.length > 0 || ongoingDelivery}
-          />
-        </View>
-        <Modal visible={deliveryModal}>
-          <DeliveryScreen
-            setDeliveryModal={setDeliveryModal}
-            setOngoingDelivery={setOngoingDelivery}
-            setName={setName}
-            setPhone={setPhone}
-            setAddress={setAddress}
-            name={name}
-            phone={phone}
-            address={address}
-            deliveryChecked={deliveryChecked}
-            setDeliveryChecked={setDeliveryChecked}
-          />
-        </Modal>
-        <Modal visible={cashModal}>
-          <CashScreen
-            setCashModal={setCashModal}
-            GetTrans={() => Print("Cash")}
-            total={(cartSub * 1.13).toFixed(2)}
-            setChangeDue={setChangeDue}
-          />
-        </Modal>
-        <Modal visible={changeModal}>
-          <ChangeScreen setChangeModal={setChangeModal} />
-        </Modal>
       </ScrollView>
+      <View style={styles({ height, width }).totalContainer}>
+        <Text style={styles({ height, width }).totalTxt}>
+          Sub: ${cartSub.toFixed(2)}
+        </Text>
+        <Text style={styles({ height, width }).totalTxt}>
+          Total: ${(cartSub * 1.13).toFixed(2)}
+        </Text>
+        <DeliveryBtn />
+      </View>
+      <Modal visible={deliveryModal}>
+        <DeliveryScreen
+          setDeliveryModal={setDeliveryModal}
+          setOngoingDelivery={setOngoingDelivery}
+          setName={setName}
+          setPhone={setPhone}
+          setAddress={setAddress}
+          name={name}
+          phone={phone}
+          address={address}
+          deliveryChecked={deliveryChecked}
+          setDeliveryChecked={setDeliveryChecked}
+        />
+      </Modal>
+      <Modal visible={cashModal}>
+        <CashScreen
+          setCashModal={setCashModal}
+          GetTrans={() => Print("Cash")}
+          total={(cartSub * 1.13).toFixed(2)}
+          setChangeDue={setChangeDue}
+        />
+      </Modal>
+      <Modal visible={changeModal}>
+        <ChangeScreen setChangeModal={setChangeModal} />
+      </Modal>
     </View>
   );
 };
 
 export default CartScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "lightgrey",
-    flex: 1,
-    height: "100%",
-  },
-  contentContainer: {
-    backgroundColor: "lightgrey",
-    flex: 1,
-    height: "100%",
-    justifyContent: "space-between",
-    padding: 20,
-  },
-});
+const styles = (props) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: "lightgrey",
+      //flex: 1,
+      height: props.height,
+      width: props.width * 0.3,
+      padding: 20,
+    },
+    contentContainer: {
+      backgroundColor: "lightgrey",
+      //flex: 1,
+      height: props.height * 0.88,
+      justifyContent: "space-between",
+      width: "100%",
+      paddingTop: 20,
+    },
+    totalContainer: {
+      height: props.height * 0.12,
+      paddingTop: 10,
+    },
+    cartHeader: {
+      height: props.height * 0.06,
+      justifyContent: "space-between",
+      width: "100%",
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    iconContainer: {
+      backgroundColor: "rgba(125,126,132,1)",
+      borderRadius: 30,
+      width: 40,
+      height: 40,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    cashButton: {
+      backgroundColor: "rgba(51,81,243,1)",
+      borderRadius: 30,
+      borderTopRightRadius: 0,
+      borderBottomRightRadius: 0,
+      width: "49.5%",
+      height: 55,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    cardButton: {
+      backgroundColor: "rgba(51,81,243,1)",
+      borderRadius: 30,
+      borderTopRightRadius: 30,
+      borderBottomRightRadius: 30,
+      borderTopLeftRadius: 0,
+      borderBottomLeftRadius: 0,
+      width: "49.5%",
+      height: 55,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    btnTxt: {
+      fontSize: 20,
+      color: "white",
+    },
+    totalTxt: {
+      fontSize: 14,
+      marginBottom: 5,
+    },
+    bigButton: {
+      backgroundColor: "rgba(51,81,243,1)",
+      borderRadius: 30,
+      width: "98%",
+      height: 55,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    innerTxt: {
+      fontSize: 13,
+      marginBottom: 10,
+    },
+    headerTxt: {
+      fontSize: 15,
+      fontWeight: "600",
+    },
+  });

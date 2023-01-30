@@ -51,9 +51,3 @@ export const storeDetailState = entity({
 export const setStoreDetailState = (val) => {
   storeDetailState.set(val);
 };
-
-export const sectionState = entity(null);
-
-export const setsectionState = (val) => {
-  sectionState.set(val);
-};
