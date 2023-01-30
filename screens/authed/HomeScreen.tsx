@@ -52,7 +52,7 @@ const HomeScreen = ({ navigation }) => {
           <Header />
           <MenuScreen catalog={catalog} navigation={navigation} />
         </View>
-        <CartScreen />
+        <CartScreen navigation={navigation} />
       </View>
     </View>
   );

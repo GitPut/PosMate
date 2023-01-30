@@ -25,15 +25,15 @@ import useWindowDimensions from "components/useWindowDimensions";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Foundation from "@expo/vector-icons/Foundation";
 
-const CartScreen = () => {
+const CartScreen = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
   const [deliveryModal, setDeliveryModal] = useState(false);
   const [cashModal, setCashModal] = useState(false);
   const [changeModal, setChangeModal] = useState(false);
   const [ongoingDelivery, setOngoingDelivery] = useState(null);
-  const [name, setName] = useState();
-  const [phone, setPhone] = useState();
-  const [address, setAddress] = useState();
+  const [name, setName] = useState(null);
+  const [phone, setPhone] = useState(null);
+  const [address, setAddress] = useState(null);
   const [deliveryChecked, setDeliveryChecked] = useState(false);
   const [changeDue, setChangeDue] = useState();
   const cart = cartState.use();
@@ -158,11 +158,18 @@ const CartScreen = () => {
         .catch((e) => alert("Error with printer"));
 
       AddToList({
+        id: Math.random().toString(36).substr(2, 9) + "-l",
         date: today,
         transNum: transNum,
         total: total,
         method: "deliveryOrder",
         cart: cart,
+        completed: false,
+        customer: {
+          name: name,
+          phone: phone,
+          address: address,
+        },
       });
 
       setCartState([]);
@@ -255,11 +262,18 @@ const CartScreen = () => {
         .catch((e) => alert("Error with printer"));
 
       AddToList({
+        id: Math.random().toString(36).substr(2, 9) + "-l",
         date: today,
         transNum: transNum,
         total: total,
         method: "pickupOrder",
         cart: cart,
+        completed: false,
+        customer: {
+          name: name,
+          phone: phone,
+          address: address,
+        },
       });
 
       setCartState([]);
@@ -371,6 +385,7 @@ const CartScreen = () => {
         .catch((e) => alert("Error with printer"));
 
       AddToList({
+        id: Math.random().toString(36).substr(2, 9) + "-l",
         date: today,
         transNum: transNum,
         total: total,
@@ -406,7 +421,7 @@ const CartScreen = () => {
             onPress={() => Print("Card")}
             disabled={cart.length < 1 || ongoingDelivery}
           >
-            <Text style={styles({ height, width }).btnTxt}>Cash</Text>
+            <Text style={styles({ height, width }).btnTxt}>Card</Text>
           </TouchableOpacity>
         </View>
       );
@@ -454,7 +469,8 @@ const CartScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles({ height, width }).iconContainer}
-          onPress={() => setChangeModal(true)}
+          // onPress={() => setChangeModal(true)}
+          onPress={() => navigation.navigate("CompletePaymentPhoneOrder")}
           disabled={cart.length > 0 || ongoingDelivery}
         >
           <Ionicons name="checkmark" size={32} color="white" />

@@ -11,6 +11,7 @@ import ViewTransactions from "screens/authed/ViewTransactions";
 import CustomHeader from "components/CustomHeader";
 import ProductListing from "components/ProductListing";
 import SettingsHome from "screens/authed/SettingsHome";
+import CompletePaymentPhoneOrder from "components/CompletePaymentPhoneOrder";
 
 const Stack = createStackNavigator();
 
@@ -42,6 +43,10 @@ export default function TmpAuthStack() {
         name="ProductListing"
         component={ProductListing}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CompletePaymentPhoneOrder"
+        component={CompletePaymentPhoneOrder}
       />
     </Stack.Navigator>
   );

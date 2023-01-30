@@ -3,8 +3,13 @@ import React, { useState } from "react";
 import { Button, TextInput } from "@react-native-material/core";
 import { storeDetailState } from "state/state";
 
-const ChangeScreen = ({ setChangeModal }) => {
-  const [total, setTotal] = useState("");
+const ChangeScreen = ({
+  setChangeModal,
+  order,
+  completeOrder,
+  setcurrentOrder,
+}) => {
+  const total = order.total;
   const [cash, setCash] = useState("");
   const storeDetails = storeDetailState.use();
 
@@ -17,6 +22,13 @@ const ChangeScreen = ({ setChangeModal }) => {
       storeDetails.address + "\x0A",
       storeDetails.website + "\x0A", // text and line break
       storeDetails.phoneNumber + "\x0A", // text and line break
+      "\x0A",
+      "Pickup Order Paid" + "\x0A", // text and line break
+      `Transaction # ${order.transNum}` + "\x0A",
+      "\x0A",
+      `Customer Name: ${order.customer.name}` + "\x0A", // text and line break
+      "\x0A",
+      `Customer Phone: ${order.customer.phone}` + "\x0A", // text and line break
       "\x0A",
       "\x0A",
       "\x0A",
@@ -53,6 +65,13 @@ const ChangeScreen = ({ setChangeModal }) => {
         console.log(respData);
       })
       .catch((e) => alert("Error with printer"));
+
+    completeOrder();
+  };
+
+  const CancelPayment = () => {
+    setChangeModal(false);
+    setcurrentOrder({ element: null, index: null });
   };
 
   return (
@@ -60,14 +79,7 @@ const ChangeScreen = ({ setChangeModal }) => {
       <View style={styles.sizeRow}>
         <Text>Cash Payment Details</Text>
       </View>
-      <TextInput
-        label="Enter Total"
-        variant="outlined"
-        style={styles.input}
-        onChangeText={(val) => setTotal(val)}
-        autoCorrect={false}
-        value={total}
-      />
+      <Text>Total: ${total}</Text>
       <TextInput
         label="Enter Cash Given"
         variant="outlined"
@@ -78,17 +90,16 @@ const ChangeScreen = ({ setChangeModal }) => {
       />
       <Text>Change Due: {(parseFloat(cash) - total).toFixed(2)}</Text>
       <Button
-        title="Open Cash"
+        title="Finsh Payment"
         onPress={() => {
           openCash();
-          setChangeModal(false);
         }}
         contentContainerStyle={styles.btn}
         style={{ margin: 25 }}
       />
       <Button
         title="Cancel"
-        onPress={() => setChangeModal(false)}
+        onPress={CancelPayment}
         contentContainerStyle={styles.btn}
         style={{ margin: 25 }}
       />
