@@ -18,6 +18,38 @@ const ProductListing = ({ navigation, route }) => {
   const [extraInput, setextraInput] = useState(null);
 
   const DisplayOption = ({ e, index }) => {
+    const checkCases = () => {
+      if (e.selectedCaseList?.length > 0) {
+        const listOfTrueIfS = [];
+
+        e.selectedCaseList.forEach((ifStatement) => {
+          const caseKeyList = myObjProfile.options.filter(
+            (op) => op.label == ifStatement.selectedCaseKey
+          );
+
+          if (caseKeyList.length > 0) {
+            const caseValueList = caseKeyList[0].optionsList.filter(
+              (opL) => opL.label == ifStatement.selectedCaseValue
+            );
+
+            if (caseValueList.length > 0) {
+              if (caseValueList[0].selected === true) {
+                listOfTrueIfS.push(ifStatement);
+              }
+            }
+          }
+        });
+
+        if (e.selectedCaseList?.length === listOfTrueIfS.length) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    };
+
     const [optionVal, setoptionVal] = useState();
 
     const selectedList = e.optionsList.filter((checkOp) => checkOp.selected);
@@ -26,25 +58,7 @@ const ProductListing = ({ navigation, route }) => {
       setoptionVal(selectedList[0]);
     }
 
-    let isSelected = false;
-
-    const selectedCaseList = myObjProfile.options.filter(
-      (op) => op.label == e.selectedCaseKey
-    );
-
-    let selectedValueList;
-
-    if (selectedCaseList.length > 0) {
-      selectedValueList = selectedCaseList[0].optionsList.filter(
-        (opL) => opL.label == e.selectedCaseValue
-      );
-
-      if (selectedValueList.length > 0) {
-        isSelected = selectedValueList[0].selected === true;
-      }
-    }
-
-    if (e.selectedCaseKey === null || isSelected) {
+    if (!(e.selectedCaseList?.length > 0) || checkCases()) {
       if (e.optionType?.toLowerCase() === "dropdown") {
         return (
           <View
@@ -210,7 +224,7 @@ const ProductListing = ({ navigation, route }) => {
           </View>
         );
       }
-    } else if (isSelected === false) {
+    } else if (checkCases() === false) {
       const newMyObjProfile = structuredClone(myObjProfile);
       let newSubtract = 0;
       newMyObjProfile.options[index].optionsList.forEach(

@@ -13,8 +13,7 @@ const OptionView = ({
   setindexOn,
 }) => {
   if (indexOn === index) {
-    const [optionLblsValues, setoptionLblsValues] = useState([]);
-    const [e, sete] = useState(item);
+    const [e, sete] = useState(structuredClone(item));
     const [testMap, settestMap] = useState(structuredClone(item.optionsList));
     var optionLbls = newProduct.options.map(function (el) {
       if (el.label !== e.label && el.label !== null) {
@@ -22,24 +21,20 @@ const OptionView = ({
       }
     });
 
-    useEffect(() => {
-      if (e.selectedCaseKey !== null) {
-        if (newProduct.options.length > 1) {
-          const local = newProduct.options.filter(
-            (localE) => localE.label == e.selectedCaseKey
-          );
-          const optionLblsValuesLocal =
-            local.length > 0 &&
-            local[0].optionsList.map(function (el) {
-              return el.label;
-            });
-          setoptionLblsValues(optionLblsValuesLocal);
-        } else {
-          newProductOptions.current[index].selectedCaseKey = null;
-          newProductOptions.current[index].selectedCaseValue = null;
-        }
-      }
-    }, [e]);
+    if (e.selectedCaseKey || e.selectedCaseValue) {
+      newProductOptions.current[index].selectedCaseList = [
+        {
+          selectedCaseKey: e.selectedCaseKey,
+          selectedCaseValue: e.selectedCaseValue,
+        },
+      ];
+      newProductOptions.current[index].selectedCaseKey = null;
+      newProductOptions.current[index].selectedCaseValue = null;
+      sete((prev) => ({
+        ...prev,
+        selectedCaseList: [{ selectedCaseKey: null, selectedCaseValue: null }],
+      }));
+    }
 
     return (
       <View>
@@ -74,7 +69,7 @@ const OptionView = ({
                   ...prevState,
                   options: newProductOptions.current,
                 }));
-                setindexOn(newProductOptions.current.length - 1);
+                setindexOn(null);
               }}
             >
               <Text
@@ -95,7 +90,7 @@ const OptionView = ({
                   ...prevState,
                   options: newProductOptions.current,
                 }));
-                setindexOn(indexOn - 1);
+                setindexOn(null);
               }}
             >
               <Text
@@ -179,19 +174,14 @@ const OptionView = ({
             label="Option Type"
             options={["Standard", "Dropdown"]}
             setValue={(val) => {
-              // sete((prevState) => ({
-              //   ...prevState,
-              //   optionType: val,
-              // }));
               if (e.optionType) {
                 newProductOptions.current[index].optionType = val;
               } else {
                 newProductOptions.current[index] = { ...e, optionType: val };
-                console.log(newProductOptions.current[index].optionType);
               }
-              setnewProduct((prevState) => ({
+              sete((prevState) => ({
                 ...prevState,
-                options: newProductOptions.current,
+                optionType: val,
               }));
             }}
             value={e.optionType}
@@ -279,39 +269,115 @@ const OptionView = ({
             }}
             style={{ marginBottom: 25 }}
           />
+          {e.selectedCaseList?.map((ifStatement, indexOfIf) => {
+            const local = newProduct.options.filter(
+              (localE) => localE.label == ifStatement.selectedCaseKey
+            );
+            const optionLblsValuesLocal =
+              local.length > 0
+                ? local[0].optionsList.map(function (el) {
+                    return el.label;
+                  })
+                : [];
+
+            return (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom: 25,
+                }}
+              >
+                <DropDown
+                  label="Show if..."
+                  options={optionLbls}
+                  setValue={(val) => {
+                    // sete((prevState) => ({
+                    //   ...prevState,
+                    //   selectedCaseKey: val,
+                    // }));
+                    // newProductOptions.current[index].selectedCaseKey = val;
+                    newProductOptions.current[index].selectedCaseList[
+                      indexOfIf
+                    ].selectedCaseKey = val;
+                    sete((prev) => ({
+                      ...prev,
+                      selectedCaseList:
+                        newProductOptions.current[index].selectedCaseList,
+                    }));
+                  }}
+                  value={ifStatement.selectedCaseKey}
+                  style={{ marginBottom: 25 }}
+                />
+                <Text>"="</Text>
+                <DropDown
+                  label="Show if..."
+                  options={optionLblsValuesLocal}
+                  setValue={(val) => {
+                    // sete((prevState) => ({
+                    //   ...prevState,
+                    //   selectedCaseValue: val,
+                    // }));
+                    // newProductOptions.current[index].selectedCaseValue = val;
+                    newProductOptions.current[index].selectedCaseList[
+                      indexOfIf
+                    ].selectedCaseValue = val;
+                    sete((prev) => ({
+                      ...prev,
+                      selectedCaseList:
+                        newProductOptions.current[index].selectedCaseList,
+                    }));
+                  }}
+                  value={ifStatement.selectedCaseValue}
+                  style={{ marginBottom: 25 }}
+                />
+                <Button
+                  title="Remove"
+                  onPress={() => {
+                    newProductOptions.current[index].selectedCaseList.splice(
+                      indexOfIf,
+                      1
+                    );
+                    sete((prev) => ({
+                      ...prev,
+                      selectedCaseList:
+                        newProductOptions.current[index].selectedCaseList,
+                    }));
+                  }}
+                />
+              </View>
+            );
+          })}
           {optionLbls.length > 1 && (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginBottom: 25,
-              }}
-            >
-              <DropDown
-                label="Show if..."
-                options={optionLbls}
-                setValue={(val) => {
-                  sete((prevState) => ({ ...prevState, selectedCaseKey: val }));
-                  newProductOptions.current[index].selectedCaseKey = val;
-                }}
-                value={e.selectedCaseKey}
-                style={{ marginBottom: 25 }}
-              />
-              <Text>"="</Text>
-              <DropDown
-                label="Show if..."
-                options={optionLblsValues}
-                setValue={(val) => {
-                  sete((prevState) => ({
-                    ...prevState,
-                    selectedCaseValue: val,
+            <Button
+              title="Add If Statement"
+              onPress={() => {
+                if (!newProductOptions.current[index].selectedCaseList) {
+                  newProductOptions.current[index].selectedCaseList = [
+                    {
+                      selectedCaseKey: null,
+                      selectedCaseValue: null,
+                    },
+                  ];
+                  sete((prev) => ({
+                    ...prev,
+                    selectedCaseList: [
+                      { selectedCaseKey: null, selectedCaseValue: null },
+                    ],
                   }));
-                  newProductOptions.current[index].selectedCaseValue = val;
-                }}
-                value={e.selectedCaseValue}
-                style={{ marginBottom: 25 }}
-              />
-            </View>
+                } else {
+                  newProductOptions.current[index].selectedCaseList.push({
+                    selectedCaseKey: null,
+                    selectedCaseValue: null,
+                  });
+                  sete((prev) => ({
+                    ...prev,
+                    selectedCaseList:
+                      newProductOptions.current[index].selectedCaseList,
+                  }));
+                }
+              }}
+            />
           )}
         </View>
       </View>
@@ -342,7 +408,7 @@ const OptionView = ({
               ...prevState,
               options: newProductOptions.current,
             }));
-            setindexOn(newProductOptions.current.length - 1);
+            setindexOn(null);
           }}
         >
           <Text
@@ -363,7 +429,7 @@ const OptionView = ({
               ...prevState,
               options: newProductOptions.current,
             }));
-            setindexOn(indexOn - 1);
+            setindexOn(null);
           }}
         >
           <Text
