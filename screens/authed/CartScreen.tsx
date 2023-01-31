@@ -613,19 +613,27 @@ export default CartScreen;
 const styles = (props) =>
   StyleSheet.create({
     container: {
-      backgroundColor: "lightgrey",
-      //flex: 1,
       height: props.height,
       width: props.width * 0.3,
       padding: 20,
+      backgroundColor: "rgba(31,35,48,1)",
+      borderTopRightRadius: 0,
+      borderBottomRightRadius: 0,
+      borderTopLeftRadius: 2,
+      borderBottomLeftRadius: 2,
+      shadowColor: "rgba(0,0,0,1)",
+      shadowOffset: {
+        width: -3,
+        height: 3,
+      },
+      elevation: 30,
+      shadowOpacity: 0.92,
+      shadowRadius: 10,
     },
     contentContainer: {
-      backgroundColor: "lightgrey",
-      //flex: 1,
-      height: props.height * 0.88,
+      height: "100%",
       justifyContent: "space-between",
       width: "100%",
-      paddingTop: 20,
     },
     totalContainer: {
       height: props.height * 0.12,
@@ -637,6 +645,7 @@ const styles = (props) =>
       width: "100%",
       flexDirection: "row",
       alignItems: "center",
+      marginBottom: 20,
     },
     iconContainer: {
       backgroundColor: "rgba(125,126,132,1)",

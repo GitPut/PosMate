@@ -62,3 +62,5 @@ export const updateStoreDetails = (storeDetails) => {
     storeDetails: storeDetails,
   });
 };
+
+export const logout = () => auth.signOut()

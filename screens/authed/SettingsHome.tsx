@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Button } from "@react-native-material/core";
+import { logout } from "state/firebaseFunctions";
 
 const SettingsHome = ({ navigation }) => {
   return (
@@ -31,6 +32,7 @@ const SettingsHome = ({ navigation }) => {
         onPress={() => navigation.navigate("Transactions")}
         style={{ marginBottom: 15 }}
       />
+      <Button title="Logout" onPress={logout} style={{ marginBottom: 15 }} />
     </View>
   );
 };
