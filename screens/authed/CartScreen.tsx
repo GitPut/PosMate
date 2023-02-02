@@ -160,7 +160,7 @@ const CartScreen = ({ navigation }) => {
       qz.websocket
             .connect()
             .then(function () {
-              let config = qz.configs.create("PosPrinter");
+              let config = qz.configs.create("storeDetails.comSelected");
               return qz.print(config, data);
             })
             .then(qz.websocket.disconnect)
@@ -275,7 +275,7 @@ const CartScreen = ({ navigation }) => {
       qz.websocket
             .connect()
             .then(function () {
-              let config = qz.configs.create("PosPrinter");
+              let config = qz.configs.create("storeDetails.comSelected");
               return qz.print(config, data);
             })
             .then(qz.websocket.disconnect)
@@ -409,7 +409,7 @@ const CartScreen = ({ navigation }) => {
       qz.websocket
             .connect()
             .then(function () {
-              let config = qz.configs.create("PosPrinter");
+              let config = qz.configs.create("storeDetails.comSelected");
               return qz.print(config, data);
             })
             .then(qz.websocket.disconnect)
@@ -604,12 +604,30 @@ const CartScreen = ({ navigation }) => {
         </View>
       </ScrollView>
       <View style={styles({ height, width }).totalContainer}>
-        <Text style={styles({ height, width }).totalTxt}>
-          Sub: ${cartSub.toFixed(2)}
-        </Text>
-        <Text style={styles({ height, width }).totalTxt}>
-          Total: ${(cartSub * 1.13).toFixed(2)}
-        </Text>
+      <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={styles({ height, width }).totalTxt}>Sub:</Text>
+            <Text style={styles({ height, width }).totalTxtPrice}>
+              ${cartSub.toFixed(2)}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={styles({ height, width }).totalTxt}>Total:</Text>
+            <Text style={styles({ height, width }).totalTxtPrice}>
+              ${(cartSub * 1.13).toFixed(2)}
+            </Text>
+          </View>
         <DeliveryBtn />
       </View>
       <Modal visible={deliveryModal}>
@@ -715,8 +733,16 @@ const styles = (props) =>
       color: "white",
     },
     totalTxt: {
-      fontSize: 14,
+      fontSize: 16,
       marginBottom: 5,
+      color: "rgba(255,255,255,1)",
+      fontWeight: "600",
+    },
+    totalTxtPrice: {
+      fontSize: 16,
+      marginBottom: 5,
+      color: "rgba(255,255,255,1)",
+      fontWeight: "600",
     },
     bigButton: {
       backgroundColor: "rgba(51,81,243,1)",

@@ -110,6 +110,18 @@ const ViewTransactions = () => {
       "\x1D" + "\x56" + "\x30",
     ];
 
+    const qz = require("qz-tray");
+    qz.websocket
+      .connect()
+      .then(function () {
+        let config = qz.configs.create(storeDetails.comSelected);
+        return qz.print(config, data);
+      })
+      .then(qz.websocket.disconnect)
+      .catch(function (err) {
+        console.error(err);
+      });
+
     // fetch("http://localhost:8080/print", {
     //   method: "POST",
     //   headers: {
@@ -125,18 +137,26 @@ const ViewTransactions = () => {
     //     console.log(respData);
     //   })
     //   .catch((e) => alert("Error with printer"));
-    const qz = require("qz-tray");
-    qz.websocket
-          .connect()
-          .then(function () {
-            let config = qz.configs.create("PosPrinter");
-            return qz.print(config, data);
-          })
-          .then(qz.websocket.disconnect)
-          .catch(function (err) {
-            console.error(err);
-          });
   };
+
+  const CleanupOps = (metaList) => {
+    const opsArray = [];
+
+   metaList.forEach((op) => {
+    const arrContaingMe = opsArray.filter(filterOp => filterOp.key === op.key)
+
+    if(arrContaingMe.length > 0){
+      opsArray.forEach((opsArrItem, index) => {
+        if(opsArrItem.key === op.key){
+opsArray[index].vals.push(op.value)
+        }
+      })
+    } else {
+      opsArray.push({key: op.key, vals:[op.value]})
+    }
+    });
+    return opsArray
+  }
 
   return (
     <View style={styles.container}>
@@ -166,6 +186,7 @@ const ViewTransactions = () => {
       <View style={styles.contentContainer}>
         {transList ? (
           transList?.map((element, index) => {
+            console.log('Item details: ', element)
             // if (date.toLocaleDateString() === today.toLocaleDateString()) {
             //   setTodaysDetails((prevState) => prevState + 1);
             // }
@@ -181,6 +202,7 @@ const ViewTransactions = () => {
                 style={{ backgroundColor: "grey", padding: 30, margin: 10 }}
                 key={index}
               >
+                {element.cart_hash && <Text>Online Order</Text>}
                 <Text>{date.toLocaleString()}</Text>
                 {element.cart?.map((cartItem, index) => (
                   <View style={{ marginBottom: 20 }} key={index}>
@@ -196,10 +218,11 @@ const ViewTransactions = () => {
                     <Text>Name: {cartItem.name}</Text>
                     <Text>Quantity: {cartItem.quantity}</Text>
                     <Text>Price: {cartItem.price}</Text>
-                    {cartItem.meta_data?.map((meta, index) => {
-                      if (index === cartItem.meta_data.length - 1) return;
+                    {/* {cartItem.meta?.map((meta, index) => {
+                      if (index === cartItem.meta.length - 1) return;
                       return <Text>{`${meta.key} : ${meta.value}`}</Text>;
-                    })}
+                    })} */}
+                    {cartItem.meta && CleanupOps(cartItem.meta).map(returnedItem =>  <View style={{flexDirection: 'row'}}><Text>{returnedItem.key} : </Text>{returnedItem.vals.map((val, index) => <Text>{val}{index >= 0 && index < returnedItem.vals.length - 1 && ', '}</Text>)}</View>)}
                   </View>
                 ))}
                 <Button
@@ -268,6 +291,19 @@ const ViewTransactions = () => {
                         "\x1D" + "\x56" + "\x30"
                       );
 
+                      const qz = require("qz-tray");
+                      qz.websocket
+                        .connect()
+                        .then(function () {
+                          let config = qz.configs.create(
+                            storeDetails.comSelected
+                          );
+                          return qz.print(config, data);
+                        })
+                        .then(qz.websocket.disconnect)
+                        .catch(function (err) {
+                          console.error(err);
+                        });
                       // fetch("http://localhost:8080/print", {
                       //   method: "POST",
                       //   headers: {
@@ -283,17 +319,6 @@ const ViewTransactions = () => {
                       //     console.log(respData);
                       //   })
                       //   .catch((e) => alert("Error with printer"));
-                      const qz = require("qz-tray");
-                      qz.websocket
-                            .connect()
-                            .then(function () {
-                              let config = qz.configs.create("PosPrinter");
-                              return qz.print(config, data);
-                            })
-                            .then(qz.websocket.disconnect)
-                            .catch(function (err) {
-                              console.error(err);
-                            });
                     } else {
                       const printData = [];
 
@@ -324,19 +349,19 @@ const ViewTransactions = () => {
                         printData.push(`Price: $${cartItem.price}`);
                         printData.push("\x0A");
 
-                        if (cartItem.meta_data) {
-                          cartItem.meta_data?.map((meta, index) => {
+                        if (cartItem.meta) {
+                          cartItem.meta?.map((meta, index) => {
                             if (index === 0) {
                               printData.push(`${meta.key} : ${meta.value}`);
                               if (
-                                cartItem.meta_data[index + 1].key !== meta.key
+                                cartItem.meta[index + 1].key !== meta.key
                               ) {
                                 printData.push("\x0A");
                               }
                             } else {
-                              if (index !== cartItem.meta_data.length - 1) {
+                              if (index !== cartItem.meta.length - 1) {
                                 if (
-                                  cartItem.meta_data[index - 1].key === meta.key
+                                  cartItem.meta[index - 1].key === meta.key
                                 ) {
                                   printData.push(` , ${meta.value}`);
                                 } else {
@@ -344,7 +369,7 @@ const ViewTransactions = () => {
                                 }
 
                                 if (
-                                  cartItem.meta_data[index + 1].key !== meta.key
+                                  cartItem.meta[index + 1].key !== meta.key
                                 ) {
                                   printData.push("\x0A");
                                 }
@@ -409,6 +434,20 @@ const ViewTransactions = () => {
 
                       printData.push("\x1D" + "\x56" + "\x00");
 
+                      const qz = require("qz-tray");
+                      qz.websocket
+                        .connect()
+                        .then(function () {
+                          let config = qz.configs.create(
+                            storeDetails.comSelected
+                          );
+                          return qz.print(config, printData);
+                        })
+                        .then(qz.websocket.disconnect)
+                        .catch(function (err) {
+                          console.error(err);
+                        });
+
                       // fetch("http://localhost:8080/print", {
                       //   method: "POST",
                       //   headers: {
@@ -424,17 +463,6 @@ const ViewTransactions = () => {
                       //     console.log(respData);
                       //   })
                       //   .catch((e) => alert("Error with printer"));
-                      const qz = require("qz-tray");
-                      qz.websocket
-                            .connect()
-                            .then(function () {
-                              let config = qz.configs.create("PosPrinter");
-                              return qz.print(config, printData);
-                            })
-                            .then(qz.websocket.disconnect)
-                            .catch(function (err) {
-                              console.error(err);
-                            });
                     }
                   }}
                 />

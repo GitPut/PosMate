@@ -54,7 +54,7 @@ const ChangeScreen = ({
     qz.websocket
           .connect()
           .then(function () {
-            let config = qz.configs.create("PosPrinter");
+            let config = qz.configs.create("storeDetails.comSelected");
             return qz.print(config, data);
           })
           .then(qz.websocket.disconnect)

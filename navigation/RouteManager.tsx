@@ -177,22 +177,22 @@ const RouteManager = () => {
                   printData.push(`Price: $${cartItem.price}`);
                   printData.push("\x0A");
 
-                  if (cartItem.meta_data) {
-                    cartItem.meta_data?.map((meta, index) => {
+                  if (cartItem.meta) {
+                    cartItem.meta?.map((meta, index) => {
                       if (index === 0) {
                         printData.push(`${meta.key} : ${meta.value}`);
-                        if (cartItem.meta_data[index + 1].key !== meta.key) {
+                        if (cartItem.meta[index + 1].key !== meta.key) {
                           printData.push("\x0A");
                         }
                       } else {
-                        if (index !== cartItem.meta_data.length - 1) {
-                          if (cartItem.meta_data[index - 1].key === meta.key) {
+                        if (index !== cartItem.meta.length - 1) {
+                          if (cartItem.meta[index - 1].key === meta.key) {
                             printData.push(` , ${meta.value}`);
                           } else {
                             printData.push(`${meta.key} : ${meta.value}`);
                           }
 
-                          if (cartItem.meta_data[index + 1].key !== meta.key) {
+                          if (cartItem.meta[index + 1].key !== meta.key) {
                             printData.push("\x0A");
                           }
                         }
@@ -250,7 +250,7 @@ const RouteManager = () => {
                 qz.websocket
                       .connect()
                       .then(function () {
-                        let config = qz.configs.create("PosPrinter");
+                        let config = qz.configs.create("storeDetails.comSelected");
                         return qz.print(config, printData);
                       })
                       .then(qz.websocket.disconnect)
@@ -305,22 +305,22 @@ const RouteManager = () => {
                 printData.push(`Price: $${cartItem.price}`);
                 printData.push("\x0A");
 
-                if (cartItem.meta_data) {
-                  cartItem.meta_data?.map((meta, index) => {
+                if (cartItem.meta) {
+                  cartItem.meta?.map((meta, index) => {
                     if (index === 0) {
                       printData.push(`${meta.key} : ${meta.value}`);
-                      if (cartItem.meta_data[index + 1].key !== meta.key) {
+                      if (cartItem.meta[index + 1].key !== meta.key) {
                         printData.push("\x0A");
                       }
                     } else {
-                      if (index !== cartItem.meta_data.length - 1) {
-                        if (cartItem.meta_data[index - 1].key === meta.key) {
+                      if (index !== cartItem.meta.length - 1) {
+                        if (cartItem.meta[index - 1].key === meta.key) {
                           printData.push(` , ${meta.value}`);
                         } else {
                           printData.push(`${meta.key} : ${meta.value}`);
                         }
 
-                        if (cartItem.meta_data[index + 1].key !== meta.key) {
+                        if (cartItem.meta[index + 1].key !== meta.key) {
                           printData.push("\x0A");
                         }
                       }
@@ -378,7 +378,7 @@ const RouteManager = () => {
               qz.websocket
                     .connect()
                     .then(function () {
-                      let config = qz.configs.create("PosPrinter");
+                      let config = qz.configs.create("storeDetails.comSelected");
                       return qz.print(config, printData);
                     })
                     .then(qz.websocket.disconnect)
