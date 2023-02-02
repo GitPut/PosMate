@@ -246,22 +246,33 @@ const RouteManager = () => {
 
                 printData.push("\x1D" + "\x56" + "\x00");
 
-                async () =>
-                  await fetch("http://localhost:8080/print", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      printData: printData,
-                      comSelected: storeDetails.comSelected,
-                    }),
-                  })
-                    .then((response) => response.json())
-                    .then((respData) => {
-                      console.log(respData);
-                    })
-                    .catch((e) => console.log("Error with printer"));
+                const qz = require("qz-tray");
+                qz.websocket
+                      .connect()
+                      .then(function () {
+                        let config = qz.configs.create("PosPrinter");
+                        return qz.print(config, printData);
+                      })
+                      .then(qz.websocket.disconnect)
+                      .catch(function (err) {
+                        console.error(err);
+                      });
+                // async () =>
+                //   await fetch("http://localhost:8080/print", {
+                //     method: "POST",
+                //     headers: {
+                //       "Content-Type": "application/json",
+                //     },
+                //     body: JSON.stringify({
+                //       printData: printData,
+                //       comSelected: storeDetails.comSelected,
+                //     }),
+                //   })
+                //     .then((response) => response.json())
+                //     .then((respData) => {
+                //       console.log(respData);
+                //     })
+                //     .catch((e) => console.log("Error with printer"));
               });
             } else {
               const e = newItems[0];
@@ -363,21 +374,32 @@ const RouteManager = () => {
 
               printData.push("\x1D" + "\x56" + "\x00");
 
-              fetch("http://localhost:8080/print", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  printData: printData,
-                  comSelected: storeDetails.comSelected,
-                }),
-              })
-                .then((response) => response.json())
-                .then((respData) => {
-                  console.log(respData);
-                })
-                .catch((e) => alert("Error with printer"));
+              const qz = require("qz-tray");
+              qz.websocket
+                    .connect()
+                    .then(function () {
+                      let config = qz.configs.create("PosPrinter");
+                      return qz.print(config, printData);
+                    })
+                    .then(qz.websocket.disconnect)
+                    .catch(function (err) {
+                      console.error(err);
+                    });
+              // fetch("http://localhost:8080/print", {
+              //   method: "POST",
+              //   headers: {
+              //     "Content-Type": "application/json",
+              //   },
+              //   body: JSON.stringify({
+              //     printData: printData,
+              //     comSelected: storeDetails.comSelected,
+              //   }),
+              // })
+              //   .then((response) => response.json())
+              //   .then((respData) => {
+              //     console.log(respData);
+              //   })
+              //   .catch((e) => alert("Error with printer"));
             }
           }
         });

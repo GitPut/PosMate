@@ -1,96 +1,80 @@
-# from flask import Flask, jsonify, request
-# from flask_cors import CORS
-# from win32 import win32gui
-# import win32ui, win32con, win32api
-# import sys
-# import configparser
-# import logging
-# from LoggerWriter import LoggerWriter
-# from pathlib import Path
-# from logging.handlers import TimedRotatingFileHandler
-# from threading import Timer
-# import shutil
-# import os
-# import win32com.client
-# import serial
-import os
-import sys
-import shutil
-import sysconfig
-import winreg
-from win32com.client import Dispatch
+import serial
 
-def get_reg(name,path):
-    # Read variable from Windows Registry
-    # From http://stackoverflow.com/a/35286642
-    try:
-        registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, path, 0,
-                                       winreg.KEY_READ)
-        value, regtype = winreg.QueryValueEx(registry_key, name)
-        winreg.CloseKey(registry_key)
-        return value
-    except WindowsError:
-        return None
+ser = serial.Serial('USB001')
+ser.write(b'\x1B\x40Hello, World!\n')
+ser.close()
 
+# import usb.core
+# import usb.util
 
-# Read location of Windows desktop folder from registry
-regName = 'Desktop'
-regPath = r'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders'
-desktopFolder = os.path.normpath(get_reg(regName,regPath))
-print(desktopFolder)
+# # find our device
+# dev = usb.core.find(idVendor=4070, idProduct=33054)
 
-# username = os.getlogin()
+# # was it found?
+# if dev is None:
+#     raise ValueError('Device not found')
 
-# currentLocation = os.getcwd()
+# # set the active configuration. With no arguments, the first
+# # configuration will be the active one
+# dev.set_configuration()
 
-# path = os.path.join('C:\\Users\\'+ username +'\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup', 'PosMate.lnk')
-# target = currentLocation + "\\main.exe"
-# icon = currentLocation + "\\main.exe"
-# shell = win32com.client.Dispatch("WScript.Shell")
-# shortcut = shell.CreateShortCut(path)
-# shortcut.Targetpath = target
-# shortcut.IconLocation = icon
-# shortcut.save()
+# # get an endpoint instance
+# cfg = dev.get_active_configuration()
+# intf = cfg[(0,0)]
 
-# # Define the MSI package name
-# msi_name = 'C:\\Users\\' + username + '\\Desktop\\PosMate.lnk'
+# ep = usb.util.find_descriptor(
+#     intf,
+#     # match the first OUT endpoint
+#     custom_match = \
+#     lambda e: \
+#         usb.util.endpoint_direction(e.bEndpointAddress) == \
+#         usb.util.ENDPOINT_OUT)
 
-# # Define the startup folder path
-# startup_folder = 'C:\\Users\\'+ username +'\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup'
+# assert ep is not None
 
-# # Copy the MSI package to the startup folder shutil.copy(msi_name, startup_folder)
-# shutil.copy(msi_name, startup_folder)
+# # write the data
+# ep.write('test')
 
-# Path("log").mkdir(parents=True, exist_ok=True)
-# formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-# handler = TimedRotatingFileHandler('log/error.log', when="midnight", 
-# interval=1, encoding='utf8')
-# handler.suffix = "%Y-%m-%d"
-# handler.setFormatter(formatter)
-# logger = logging.getLogger()
-# logger.setLevel(logging.ERROR)
-# logger.addHandler(handler)
-# sys.stdout = LoggerWriter(logging.debug)
-# sys.stderr = LoggerWriter(logging.warning)
-
-# app = Flask(__name__)
-# CORS(app)
-
-# # ser = serial.Serial('COM4')
+# # USB\VID_0FE6&PID_811E&REV_0010
 
 
-# @app.route('/print', methods=['POST'])
-# def print():
-#     data = request.get_json()
-#     ser = serial.Serial('COM4')
-#     for line in data:
-#         # ser.write(b'\x1B\x40Hello, World!\n')
-#         ser.write(str.encode(line))
-#     ser.close()
-
-#     response = jsonify({'message': 'Print Complete'})
-#     return response
+# import usb.core
+# import usb.util
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True, host='0.0.0.0', port=8080)
+# # Find the device
+# dev = usb.core.find(idVendor=4070, idProduct=33054)
+
+# if dev is None:
+#     print("Printer not found")
+# else:
+#     # Set the printer as the active configuration
+#     dev.set_configuration()
+
+#     # Send data to the printer
+#     endpoint = dev[0][(0,0)][0]
+#     dev.write(endpoint.bEndpointAddress, b'Hello, USB Printer!\n')
+
+#     # Read data from the printer
+#     data = dev.read(endpoint.bEndpointAddress, endpoint.wMaxPacketSize)
+
+#     print(data.decode())
+
+
+# # Check if the device was found
+# if dev is None:
+#     raise ValueError('Device not found')
+# print('found')
+# # # Use the first endpoint to communicate with the device
+# # if dev.is_kernel_driver_active(0):
+# #     dev.detach_kernel_driver(0)
+
+# # endpoint = dev[0][(0,0)][0]
+
+# # Write data to the device
+# dev.write(endpoint.bEndpointAddress, b'Hello USB!')
+
+# # Read data from the device
+# data = dev.read(endpoint.bEndpointAddress, endpoint.wMaxPacketSize)
+
+# print(data.tobytes().decode())
