@@ -53,14 +53,35 @@ const CartScreen = ({ navigation }) => {
     }
   }, [cart]);
 
+  useEffect(() => {
+    if (
+      !deliveryModal &&
+      !cashModal &&
+      !changeModal &&
+      !ongoingDelivery &&
+      cart.length === 0
+    ) {
+      const waitTranslist = localStorage.getItem("waitTranslist");
+      if (waitTranslist) {
+        updateTransList(waitTranslist);
+        localStorage.removeItem("waitTranslist");
+      }
+    }
+  }, [deliveryModal, cashModal, changeModal, ongoingDelivery, cart]);
+
   const AddToList = async (payload) => {
     const local = structuredClone(transList);
-    //local.unshift(payload);
-    console.log("trans: ", local);
-    console.log("Payload: ", payload);
-    local.push(payload);
-    updateTransList(local);
-    // setTransListState(local);
+
+    const waitTranslist = localStorage.getItem("waitTranslist");
+
+    if (waitTranslist) {
+      waitTranslist.push(payload);
+      updateTransList(waitTranslist);
+      localStorage.removeItem("waitTranslist");
+    } else {
+      local.push(payload);
+      updateTransList(local);
+    }
   };
 
   const Print = (method) => {
@@ -158,15 +179,15 @@ const CartScreen = ({ navigation }) => {
       //   .catch((e) => alert("Error with printer"));
       const qz = require("qz-tray");
       qz.websocket
-            .connect()
-            .then(function () {
-              let config = qz.configs.create("storeDetails.comSelected");
-              return qz.print(config, data);
-            })
-            .then(qz.websocket.disconnect)
-            .catch(function (err) {
-              console.error(err);
-            });
+        .connect()
+        .then(function () {
+          let config = qz.configs.create("storeDetails.comSelected");
+          return qz.print(config, data);
+        })
+        .then(qz.websocket.disconnect)
+        .catch(function (err) {
+          console.error(err);
+        });
 
       AddToList({
         id: Math.random().toString(36).substr(2, 9) + "-l",
@@ -273,15 +294,15 @@ const CartScreen = ({ navigation }) => {
       //   .catch((e) => alert("Error with printer"));
       const qz = require("qz-tray");
       qz.websocket
-            .connect()
-            .then(function () {
-              let config = qz.configs.create("storeDetails.comSelected");
-              return qz.print(config, data);
-            })
-            .then(qz.websocket.disconnect)
-            .catch(function (err) {
-              console.error(err);
-            });
+        .connect()
+        .then(function () {
+          let config = qz.configs.create("storeDetails.comSelected");
+          return qz.print(config, data);
+        })
+        .then(qz.websocket.disconnect)
+        .catch(function (err) {
+          console.error(err);
+        });
 
       AddToList({
         id: Math.random().toString(36).substr(2, 9) + "-l",
@@ -407,15 +428,15 @@ const CartScreen = ({ navigation }) => {
       //   .catch((e) => alert("Error with printer"));
       const qz = require("qz-tray");
       qz.websocket
-            .connect()
-            .then(function () {
-              let config = qz.configs.create("storeDetails.comSelected");
-              return qz.print(config, data);
-            })
-            .then(qz.websocket.disconnect)
-            .catch(function (err) {
-              console.error(err);
-            });
+        .connect()
+        .then(function () {
+          let config = qz.configs.create("storeDetails.comSelected");
+          return qz.print(config, data);
+        })
+        .then(qz.websocket.disconnect)
+        .catch(function (err) {
+          console.error(err);
+        });
 
       AddToList({
         id: Math.random().toString(36).substr(2, 9) + "-l",
@@ -489,7 +510,9 @@ const CartScreen = ({ navigation }) => {
   return (
     <View style={styles({ height, width }).container}>
       <View style={styles({ height, width }).cartHeader}>
-        <Text style={{ fontSize: 20, width: "50%" }}>Bill Total</Text>
+        <Text style={{ fontSize: 25, width: "50%", color: "white" }}>
+          Bill Total
+        </Text>
         <TouchableOpacity style={styles({ height, width }).iconContainer}>
           <Ionicons name="person-add" size={26} color="white" />
         </TouchableOpacity>
@@ -604,30 +627,30 @@ const CartScreen = ({ navigation }) => {
         </View>
       </ScrollView>
       <View style={styles({ height, width }).totalContainer}>
-      <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={styles({ height, width }).totalTxt}>Sub:</Text>
-            <Text style={styles({ height, width }).totalTxtPrice}>
-              ${cartSub.toFixed(2)}
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={styles({ height, width }).totalTxt}>Total:</Text>
-            <Text style={styles({ height, width }).totalTxtPrice}>
-              ${(cartSub * 1.13).toFixed(2)}
-            </Text>
-          </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={styles({ height, width }).totalTxt}>Sub:</Text>
+          <Text style={styles({ height, width }).totalTxtPrice}>
+            ${cartSub.toFixed(2)}
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={styles({ height, width }).totalTxt}>Total:</Text>
+          <Text style={styles({ height, width }).totalTxtPrice}>
+            ${(cartSub * 1.13).toFixed(2)}
+          </Text>
+        </View>
         <DeliveryBtn />
       </View>
       <Modal visible={deliveryModal}>
@@ -687,7 +710,7 @@ const styles = (props) =>
       width: "100%",
     },
     totalContainer: {
-      height: props.height * 0.12,
+      height: props.height * 0.14,
       paddingTop: 10,
     },
     cartHeader: {

@@ -16,6 +16,7 @@ import MainNonAuth from "./non-authed/MainNonAuth";
 import { auth, db } from "state/firebaseConfig";
 import Spinner from "components/Spinner";
 import { updateTransList } from "state/firebaseFunctions";
+const tz = require("moment-timezone");
 
 const RouteManager = () => {
   const userS = userState.use();
@@ -65,7 +66,7 @@ const RouteManager = () => {
         .collection("users")
         .doc(userS.uid)
         .onSnapshot((doc) => {
-          setloading(true);
+          // setloading(true);
           setUserStoreState({
             products: doc.data().products,
             categories: doc.data().categories,
@@ -79,9 +80,9 @@ const RouteManager = () => {
           if (doc.data().storeDetails) {
             setStoreDetailState(doc.data().storeDetails);
           }
-          setTimeout(() => {
-            setloading(false);
-          }, 1);
+          // setTimeout(() => {
+          //   setloading(false);
+          // }, 1);
         });
       return () => unsub();
     }
@@ -90,75 +91,222 @@ const RouteManager = () => {
   useEffect(() => {
     if (wooCredentials.useWoocommerce === true) {
       const interval = setInterval(() => {
-        const WooCommerceAPI = require("woocommerce-api");
+        try {
+          const WooCommerceAPI = require("woocommerce-api");
 
-        const WooCommerce = new WooCommerceAPI({
-          url: wooCredentials.apiUrl,
-          consumerKey: wooCredentials.ck,
-          consumerSecret: wooCredentials.cs,
-          wpAPI: true,
-          version: "wc/v1",
-        });
+          const WooCommerce = new WooCommerceAPI({
+            url: wooCredentials.apiUrl,
+            consumerKey: wooCredentials.ck,
+            consumerSecret: wooCredentials.cs,
+            wpAPI: true,
+            version: "wc/v1",
+          });
 
-        let page = 1;
-        let orders = [];
+          let page = 1;
+          let orders = [];
 
-        const getOrders = async () => {
-          const response = await WooCommerce.getAsync(
-            `orders?page=${page}&per_page=100`
-          );
-          const data = JSON.parse(response.body);
-          orders = [...orders, ...data];
-          if (data.length === 100) {
-            page++;
-            getOrders();
-          } else {
-            console.log(orders);
-          }
-        };
-
-        getOrders().then(() => {
-          const array1 = transList;
-          const array2 = orders;
-
-          const newArray = [];
-
-          array1.concat(array2).reduce(function (acc, curr) {
-            if (!acc.includes(curr.id)) {
-              acc.push(curr.id);
-              newArray.push(curr);
-            }
-            return acc;
-          }, []);
-
-          //console.log('checking')
-          // console.log('translist: ', transList.filter(e => e.id))
-          // console.log('res: ', orders)
-          // console.log('data: ', data)
-          console.log("new array: ", newArray);
-
-          if (newArray.length > transList.length) {
-            console.log("new item");
-            const newItems = structuredClone(newArray).splice(
-              transList.length,
-              newArray.length - transList.length
+          const getOrders = async () => {
+            const response = await WooCommerce.getAsync(
+              `orders?page=${page}&per_page=100`
             );
-            console.log("NEW ITEMS ", newItems);
-            updateTransList(newArray);
+            const data = JSON.parse(response.body);
+            orders = [...orders, ...data];
+            if (data.length === 100) {
+              page++;
+              getOrders();
+            } else {
+              // console.log(orders);
+            }
+          };
 
-            if (newItems.length > 1) {
-              newItems.forEach((e) => {
+          getOrders().then(() => {
+            const array1 = transList;
+            const array2 = orders;
+
+            const newArray = [];
+
+            array1.concat(array2).reduce(function (acc, curr) {
+              if (!acc.includes(curr.id)) {
+                acc.push(curr.id);
+                newArray.push(curr);
+              }
+              return acc;
+            }, []);
+
+            if (newArray.length > transList.length) {
+              const newItems = structuredClone(newArray).splice(
+                transList.length,
+                newArray.length - transList.length
+              );
+              // updateTransList(newArray);
+              localStorage.setItem("waitTranslist", JSON.stringify(newArray));
+
+              if (newItems.length > 1) {
+                newItems.forEach((e) => {
+                  const printData = [];
+                  const dateString = e.date_created;
+                  const newDate = new Date(dateString + "Z");
+                  const targetTimezone =
+                    Intl.DateTimeFormat().resolvedOptions().timeZone;
+                  const resultDate = tz(newDate)
+                    .tz(targetTimezone, true)
+                    .format("dddd, MMMM Do YYYY, h:mm:ss a z");
+
+                  printData.push(
+                    "\x1B\x40", // init
+                    "\x1B" + "\x61" + "\x31", // center align
+                    storeDetails.name,
+                    "\x0A",
+                    storeDetails.address + "\x0A",
+                    storeDetails.website + "\x0A", // text and line break
+                    storeDetails.phoneNumber + "\x0A", // text and line break
+                    resultDate + "\x0A",
+                    "\x0A",
+                    "Online Order" + "\x0A", // text and line break
+                    `Transaction # ${e.number}` + "\x0A",
+                    "\x0A",
+                    "\x0A",
+                    "\x0A",
+                    "\x1B" + "\x61" + "\x30" // left align
+                  );
+
+                  e.line_items?.map((cartItem) => {
+                    printData.push("\x0A");
+                    printData.push(`Name: ${cartItem.name}`);
+                    printData.push("\x0A");
+                    printData.push(`Quantity: ${cartItem.quantity}`);
+                    printData.push("\x0A");
+                    printData.push(`Price: $${cartItem.price}`);
+                    printData.push("\x0A");
+
+                    if (cartItem.meta) {
+                      cartItem.meta?.map((meta, index) => {
+                        if (index === 0) {
+                          printData.push(`${meta.key} : ${meta.value}`);
+                          if (cartItem.meta[index + 1].key !== meta.key) {
+                            printData.push("\x0A");
+                          }
+                        } else {
+                          if (index !== cartItem.meta.length - 1) {
+                            if (cartItem.meta[index - 1].key === meta.key) {
+                              printData.push(` , ${meta.value}`);
+                            } else {
+                              printData.push(`${meta.key} : ${meta.value}`);
+                            }
+
+                            if (cartItem.meta[index + 1].key !== meta.key) {
+                              printData.push("\x0A");
+                            }
+                          }
+                        }
+                      });
+                    } else {
+                      printData.push("\x0A" + "\x0A");
+                    }
+                  });
+
+                  printData.push("\x0A");
+                  printData.push("\x0A");
+                  printData.push(`Customer Details:`);
+                  printData.push("\x0A");
+                  printData.push(`Address: ${e.shipping.address_1}`);
+                  printData.push("\x0A");
+                  printData.push(`City: ${e.shipping.city}`);
+                  printData.push("\x0A");
+                  printData.push(`Zip/Postal Code: ${e.shipping.postcode}`);
+                  printData.push("\x0A");
+                  printData.push(`Province/State: ${e.shipping.state}`);
+                  printData.push("\x0A");
+                  printData.push(
+                    `Name: ${e.shipping.first_name} ${e.shipping.last_name}`
+                  );
+                  printData.push("\x0A");
+                  printData.push(`Phone Number: ${e.billing.phone}`);
+                  printData.push("\x0A");
+                  e.shipping_lines.map((line) =>
+                    printData.push(`Shipping Method: ${line.method_title}`)
+                  );
+                  if (e.customer_note) {
+                    printData.push(`Customer Note: ${e.customer_note}`);
+                    printData.push("\x0A");
+                  }
+                  printData.push("\x0A");
+                  printData.push("\x0A");
+
+                  printData.push(
+                    "\x0A",
+                    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+                    "\x0A" + "\x0A",
+                    "Payment Method: " +
+                      e.payment_method_title +
+                      "\x0A" +
+                      "\x0A",
+                    "Total Including (13% Tax): " +
+                      "$" +
+                      e.total +
+                      "\x0A" +
+                      "\x0A",
+                    "------------------------------------------" + "\x0A",
+                    "\x0A", // line break
+                    "\x0A", // line break
+                    "\x0A", // line break
+                    "\x0A", // line break
+                    "\x0A", // line break
+                    "\x0A" // line break
+                  );
+
+                  printData.push("\x1D" + "\x56" + "\x00");
+
+                  const qz = require("qz-tray");
+                  qz.websocket
+                    .connect()
+                    .then(function () {
+                      let config = qz.configs.create(
+                        "storeDetails.comSelected"
+                      );
+                      return qz.print(config, printData);
+                    })
+                    .then(qz.websocket.disconnect)
+                    .catch(function (err) {
+                      console.error(err);
+                    });
+                  // async () =>
+                  //   await fetch("http://localhost:8080/print", {
+                  //     method: "POST",
+                  //     headers: {
+                  //       "Content-Type": "application/json",
+                  //     },
+                  //     body: JSON.stringify({
+                  //       printData: printData,
+                  //       comSelected: storeDetails.comSelected,
+                  //     }),
+                  //   })
+                  //     .then((response) => response.json())
+                  //     .then((respData) => {
+                  //       console.log(respData);
+                  //     })
+                  //     .catch((e) => console.log("Error with printer"));
+                });
+              } else {
+                const e = newItems[0];
                 const printData = [];
+                const dateString = e.date_created;
+                const newDate = new Date(dateString + "Z");
+                const targetTimezone =
+                  Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const resultDate = tz(newDate)
+                  .tz(targetTimezone, true)
+                  .format("dddd, MMMM Do YYYY, h:mm:ss a z");
 
                 printData.push(
-                  "\x1B\x40", // init
+                  "\x1B" + "\x40", // init
                   "\x1B" + "\x61" + "\x31", // center align
                   storeDetails.name,
                   "\x0A",
                   storeDetails.address + "\x0A",
                   storeDetails.website + "\x0A", // text and line break
                   storeDetails.phoneNumber + "\x0A", // text and line break
-                  e.date_created + "\x0A",
+                  resultDate + "\x0A",
                   "\x0A",
                   "Online Order" + "\x0A", // text and line break
                   `Transaction # ${e.number}` + "\x0A",
@@ -219,9 +367,15 @@ const RouteManager = () => {
                   `Name: ${e.shipping.first_name} ${e.shipping.last_name}`
                 );
                 printData.push("\x0A");
+                printData.push(`Phone Number: ${e.billing.phone}`);
+                printData.push("\x0A");
                 e.shipping_lines.map((line) =>
                   printData.push(`Shipping Method: ${line.method_title}`)
                 );
+                if (e.customer_note) {
+                  printData.push(`Customer Note: ${e.customer_note}`);
+                  printData.push("\x0A");
+                }
                 printData.push("\x0A");
                 printData.push("\x0A");
 
@@ -232,7 +386,7 @@ const RouteManager = () => {
                   "Payment Method: " + e.payment_method_title + "\x0A" + "\x0A",
                   "Total Including (13% Tax): " +
                     "$" +
-                    (parseFloat(e.total) + parseFloat(e.total_tax)).toFixed(2) +
+                    e.total +
                     "\x0A" +
                     "\x0A",
                   "------------------------------------------" + "\x0A",
@@ -248,161 +402,36 @@ const RouteManager = () => {
 
                 const qz = require("qz-tray");
                 qz.websocket
-                      .connect()
-                      .then(function () {
-                        let config = qz.configs.create("storeDetails.comSelected");
-                        return qz.print(config, printData);
-                      })
-                      .then(qz.websocket.disconnect)
-                      .catch(function (err) {
-                        console.error(err);
-                      });
-                // async () =>
-                //   await fetch("http://localhost:8080/print", {
-                //     method: "POST",
-                //     headers: {
-                //       "Content-Type": "application/json",
-                //     },
-                //     body: JSON.stringify({
-                //       printData: printData,
-                //       comSelected: storeDetails.comSelected,
-                //     }),
-                //   })
-                //     .then((response) => response.json())
-                //     .then((respData) => {
-                //       console.log(respData);
-                //     })
-                //     .catch((e) => console.log("Error with printer"));
-              });
-            } else {
-              const e = newItems[0];
-              const printData = [];
-
-              printData.push(
-                "\x1B" + "\x40", // init
-                "\x1B" + "\x61" + "\x31", // center align
-                storeDetails.name,
-                "\x0A",
-                storeDetails.address + "\x0A",
-                storeDetails.website + "\x0A", // text and line break
-                storeDetails.phoneNumber + "\x0A", // text and line break
-                e.date_created + "\x0A",
-                "\x0A",
-                "Online Order" + "\x0A", // text and line break
-                `Transaction # ${e.number}` + "\x0A",
-                "\x0A",
-                "\x0A",
-                "\x0A",
-                "\x1B" + "\x61" + "\x30" // left align
-              );
-
-              e.line_items?.map((cartItem) => {
-                printData.push("\x0A");
-                printData.push(`Name: ${cartItem.name}`);
-                printData.push("\x0A");
-                printData.push(`Quantity: ${cartItem.quantity}`);
-                printData.push("\x0A");
-                printData.push(`Price: $${cartItem.price}`);
-                printData.push("\x0A");
-
-                if (cartItem.meta) {
-                  cartItem.meta?.map((meta, index) => {
-                    if (index === 0) {
-                      printData.push(`${meta.key} : ${meta.value}`);
-                      if (cartItem.meta[index + 1].key !== meta.key) {
-                        printData.push("\x0A");
-                      }
-                    } else {
-                      if (index !== cartItem.meta.length - 1) {
-                        if (cartItem.meta[index - 1].key === meta.key) {
-                          printData.push(` , ${meta.value}`);
-                        } else {
-                          printData.push(`${meta.key} : ${meta.value}`);
-                        }
-
-                        if (cartItem.meta[index + 1].key !== meta.key) {
-                          printData.push("\x0A");
-                        }
-                      }
-                    }
+                  .connect()
+                  .then(function () {
+                    let config = qz.configs.create("storeDetails.comSelected");
+                    return qz.print(config, printData);
+                  })
+                  .then(qz.websocket.disconnect)
+                  .catch(function (err) {
+                    console.error(err);
                   });
-                } else {
-                  printData.push("\x0A" + "\x0A");
-                }
-              });
-
-              printData.push("\x0A");
-              printData.push("\x0A");
-              printData.push(`Customer Details:`);
-              printData.push("\x0A");
-              printData.push(`Address: ${e.shipping.address_1}`);
-              printData.push("\x0A");
-              printData.push(`City: ${e.shipping.city}`);
-              printData.push("\x0A");
-              printData.push(`Zip/Postal Code: ${e.shipping.postcode}`);
-              printData.push("\x0A");
-              printData.push(`Province/State: ${e.shipping.state}`);
-              printData.push("\x0A");
-              printData.push(
-                `Name: ${e.shipping.first_name} ${e.shipping.last_name}`
-              );
-              printData.push("\x0A");
-              e.shipping_lines.map((line) =>
-                printData.push(`Shipping Method: ${line.method_title}`)
-              );
-              printData.push("\x0A");
-              printData.push("\x0A");
-
-              printData.push(
-                "\x0A",
-                "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-                "\x0A" + "\x0A",
-                "Payment Method: " + e.payment_method_title + "\x0A" + "\x0A",
-                "Total Including (13% Tax): " +
-                  "$" +
-                  (parseFloat(e.total) + parseFloat(e.total_tax)).toFixed(2) +
-                  "\x0A" +
-                  "\x0A",
-                "------------------------------------------" + "\x0A",
-                "\x0A", // line break
-                "\x0A", // line break
-                "\x0A", // line break
-                "\x0A", // line break
-                "\x0A", // line break
-                "\x0A" // line break
-              );
-
-              printData.push("\x1D" + "\x56" + "\x00");
-
-              const qz = require("qz-tray");
-              qz.websocket
-                    .connect()
-                    .then(function () {
-                      let config = qz.configs.create("storeDetails.comSelected");
-                      return qz.print(config, printData);
-                    })
-                    .then(qz.websocket.disconnect)
-                    .catch(function (err) {
-                      console.error(err);
-                    });
-              // fetch("http://localhost:8080/print", {
-              //   method: "POST",
-              //   headers: {
-              //     "Content-Type": "application/json",
-              //   },
-              //   body: JSON.stringify({
-              //     printData: printData,
-              //     comSelected: storeDetails.comSelected,
-              //   }),
-              // })
-              //   .then((response) => response.json())
-              //   .then((respData) => {
-              //     console.log(respData);
-              //   })
-              //   .catch((e) => alert("Error with printer"));
+                // fetch("http://localhost:8080/print", {
+                //   method: "POST",
+                //   headers: {
+                //     "Content-Type": "application/json",
+                //   },
+                //   body: JSON.stringify({
+                //     printData: printData,
+                //     comSelected: storeDetails.comSelected,
+                //   }),
+                // })
+                //   .then((response) => response.json())
+                //   .then((respData) => {
+                //     console.log(respData);
+                //   })
+                //   .catch((e) => alert("Error with printer"));
+              }
             }
-          }
-        });
+          });
+        } catch {
+          console.log("Error has occured with woocommerce");
+        }
       }, 5000); // this will check for new orders every minute
       return () => clearInterval(interval);
     }

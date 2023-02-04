@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Text } from "@react-native-material/core";
 import { storeDetailState, transListState } from "state/state";
+const tz = require("moment-timezone");
 
 const ViewTransactions = () => {
   const local = transListState.use();
@@ -20,29 +21,58 @@ const ViewTransactions = () => {
           if (a.date && b.date) {
             return a.date.seconds - b.date.seconds;
           } else if (a.date && b.date_created) {
-            const bDate = new Date(b.date_created).getTime() / 1000;
-            return a.date.seconds - bDate;
+            const targetTimezone =
+              Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const newDateA = new Date(a.date.seconds * 1000);
+            const newDateB = new Date(b.date_created + "Z");
+            const resultA = tz(newDateA).tz(targetTimezone, true);
+            const resultB = tz(newDateB).tz(targetTimezone, true);
+
+            return resultA.valueOf() - resultB.valueOf();
           } else if (a.date_created && b.date) {
-            const aDate = new Date(a.date_created).getTime() / 1000;
-            return aDate - b.date.seconds;
+            const targetTimezone =
+              Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const newDateA = new Date(a.date_created + "Z");
+            const newDateB = new Date(b.date.seconds * 1000);
+            const resultA = tz(newDateA).tz(targetTimezone, true);
+            const resultB = tz(newDateB).tz(targetTimezone, true);
+
+            return resultA.valueOf() - resultB.valueOf();
           } else {
-            const aDate = new Date(a.date_created).getTime() / 1000;
-            const bDate = new Date(b.date_created).getTime() / 1000;
-            return aDate - bDate;
+            const targetTimezone =
+              Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const newDateA = new Date(a.date_created + "Z");
+            const newDateB = new Date(b.date_created + "Z");
+            const resultA = tz(newDateA).tz(targetTimezone, true);
+            const resultB = tz(newDateB).tz(targetTimezone, true);
+
+            return resultA.valueOf() - resultB.valueOf();
           }
         })
         .reverse();
       settransList(local);
       const todaysReceiptValue = local.reduce((accumulator, current) => {
         let date;
+        const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         if (current.date) {
-          date = new Date(current.date.seconds * 1000);
+          const localDatePreConv = new Date(current.date.seconds * 1000);
+          date = tz(localDatePreConv).tz(targetTimezone, true);
         } else {
-          date = new Date(current.date_created);
-          // console.log("seconds is: ", date.getTime() / 1000);
+          const localDatePreConv = new Date(current.date_created + "Z");
+          date = tz(localDatePreConv).tz(targetTimezone, true);
         }
-        if (date.toLocaleDateString() === today.toLocaleDateString()) {
-          return accumulator + parseFloat(current.total);
+        // Get the current date in the desired time zone
+        let today = tz().tz(targetTimezone);
+
+        if (
+          today.year() === date.year() &&
+          today.month() === date.month() &&
+          today.dayOfYear() === date.dayOfYear()
+        ) {
+          return (
+            accumulator +
+            parseFloat(current.date ? current.total : current.total / 1.13)
+          );
         } else {
           return accumulator;
         }
@@ -142,21 +172,23 @@ const ViewTransactions = () => {
   const CleanupOps = (metaList) => {
     const opsArray = [];
 
-   metaList.forEach((op) => {
-    const arrContaingMe = opsArray.filter(filterOp => filterOp.key === op.key)
+    metaList.forEach((op) => {
+      const arrContaingMe = opsArray.filter(
+        (filterOp) => filterOp.key === op.key
+      );
 
-    if(arrContaingMe.length > 0){
-      opsArray.forEach((opsArrItem, index) => {
-        if(opsArrItem.key === op.key){
-opsArray[index].vals.push(op.value)
-        }
-      })
-    } else {
-      opsArray.push({key: op.key, vals:[op.value]})
-    }
+      if (arrContaingMe.length > 0) {
+        opsArray.forEach((opsArrItem, index) => {
+          if (opsArrItem.key === op.key) {
+            opsArray[index].vals.push(op.value);
+          }
+        });
+      } else {
+        opsArray.push({ key: op.key, vals: [op.value] });
+      }
     });
-    return opsArray
-  }
+    return opsArray;
+  };
 
   return (
     <View style={styles.container}>
@@ -186,16 +218,32 @@ opsArray[index].vals.push(op.value)
       <View style={styles.contentContainer}>
         {transList ? (
           transList?.map((element, index) => {
-            console.log('Item details: ', element)
-            // if (date.toLocaleDateString() === today.toLocaleDateString()) {
-            //   setTodaysDetails((prevState) => prevState + 1);
-            // }
+            let date;
 
-            const date = element.date
-              ? new Date(element.date.seconds * 1000)
-              : element.date_created
-              ? new Date(element.date_created)
-              : null;
+            if (element.date_created) {
+              const dateString = element.date_created;
+
+              const newDate = new Date(dateString + "Z");
+
+              const targetTimezone =
+                Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+              const result = tz(newDate)
+                .tz(targetTimezone, true)
+                .format("dddd, MMMM Do YYYY, h:mm:ss a z");
+
+              date = result;
+            } else if (element.date) {
+              const newDate = new Date(element.date.seconds * 1000);
+              const targetTimezone =
+                Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+              const result = tz(newDate)
+                .tz(targetTimezone, true)
+                .format("dddd, MMMM Do YYYY, h:mm:ss a z");
+
+              date = result;
+            }
 
             return (
               <View
@@ -203,7 +251,7 @@ opsArray[index].vals.push(op.value)
                 key={index}
               >
                 {element.cart_hash && <Text>Online Order</Text>}
-                <Text>{date.toLocaleString()}</Text>
+                <Text>{date}</Text>
                 {element.cart?.map((cartItem, index) => (
                   <View style={{ marginBottom: 20 }} key={index}>
                     <Text>Name: {cartItem.name}</Text>
@@ -218,13 +266,28 @@ opsArray[index].vals.push(op.value)
                     <Text>Name: {cartItem.name}</Text>
                     <Text>Quantity: {cartItem.quantity}</Text>
                     <Text>Price: {cartItem.price}</Text>
-                    {/* {cartItem.meta?.map((meta, index) => {
-                      if (index === cartItem.meta.length - 1) return;
-                      return <Text>{`${meta.key} : ${meta.value}`}</Text>;
-                    })} */}
-                    {cartItem.meta && CleanupOps(cartItem.meta).map(returnedItem =>  <View style={{flexDirection: 'row'}}><Text>{returnedItem.key} : </Text>{returnedItem.vals.map((val, index) => <Text>{val}{index >= 0 && index < returnedItem.vals.length - 1 && ', '}</Text>)}</View>)}
+                    {cartItem.meta &&
+                      CleanupOps(cartItem.meta).map((returnedItem) => (
+                        <View style={{ flexDirection: "row" }}>
+                          <Text>{returnedItem.key} : </Text>
+                          {returnedItem.vals.map((val, index) => (
+                            <Text>
+                              {val}
+                              {index >= 0 &&
+                                index < returnedItem.vals.length - 1 &&
+                                ", "}
+                            </Text>
+                          ))}
+                        </View>
+                      ))}
                   </View>
                 ))}
+                {element.billing && (
+                  <Text>Phone Number: {element.billing.phone}</Text>
+                )}
+                {element.customer_note?.length > 0 && (
+                  <Text>Customer Note: {element.customer_note}</Text>
+                )}
                 <Button
                   title="Print"
                   onPress={() => {
@@ -269,6 +332,16 @@ opsArray[index].vals.push(op.value)
 
                       total = total * 1.13;
                       total = total.toFixed(2);
+
+                      if (element.billing) {
+                        data.push(`Phone Number: ${element.billing.phone}`);
+                        data.push("\x0A");
+                      }
+
+                      if (element.customer_note) {
+                        data.push(`Customer Note: ${element.customer_note}`);
+                        data.push("\x0A");
+                      }
 
                       //push ending
                       data.push(
@@ -330,7 +403,7 @@ opsArray[index].vals.push(op.value)
                         storeDetails.address + "\x0A",
                         storeDetails.website + "\x0A", // text and line break
                         storeDetails.phoneNumber + "\x0A", // text and line break
-                        element.date_created + "\x0A",
+                        date + "\x0A",
                         "\x0A",
                         "Online Order" + "\x0A", // text and line break
                         `Transaction # ${element.number}` + "\x0A",
@@ -353,24 +426,18 @@ opsArray[index].vals.push(op.value)
                           cartItem.meta?.map((meta, index) => {
                             if (index === 0) {
                               printData.push(`${meta.key} : ${meta.value}`);
-                              if (
-                                cartItem.meta[index + 1].key !== meta.key
-                              ) {
+                              if (cartItem.meta[index + 1].key !== meta.key) {
                                 printData.push("\x0A");
                               }
                             } else {
                               if (index !== cartItem.meta.length - 1) {
-                                if (
-                                  cartItem.meta[index - 1].key === meta.key
-                                ) {
+                                if (cartItem.meta[index - 1].key === meta.key) {
                                   printData.push(` , ${meta.value}`);
                                 } else {
                                   printData.push(`${meta.key} : ${meta.value}`);
                                 }
 
-                                if (
-                                  cartItem.meta[index + 1].key !== meta.key
-                                ) {
+                                if (cartItem.meta[index + 1].key !== meta.key) {
                                   printData.push("\x0A");
                                 }
                               }
@@ -404,6 +471,18 @@ opsArray[index].vals.push(op.value)
                       element.shipping_lines.map((line) =>
                         printData.push(`Shipping Method: ${line.method_title}`)
                       );
+                      if (element.billing) {
+                        printData.push(
+                          `Phone Number: ${element.billing.phone}`
+                        );
+                        printData.push("\x0A");
+                      }
+                      if (element.customer_note) {
+                        printData.push(
+                          `Customer Note: ${element.customer_note}`
+                        );
+                        printData.push("\x0A");
+                      }
                       printData.push("\x0A");
                       printData.push("\x0A");
 
@@ -417,10 +496,7 @@ opsArray[index].vals.push(op.value)
                           "\x0A",
                         "Total Including (13% Tax): " +
                           "$" +
-                          (
-                            parseFloat(element.total) +
-                            parseFloat(element.total_tax)
-                          ).toFixed(2) +
+                          element.total +
                           "\x0A" +
                           "\x0A",
                         "------------------------------------------" + "\x0A",

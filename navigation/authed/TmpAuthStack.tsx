@@ -28,7 +28,11 @@ export default function TmpAuthStack() {
         component={Home}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="SettingsHome" component={SettingsHome} />
+      <Stack.Screen
+        name="SettingsHome"
+        component={SettingsHome}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="EditCategories" component={AddCategory} />
       <Stack.Screen name="EditProductList" component={EditProductList} />
       <Stack.Screen
