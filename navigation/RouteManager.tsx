@@ -120,18 +120,36 @@ const RouteManager = () => {
           };
 
           getOrders().then(() => {
-            const array1 = transList;
+            let array1 = structuredClone(transList);
             const array2 = orders;
 
             const newArray = [];
 
-            array1.concat(array2).reduce(function (acc, curr) {
-              if (!acc.includes(curr.id)) {
-                acc.push(curr.id);
-                newArray.push(curr);
+            let acc = [];
+
+            // if (Array.isArray(array1)) {
+            //   array1.concat(array2).forEach((combinedItem) => {
+            //     if (!acc.includes(combinedItem.id)) {
+            //       acc.push(combinedItem.id);
+            //       newArray.push(combinedItem);
+            //     }
+            //   });
+            // } else {
+            //   JSON.parse(array1)
+            //     .concat(array2)
+            //     .forEach((combinedItem) => {
+            //       if (!acc.includes(combinedItem.id)) {
+            //         acc.push(combinedItem.id);
+            //         newArray.push(combinedItem);
+            //       }
+            //     });
+            // }
+            array1.concat(array2).forEach((combinedItem) => {
+              if (!acc.includes(combinedItem.id)) {
+                acc.push(combinedItem.id);
+                newArray.push(combinedItem);
               }
-              return acc;
-            }, []);
+            });
 
             if (newArray.length > transList.length) {
               const newItems = structuredClone(newArray).splice(

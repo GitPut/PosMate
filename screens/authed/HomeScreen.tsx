@@ -1,6 +1,7 @@
 import {
   Dimensions,
   Image,
+  Modal,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,15 +11,21 @@ import React, { useEffect, useState } from "react";
 import MenuScreen from "./MenuScreen";
 import CartScreen from "./CartScreen";
 import { Button } from "@react-native-material/core";
-import { userStoreState } from "state/state";
+import { storeDetailState, userStoreState } from "state/state";
 import { auth } from "state/firebaseConfig";
 import Logo from "assets/dpos-logo.png";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import useWindowDimensions from "components/useWindowDimensions";
+import CompletePaymentPhoneOrder from "components/CompletePaymentPhoneOrder";
+import SettingsPasswordModal from "components/SettingsPasswordModal";
 
 const HomeScreen = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
   const catalog = userStoreState.use();
+  const storeDetails = storeDetailState.use();
+  const [ongoingOrderListModal, setongoingOrderListModal] = useState(false);
+  const [settingsPasswordModalVis, setsettingsPasswordModalVis] =
+    useState(false);
 
   const Header = () => {
     return (
@@ -38,9 +45,41 @@ const HomeScreen = ({ navigation }) => {
           source={Logo}
           style={{ width: 200, height: 160, resizeMode: "contain" }}
         />
-        <TouchableOpacity onPress={() => navigation.navigate("SettingsHome")}>
-          <Ionicons name="settings" size={32} color="white" />
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity
+            onPress={() => setongoingOrderListModal(true)}
+            style={{
+              backgroundColor: "rgba(41,44,56,1)",
+              borderRadius: 100,
+              width: 62,
+              height: 58,
+              justifyContent: "center",
+              alignItems: "center",
+              marginRight: 10,
+            }}
+          >
+            <Ionicons name="chevron-down" size={32} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            // onPress={() => navigation.navigate("SettingsHome")}
+            onPress={() =>
+              storeDetails.settingsPassword
+                ? setsettingsPasswordModalVis(true)
+                : navigation.navigate("SettingsHome")
+            }
+            style={{
+              backgroundColor: "rgba(41,44,56,1)",
+              borderRadius: 100,
+              width: 62,
+              height: 58,
+              justifyContent: "center",
+              alignItems: "center",
+              marginRight: 10,
+            }}
+          >
+            <Ionicons name="settings" size={32} color="white" />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -54,6 +93,17 @@ const HomeScreen = ({ navigation }) => {
         </View>
         <CartScreen navigation={navigation} />
       </View>
+      <Modal visible={ongoingOrderListModal} transparent={true}>
+        <CompletePaymentPhoneOrder
+          setongoingOrderListModal={setongoingOrderListModal}
+        />
+      </Modal>
+      <Modal visible={settingsPasswordModalVis} transparent={true}>
+        <SettingsPasswordModal
+          setsettingsPasswordModalVis={setsettingsPasswordModalVis}
+          navigation={navigation}
+        />
+      </Modal>
     </View>
   );
 };

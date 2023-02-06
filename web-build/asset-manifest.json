@@ -1,11 +1,13 @@
 {
   "files": {
-    "app.js": "/static/js/app.61aeb333.chunk.js",
-    "app.js.map": "/static/js/app.61aeb333.chunk.js.map",
+    "app.js": "/static/js/app.617b646d.chunk.js",
+    "app.js.map": "/static/js/app.617b646d.chunk.js.map",
     "runtime~app.js": "/static/js/runtime~app.27401809.js",
     "runtime~app.js.map": "/static/js/runtime~app.27401809.js.map",
-    "static/js/2.05acd825.chunk.js": "/static/js/2.05acd825.chunk.js",
-    "static/js/2.05acd825.chunk.js.map": "/static/js/2.05acd825.chunk.js.map",
+    "static/js/2.2fd4f433.chunk.js": "/static/js/2.2fd4f433.chunk.js",
+    "static/js/2.2fd4f433.chunk.js.map": "/static/js/2.2fd4f433.chunk.js.map",
+    "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
+    "fonts/Feather.ttf": "/./fonts/Feather.ttf",
     "fonts/Foundation.ttf": "/./fonts/Foundation.ttf",
     "fonts/Ionicons.ttf": "/./fonts/Ionicons.ttf",
     "fonts/MaterialCommunityIcons.ttf": "/./fonts/MaterialCommunityIcons.ttf",
@@ -15,15 +17,16 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
-    "static/js/2.05acd825.chunk.js.LICENSE.txt": "/static/js/2.05acd825.chunk.js.LICENSE.txt",
+    "static/js/2.2fd4f433.chunk.js.LICENSE.txt": "/static/js/2.2fd4f433.chunk.js.LICENSE.txt",
     "static/media/dpos-logo-black.png": "/static/media/dpos-logo-black.9464d239.png",
     "static/media/dpos-logo.png": "/static/media/dpos-logo.58fecdd6.png",
+    "static/media/female-customer-buying-coffee-and-placing-signature-on-tablet-1138022521-fb865c0fe2064cff824f98d141a60350.jpg": "/static/media/female-customer-buying-coffee-and-placing-signature-on-tablet-1138022521-fb865c0fe2064cff824f98d141a60350.0d1abce8.jpg",
     "static/media/pathblazer-logo.png": "/static/media/pathblazer-logo.17137072.png",
     "static/media/random-img1.png": "/static/media/random-img1.a79e0878.png"
   },
   "entrypoints": [
     "static/js/runtime~app.27401809.js",
-    "static/js/2.05acd825.chunk.js",
-    "static/js/app.61aeb333.chunk.js"
+    "static/js/2.2fd4f433.chunk.js",
+    "static/js/app.617b646d.chunk.js"
   ]
 }

@@ -10,12 +10,8 @@ const Stack = createStackNavigator();
 export default function MainNonAuth() {
   return (
     <Stack.Navigator
-      screenOptions={{
-        header: (props) => <WebHomeHeader {...props} />,
-        headerMode: "screen",
-      }}
     >
-      <Stack.Screen name="WebHome" component={WebHome} />
+      <Stack.Screen name="WebHome" component={WebHome} options={{ headerShown: false }} />
       <Stack.Screen
         name="Login"
         component={Login}

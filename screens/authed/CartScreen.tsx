@@ -523,14 +523,6 @@ const CartScreen = ({ navigation }) => {
         >
           <Foundation name="telephone" size={32} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles({ height, width }).iconContainer}
-          // onPress={() => setChangeModal(true)}
-          onPress={() => navigation.navigate("CompletePaymentPhoneOrder")}
-          disabled={cart.length > 0 || ongoingDelivery}
-        >
-          <Ionicons name="checkmark" size={32} color="white" />
-        </TouchableOpacity>
       </View>
       <ScrollView
         contentContainerStyle={styles({ height, width }).contentContainer}
@@ -622,6 +614,7 @@ const CartScreen = ({ navigation }) => {
                   Extra Info: {cartItem.extraDetails}
                 </Text>
               )}
+              <Button title="Edit" onPress={() => navigation.navigate('ProductListing', {product: cartItem.editableObj, itemIndex: index})} />
             </View>
           ))}
         </View>
@@ -653,7 +646,7 @@ const CartScreen = ({ navigation }) => {
         </View>
         <DeliveryBtn />
       </View>
-      <Modal visible={deliveryModal}>
+      <Modal visible={deliveryModal} transparent={true}>
         <DeliveryScreen
           setDeliveryModal={setDeliveryModal}
           setOngoingDelivery={setOngoingDelivery}
@@ -722,12 +715,12 @@ const styles = (props) =>
       marginBottom: 20,
     },
     iconContainer: {
-      backgroundColor: "rgba(125,126,132,1)",
-      borderRadius: 30,
-      width: 40,
-      height: 40,
       alignItems: "center",
       justifyContent: "center",
+      backgroundColor: "rgba(41,44,56,1)",
+      borderRadius: 20,
+      width: 62,
+      height: 58,
     },
     cashButton: {
       backgroundColor: "rgba(51,81,243,1)",

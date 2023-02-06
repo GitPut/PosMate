@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button } from "@react-native-material/core";
 import { logout } from "state/firebaseFunctions";
 import useWindowDimensions from "components/useWindowDimensions";
@@ -7,56 +7,54 @@ import Logo from "assets/dpos-logo.png";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import StatsScreen from "./StatsScreen";
+import EditStoreDetails from "components/EditStoreDetails";
 
 const SettingsHome = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
   const [currentSettingPage, setcurrentSettingPage] = useState(null);
 
-  const Header = () => {
-    return (
-      <View
-        style={{
-          width: "100%",
-          height: 80,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          backgroundColor: "rgba(31,35,48,1)",
-          paddingLeft: 25,
-          paddingRight: 25,
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-          <Ionicons name="chevron-back" size={32} color="white" />
-        </TouchableOpacity>
-        <Image
-          source={Logo}
-          style={{ width: 200, height: 160, resizeMode: "contain" }}
-        />
-        <TouchableOpacity
-          // onPress={() => navigation.navigate("SettingsHome")}
-          // change to call help number
-          style={{ alignItems: "center", flexDirection: "row" }}
+  const Header = () =>
+    useMemo(() => {
+      return (
+        <View
+          style={{
+            width: "100%",
+            height: 80,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backgroundColor: "rgba(31,35,48,1)",
+            paddingLeft: 25,
+            paddingRight: 25,
+          }}
         >
-          <Ionicons
-            name="help-circle-outline"
-            size={32}
-            color="rgba(85,87,94,1)"
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+            <Ionicons name="chevron-back" size={32} color="white" />
+          </TouchableOpacity>
+          <Image
+            source={Logo}
+            style={{ width: 200, height: 160, resizeMode: "contain" }}
           />
-          <Text
-            style={{
-              fontSize: 20,
-              color: "rgba(85,87,94,1)",
-              marginLeft: 10,
-              fontWeight: "600",
-            }}
+          <TouchableOpacity
+            // onPress={() => navigation.navigate("SettingsHome")}
+            // change to call help number
+            style={{ alignItems: "center", flexDirection: "row" }}
           >
-            Help
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
+            <Ionicons name="help-circle-outline" size={32} color="white" />
+            <Text
+              style={{
+                fontSize: 20,
+                color: "white",
+                marginLeft: 10,
+                fontWeight: "600",
+              }}
+            >
+              Help
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }, []);
 
   return (
     <View style={{ flex: 1, height: height, width: width }}>
@@ -81,6 +79,7 @@ const SettingsHome = ({ navigation }) => {
           }}
         >
           <TouchableOpacity
+            onPress={() => setcurrentSettingPage(null)}
             style={{
               backgroundColor: "rgba(41,44,56,1)",
               borderRadius: 100,
@@ -91,9 +90,19 @@ const SettingsHome = ({ navigation }) => {
               marginBottom: 30,
             }}
           >
-            <Ionicons name="ios-stats-chart" size={32} color="white" />
+            <Ionicons
+              name="ios-stats-chart"
+              size={32}
+              color={
+                currentSettingPage !== "productManager" &&
+                currentSettingPage !== "storeManager"
+                  ? "white"
+                  : "#777777"
+              }
+            />
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => setcurrentSettingPage("productManager")}
             style={{
               backgroundColor: "rgba(41,44,56,1)",
               borderRadius: 100,
@@ -107,10 +116,13 @@ const SettingsHome = ({ navigation }) => {
             <MaterialCommunityIcons
               name="package-variant-closed"
               size={32}
-              color="white"
+              color={
+                currentSettingPage === "productManager" ? "white" : "#777777"
+              }
             />
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => setcurrentSettingPage("storeManager")}
             style={{
               backgroundColor: "rgba(41,44,56,1)",
               borderRadius: 100,
@@ -118,9 +130,30 @@ const SettingsHome = ({ navigation }) => {
               height: 60,
               alignItems: "center",
               justifyContent: "center",
+              marginBottom: 30,
             }}
           >
-            <MaterialCommunityIcons name="store" size={32} color="white" />
+            <MaterialCommunityIcons
+              name="store"
+              size={32}
+              color={
+                currentSettingPage === "storeManager" ? "white" : "#777777"
+              }
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={logout}
+            style={{
+              backgroundColor: "rgba(41,44,56,1)",
+              borderRadius: 100,
+              width: 60,
+              height: 60,
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 30,
+            }}
+          >
+            <MaterialCommunityIcons name="logout" size={32} color="#777777" />
           </TouchableOpacity>
         </View>
         <View style={{ width: "90%", height: "100%" }}>
@@ -136,6 +169,7 @@ const SettingsHome = ({ navigation }) => {
             {/* <Text>HEllo</Text> */}
             {currentSettingPage !== "productManager" &&
               currentSettingPage !== "storeManager" && <StatsScreen />}
+            {currentSettingPage === "storeManager" && <EditStoreDetails />}
           </View>
         </View>
       </View>

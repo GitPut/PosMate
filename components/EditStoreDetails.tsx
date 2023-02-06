@@ -15,6 +15,9 @@ const EditStoreDetails = () => {
     storeDetails.deliveryPrice
   );
   const [com, setcom] = useState(storeDetails.comSelected);
+  const [settingsPassword, setsettingsPassword] = useState(
+    storeDetails.settingsPassword
+  );
 
   const handleDataUpdate = () => {
     if (name !== null && phoneNumber !== null && address !== null) {
@@ -25,6 +28,7 @@ const EditStoreDetails = () => {
         website: website,
         deliveryPrice: deliveryPrice,
         comSelected: com,
+        settingsPassword: settingsPassword
       });
       updateStoreDetails({
         name: name,
@@ -33,6 +37,7 @@ const EditStoreDetails = () => {
         website: website,
         deliveryPrice: deliveryPrice,
         comSelected: com,
+        settingsPassword: settingsPassword
       });
     }
   };
@@ -72,11 +77,17 @@ const EditStoreDetails = () => {
         style={{ margin: 10 }}
         value={deliveryPrice}
       />
-      <DropDown
-        options={["COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "What Cum?"]}
-        label="Pick Printer COM"
+      <TextInput
+        placeholder="Enter Printer Name"
+        onChangeText={(val) => setcom(val)}
+        style={{ margin: 10 }}
         value={com}
-        setValue={setcom}
+      />
+      <TextInput
+        placeholder="Enter Settings Page Password"
+        onChangeText={(val) => setsettingsPassword(val)}
+        style={{ margin: 10 }}
+        value={settingsPassword}
       />
       <Button title="Save" onPress={handleDataUpdate} style={{ margin: 10 }} />
       {/* <Spinner isModalVisible={isModalVisible} /> */}

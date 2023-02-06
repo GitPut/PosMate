@@ -1,4 +1,4 @@
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -28,7 +28,11 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.leftColorAccent}></View>
+      <View style={styles.leftColorAccent}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="chevron-back" size={32} color="white" />
+        </TouchableOpacity>
+      </View>
       <View style={styles.rightHalfContainer}>
         <View style={styles.loginContainer}>
           <Image
@@ -255,6 +259,8 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
     width: "8%",
     height: "100%",
+    alignItems: "center",
+    paddingTop: 50,
   },
   rightHalfContainer: {
     width: "92%",

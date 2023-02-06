@@ -5,17 +5,20 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, TextInput } from "@react-native-material/core";
 import ProductOptionDropDown from "./ProductOptionDropDown";
-import { addCartState } from "state/state";
+import { addCartState, cartState, setCartState } from "state/state";
 
 const ProductListing = ({ navigation, route }) => {
-  const { product } = route.params;
+  const { product, itemIndex } = route.params;
+  const cart = cartState.use();
   const myObj = product;
   const [myObjProfile, setmyObjProfile] = useState(myObj);
-  const [total, settotal] = useState(myObj.price);
-  const [extraInput, setextraInput] = useState(null);
+  const [total, settotal] = useState(myObj.total ? myObj.total : myObj.price);
+  const [extraInput, setextraInput] = useState(
+    myObj.extraDetails ? myObj.extraDetails : null
+  );
 
   const DisplayOption = ({ e, index }) => {
     const checkCases = () => {
@@ -82,40 +85,38 @@ const ProductListing = ({ navigation, route }) => {
                       newMyObjProfile.options[index].optionsList[
                         indexOfOl
                       ].selected = false;
-                      settotal((prevState) =>
-                        (
-                          parseFloat(prevState) -
-                          parseFloat(
-                            newMyObjProfile.options[index].optionsList[
-                              indexOfOl
-                            ].priceIncrease !== null
-                              ? newMyObjProfile.options[index].optionsList[
-                                  indexOfOl
-                                ].priceIncrease
-                              : 0
-                          )
-                        ).toFixed(2)
-                      );
+                      // settotal((prevState) =>
+                      //   (
+                      //     parseFloat(prevState) -
+                      //     parseFloat(
+                      //       newMyObjProfile.options[index].optionsList[
+                      //         indexOfOl
+                      //       ].priceIncrease !== null
+                      //         ? newMyObjProfile.options[index].optionsList[
+                      //             indexOfOl
+                      //           ].priceIncrease
+                      //         : 0
+                      //     )
+                      //   ).toFixed(2)
+                      //);
                     }
                   }
                 );
 
                 newMyObjProfile.options[index].optionsList[listIndex].selected =
                   true;
-                settotal((prevState) =>
-                  (
-                    parseFloat(prevState) +
-                    parseFloat(
-                      newMyObjProfile.options[index].optionsList[listIndex]
-                        .priceIncrease !== null
-                        ? newMyObjProfile.options[index].optionsList[listIndex]
-                            .priceIncrease
-                        : 0
-                    )
-                  ).toFixed(2)
-                );
-                console.log(option);
-
+                // settotal((prevState) =>
+                //   (
+                //     parseFloat(prevState) +
+                //     parseFloat(
+                //       newMyObjProfile.options[index].optionsList[listIndex]
+                //         .priceIncrease !== null
+                //         ? newMyObjProfile.options[index].optionsList[listIndex]
+                //             .priceIncrease
+                //         : 0
+                //     )
+                //   ).toFixed(2)
+                // );
                 setoptionVal(option);
                 setmyObjProfile(newMyObjProfile);
               }}
@@ -166,20 +167,6 @@ const ProductListing = ({ navigation, route }) => {
                         newMyObjProfile.options[index].optionsList[
                           listIndex
                         ].selected = false;
-                        settotal((prevState) =>
-                          (
-                            parseFloat(prevState) -
-                            parseFloat(
-                              newMyObjProfile.options[index].optionsList[
-                                listIndex
-                              ].priceIncrease !== null
-                                ? newMyObjProfile.options[index].optionsList[
-                                    listIndex
-                                  ].priceIncrease
-                                : 0
-                            )
-                          ).toFixed(2)
-                        );
                       } else {
                         if (
                           newMyObjProfile.options[index].optionsList.filter(
@@ -190,20 +177,6 @@ const ProductListing = ({ navigation, route }) => {
                           newMyObjProfile.options[index].optionsList[
                             listIndex
                           ].selected = true;
-                          settotal((prevState) =>
-                            (
-                              parseFloat(prevState) +
-                              parseFloat(
-                                newMyObjProfile.options[index].optionsList[
-                                  listIndex
-                                ].priceIncrease !== null
-                                  ? newMyObjProfile.options[index].optionsList[
-                                      listIndex
-                                    ].priceIncrease
-                                  : 0
-                              )
-                            ).toFixed(2)
-                          );
                         }
                       }
                       setmyObjProfile(newMyObjProfile);
@@ -226,29 +199,38 @@ const ProductListing = ({ navigation, route }) => {
       }
     } else if (checkCases() === false) {
       const newMyObjProfile = structuredClone(myObjProfile);
-      let newSubtract = 0;
+      // let newSubtract = 0;
       newMyObjProfile.options[index].optionsList.forEach(
         (item, indexOfItem) => {
           if (item.selected === true) {
-            newSubtract += parseFloat(
-              newMyObjProfile.options[index].optionsList[indexOfItem]
-                .priceIncrease !== null
-                ? priceIncrease
-                : 0
-            );
             newMyObjProfile.options[index].optionsList[indexOfItem].selected =
               false;
+            setmyObjProfile(newMyObjProfile);
           }
         }
       );
-      if (newSubtract > 0) {
-        settotal((prevState) =>
-          (parseFloat(prevState) - newSubtract).toFixed(2)
-        );
-        setmyObjProfile(newMyObjProfile);
-      }
+      // console.log("new subtract: ", newSubtract);
+      // if (newSubtract > 0) {
+      //   settotal((prevState) =>
+      //     (parseFloat(prevState) - newSubtract).toFixed(2)
+      //   );
+      // }
     }
     // return null;
+  };
+
+  useEffect(() => {
+    settotal(getPrice());
+  }, [myObjProfile]);
+
+  const getPrice = () => {
+    let total = parseFloat(myObjProfile.price);
+    myObjProfile.options.forEach((op) => {
+      op.optionsList
+        .filter((f) => f.selected === true)
+        .map((e) => (total += parseFloat(e.priceIncrease)));
+    });
+    return total;
   };
 
   const AddToCart = () => {
@@ -276,13 +258,33 @@ const ProductListing = ({ navigation, route }) => {
       }
     });
 
-    addCartState({
-      name: myObjProfile.name,
-      price: total,
-      description: myObj.description,
-      options: opsArray,
+    const objWTotal = {
+      ...myObjProfile,
+      total: total,
       extraDetails: extraInput,
-    });
+    };
+
+    if (itemIndex >= 0) {
+      let copyCart = structuredClone(cart);
+      copyCart[itemIndex] = {
+        name: myObjProfile.name,
+        price: total,
+        description: myObj.description,
+        options: opsArray,
+        extraDetails: extraInput,
+        editableObj: objWTotal,
+      };
+      setCartState(copyCart);
+    } else {
+      addCartState({
+        name: myObjProfile.name,
+        price: total,
+        description: myObj.description,
+        options: opsArray,
+        extraDetails: extraInput,
+        editableObj: objWTotal,
+      });
+    }
 
     navigation.goBack();
     setmyObjProfile(myObj);
@@ -308,9 +310,13 @@ const ProductListing = ({ navigation, route }) => {
         style={{ marginTop: 15, marginBottom: 15 }}
         inputStyle={{ padding: 10 }}
       />
-      <Button title="Add To Cart" onPress={AddToCart} style={styles.btn} />
       <Button
-        title="Close"
+        title={itemIndex >= 0 ? "Save" : "Add To Cart"}
+        onPress={AddToCart}
+        style={styles.btn}
+      />
+      <Button
+        title="Cancel"
         onPress={() => navigation.goBack()}
         style={styles.btn}
       />

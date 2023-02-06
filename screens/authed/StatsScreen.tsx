@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native";
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import ViewTransactions from "./ViewTransactions";
 
 const StatsScreen = () => {
   return (
@@ -11,7 +12,9 @@ const StatsScreen = () => {
         <InfoBlock label="Monthly Traffic" stat="24%" icon="trending-up" />
         <InfoBlock label="Monthly Orders" stat="226" icon="cart" />
       </ScrollView>
-      <View style={styles.detailsBlock}></View>
+      <View style={styles.detailsBlock}>
+        <ViewTransactions />
+      </View>
     </ScrollView>
   );
 };

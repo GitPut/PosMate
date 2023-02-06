@@ -79,13 +79,22 @@ const ViewTransactions = () => {
       }, 0);
       const todaysReceipts = local.reduce((accumulator, current) => {
         let date;
+        const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         if (current.date) {
-          date = new Date(current.date.seconds * 1000);
+          const localDatePreConv = new Date(current.date.seconds * 1000);
+          date = tz(localDatePreConv).tz(targetTimezone, true);
         } else {
-          date = new Date(current.date_created);
+          const localDatePreConv = new Date(current.date_created + "Z");
+          date = tz(localDatePreConv).tz(targetTimezone, true);
         }
+        // Get the current date in the desired time zone
+        let today = tz().tz(targetTimezone);
 
-        if (date.toLocaleDateString() === today.toLocaleDateString()) {
+        if (
+          today.year() === date.year() &&
+          today.month() === date.month() &&
+          today.dayOfYear() === date.dayOfYear()
+        ) {
           return accumulator + 1;
         } else {
           return accumulator;
