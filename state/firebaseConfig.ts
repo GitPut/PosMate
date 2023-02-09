@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
+import "firebase/functions";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -19,3 +20,14 @@ firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 
 export const db = firebase.firestore();
+
+export const sendEmailFunc = (data) =>
+  firebase
+    .functions()
+    .httpsCallable("sendEmailTo")(data)
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });

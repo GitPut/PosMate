@@ -8,6 +8,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import StatsScreen from "./StatsScreen";
 import EditStoreDetails from "components/EditStoreDetails";
+import ProductAndCatManager from "./ProductAndCatManager";
 
 const SettingsHome = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
@@ -170,6 +171,7 @@ const SettingsHome = ({ navigation }) => {
             {currentSettingPage !== "productManager" &&
               currentSettingPage !== "storeManager" && <StatsScreen />}
             {currentSettingPage === "storeManager" && <EditStoreDetails />}
+            {currentSettingPage === "productManager" && <ProductAndCatManager navigation={navigation} />}
           </View>
         </View>
       </View>

@@ -15,95 +15,101 @@ const ViewTransactions = () => {
   const storeDetails = storeDetailState.use();
 
   useEffect(() => {
-    if (local?.length > 0) {
-      local
-        .sort(function (a, b) {
-          if (a.date && b.date) {
-            return a.date.seconds - b.date.seconds;
-          } else if (a.date && b.date_created) {
-            const targetTimezone =
-              Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const newDateA = new Date(a.date.seconds * 1000);
-            const newDateB = new Date(b.date_created + "Z");
-            const resultA = tz(newDateA).tz(targetTimezone, true);
-            const resultB = tz(newDateB).tz(targetTimezone, true);
+    try {
+      if (local?.length > 0) {
+        local
+          .sort(function (a, b) {
+            if (a.date && b.date) {
+              return a.date.seconds - b.date.seconds;
+            } else if (a.date && b.date_created) {
+              const targetTimezone =
+                Intl.DateTimeFormat().resolvedOptions().timeZone;
+              const newDateA = new Date(a.date.seconds * 1000);
+              const newDateB = new Date(b.date_created + "Z");
+              const resultA = tz(newDateA).tz(targetTimezone, true);
+              const resultB = tz(newDateB).tz(targetTimezone, true);
 
-            return resultA.valueOf() - resultB.valueOf();
-          } else if (a.date_created && b.date) {
-            const targetTimezone =
-              Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const newDateA = new Date(a.date_created + "Z");
-            const newDateB = new Date(b.date.seconds * 1000);
-            const resultA = tz(newDateA).tz(targetTimezone, true);
-            const resultB = tz(newDateB).tz(targetTimezone, true);
+              return resultA.valueOf() - resultB.valueOf();
+            } else if (a.date_created && b.date) {
+              const targetTimezone =
+                Intl.DateTimeFormat().resolvedOptions().timeZone;
+              const newDateA = new Date(a.date_created + "Z");
+              const newDateB = new Date(b.date.seconds * 1000);
+              const resultA = tz(newDateA).tz(targetTimezone, true);
+              const resultB = tz(newDateB).tz(targetTimezone, true);
 
-            return resultA.valueOf() - resultB.valueOf();
+              return resultA.valueOf() - resultB.valueOf();
+            } else {
+              const targetTimezone =
+                Intl.DateTimeFormat().resolvedOptions().timeZone;
+              const newDateA = new Date(a.date_created + "Z");
+              const newDateB = new Date(b.date_created + "Z");
+              const resultA = tz(newDateA).tz(targetTimezone, true);
+              const resultB = tz(newDateB).tz(targetTimezone, true);
+
+              return resultA.valueOf() - resultB.valueOf();
+            }
+          })
+          .reverse();
+        settransList(local);
+        const todaysReceiptValue = local.reduce((accumulator, current) => {
+          let date;
+          const targetTimezone =
+            Intl.DateTimeFormat().resolvedOptions().timeZone;
+          if (current.date) {
+            const localDatePreConv = new Date(current.date.seconds * 1000);
+            date = tz(localDatePreConv).tz(targetTimezone, true);
           } else {
-            const targetTimezone =
-              Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const newDateA = new Date(a.date_created + "Z");
-            const newDateB = new Date(b.date_created + "Z");
-            const resultA = tz(newDateA).tz(targetTimezone, true);
-            const resultB = tz(newDateB).tz(targetTimezone, true);
-
-            return resultA.valueOf() - resultB.valueOf();
+            const localDatePreConv = new Date(current.date_created + "Z");
+            date = tz(localDatePreConv).tz(targetTimezone, true);
           }
-        })
-        .reverse();
-      settransList(local);
-      const todaysReceiptValue = local.reduce((accumulator, current) => {
-        let date;
-        const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        if (current.date) {
-          const localDatePreConv = new Date(current.date.seconds * 1000);
-          date = tz(localDatePreConv).tz(targetTimezone, true);
-        } else {
-          const localDatePreConv = new Date(current.date_created + "Z");
-          date = tz(localDatePreConv).tz(targetTimezone, true);
-        }
-        // Get the current date in the desired time zone
-        let today = tz().tz(targetTimezone);
+          // Get the current date in the desired time zone
+          let today = tz().tz(targetTimezone);
 
-        if (
-          today.year() === date.year() &&
-          today.month() === date.month() &&
-          today.dayOfYear() === date.dayOfYear()
-        ) {
-          return (
-            accumulator +
-            parseFloat(current.date ? current.total : current.total / 1.13)
-          );
-        } else {
-          return accumulator;
-        }
-      }, 0);
-      const todaysReceipts = local.reduce((accumulator, current) => {
-        let date;
-        const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        if (current.date) {
-          const localDatePreConv = new Date(current.date.seconds * 1000);
-          date = tz(localDatePreConv).tz(targetTimezone, true);
-        } else {
-          const localDatePreConv = new Date(current.date_created + "Z");
-          date = tz(localDatePreConv).tz(targetTimezone, true);
-        }
-        // Get the current date in the desired time zone
-        let today = tz().tz(targetTimezone);
+          if (
+            today.year() === date.year() &&
+            today.month() === date.month() &&
+            today.dayOfYear() === date.dayOfYear()
+          ) {
+            return (
+              accumulator +
+              parseFloat(current.date ? current.total : current.total / 1.13)
+            );
+          } else {
+            return accumulator;
+          }
+        }, 0);
+        const todaysReceipts = local.reduce((accumulator, current) => {
+          let date;
+          const targetTimezone =
+            Intl.DateTimeFormat().resolvedOptions().timeZone;
+          if (current.date) {
+            const localDatePreConv = new Date(current.date.seconds * 1000);
+            date = tz(localDatePreConv).tz(targetTimezone, true);
+          } else {
+            const localDatePreConv = new Date(current.date_created + "Z");
+            date = tz(localDatePreConv).tz(targetTimezone, true);
+          }
+          // Get the current date in the desired time zone
+          let today = tz().tz(targetTimezone);
 
-        if (
-          today.year() === date.year() &&
-          today.month() === date.month() &&
-          today.dayOfYear() === date.dayOfYear()
-        ) {
-          return accumulator + 1;
-        } else {
-          return accumulator;
-        }
-      }, 0);
-      setTodaysDetails({
-        todaysReceiptValue: todaysReceiptValue.toFixed(2),
-        todaysReceipts: todaysReceipts,
-      });
+          if (
+            today.year() === date.year() &&
+            today.month() === date.month() &&
+            today.dayOfYear() === date.dayOfYear()
+          ) {
+            return accumulator + 1;
+          } else {
+            return accumulator;
+          }
+        }, 0);
+        setTodaysDetails({
+          todaysReceiptValue: todaysReceiptValue.toFixed(2),
+          todaysReceipts: todaysReceipts,
+        });
+      }
+    } catch {
+      console.log("Error Occured when sorting dates");
     }
   }, [local]);
 

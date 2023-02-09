@@ -127,29 +127,29 @@ const RouteManager = () => {
 
             let acc = [];
 
-            // if (Array.isArray(array1)) {
-            //   array1.concat(array2).forEach((combinedItem) => {
-            //     if (!acc.includes(combinedItem.id)) {
-            //       acc.push(combinedItem.id);
-            //       newArray.push(combinedItem);
-            //     }
-            //   });
-            // } else {
-            //   JSON.parse(array1)
-            //     .concat(array2)
-            //     .forEach((combinedItem) => {
-            //       if (!acc.includes(combinedItem.id)) {
-            //         acc.push(combinedItem.id);
-            //         newArray.push(combinedItem);
-            //       }
-            //     });
-            // }
-            array1.concat(array2).forEach((combinedItem) => {
-              if (!acc.includes(combinedItem.id)) {
-                acc.push(combinedItem.id);
-                newArray.push(combinedItem);
-              }
-            });
+            if (Array.isArray(array1)) {
+              array1.concat(array2).forEach((combinedItem) => {
+                if (!acc.includes(combinedItem.id)) {
+                  acc.push(combinedItem.id);
+                  newArray.push(combinedItem);
+                }
+              });
+            } else {
+              JSON.parse(array1)
+                .concat(array2)
+                .forEach((combinedItem) => {
+                  if (!acc.includes(combinedItem.id)) {
+                    acc.push(combinedItem.id);
+                    newArray.push(combinedItem);
+                  }
+                });
+            }
+            // array1.concat(array2).forEach((combinedItem) => {
+            //   if (!acc.includes(combinedItem.id)) {
+            //     acc.push(combinedItem.id);
+            //     newArray.push(combinedItem);
+            //   }
+            // });
 
             if (newArray.length > transList.length) {
               const newItems = structuredClone(newArray).splice(
@@ -455,8 +455,29 @@ const RouteManager = () => {
     }
   }, [wooCredentials, transList]);
 
+  const linking = {
+    prefixes: [
+      /* your linking prefixes */
+    ],
+    config: {
+      screens: {
+        Home: "",
+        Features: "features",
+        "About Us": "about-us",
+        Pricing: "pricing",
+        Faqs: "faqs",
+        Contact: "contact",
+        Login: "log-in",
+        Signup: "sign-up",
+        "Reset Password": "reset-password",
+        "Latest Updates": "latest-updates",
+        "Not Found": "*",
+      },
+    },
+  };
+
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       {loading ? (
         <Spinner isModalVisible={true} />
       ) : (

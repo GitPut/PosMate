@@ -177,17 +177,17 @@ const CartScreen = ({ navigation }) => {
       //     console.log(respData);
       //   })
       //   .catch((e) => alert("Error with printer"));
-      const qz = require("qz-tray");
-      qz.websocket
-        .connect()
-        .then(function () {
-          let config = qz.configs.create("storeDetails.comSelected");
-          return qz.print(config, data);
-        })
-        .then(qz.websocket.disconnect)
-        .catch(function (err) {
-          console.error(err);
-        });
+      // const qz = require("qz-tray");
+      // qz.websocket
+      //   .connect()
+      //   .then(function () {
+      //     let config = qz.configs.create("storeDetails.comSelected");
+      //     return qz.print(config, data);
+      //   })
+      //   .then(qz.websocket.disconnect)
+      //   .catch(function (err) {
+      //     console.error(err);
+      //   });
 
       AddToList({
         id: Math.random().toString(36).substr(2, 9) + "-l",
@@ -292,17 +292,17 @@ const CartScreen = ({ navigation }) => {
       //     console.log(respData);
       //   })
       //   .catch((e) => alert("Error with printer"));
-      const qz = require("qz-tray");
-      qz.websocket
-        .connect()
-        .then(function () {
-          let config = qz.configs.create("storeDetails.comSelected");
-          return qz.print(config, data);
-        })
-        .then(qz.websocket.disconnect)
-        .catch(function (err) {
-          console.error(err);
-        });
+      // const qz = require("qz-tray");
+      // qz.websocket
+      //   .connect()
+      //   .then(function () {
+      //     let config = qz.configs.create("storeDetails.comSelected");
+      //     return qz.print(config, data);
+      //   })
+      //   .then(qz.websocket.disconnect)
+      //   .catch(function (err) {
+      //     console.error(err);
+      //   });
 
       AddToList({
         id: Math.random().toString(36).substr(2, 9) + "-l",
@@ -426,17 +426,17 @@ const CartScreen = ({ navigation }) => {
       //     console.log(respData);
       //   })
       //   .catch((e) => alert("Error with printer"));
-      const qz = require("qz-tray");
-      qz.websocket
-        .connect()
-        .then(function () {
-          let config = qz.configs.create("storeDetails.comSelected");
-          return qz.print(config, data);
-        })
-        .then(qz.websocket.disconnect)
-        .catch(function (err) {
-          console.error(err);
-        });
+      // const qz = require("qz-tray");
+      // qz.websocket
+      //   .connect()
+      //   .then(function () {
+      //     let config = qz.configs.create("storeDetails.comSelected");
+      //     return qz.print(config, data);
+      //   })
+      //   .then(qz.websocket.disconnect)
+      //   .catch(function (err) {
+      //     console.error(err);
+      //   });
 
       AddToList({
         id: Math.random().toString(36).substr(2, 9) + "-l",

@@ -1,21 +1,9 @@
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { View, Text } from "react-native";
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  TextInput,
-  IconButton,
-  Button,
-  Text,
-  Switch,
-} from "@react-native-material/core";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { signIn } from "state/firebaseFunctions";
-import Img from "assets/random-img1.png";
-import Logo from "assets/dpos-logo-black.png";
-import CustomButton from "components/CustomButton";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Button } from "@react-native-material/core";
 
-const Login = ({ navigation }) => {
+const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [showPassword, setShowPassword] = useState(false);
@@ -27,268 +15,156 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.leftColorAccent}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={32} color="white" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.rightHalfContainer}>
-        <View style={styles.loginContainer}>
-          <Image
-            source={Logo}
-            style={{ width: 250, height: 160, resizeMode: "contain" }}
-          />
-          <Text
-            style={{
-              marginBottom: 35,
-              color: "rgba(155,155,155,1)",
-              fontSize: 20,
-            }}
-          >
-            Online E-Transaction Point-of-Sale Software
-          </Text>
-          <Text
-            style={{
-              color: "rgba(0,0,0,1)",
-              fontSize: 20,
-              marginBottom: 10,
-              fontWeight: "600",
-              marginLeft: "3%",
-            }}
-          >
-            Login
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              backgroundColor: "rgba(241,241,241,1)",
-              borderRadius: 30,
-              height: 60,
-              marginBottom: 25,
-            }}
-          >
-            <View
-              style={{
-                width: 60,
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "rgba(218,216,216,1)",
-                borderRadius: 30,
-                height: 60,
-              }}
-            >
-              <Ionicons
-                name="person-circle-outline"
-                size={32}
-                color="rgba(71,106,229,1)"
-              />
-            </View>
-            <TextInput
-              placeholder="Enter email"
-              style={{ width: "80%" }}
-              inputStyle={{ backgroundColor: "rgba(241,241,241,1)" }}
-              value={email}
-              onChangeText={(val) => setEmail(val)}
-              autoCorrect={false}
-              textContentType={"emailAddress"}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              backgroundColor: "rgba(241,241,241,1)",
-              borderRadius: 30,
-              height: 60,
-              marginBottom: 25,
-            }}
-          >
-            <View
-              style={{
-                width: 60,
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "rgba(218,216,216,1)",
-                borderRadius: 30,
-                height: 60,
-              }}
-            >
-              <Ionicons
-                name="finger-print"
-                size={32}
-                color="rgba(71,106,229,1)"
-              />
-            </View>
-            <TextInput
-              placeholder="Enter Password"
-              style={{ width: "75%" }}
-              inputStyle={{ backgroundColor: "rgba(241,241,241,1)" }}
-              value={password}
-              onChangeText={(val) => setPassword(val)}
-              secureTextEntry={!showPassword}
-            />
-            <View
-              style={{
-                width: 60,
-                alignItems: "center",
-                justifyContent: "center",
-                height: 60,
-              }}
-            >
-              {!showPassword ? (
-                <Ionicons
-                  name="eye"
-                  size={32}
-                  color="rgba(74,74,74,1)"
-                  onPress={() => setShowPassword((prev) => !prev)}
+    <div className="w-users-userformpagewrap page-wrapper login">
+      <div
+        data-animation="default"
+        data-collapse="medium"
+        data-duration={400}
+        data-easing="ease"
+        data-easing2="ease"
+        role="banner"
+        className="section-alt-nav w-nav"
+      >
+        <div className="padding-global">
+          <div className="container-large w-container">
+            <div className="alt-nav-component">
+              <div
+                id="w-node-dae1ef9d-0ebc-e93a-0f27-92678c58f5ea-2bf51074"
+                className="alt-nav-item-wrapper"
+              >
+                <a
+                  href="/"
+                  className="button is-text text-color-black w-inline-block"
+                >
+                  <div className="icon-1x1-xsmall w-embed">
+                    <svg
+                      width="100%"
+                      height="100%"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M16.6673 9.16658H6.52565L11.184 4.50825L10.0007 3.33325L3.33398 9.99992L10.0007 16.6666L11.1757 15.4916L6.52565 10.8333H16.6673V9.16658Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <div>Back</div>
+                </a>
+              </div>
+              <a
+                href="/"
+                className="nav-logo-link w-nav-brand"
+                aria-label="home"
+              >
+                <img
+                  src={require('assets/dpos-logo-black.png')}
+                  loading="lazy"
+                  alt=""
+                  className="nav-logo"
                 />
-              ) : (
-                <Ionicons
-                  name="eye-off"
-                  size={32}
-                  color="rgba(74,74,74,1)"
-                  onPress={() => setShowPassword((prev) => !prev)}
-                />
-              )}
-            </View>
-          </View>
-          <CustomButton title="Login" onPress={attemptSignIn} />
-          <Text
-            style={{
-              color: "rgba(0,0,0,1)",
-              fontSize: 15,
-              marginBottom: 10,
-              fontWeight: "400",
-              marginLeft: "3%",
-              marginTop: 25,
-            }}
-          >
-            Or{" "}
-            <Text
-              style={{ color: "blue" }}
-              onPress={() => navigation.navigate("Register")}
-            >
-              Register
-            </Text>
-          </Text>
-        </View>
-        <Image source={Img} style={styles.img} />
-      </View>
-      {/* <SafeAreaView style={styles.safeareaContainer}>
-        <Image
-          source={require("assets/pathblazer-logo.png")}
-          style={styles.logo}
-        />
-        <View style={styles.innerContainer}>
-          <TextInput
-            label="Email"
-            variant="outlined"
-            style={{ width: "100%", marginBottom: 10 }}
-            value={email}
-            onChangeText={(val) => setEmail(val)}
-            autoCorrect={false}
-            textContentType={"emailAddress"}
-          />
-          <TextInput
-            label="Password"
-            variant="outlined"
-            trailing={(props) => (
-              <IconButton
-                onPress={() => setShowPassword((prevState) => !prevState)}
-                icon={(props) => <Icon name="eye" {...props} />}
-                {...props}
-              />
-            )}
-            value={password}
-            onChangeText={(val) => setPassword(val)}
-            secureTextEntry={!showPassword}
-            style={{ width: "100%" }}
-          />
-        </View>
-        <View style={styles.innerContainer}>
-          <Button
-            title="Login"
-            uppercase={false}
-            contentContainerStyle={{
-              width: "100%",
-              height: 60,
-              backgroundColor: "black",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            style={{ marginBottom: 10 }}
-            onPress={attemptSignIn}
-          />
-          <Text variant="subtitle1" style={{ marginBottom: 10 }}>
-            Or
-          </Text>
-          <Button
-            title="Register"
-            uppercase={false}
-            contentContainerStyle={{
-              width: "100%",
-              height: 60,
-              backgroundColor: "grey",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onPress={() => navigation.navigate("Register")}
-          />
-        </View>
-      </SafeAreaView> */}
-    </View>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="w-nav-overlay" data-wf-ignore id="w-nav-overlay-0" />
+      </div>
+      <main className="main-wrapper">
+        <section className="section-login">
+          <div className="padding-global">
+            <div className="max-width-small align-center">
+              <div className="w-users-userloginformwrapper login-form-block">
+                <form
+                  className="login-form"
+                  data-wf-user-form-type="login"
+                  data-wf-user-form-redirect="/"
+                  method="post"
+                >
+                  <div className="w-users-userformheader login-form-header">
+                    <h2 className="heading-style-h4">Log in</h2>
+                  </div>
+                  <div className="padding-bottom padding-large" />
+                  <div className="login-item-wrapper">
+                    <label htmlFor="wf-log-in-email" className="form-label">
+                      Email address
+                    </label>
+                    <input
+                      type="email"
+                      maxLength={256}
+                      onChange={(event) => setEmail(event.target.value)}
+                      name="Email"
+                      id="wf-log-in-email"
+                      className="form-input is-last w-input"
+                      required
+                      data-wf-user-form-input-type="email"
+                    />
+                  </div>
+                  <div className="padding-bottom padding-small" />
+                  <div className="login-item-wrapper">
+                    <label htmlFor="wf-log-in-password" className="form-label">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      maxLength={256}
+                      onChange={(event) => setPassword(event.target.value)}
+                      name="Password"
+                      id="wf-log-in-password"
+                      className="form-input is-last w-input"
+                      required
+                      data-wf-user-form-input-type="password"
+                    />
+                  </div>
+                  <div className="padding-bottom padding-large" />
+                  {/* <button
+                    className="w-users-userformbutton button w-button"
+                    onClick={attemptSignIn}
+                  >
+                    Log In
+                  </button> */}
+                  <Button title="Login" onPress={attemptSignIn} />
+                  <div className="padding-bottom padding-small" />
+                  <div className="form-footer-wrapper">
+                    <div className="w-users-userformfooter form-footer-content-wrapper">
+                      <span className="text-size-regular">
+                        Don't have an account?
+                      </span>
+                      <a href="/sign-up" className="form-link">
+                        Sign Up
+                      </a>
+                    </div>
+                    <a
+                      href="/reset-password"
+                      className="form-link text-align-center"
+                    >
+                      Forgot password
+                    </a>
+                  </div>
+                </form>
+                <div
+                  style={{ display: "none" }}
+                  data-wf-user-form-error="true"
+                  className="w-users-userformerrorstate error-message w-form-fail"
+                >
+                  <div
+                    className="user-form-error-msg"
+                    wf-login-form-general-error-error="We're having trouble logging you in. Please try again, or contact us if you continue to have problems."
+                    wf-login-form-invalid-email_or_password-error="Invalid email or password. Please try again."
+                  >
+                    We're having trouble logging you in. Please try again, or
+                    contact us if you continue to have problems.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="utility-graphic-circle" />
+          <div className="utility-graphic-circle-2" />
+        </section>
+      </main>
+    </div>
   );
 };
 
 export default Login;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    height: "100%",
-    width: "100%",
-    backgroundColor: "white",
-    flexWrap: "wrap",
-    flexDirection: "row",
-  },
-  leftColorAccent: {
-    backgroundColor: "rgba(31,35,48,1)",
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
-    width: "8%",
-    height: "100%",
-    alignItems: "center",
-    paddingTop: 50,
-  },
-  rightHalfContainer: {
-    width: "92%",
-    height: "100%",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingLeft: 70,
-  },
-  loginContainer: {
-    padding: 20,
-    shadowColor: "rgba(0,0,0,1)",
-    shadowOffset: {
-      height: 0,
-      width: 3,
-    },
-    elevation: 150,
-    shadowOpacity: 0.22,
-    shadowRadius: 50,
-    borderRadius: 30,
-    backgroundColor: "rgba(255,255,255,1)",
-    width: 518,
-    height: 676,
-  },
-  img: {
-    height: 768,
-    width: 541,
-    resizeMode: "contain",
-  },
-});

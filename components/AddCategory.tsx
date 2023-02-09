@@ -18,7 +18,7 @@ const AddCategory = () => {
 
   function handleDataUpdate() {
     updateData([...catalog.categories, categoryName], catalog.products);
-    setisModalVisible(true);
+    // setisModalVisible(true);
   }
 
   function handleRemoveCategory(index) {
@@ -26,7 +26,7 @@ const AddCategory = () => {
     localCatalog.categories.splice(index, 1);
 
     updateData(localCatalog.categories, localCatalog.products);
-    setisModalVisible(true);
+    // setisModalVisible(true);
   }
 
   return (

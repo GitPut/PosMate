@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "screens/authed/HomeScreen";
-import Register from "screens/non-authed/Register";
+import Register from "screens/non-authed/Register.old";
 import EditProductList from "components/EditProductList";
 import AddProduct from "components/TestAdd";
 import WoocommerceSettings from "components/WoocommerceSettings";

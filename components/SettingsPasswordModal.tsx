@@ -14,13 +14,18 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import useWindowDimensions from "./useWindowDimensions";
+import { useFonts } from "expo-font";
 
 const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
   const { height, width } = useWindowDimensions();
-  const [password, setpassword] = useState(null);
+  const [password, setpassword] = useState("");
   const storeDetails = storeDetailState.use();
   const [inccorectPass, setinccorectPass] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useFonts({
+    Password: require("/assets/password.ttf"),
+  });
 
   return (
     <>
@@ -106,13 +111,22 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
           <TextInput
             placeholder="Enter Password"
             style={{ width: "60%" }}
-            inputStyle={{ backgroundColor: "rgba(241,241,241,1)" }}
+            inputStyle={[
+              { backgroundColor: "rgba(241,241,241,1)" },
+              !showPassword &&
+                password.length !== 0 && { fontFamily: "Password" },
+            ]}
             value={password}
             onChangeText={(val) => setpassword(val)}
-            secureTextEntry={!showPassword}
-            autoComplete={false}
+            textContentType="none"
             autoCorrect={false}
           />
+          {/* <input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(event) => setpassword(event.target.value)}
+            onFocus={() => setShowPassword(false)}
+          /> */}
           <View
             style={{
               width: 60,

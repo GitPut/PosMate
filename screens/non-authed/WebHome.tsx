@@ -1,15 +1,25 @@
 // import Main from "./WebHomeFiles/index.html";
 import React, { Component } from "react";
-import { StyleSheet, ScrollView, View, Text, Image } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import MaterialButtonViolet from "components/MaterialButtonViolet";
 import FeatureItem from "components/FeatureItem";
 import MaterialButtonPrimary from "components/MaterialButtonPrimary";
 import PlanItem from "components/PlanItem";
-import Index from "../PagesTest/index.html";
+import { LinearGradient } from "expo-linear-gradient";
+import useWindowDimensions from "components/useWindowDimensions";
+import Card from "components/Card";
+import img1 from "assets/backend.png";
 
 const WebHome = () => {
+  const { height, width } = useWindowDimensions();
   return (
-    <div dangerouslySetInnerHTML={{__html: Index}} />
     // <View>
     //   <View style={styles.container}>
     //     <View style={styles.welcomeContainer}>
@@ -92,6 +102,1812 @@ const WebHome = () => {
     //     </Text>
     //   </View>
     // </View>
+    // <View style={{ width: "100%", height: height }}>
+    //   <View
+    //     style={{
+    //       backgroundColor: "#175cd3",
+    //       width: "100%",
+    //       height: 1000,
+    //     }}
+    //   >
+    //     <LinearGradient
+    //       // Background Linear Gradient
+    //       colors={["#264899", "transparent"]}
+    //       style={{
+    //         width: 600,
+    //         height: 600,
+    //         borderRadius: 600 / 2,
+    //         position: "absolute",
+    //         top: -100,
+    //         left: -100,
+    //       }}
+    //     />
+    //     <LinearGradient
+    //       // Background Linear Gradient
+    //       colors={["#0F5DBE", "#2770dd"]}
+    //       style={{
+    //         width: 600,
+    //         height: 600,
+    //         borderRadius: 600 / 2,
+    //         position: "absolute",
+    //         right: 0,
+    //         bottom: 0,
+    //       }}
+    //     />
+    //     <View
+    //       style={{
+    //         width: "100%",
+    //         height: 600,
+    //         position: "absolute",
+    //         top: 0,
+    //         left: 0,
+    //         justifyContent: "center",
+    //         alignItems: "center",
+    //       }}
+    //     >
+    //       <Text
+    //         style={{
+    //           color: "rgba(255,255,255,1)",
+    //           fontSize: 65,
+    //           fontWeight: "700",
+    //           textAlign: "center",
+    //           width: "95%",
+    //           marginBottom: 35,
+    //         }}
+    //       >
+    //         Simplify. Streamline. Succeed. Sustain.
+    //       </Text>
+    //       <Text
+    //         style={{
+    //           color: "rgba(255,255,255,1)",
+    //           fontSize: 25,
+    //           textAlign: "center",
+    //           width: "50%",
+    //           lineHeight: 40,
+    //         }}
+    //       >
+    //         Our POS software combines the latest technology with a user-friendly
+    //         interface to make running your business a breeze
+    //       </Text>
+    //       <View
+    //         style={{
+    //           flexDirection: "row",
+    //           alignItems: "center",
+    //           marginTop: 50,
+    //         }}
+    //       >
+    //         <TouchableOpacity style={styles.btnContainer}>
+    //           <Text style={styles.getStarted}>Get started</Text>
+    //         </TouchableOpacity>
+    //         <TouchableOpacity style={styles.btnContainer2}>
+    //           <Text style={styles.findOut}>Find out more</Text>
+    //         </TouchableOpacity>
+    //       </View>
+    //     </View>
+    //   </View>
+    //   <View style={styles.section2Container}>
+    //     <Image
+    //       source={img1}
+    //       style={{
+    //         height: 702,
+    //         width: "90%",
+    //         resizeMode: "cover",
+    //         position: "absolute",
+    //         top: -450,
+    //         borderWidth: 8,
+    //         borderColor: "rgba(0,0,0,0.1)",
+    //         borderRadius: 6,
+    //       }}
+    //     />
+    //     <Text style={styles.whyUs}>Why us</Text>
+    //     <Text style={styles.keyB}>Key benefits of using Divine Pos</Text>
+    //     <Text style={styles.p2}>
+    //       We’re more than a productivity tool. Customize Gem to work the way you
+    //       do. There are no limitations.
+    //     </Text>
+    //     <View
+    //       style={{
+    //         flexDirection: "row",
+    //         alignItems: "stretch",
+    //         flexWrap: "wrap",
+    //         width: "80%",
+    //         justifyContent: "space-evenly",
+    //         height: 500,
+    //         marginTop: 50,
+    //       }}
+    //     >
+    //       <Card
+    //         icon="lightning-bolt"
+    //         lbl="Keep tasks in one place"
+    //         description="Save time and stay on schedule by delegating and tracking tasks. Say goodbye to losing work."
+    //       />
+    //       <Card
+    //         icon="lightning-bolt"
+    //         lbl="Keep tasks in one place"
+    //         description="Save time and stay on schedule by delegating and tracking tasks. Say goodbye to losing work."
+    //       />
+    //       <Card
+    //         icon="lightning-bolt"
+    //         lbl="Keep tasks in one place"
+    //         description="Save time and stay on schedule by delegating and tracking tasks. Say goodbye to losing work."
+    //       />
+    //       <Card
+    //         icon="lightning-bolt"
+    //         lbl="Keep tasks in one place"
+    //         description="Save time and stay on schedule by delegating and tracking tasks. Say goodbye to losing work."
+    //       />
+    //       <Card
+    //         icon="lightning-bolt"
+    //         lbl="Keep tasks in one place"
+    //         description="Save time and stay on schedule by delegating and tracking tasks. Say goodbye to losing work."
+    //       />
+    //       <Card
+    //         icon="lightning-bolt"
+    //         lbl="Keep tasks in one place"
+    //         description="Save time and stay on schedule by delegating and tracking tasks. Say goodbye to losing work."
+    //       />
+    //     </View>
+    //   </View>
+    //   <View style={styles.freeTrialContainer}>
+    //     <Text style={styles.tryDivinePosToday}>Try Divine Pos today</Text>
+    //     <TouchableOpacity style={styles.btnContainer3}>
+    //       <Text style={styles.findOut}>Try Our Free Demo</Text>
+    //     </TouchableOpacity>
+    //   </View>
+    //   <View style={styles.footerContainer}>
+    //     <View style={styles.innerContainer}>
+    //       <Text style={styles.divinePos2023}>© Divine Pos 2023</Text>
+    //     </View>
+    //   </View>
+    // </View>
+    <div className="page-wrapper">
+      <main className="main-wrapper">
+        <div className="section-wrapper">
+          <header className="section-home-hero">
+            <div className="padding-global">
+              <div className="container-medium">
+                <div className="padding-bottom padding-xxhuge" />
+                <div className="home-hero-section-title">
+                  <div className="home-hero-header-component">
+                    <div className="home-hero-tagline-wrapper hide-mobile-portrait">
+                      <a
+                        href="/latest-updates"
+                        className="badge-group-link w-inline-block"
+                      >
+                        <div
+                          id="w-node-c81f70c0-31ca-790c-b31b-faab7d4ee785-a9891d7f"
+                          className="badge-group-badge"
+                        >
+                          <div className="text-color-primary-700">
+                            New Release
+                          </div>
+                        </div>
+                        <div className="badge-group-text-wrapper">
+                          <div className="text-size-small text-weight-medium">
+                            We’ve just released a new feature
+                          </div>
+                          <div className="icon-1x1-xsmall text-color-white w-embed">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="100%"
+                              height="100%"
+                              fill="none"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="M10.5 3.333 9.327 4.508l4.65 4.659H3.834v1.666h10.142l-4.65 4.659 1.175 1.175L17.167 10l-6.666-6.667Z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                    <div className="padding-bottom padding-small hide-mobile-portrait" />
+                    <h1 className="heading-style-h1 text-color-white">
+                      Place where you organize
+                    </h1>
+                    <div className="padding-bottom padding-medium" />
+                    <div className="max-width-large align-center">
+                      <p className="text-size-large text-color-white">
+                        Make sure that your team has access to all the
+                        information it needs—no matter where its members are
+                        located.
+                      </p>
+                    </div>
+                    <div className="padding-bottom padding-xlarge" />
+                    <div className="button-wrapper is-center">
+                      <a
+                        href="/sign-up"
+                        className="button is-secondary w-button"
+                      >
+                        Get started
+                      </a>
+                      <a
+                        href="/features"
+                        className="button is-tertiary w-button"
+                      >
+                        Find out more
+                      </a>
+                    </div>
+                  </div>
+                  <div className="padding-bottom padding-xxlarge" />
+                  <div className="home-hero-customer-wrapper">
+                    <div className="avatar-group-component">
+                      <div
+                        id="w-node-e58e24ad-2cfd-b00c-2af8-4c46ed5f64ae-a9891d7f"
+                        className="avatar is-group-item"
+                      >
+                        <img
+                          src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180f5885d50cf_avatar_128_08.webp"
+                          loading="lazy"
+                          alt=""
+                          className="avatar-image"
+                        />
+                      </div>
+                      <div className="avatar is-group-item">
+                        <img
+                          src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518075555d5105_avatar_128_26.webp"
+                          loading="lazy"
+                          alt=""
+                          className="avatar-image"
+                        />
+                      </div>
+                      <div className="avatar is-group-item">
+                        <img
+                          src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51801b995d50b8_avatar_128_29.webp"
+                          loading="lazy"
+                          alt=""
+                          className="avatar-image"
+                        />
+                      </div>
+                      <div className="avatar is-group-item">
+                        <img
+                          src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180229e5d50c4_avatar_128_05.webp"
+                          loading="lazy"
+                          alt=""
+                          className="avatar-image"
+                        />
+                      </div>
+                      <div className="avatar is-group-item">
+                        <img
+                          src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ea305d5107_avatar_128_20.webp"
+                          loading="lazy"
+                          alt=""
+                          className="avatar-image"
+                        />
+                      </div>
+                      <div className="avatar is-group-item">
+                        <img
+                          src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180b2ae5d50c6_avatar_128_17.webp"
+                          loading="lazy"
+                          alt=""
+                          className="avatar-image"
+                        />
+                      </div>
+                    </div>
+                    <div className="padding-bottom padding-small" />
+                    <div className="text-size-xsmall text-weight-medium text-color-white">
+                      Used by 300.000+ people globally
+                    </div>
+                  </div>
+                  <div className="cursor-item w-embed">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width={83}
+                      height={48}
+                      fill="none"
+                      viewBox="0 0 83 48"
+                    >
+                      <g filter="url(#a)">
+                        <path
+                          fill="#15BBEF"
+                          d="M6.352 2.27a.54.54 0 0 1 .796-.58l16.092 9.224a.54.54 0 0 1-.11.983L15.32 14.3a.54.54 0 0 0-.294.222l-3.909 6.021a.54.54 0 0 1-.98-.183L6.352 2.27Z"
+                        />
+                        <path
+                          stroke="#fff"
+                          d="m15.173 13.822.147.478-.147-.478a1.04 1.04 0 0 0-.566.427l-3.909 6.022a.055.055 0 0 1-.01.012.018.018 0 0 1-.006.004.046.046 0 0 1-.024.001.045.045 0 0 1-.022-.01.02.02 0 0 1-.004-.005.054.054 0 0 1-.006-.016L6.841 2.167a.052.052 0 0 1-.001-.016c0-.002 0-.004.002-.006a.045.045 0 0 1 .015-.018.045.045 0 0 1 .021-.009h.007c.002.001.007.002.015.007l16.092 9.222a.053.053 0 0 1 .012.01.02.02 0 0 1 .004.005.045.045 0 0 1 .003.024.045.045 0 0 1-.008.022.02.02 0 0 1-.005.005.053.053 0 0 1-.014.006l-7.81 2.403Z"
+                        />
+                      </g>
+                      <g filter="url(#b)">
+                        <rect
+                          width={49}
+                          height={22}
+                          x={24}
+                          y={21}
+                          fill="#15BBEF"
+                          rx={4}
+                        />
+                        <path
+                          fill="#fff"
+                          d="M30.979 37h-1.631l3.664-10.182h1.775L38.45 37h-1.63l-2.88-8.332h-.079L30.98 37Zm.273-3.987h5.29v1.292h-5.29v-1.292Zm11.286 4.136a2.959 2.959 0 0 1-1.65-.472c-.481-.318-.86-.77-1.134-1.357-.272-.59-.408-1.298-.408-2.123 0-.826.137-1.532.413-2.118.278-.587.66-1.036 1.143-1.348a2.974 2.974 0 0 1 1.646-.467c.474 0 .855.08 1.143.239.292.156.517.338.676.547.163.209.289.392.378.552h.09v-3.784h1.486V37h-1.452v-1.188h-.124a3.93 3.93 0 0 1-.388.557 2.155 2.155 0 0 1-.686.547c-.291.155-.67.233-1.133.233Zm.328-1.268c.427 0 .789-.112 1.084-.338.298-.228.523-.545.676-.95.156-.404.233-.874.233-1.411 0-.53-.076-.995-.228-1.392-.153-.398-.377-.708-.672-.93-.295-.222-.659-.333-1.093-.333-.448 0-.82.116-1.119.348a2.127 2.127 0 0 0-.676.95c-.15.4-.224.853-.224 1.357 0 .51.076.97.229 1.377.152.408.378.73.676.97.302.235.673.352 1.114.352Zm7.799 1.288c-.484 0-.922-.09-1.313-.268a2.211 2.211 0 0 1-.93-.79c-.225-.346-.337-.768-.337-1.269 0-.43.083-.785.248-1.064.166-.278.39-.498.671-.66.282-.163.597-.286.945-.369a9.389 9.389 0 0 1 1.064-.189l1.114-.129c.285-.036.492-.094.621-.174.13-.08.194-.209.194-.388v-.035c0-.434-.123-.77-.368-1.009-.242-.238-.603-.358-1.084-.358-.5 0-.895.111-1.183.333-.285.22-.482.463-.592.731l-1.397-.318c.166-.464.408-.838.726-1.123a2.943 2.943 0 0 1 1.109-.627 4.327 4.327 0 0 1 1.317-.199c.305 0 .628.037.97.11.345.07.666.198.964.387.302.19.549.46.741.81.192.349.288.801.288 1.358V37h-1.451v-1.044h-.06c-.096.192-.24.381-.432.567-.193.185-.44.34-.741.462-.302.123-.663.184-1.084.184Zm.323-1.193c.411 0 .762-.081 1.054-.244.295-.162.519-.374.671-.636a1.65 1.65 0 0 0 .234-.85v-.985c-.053.053-.156.103-.308.15a4.81 4.81 0 0 1-.512.114c-.193.03-.38.058-.562.084l-.458.06a3.688 3.688 0 0 0-.79.184c-.235.086-.424.21-.567.373-.139.159-.209.371-.209.636 0 .368.136.646.408.835.272.186.618.279 1.04.279ZM56.413 37v-7.636h1.427v1.242h.095c.159-.42.419-.748.78-.984.361-.238.794-.358 1.298-.358.51 0 .938.12 1.282.358a2.1 2.1 0 0 1 .771.985h.08a2.15 2.15 0 0 1 .87-.975c.397-.245.871-.368 1.422-.368.692 0 1.257.217 1.695.652.44.434.661 1.088.661 1.963V37h-1.486v-4.981c0-.518-.141-.892-.423-1.124a1.537 1.537 0 0 0-1.01-.348c-.483 0-.86.149-1.128.447-.268.295-.403.675-.403 1.139V37h-1.481v-5.076c0-.414-.13-.747-.388-1-.258-.251-.595-.377-1.01-.377-.28 0-.541.074-.78.224-.235.145-.425.35-.571.611a1.873 1.873 0 0 0-.214.91V37h-1.487Z"
+                        />
+                      </g>
+                      <defs>
+                        <filter
+                          id="a"
+                          width="21.172"
+                          height="23.171"
+                          x="4.34"
+                          y="1.618"
+                          colorInterpolationFilters="sRGB"
+                          filterUnits="userSpaceOnUse"
+                        >
+                          <feFlood
+                            floodOpacity={0}
+                            result="BackgroundImageFix"
+                          />
+                          <feColorMatrix
+                            in="SourceAlpha"
+                            result="hardAlpha"
+                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                          />
+                          <feOffset dy={2} />
+                          <feGaussianBlur stdDeviation={1} />
+                          <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0" />
+                          <feBlend
+                            in2="BackgroundImageFix"
+                            result="effect1_dropShadow_3712_36470"
+                          />
+                          <feBlend
+                            in="SourceGraphic"
+                            in2="effect1_dropShadow_3712_36470"
+                            result="shape"
+                          />
+                        </filter>
+                        <filter
+                          id="b"
+                          width={57}
+                          height={30}
+                          x={20}
+                          y={18}
+                          colorInterpolationFilters="sRGB"
+                          filterUnits="userSpaceOnUse"
+                        >
+                          <feFlood
+                            floodOpacity={0}
+                            result="BackgroundImageFix"
+                          />
+                          <feColorMatrix
+                            in="SourceAlpha"
+                            result="hardAlpha"
+                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                          />
+                          <feOffset dy={1} />
+                          <feGaussianBlur stdDeviation={2} />
+                          <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0" />
+                          <feBlend
+                            in2="BackgroundImageFix"
+                            result="effect1_dropShadow_3712_36470"
+                          />
+                          <feBlend
+                            in="SourceGraphic"
+                            in2="effect1_dropShadow_3712_36470"
+                            result="shape"
+                          />
+                        </filter>
+                      </defs>
+                    </svg>
+                  </div>
+                </div>
+                <div className="padding-bottom padding-xhuge" />
+              </div>
+            </div>
+            <div className="graphic-circle" />
+          </header>
+          <div className="section-home-dashboard">
+            <div className="graphic-circle-2" />
+            <div className="background-bottom-half" />
+            <div className="padding-global">
+              <div className="container-large">
+                <div
+                  id="w-node-_970b6eff-0433-b509-1fb9-dd26cac9594e-a9891d7f"
+                  className="home-dashboard-image-wrapper"
+                >
+                  <img
+                    src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518010835d50f9_dashboard_overview.webp"
+                    srcSet="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518010835d50f9_dashboard_overview-p-500.webp 500w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518010835d50f9_dashboard_overview-p-800.webp 800w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518010835d50f9_dashboard_overview-p-1080.webp 1080w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518010835d50f9_dashboard_overview-p-1600.webp 1600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518010835d50f9_dashboard_overview-p-2000.webp 2000w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518010835d50f9_dashboard_overview-p-2600.webp 2600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518010835d50f9_dashboard_overview.webp 2880w"
+                    sizes="(max-width: 479px) 89vw, (max-width: 767px) 93vw, 90vw"
+                    width={1440}
+                    alt=""
+                    className="home-dashboard-image"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <section className="section-logos background-color-neutral-50">
+          <div className="padding-global">
+            <div className="container-large">
+              <div className="padding-section-medium">
+                <div className="text-align-center">
+                  <div className="text-size-regular text-weight-medium">
+                    Trusted by 500+ innovative companies worldwide
+                  </div>
+                  <div className="padding-bottom padding-xlarge" />
+                  <div className="logos-layout">
+                    <div className="logos-logo-wrapper">
+                      <div className="logo w-embed">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width=" 100%"
+                          height=" 100%"
+                          fill="none"
+                          viewBox="0 0 140 40"
+                        >
+                          <path
+                            fill="currentColor"
+                            fillRule="evenodd"
+                            d="M3.483 29.197a15.082 15.082 0 0 0 5.705 4.49A14.947 14.947 0 0 0 15.334 35a14.956 14.956 0 0 0 11.577-5.461 15.033 15.033 0 0 0 2.156-3.496A14.949 14.949 0 0 0 30.334 20c0-8.284-6.716-15-15-15-8.284 0-15 6.716-15 15a14.965 14.965 0 0 0 2.003 7.493c.343.595.727 1.164 1.146 1.704Zm.844-3.267c.284.526.605 1.03.96 1.507l2.751-2.684a10 10 0 0 1 13.967 0l3.109 3.033c.368-.462.704-.951 1.005-1.463l-4.114-4.014a10 10 0 0 0-13.967 0l-3.71 3.62Zm22.887-2.031c.402-1.227.62-2.538.62-3.899 0-6.904-5.596-12.5-12.5-12.5s-12.5 5.596-12.5 12.5c0 1.19.166 2.34.476 3.429l2.982-2.91c4.856-4.736 12.603-4.736 17.459 0l3.463 3.38Zm-3.845 5.677-3.11-3.034a7.5 7.5 0 0 0-10.475 0l-2.815 2.746c.55.497 1.145.944 1.777 1.337l2.784-2.716a5 5 0 0 1 6.983 0l3.02 2.948c.651-.373 1.265-.802 1.836-1.281Zm-4.31 2.36-2.292-2.237a2.5 2.5 0 0 0-3.491 0l-2.134 2.08c1.31.467 2.722.721 4.192.721 1.298 0 2.549-.198 3.726-.565Z"
+                            clipRule="evenodd"
+                          />
+                          <path
+                            fill="currentColor"
+                            d="M40.334 29.44V10.773h12.053v2.747h-8.64v5.227h6.987v2.693h-6.987v8h-3.413ZM56.782 14.16c-.623 0-1.138-.187-1.547-.56-.391-.373-.587-.845-.587-1.413 0-.57.196-1.031.587-1.387.409-.373.924-.56 1.547-.56.622 0 1.128.187 1.52.56.408.355.613.818.613 1.387 0 .569-.205 1.04-.614 1.413-.39.373-.897.56-1.52.56Zm-1.707 15.28V16.213h3.413V29.44h-3.413ZM62.05 29.44V16.213h3.04l.32 2.48a5.464 5.464 0 0 1 1.948-2.026c.835-.516 1.813-.774 2.933-.774v3.6h-.96c-.747 0-1.413.116-2 .347a2.758 2.758 0 0 0-1.387 1.2c-.32.569-.48 1.36-.48 2.373v6.027h-3.413ZM72.624 29.44V16.213h3.013L75.93 18a4.613 4.613 0 0 1 1.68-1.52c.712-.391 1.53-.587 2.454-.587 2.044 0 3.493.791 4.346 2.374a5.165 5.165 0 0 1 1.92-1.734 5.68 5.68 0 0 1 2.667-.64c1.725 0 3.049.516 3.973 1.547.925 1.031 1.387 2.542 1.387 4.533v7.467h-3.413v-7.147c0-1.137-.222-2.009-.667-2.613-.427-.604-1.093-.907-2-.907-.924 0-1.671.338-2.24 1.014-.551.675-.827 1.617-.827 2.826v6.827h-3.413v-7.147c0-1.137-.222-2.009-.667-2.613-.444-.604-1.129-.907-2.053-.907-.907 0-1.644.338-2.213 1.014-.551.675-.827 1.617-.827 2.826v6.827h-3.413ZM103.064 29.76c-1.173 0-2.204-.187-3.093-.56-.889-.391-1.6-.924-2.133-1.6a4.594 4.594 0 0 1-.96-2.347h3.44c.106.516.391.96.853 1.334.48.355 1.093.533 1.84.533.747 0 1.289-.151 1.627-.453.355-.303.533-.65.533-1.04 0-.57-.249-.951-.747-1.147-.497-.213-1.191-.418-2.08-.613a22.759 22.759 0 0 1-1.733-.454 8.898 8.898 0 0 1-1.627-.666 3.77 3.77 0 0 1-1.173-1.067c-.302-.445-.453-.987-.453-1.627 0-1.173.462-2.16 1.386-2.96.943-.8 2.258-1.2 3.947-1.2 1.564 0 2.809.365 3.733 1.094.943.729 1.503 1.733 1.68 3.013h-3.226c-.196-.978-.934-1.467-2.214-1.467-.64 0-1.137.125-1.493.374-.338.248-.507.56-.507.933 0 .391.258.702.774.933.515.231 1.2.445 2.053.64.924.214 1.769.454 2.533.72.783.25 1.405.631 1.867 1.147.462.498.693 1.218.693 2.16a3.708 3.708 0 0 1-.64 2.213c-.444.658-1.084 1.174-1.92 1.547-.835.373-1.822.56-2.96.56ZM116.568 29.76c-1.653 0-2.933-.516-3.84-1.547-.889-1.03-1.333-2.542-1.333-4.533v-7.467h3.386v7.147c0 1.138.232 2.009.694 2.613.462.605 1.191.907 2.186.907.943 0 1.716-.338 2.32-1.013.623-.676.934-1.618.934-2.827v-6.827h3.413V29.44h-3.013l-.267-2.24a4.622 4.622 0 0 1-1.787 1.867c-.764.462-1.662.693-2.693.693ZM133.299 29.76c-1.174 0-2.205-.187-3.094-.56-.888-.391-1.6-.924-2.133-1.6a4.6 4.6 0 0 1-.96-2.347h3.44c.107.516.391.96.853 1.334.48.355 1.094.533 1.84.533.747 0 1.289-.151 1.627-.453.356-.303.533-.65.533-1.04 0-.57-.248-.951-.746-1.147-.498-.213-1.191-.418-2.08-.613a22.781 22.781 0 0 1-1.734-.454 8.927 8.927 0 0 1-1.626-.666 3.78 3.78 0 0 1-1.174-1.067c-.302-.445-.453-.987-.453-1.627 0-1.173.462-2.16 1.387-2.96.942-.8 2.258-1.2 3.946-1.2 1.565 0 2.809.365 3.734 1.094.942.729 1.502 1.733 1.68 3.013h-3.227c-.195-.978-.933-1.467-2.213-1.467-.64 0-1.138.125-1.494.374-.337.248-.506.56-.506.933 0 .391.258.702.773.933.516.231 1.2.445 2.053.64.925.214 1.769.454 2.534.72.782.25 1.404.631 1.866 1.147.463.498.694 1.218.694 2.16a3.715 3.715 0 0 1-.64 2.213c-.445.658-1.085 1.174-1.92 1.547-.836.373-1.822.56-2.96.56Z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="logos-logo-wrapper">
+                      <div className="logo w-embed">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width=" 100%"
+                          height=" 100%"
+                          fill="none"
+                          viewBox="0 0 164 40"
+                        >
+                          <path
+                            fill="currentColor"
+                            fillRule="evenodd"
+                            d="M14.025 10.74A15 15 0 0 0 15.167 5a15 15 0 0 0 15 15v-6a9 9 0 0 1-9-9h-12a9 9 0 0 1-9 9v6a15 15 0 0 0 13.858-9.26ZM15.167 20a15 15 0 0 0 15 15v-6a9 9 0 0 1-9-9h-6Zm-1.142 5.74A15 15 0 0 0 15.167 20h-6a9 9 0 0 1-9 9v6a15 15 0 0 0 13.858-9.26Z"
+                            clipRule="evenodd"
+                          />
+                          <path
+                            fill="currentColor"
+                            d="M47.447 29.707c-1.422 0-2.684-.25-3.787-.747-1.084-.515-1.938-1.253-2.56-2.213-.622-.96-.933-2.134-.933-3.52v-.694h3.173v.694c0 1.226.374 2.142 1.12 2.747.747.604 1.743.906 2.987.906 1.262 0 2.213-.258 2.853-.773.64-.516.96-1.182.96-2 0-.551-.15-.996-.453-1.334-.302-.355-.747-.64-1.333-.853a17.827 17.827 0 0 0-2.08-.613l-.8-.16c-1.227-.285-2.294-.64-3.2-1.067-.89-.444-1.574-1.013-2.054-1.706-.48-.694-.72-1.6-.72-2.72s.267-2.08.8-2.88c.534-.8 1.29-1.414 2.267-1.84.978-.427 2.124-.64 3.44-.64 1.316 0 2.489.222 3.52.666 1.031.445 1.84 1.111 2.427 2 .604.889.906 2 .906 3.334v.88h-3.173v-.88c0-.765-.151-1.378-.453-1.84a2.606 2.606 0 0 0-1.28-1.014c-.551-.213-1.2-.32-1.947-.32-1.102 0-1.938.214-2.507.64-.569.427-.853 1.031-.853 1.813 0 .498.124.925.373 1.28.267.338.65.623 1.147.854.516.213 1.156.4 1.92.56l.8.186c1.28.285 2.4.65 3.36 1.094.96.427 1.707.995 2.24 1.706.551.712.827 1.636.827 2.774 0 1.12-.294 2.107-.88 2.96-.57.853-1.378 1.52-2.427 2-1.031.48-2.258.72-3.68.72ZM63.591 29.707c-1.316 0-2.498-.267-3.547-.8a6.284 6.284 0 0 1-2.453-2.32c-.587-1.014-.88-2.222-.88-3.627v-.427c0-1.404.293-2.613.88-3.626a6.04 6.04 0 0 1 2.453-2.32c1.05-.534 2.231-.8 3.547-.8 1.315 0 2.489.266 3.52.8a5.866 5.866 0 0 1 2.427 2.32c.604 1.013.906 2.222.906 3.627v.426c0 1.405-.302 2.613-.906 3.627a6.096 6.096 0 0 1-2.427 2.32c-1.031.533-2.205.8-3.52.8Zm0-2.72c1.12 0 2.035-.356 2.747-1.067.71-.729 1.066-1.742 1.066-3.04v-.267c0-1.297-.355-2.302-1.066-3.013-.712-.729-1.627-1.093-2.747-1.093-1.12 0-2.036.364-2.747 1.093-.71.711-1.066 1.716-1.066 3.013v.267c0 1.298.355 2.311 1.066 3.04.711.711 1.627 1.067 2.747 1.067ZM78.745 29.547c-1.013 0-1.911-.222-2.693-.667a4.719 4.719 0 0 1-1.814-1.92c-.426-.835-.64-1.804-.64-2.907V16.16h3.04v7.654c0 1.066.258 1.857.774 2.373.533.515 1.28.773 2.24.773 1.084 0 1.938-.355 2.56-1.067.64-.71.96-1.733.96-3.066V16.16h3.04v13.174h-2.987v-1.84h-.453c-.231.48-.658.942-1.28 1.386-.605.445-1.52.667-2.747.667ZM90.111 29.334V16.16h3.014V18h.453c.231-.498.649-.969 1.253-1.413.605-.445 1.52-.667 2.747-.667 1.013 0 1.911.231 2.693.693a4.718 4.718 0 0 1 1.814 1.92c.444.818.666 1.787.666 2.907v7.893h-3.066V21.68c0-1.067-.267-1.858-.8-2.373-.516-.534-1.254-.8-2.214-.8-1.084 0-1.937.364-2.56 1.093-.622.711-.933 1.733-.933 3.067v6.666h-3.067ZM111.904 29.707a6.032 6.032 0 0 1-2.986-.774c-.925-.533-1.663-1.306-2.214-2.32-.551-1.013-.826-2.23-.826-3.653v-.427c0-1.422.275-2.64.826-3.653.551-1.013 1.28-1.778 2.187-2.293a5.925 5.925 0 0 1 3.013-.8c.818 0 1.511.098 2.08.293.569.196 1.023.445 1.36.747.356.302.631.63.827.986h.453v-7.146h3.04v18.666h-2.986V27.6h-.454c-.32.534-.809 1.022-1.466 1.467-.658.427-1.609.64-2.854.64Zm.907-2.667c1.102 0 2.018-.355 2.747-1.066.729-.73 1.093-1.76 1.093-3.094v-.267c0-1.35-.364-2.382-1.093-3.093-.711-.711-1.627-1.067-2.747-1.067-1.102 0-2.027.356-2.773 1.067-.729.711-1.094 1.742-1.094 3.093v.267c0 1.334.365 2.365 1.094 3.094.746.71 1.671 1.066 2.773 1.066ZM129.789 29.707c-1.316 0-2.498-.267-3.547-.8a6.28 6.28 0 0 1-2.453-2.32c-.587-1.014-.88-2.222-.88-3.627v-.427c0-1.404.293-2.613.88-3.626a6.038 6.038 0 0 1 2.453-2.32c1.049-.534 2.231-.8 3.547-.8 1.315 0 2.489.266 3.52.8a5.87 5.87 0 0 1 2.427 2.32c.604 1.013.906 2.222.906 3.627v.426c0 1.405-.302 2.613-.906 3.627a6.1 6.1 0 0 1-2.427 2.32c-1.031.533-2.205.8-3.52.8Zm0-2.72c1.12 0 2.035-.356 2.747-1.067.711-.729 1.066-1.742 1.066-3.04v-.267c0-1.297-.355-2.302-1.066-3.013-.712-.729-1.627-1.093-2.747-1.093-1.12 0-2.036.364-2.747 1.093-.711.711-1.066 1.716-1.066 3.013v.267c0 1.298.355 2.311 1.066 3.04.711.711 1.627 1.067 2.747 1.067ZM139.903 29.334V16.16h3.013v1.52h.454c.195-.551.524-.951.986-1.2.463-.249 1.014-.373 1.654-.373h1.6v2.72h-1.654c-.888 0-1.608.24-2.16.72-.551.462-.826 1.182-.826 2.16v7.627h-3.067ZM154.061 29.707c-.924 0-1.76-.16-2.506-.48-.747-.338-1.343-.818-1.787-1.44-.427-.622-.64-1.387-.64-2.293 0-.89.213-1.636.64-2.24.444-.605 1.049-1.058 1.813-1.36.765-.32 1.636-.48 2.614-.48h3.813v-.8c0-.694-.213-1.254-.64-1.68-.427-.445-1.093-.667-2-.667-.889 0-1.565.213-2.027.64-.444.409-.738.942-.88 1.6l-2.826-.934a5.575 5.575 0 0 1 1.013-1.893c.48-.569 1.111-1.022 1.893-1.36.782-.355 1.742-.533 2.88-.533 1.725 0 3.076.435 4.054 1.306.995.854 1.493 2.098 1.493 3.734V26c0 .534.249.8.747.8h1.12v2.534h-2.16c-.64 0-1.165-.16-1.574-.48-.409-.32-.613-.756-.613-1.307v-.053h-.453c-.107.248-.294.55-.56.906-.267.356-.676.667-1.227.934-.533.248-1.262.373-2.187.373Zm.507-2.507c1.013 0 1.84-.284 2.48-.853.64-.587.96-1.37.96-2.347v-.267h-3.627c-.658 0-1.191.143-1.6.427-.409.285-.613.702-.613 1.253 0 .534.213.97.64 1.307.427.32 1.013.48 1.76.48Z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="logos-logo-wrapper">
+                      <div className="logo w-embed">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width=" 100%"
+                          height=" 100%"
+                          fill="none"
+                          viewBox="0 0 138 40"
+                        >
+                          <path
+                            fill="currentColor"
+                            fillRule="evenodd"
+                            d="M16.642 10.74A15 15 0 0 1 15.5 5h6a9 9 0 0 0 9 9v6a15 15 0 0 1-13.858-9.26Zm-2.284 18.52A15 15 0 0 1 15.5 35h-6a9 9 0 0 0-9-9v-6a15 15 0 0 1 13.858 9.26ZM15.5 20a15 15 0 0 0 15 15v-6a9 9 0 0 1-9-9h-6Zm-1.142-5.74A15 15 0 0 1 15.5 20h-6a9 9 0 0 0-9-9V5a15 15 0 0 1 13.858 9.26Z"
+                            clipRule="evenodd"
+                          />
+                          <path
+                            fill="currentColor"
+                            d="M40.66 10.987h13.28v5.76l-10.56 9.066v.48h10.88v3.36H40.5v-5.76l10.56-9.066v-.48h-10.4v-3.36ZM60.615 24.133c.018.392.106.756.266 1.094.178.32.41.604.694.853.302.231.64.418 1.013.56.391.125.8.187 1.227.187.835 0 1.475-.143 1.92-.427.444-.302.764-.658.96-1.067l2.88 1.6A6.08 6.08 0 0 1 68.908 28a4.732 4.732 0 0 1-1.12.987c-.444.302-.995.55-1.653.746-.64.196-1.396.294-2.267.294-.995 0-1.902-.16-2.72-.48a6.149 6.149 0 0 1-2.133-1.387c-.587-.604-1.05-1.342-1.387-2.213-.32-.871-.48-1.858-.48-2.96v-.16c0-1.014.169-1.938.507-2.774a6.45 6.45 0 0 1 1.44-2.133 6.41 6.41 0 0 1 2.106-1.36 6.777 6.777 0 0 1 2.614-.507c1.138 0 2.115.205 2.933.614.818.39 1.493.897 2.027 1.52a5.82 5.82 0 0 1 1.173 2.026 6.58 6.58 0 0 1 .373 2.134v1.786h-9.706Zm3.173-5.04c-.853 0-1.547.223-2.08.667-.533.427-.88.924-1.04 1.493h6.24c-.107-.622-.444-1.137-1.013-1.546-.551-.41-1.254-.614-2.107-.614ZM73.343 16.427h5.6v1.92h.48c.249-.73.667-1.29 1.253-1.68.605-.41 1.325-.614 2.16-.614 1.316 0 2.374.418 3.174 1.254.8.818 1.2 2.07 1.2 3.76v.586l-3.467.32V21.6c0-.729-.187-1.307-.56-1.733-.373-.445-.933-.667-1.68-.667-.747 0-1.333.258-1.76.773-.427.516-.64 1.254-.64 2.214v4.266h3.04v3.2h-9.12v-3.2h2.72v-6.826h-2.4v-3.2ZM103.591 29.653h-3.36v-9.28c0-.373-.098-.649-.293-.826-.178-.196-.418-.294-.72-.294-.356 0-.64.107-.854.32-.195.214-.293.534-.293.96v9.12h-3.36v-9.28c0-.373-.107-.649-.32-.826a.979.979 0 0 0-.72-.294c-.32 0-.587.107-.8.32-.213.214-.32.534-.32.96v9.12h-3.36V16.427h3.36v1.28h.48c.107-.48.347-.871.72-1.174.391-.32.898-.48 1.52-.48.587 0 1.085.16 1.493.48.41.303.685.694.827 1.174h.48c.142-.48.436-.871.88-1.174.462-.32 1.031-.48 1.707-.48.889 0 1.6.303 2.133.907.533.587.8 1.404.8 2.453v10.24ZM106.879 26.453h4.48v-6.826h-4.16v-3.2h7.52v10.026h3.84v3.2h-11.68v-3.2Zm8.667-13.946c0 .355-.071.693-.214 1.013a2.423 2.423 0 0 1-.533.8 3.007 3.007 0 0 1-.827.533 2.496 2.496 0 0 1-.96.187c-.355 0-.684-.062-.986-.187a3.145 3.145 0 0 1-.8-.533 2.819 2.819 0 0 1-.56-.8 2.76 2.76 0 0 1-.187-1.013c0-.356.062-.685.187-.987.142-.32.329-.587.56-.8.231-.231.498-.409.8-.533.302-.143.631-.214.986-.214.338 0 .658.071.96.214.32.124.596.302.827.533.231.213.409.48.533.8.143.302.214.631.214.987ZM131.527 27.733c-.355.836-.853 1.431-1.493 1.787-.64.338-1.387.507-2.24.507-.8 0-1.556-.151-2.267-.454a5.379 5.379 0 0 1-1.84-1.333c-.533-.587-.96-1.298-1.28-2.133-.302-.836-.453-1.787-.453-2.854v-.426c0-1.05.151-1.991.453-2.827.302-.835.711-1.547 1.227-2.133a5.17 5.17 0 0 1 1.787-1.334 5.217 5.217 0 0 1 2.213-.48c.942 0 1.698.16 2.267.48.586.32 1.048.818 1.386 1.494h.48v-1.6h3.36v9.226c0 .534.24.8.72.8h.507v3.2h-2.293c-.605 0-1.103-.177-1.494-.533-.373-.355-.56-.818-.56-1.387h-.48Zm-2.986-.906c.977 0 1.76-.32 2.346-.96.587-.658.88-1.547.88-2.667v-.32c0-1.12-.293-2-.88-2.64-.586-.658-1.369-.987-2.346-.987-.978 0-1.76.33-2.347.987-.587.64-.88 1.52-.88 2.64v.32c0 1.12.293 2.009.88 2.667.587.64 1.369.96 2.347.96Z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="logos-logo-wrapper">
+                      <div className="logo w-embed">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width=" 100%"
+                          height=" 100%"
+                          fill="none"
+                          viewBox="0 0 156 40"
+                        >
+                          <path
+                            fill="currentColor"
+                            fillRule="evenodd"
+                            d="M2.363 7.197A7.5 7.5 0 0 0 .166 12.5V35h28.125V12.5a7.5 7.5 0 0 0-14.063-3.631A7.495 7.495 0 0 0 7.667 5a7.5 7.5 0 0 0-5.303 2.197ZM12.916 32.5h-10.5v-5a5.25 5.25 0 0 1 10.5 0v5Zm2.625 0h10.5v-5a5.25 5.25 0 0 0-10.5-.02v5.02Zm0-10.356a7.5 7.5 0 0 1 10.5 0V20a5.25 5.25 0 0 0-10.5-.02v2.164ZM12.916 20a5.25 5.25 0 1 0-10.5 0v2.144a7.5 7.5 0 0 1 10.5 0V20Zm0-5.356a7.5 7.5 0 0 0-10.5 0V12.5a5.25 5.25 0 1 1 10.5 0v2.144Zm2.625 0a7.5 7.5 0 0 1 10.5 0V12.5a5.25 5.25 0 1 0-10.5 0v2.144Z"
+                            clipRule="evenodd"
+                          />
+                          <path
+                            fill="currentColor"
+                            d="M54.878 11.133V29.8h-2.854L41.731 17.16V29.8h-3.44V11.133h2.853l10.294 12.64v-12.64h3.44ZM65.96 29.987c-1.44 0-2.738-.311-3.894-.934a6.928 6.928 0 0 1-2.72-2.586c-.64-1.12-.96-2.383-.96-3.787s.32-2.658.96-3.76a6.929 6.929 0 0 1 2.72-2.587c1.156-.622 2.454-.933 3.894-.933 1.457 0 2.764.311 3.92.933 1.155.623 2.053 1.485 2.693 2.587.658 1.102.987 2.356.987 3.76s-.33 2.667-.987 3.787c-.64 1.102-1.538 1.964-2.693 2.586-1.156.623-2.463.934-3.92.934Zm0-2.854c1.226 0 2.24-.409 3.04-1.226.8-.818 1.2-1.894 1.2-3.227s-.4-2.409-1.2-3.227c-.8-.817-1.814-1.226-3.04-1.226-1.227 0-2.24.409-3.04 1.226-.783.818-1.174 1.894-1.174 3.227s.391 2.409 1.174 3.227c.8.817 1.813 1.226 3.04 1.226ZM89.69 15.56 83.583 29.8h-3.44l-6.107-14.24h3.467l4.427 10.56 4.56-10.56h3.2ZM104.769 22.76c0 .231-.018.56-.053.987H93.543c.195 1.049.702 1.884 1.52 2.506.835.605 1.866.907 3.093.907 1.564 0 2.853-.515 3.866-1.547l1.787 2.054c-.64.764-1.449 1.342-2.427 1.733-.977.391-2.08.587-3.306.587-1.565 0-2.942-.311-4.133-.934-1.192-.622-2.116-1.484-2.774-2.586-.64-1.12-.96-2.383-.96-3.787 0-1.387.311-2.631.933-3.733a6.783 6.783 0 0 1 2.64-2.614c1.12-.622 2.383-.933 3.787-.933 1.387 0 2.622.311 3.707.933a6.301 6.301 0 0 1 2.56 2.587c.622 1.102.933 2.382.933 3.84Zm-7.2-4.693c-1.067 0-1.973.32-2.72.96-.729.622-1.173 1.457-1.333 2.506h8.08c-.142-1.03-.578-1.866-1.307-2.506-.729-.64-1.635-.96-2.72-.96ZM107.971 10.013h3.333V29.8h-3.333V10.013ZM122.079 29.987c-1.44 0-2.737-.311-3.893-.934a6.926 6.926 0 0 1-2.72-2.586c-.64-1.12-.96-2.383-.96-3.787s.32-2.658.96-3.76a6.927 6.927 0 0 1 2.72-2.587c1.156-.622 2.453-.933 3.893-.933 1.458 0 2.765.311 3.92.933 1.156.623 2.054 1.485 2.694 2.587.657 1.102.986 2.356.986 3.76s-.329 2.667-.986 3.787c-.64 1.102-1.538 1.964-2.694 2.586-1.155.623-2.462.934-3.92.934Zm0-2.854c1.227 0 2.24-.409 3.04-1.226.8-.818 1.2-1.894 1.2-3.227s-.4-2.409-1.2-3.227c-.8-.817-1.813-1.226-3.04-1.226-1.226 0-2.24.409-3.04 1.226-.782.818-1.173 1.894-1.173 3.227s.391 2.409 1.173 3.227c.8.817 1.814 1.226 3.04 1.226ZM136.04 17.64c.96-1.493 2.649-2.24 5.067-2.24v3.173a4.237 4.237 0 0 0-.773-.08c-1.298 0-2.312.383-3.04 1.147-.729.747-1.094 1.831-1.094 3.253V29.8h-3.333V15.56h3.173v2.08ZM149.296 15.4c2.098 0 3.698.507 4.8 1.52 1.12.996 1.68 2.507 1.68 4.533V29.8h-3.146v-1.733c-.409.622-.996 1.102-1.76 1.44-.747.32-1.654.48-2.72.48-1.067 0-2-.178-2.8-.534-.8-.373-1.422-.88-1.867-1.52a3.976 3.976 0 0 1-.64-2.213c0-1.28.471-2.302 1.413-3.067.96-.782 2.463-1.173 4.507-1.173h3.68v-.213c0-.996-.302-1.76-.907-2.294-.586-.533-1.466-.8-2.64-.8-.8 0-1.591.125-2.373.374-.764.249-1.413.595-1.947 1.04l-1.306-2.427c.746-.569 1.644-1.004 2.693-1.307a11.984 11.984 0 0 1 3.333-.453Zm-.453 12.16c.836 0 1.573-.187 2.213-.56a3.167 3.167 0 0 0 1.387-1.653v-1.654h-3.44c-1.92 0-2.88.631-2.88 1.894 0 .604.24 1.084.72 1.44.48.355 1.147.533 2 .533Z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="logos-logo-wrapper">
+                      <div className="logo w-embed">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width=" 100%"
+                          height=" 100%"
+                          fill="none"
+                          viewBox="0 0 169 40"
+                        >
+                          <path
+                            fill="currentColor"
+                            fillRule="evenodd"
+                            d="M15 5c0 8.284-6.716 15-15 15 8.284 0 15 6.715 15 15 0-8.285 6.716-15 15-15-8.284 0-15-6.716-15-15Z"
+                            clipRule="evenodd"
+                          />
+                          <path
+                            fill="currentColor"
+                            d="m49.307 28.534-7.84-16.214H46l4.853 11.307-1.546 4.907Zm0 0-.107-3.12 5.787-13.147h1.946l-6.16 13.013c-.035.089-.115.276-.24.56a18.44 18.44 0 0 0-.4.933c-.142.338-.275.667-.4.987-.106.32-.169.578-.186.773h-.24Zm4.933-14.587c.196-.48.169-.853-.08-1.12-.231-.267-.507-.4-.827-.4h-.186v-.24h5.306v.267h-.213c-.356 0-.729.115-1.12.346-.391.213-.72.596-.987 1.147H54.24Zm-7.547 0h-4.426c-.267-.551-.596-.933-.987-1.147-.373-.231-.738-.347-1.093-.347H40v-.266h7.813v.24H47.6c-.284 0-.551.133-.8.4s-.284.64-.107 1.12ZM63.576 11.467l7.893 16.587h-4.507l-4.96-11.707 1.574-4.88Zm-5.014 14.96c-.195.48-.169.853.08 1.12.25.249.525.373.827.373h.213v.267H54.35v-.267h.213c.356 0 .73-.107 1.12-.32.391-.231.711-.622.96-1.173h1.92Zm5.014-14.96.053 3.2-5.787 13.44H55.87l6.24-13.413a6.25 6.25 0 0 1 .24-.56c.124-.285.258-.596.4-.934.142-.355.276-.684.4-.986.124-.32.195-.57.213-.747h.214Zm2.32 11.493V24h-6.8v-1.04h6.8Zm.4 3.467h4.4c.266.55.595.942.986 1.173.391.213.765.32 1.12.32h.214v.267h-7.84v-.267h.213c.302 0 .578-.124.827-.373.249-.267.275-.64.08-1.12ZM78.657 12.187h2.88c.729 0 1.44.08 2.133.24a5.75 5.75 0 0 1 1.867.72c.551.32.987.764 1.307 1.333.338.551.506 1.245.506 2.08 0 .622-.133 1.245-.4 1.867A3.93 3.93 0 0 1 85.75 20c-.533.445-1.235.738-2.106.88.515.16 1.004.471 1.466.934.48.462.854.897 1.12 1.306.072.142.196.373.374.694.177.302.4.657.666 1.066.285.391.578.8.88 1.227.356.48.667.853.934 1.12.266.249.542.427.826.533a2.8 2.8 0 0 0 .987.16v.267h-2.24c-.96 0-1.778-.071-2.453-.213a4.397 4.397 0 0 1-1.734-.774c-.48-.391-.924-.915-1.333-1.573a9.981 9.981 0 0 1-.507-.827l-.533-1.013a16.563 16.563 0 0 1-.48-.987 6.948 6.948 0 0 1-.267-.8c-.23-.569-.497-.978-.8-1.227-.284-.266-.55-.4-.8-.4v-.24h.667c.373 0 .738-.062 1.093-.186.374-.142.712-.4 1.014-.773.302-.392.524-.96.666-1.707.036-.107.063-.258.08-.453.036-.196.045-.418.027-.667-.035-.658-.16-1.182-.373-1.574-.196-.408-.445-.71-.747-.906a2.59 2.59 0 0 0-.933-.427 2.882 2.882 0 0 0-.8-.133 8.15 8.15 0 0 0-.934 0c-.266 0-.47-.01-.613-.027-.018 0-.044-.089-.08-.266a32.317 32.317 0 0 0-.107-.56l-.053-.267Zm.267 0v16h-3.867v-16h3.867Zm-3.787 14.32.107 1.68h-1.92v-.267h.32c.39 0 .72-.133.986-.4.285-.284.436-.622.454-1.013h.053Zm0-12.667h-.053c-.018-.409-.17-.738-.454-.986a1.309 1.309 0 0 0-.96-.4h-.346v-.267h1.92l-.107 1.653Zm3.733 12.667h.054c0 .444.15.79.453 1.04.32.249.658.373 1.013.373h.267v.267h-1.92l.133-1.68ZM99.686 11.84c1.423 0 2.712.196 3.867.587 1.156.373 2.151.924 2.987 1.653a7.295 7.295 0 0 1 1.92 2.64c.462 1.031.693 2.196.693 3.494 0 1.28-.231 2.435-.693 3.466a7.352 7.352 0 0 1-1.92 2.614c-.836.728-1.831 1.288-2.987 1.68-1.155.373-2.444.56-3.867.56-1.404 0-2.684-.187-3.84-.56-1.155-.392-2.15-.952-2.986-1.68a7.338 7.338 0 0 1-1.92-2.614c-.445-1.031-.667-2.186-.667-3.466 0-1.298.222-2.463.667-3.494a7.281 7.281 0 0 1 1.92-2.64c.835-.729 1.83-1.28 2.987-1.653 1.155-.391 2.435-.587 3.84-.587Zm0 15.654c1.085 0 2.027-.294 2.827-.88.818-.605 1.44-1.45 1.867-2.534.444-1.084.666-2.373.666-3.866 0-1.512-.222-2.81-.666-3.894-.427-1.102-1.049-1.947-1.867-2.533-.8-.605-1.742-.907-2.827-.907-1.066 0-2 .302-2.8.907-.8.586-1.422 1.43-1.866 2.533-.445 1.085-.667 2.382-.667 3.893 0 1.494.222 2.783.667 3.867.444 1.085 1.067 1.929 1.867 2.534.8.586 1.733.88 2.8.88ZM112.235 11.813l15.654 13.76.266 2.96-15.626-13.76-.294-2.96Zm.107 14.747v1.627h-1.973v-.267h.426c.409 0 .756-.124 1.04-.373.285-.267.427-.596.427-.987h.08Zm3.573 0c.018.391.169.72.454.987.284.249.622.373 1.013.373H117.835v.267h-1.973V26.56h.053Zm-3.68-14.746 3.68 4v12.373h-3.653V14.853c0-.906-.045-1.635-.133-2.186l-.134-.854h.24Zm15.894.373v13.226c0 .623.017 1.174.053 1.654.053.462.098.826.133 1.093l.08.373h-.24l-3.68-4.24V12.188h3.654Zm-.08 1.627v-1.627h2v.267H129.595c-.391 0-.738.133-1.04.4a1.218 1.218 0 0 0-.426.96h-.08Zm-3.574 0a1.303 1.303 0 0 0-.453-.96c-.267-.267-.605-.4-1.013-.4H122.555v-.267h1.974v1.627h-.054ZM140.483 12.187c1.902 0 3.538.32 4.907.96 1.369.622 2.418 1.538 3.146 2.746.729 1.192 1.094 2.623 1.094 4.294 0 1.67-.365 3.102-1.094 4.293-.728 1.191-1.777 2.107-3.146 2.747-1.369.64-3.005.96-4.907.96h-5.92l-.053-1.067h5.653c1.671 0 2.987-.613 3.947-1.84s1.44-2.924 1.44-5.093c0-2.17-.48-3.867-1.44-5.094-.96-1.244-2.276-1.866-3.947-1.866h-5.92v-1.04h6.24Zm-3.333 0v16h-3.84v-16h3.84Zm-3.76 14.293v1.707h-1.92v-.267h.346c.409 0 .756-.142 1.04-.427.303-.284.454-.622.454-1.013h.08Zm-.027-12.613h-.053a1.38 1.38 0 0 0-.48-1.014 1.465 1.465 0 0 0-1.04-.4h-.32v-.266h1.893v1.68ZM158.654 11.467l7.893 16.587h-4.507l-4.96-11.707 1.574-4.88Zm-5.014 14.96c-.195.48-.168.853.08 1.12.249.249.525.373.827.373h.213v.267h-5.333v-.267h.213c.356 0 .729-.107 1.12-.32.392-.231.712-.622.96-1.173h1.92Zm5.014-14.96.053 3.2-5.787 13.44h-1.973l6.24-13.413c.036-.107.116-.294.24-.56.125-.285.258-.596.4-.934.142-.355.276-.684.4-.986.125-.32.196-.57.213-.747h.214Zm2.32 11.493V24h-6.8v-1.04h6.8Zm.4 3.467h4.4c.266.55.595.942.986 1.173.392.213.765.32 1.12.32h.214v.267h-7.84v-.267h.213c.302 0 .578-.124.827-.373.249-.267.275-.64.08-1.12Z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="section-why-us">
+          <div className="padding-global">
+            <div className="container-medium">
+              <div className="padding-section-large">
+                <div className="why-us-component">
+                  <div className="max-width-xlarge">
+                    <div className="why-us-heading-component">
+                      <div className="tagline">Why us</div>
+                      <div className="padding-bottom padding-small" />
+                      <h2 className="heading-style-h2">
+                        Key benefits of using Gem
+                      </h2>
+                      <div className="padding-bottom padding-medium" />
+                      <p className="text-size-large">
+                        We’re more than a productivity tool. Customize Gem to
+                        work the way you do. There are no limitations.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="padding-bottom padding-huge" />
+                  <div className="why-us-item-wrapper">
+                    <div className="why-us-item-content">
+                      <div className="featured-icon">
+                        <div className="icon-1x1-small w-embed">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width=" 100%"
+                            height=" 100%"
+                            fill="none"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M11.332 21c-.35 0-.62-.31-.57-.66l.9-6.34h-3.5c-.88 0-.33-.75-.31-.78 1.26-2.23 3.15-5.53 5.65-9.93a.577.577 0 0 1 1.07.37l-.9 6.34h3.51c.4 0 .62.19.4.66-3.29 5.74-5.2 9.09-5.75 10.05-.1.18-.29.29-.5.29Z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="padding-bottom padding-medium" />
+                      <div className="text-size-medium text-weight-semibold text-color-neutral-800">
+                        Keep tasks in one place
+                      </div>
+                      <div className="padding-bottom padding-xsmall" />
+                      <div className="text-size-small text-color-neutral-600">
+                        Save time and stay on schedule by delegating and
+                        tracking tasks. Say goodbye to losing work.
+                      </div>
+                    </div>
+                    <div className="why-us-item-content">
+                      <div className="featured-icon">
+                        <div className="icon-1x1-small w-embed">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width=" 100%"
+                            height=" 100%"
+                            fill="none"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M17 2c-.55 0-1 .45-1 1v1H8V3c0-.55-.45-1-1-1s-1 .45-1 1v1H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-1V3c0-.55-.45-1-1-1Zm2 18H5V10h14v10Zm-8-7c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1Zm-4 0c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1Zm8 0c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1Zm-4 4c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1Zm-4 0c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1Zm8 0c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1Z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="padding-bottom padding-medium" />
+                      <div className="text-size-medium text-weight-semibold text-color-neutral-800">
+                        Prioritize your work
+                      </div>
+                      <div className="padding-bottom padding-xsmall" />
+                      <div className="text-size-small text-color-neutral-600">
+                        Task tracking allows teams to see which tasks are most
+                        important or time intensive.
+                      </div>
+                    </div>
+                    <div className="why-us-item-content">
+                      <div className="featured-icon">
+                        <div className="icon-1x1-small w-embed">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width=" 100%"
+                            height=" 100%"
+                            fill="none"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M16.332 11c1.66 0 2.99-1.34 2.99-3s-1.33-3-2.99-3c-1.66 0-3 1.34-3 3s1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3s-1.33-3-2.99-3c-1.66 0-3 1.34-3 3s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V18c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-1.5c0-2.33-4.67-3.5-7-3.5Zm8 0c-.29 0-.62.02-.97.05.02.01.03.03.04.04 1.14.83 1.93 1.94 1.93 3.41V18c0 .35-.07.69-.18 1h5.18c.55 0 1-.45 1-1v-1.5c0-2.33-4.67-3.5-7-3.5Z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="padding-bottom padding-medium" />
+                      <div className="text-size-medium text-weight-semibold text-color-neutral-800">
+                        Improve collaboration
+                      </div>
+                      <div className="padding-bottom padding-xsmall" />
+                      <div className="text-size-small text-color-neutral-600">
+                        Share files, feedback, ideas, and more so anyone can tap
+                        into your team’s shared knowledge.
+                      </div>
+                    </div>
+                    <div className="why-us-item-content">
+                      <div className="featured-icon">
+                        <div className="icon-1x1-small w-embed">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width=" 100%"
+                            height=" 100%"
+                            fill="none"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="m4.851 17.764 5.3-5.3 3.25 3.25c.41.41 1.07.39 1.45-.04l7.17-8.07c.35-.39.33-.99-.04-1.37a1 1 0 0 0-1.45.04l-6.39 7.18-3.29-3.29a.996.996 0 0 0-1.41 0l-6.09 6.1a.996.996 0 0 0 0 1.41l.09.09c.39.39 1.03.39 1.41 0Z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="padding-bottom padding-medium" />
+                      <div className="text-size-medium text-weight-semibold text-color-neutral-800">
+                        Track team progress
+                      </div>
+                      <div className="padding-bottom padding-xsmall" />
+                      <div className="text-size-small text-color-neutral-600">
+                        Check in on the status of your team’s projects at a
+                        glance. Easily see status changes and updates on tasks.
+                      </div>
+                    </div>
+                    <div className="why-us-item-content">
+                      <div className="featured-icon">
+                        <div className="icon-1x1-small w-embed">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width=" 100%"
+                            height=" 100%"
+                            fill="none"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M16 1H8a2.5 2.5 0 0 0-2.5 2.5v17A2.5 2.5 0 0 0 8 23h8a2.5 2.5 0 0 0 2.5-2.5v-17A2.5 2.5 0 0 0 16 1Zm-4 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22Zm4.5-4h-9V4h9v14Z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="padding-bottom padding-medium" />
+                      <div className="text-size-medium text-weight-semibold text-color-neutral-800">
+                        Put work at your fingertips
+                      </div>
+                      <div className="padding-bottom padding-xsmall" />
+                      <div className="text-size-small text-color-neutral-600">
+                        With a desktop and a mobile app, you can manage your
+                        team’s tasks on the go, no matter where you are.
+                      </div>
+                    </div>
+                    <div className="why-us-item-content">
+                      <div className="featured-icon">
+                        <div className="icon-1x1-small w-embed">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width=" 100%"
+                            height=" 100%"
+                            fill="none"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M19.332 4h-1V3c0-.55-.45-1-1-1s-1 .45-1 1v1h-8V3c0-.55-.45-1-1-1s-1 .45-1 1v1h-1c-1.11 0-1.99.9-1.99 2l-.01 14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 15c0 .55-.45 1-1 1h-12c-.55 0-1-.45-1-1V9h14v10Zm-12-8h2v2h-2v-2Zm4 0h2v2h-2v-2Zm4 0h2v2h-2v-2Z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="padding-bottom padding-medium" />
+                      <div className="text-size-medium text-weight-semibold text-color-neutral-800">
+                        Never miss deadlines
+                      </div>
+                      <div className="padding-bottom padding-xsmall" />
+                      <div className="text-size-small text-color-neutral-600">
+                        Easily assign tasks to team members. Set due dates for
+                        larger projects and subtasks in an easy-to-view method.
+                      </div>
+                    </div>
+                  </div>
+                  <div className="padding-bottom padding-huge" />
+                  <div className="max-width-medium text-align-center">
+                    <div className="why-us-cta">
+                      <div className="why-us-bottom-text-content">
+                        <h3 className="heading-style-h5 text-weight-semibold">
+                          Ready for take-off?
+                        </h3>
+                        <div className="text-size-regular">
+                          Start your 14-day trial and explore all possibilities.
+                          Money back is guaranteed if you are not 100%
+                          satisfied.
+                        </div>
+                      </div>
+                      <div className="padding-bottom padding-large" />
+                      <a
+                        href="/pricing"
+                        className="button is-tertiary-black is-small w-button"
+                      >
+                        Start free trial
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="section-home-views background-color-neutral-50">
+          <div className="padding-global">
+            <div className="container-large">
+              <div className="padding-section-large">
+                <div className="w-layout-grid home-views-component">
+                  <div className="views-item">
+                    <div className="views-content-wrapper">
+                      <div className="views-content-left">
+                        <div className="views-list">
+                          <div className="views-list-item">
+                            <div className="views-icon-wrapper">
+                              <div
+                                id="w-node-_404cfc9b-29ae-ad81-e5c6-b8ede947cb78-a9891d7f"
+                                className="icon-1x1-small text-color-neutral-800 w-embed"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="100%"
+                                  height="100%"
+                                  fill="none"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5ZM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5Zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3Z"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className="padding-bottom padding-small" />
+                            <div className="text-size-medium text-weight-bold text-color-neutral-800">
+                              Bird eye view
+                            </div>
+                            <div className="padding-bottom padding-xsmall" />
+                            <p className="text-size-small text-color-neutral-600">
+                              Easily track and manage your projects and tasks
+                              with calendar view.
+                            </p>
+                          </div>
+                          <div className="padding-bottom padding-small" />
+                          <div className="views-list-item">
+                            <div className="views-icon-wrapper">
+                              <div
+                                id="w-node-_404cfc9b-29ae-ad81-e5c6-b8ede947cb82-a9891d7f"
+                                className="icon-1x1-small text-color-neutral-800 w-embed"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="100%"
+                                  height="100%"
+                                  fill="none"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M15 4.853h6c.55 0 1 .45 1 1s-.45 1-1 1h-6c-.55 0-1-.45-1-1s.45-1 1-1Zm0 5.5h6c.55 0 1 .45 1 1s-.45 1-1 1h-6c-.55 0-1-.45-1-1s.45-1 1-1Zm0 5.5h6c.55 0 1 .45 1 1s-.45 1-1 1h-6c-.55 0-1-.45-1-1s.45-1 1-1Zm-5.15 3.15 1.79-1.79c.2-.2.2-.51 0-.71l-1.79-1.79a.495.495 0 0 0-.85.35v3.59c0 .44.54.66.85.35ZM9 15.853h-.3c-2.35 0-4.45-1.71-4.68-4.05a4.509 4.509 0 0 1 4.48-4.95H11c.55 0 1-.45 1-1s-.45-1-1-1H8.5c-3.86 0-6.96 3.4-6.44 7.36.42 3.28 3.37 5.64 6.67 5.64H9"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className="padding-bottom padding-small" />
+                            <div className="text-size-medium text-weight-bold text-color-neutral-800">
+                              Prioritize your work
+                            </div>
+                            <div className="padding-bottom padding-xsmall" />
+                            <p className="text-size-small text-color-neutral-600">
+                              All of the calendar functions for better
+                              management.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="button-group">
+                          <a
+                            href="/sign-up"
+                            className="button is-small w-button"
+                          >
+                            Get started
+                          </a>
+                          <a
+                            href="/features"
+                            className="link is-small w-inline-block"
+                          >
+                            <div>All features</div>
+                            <div className="icon-1x1-xxsmall w-embed">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="100%"
+                                height="100%"
+                                fill="none"
+                                viewBox="0 0 16 16"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="m8 2.667-.94.94 3.72 3.727H2.665v1.333h8.113l-3.72 3.727.94.94L13.333 8 7.999 2.667Z"
+                                />
+                              </svg>
+                            </div>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <img
+                      src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar.webp"
+                      loading="lazy"
+                      sizes="(max-width: 479px) 92vw, (max-width: 767px) 95vw, (max-width: 991px) 92vw, 59vw"
+                      width={1440}
+                      srcSet="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar-p-500.webp 500w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar-p-800.webp 800w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar-p-1080.webp 1080w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar-p-1600.webp 1600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar-p-2000.webp 2000w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar-p-2600.webp 2600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar.webp 2880w"
+                      alt=""
+                      className="views-image"
+                    />
+                  </div>
+                  <div className="views-item">
+                    <div className="views-content-wrapper">
+                      <div className="views-content-left">
+                        <div className="views-list">
+                          <div className="views-list-item">
+                            <div className="views-icon-wrapper">
+                              <div
+                                id="w-node-_4015c973-a729-6dc3-6016-8a67342ebb99-a9891d7f"
+                                className="icon-1x1-small text-color-neutral-800 w-embed"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="100%"
+                                  height="100%"
+                                  fill="none"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M21 6v4.5c0 .55-.45 1-1 1h-9.67c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1H20c.55 0 1 .45 1 1Zm-6.33 12v-4.5c0-.55-.45-1-1-1h-3.33c-.55 0-1 .45-1 1V18c0 .55.45 1 1 1h3.33c.55 0 1-.45 1-1Zm1-4.5V18c0 .55.45 1 1 1H20c.55 0 1-.45 1-1v-4.5c0-.55-.45-1-1-1h-3.33c-.56 0-1 .45-1 1ZM8.33 18V6c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h3.33c.56 0 1-.45 1-1Z"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className="padding-bottom padding-small" />
+                            <div className="text-size-medium text-weight-bold text-color-neutral-800">
+                              Streamline task management
+                            </div>
+                            <div className="padding-bottom padding-xsmall" />
+                            <p className="text-size-small text-color-neutral-600">
+                              See all your tasks in a single, scrollable view,
+                              making it easy to see what needs to be done.
+                            </p>
+                          </div>
+                          <div className="padding-bottom padding-small" />
+                          <div className="views-list-item">
+                            <div className="views-icon-wrapper">
+                              <div
+                                id="w-node-_4015c973-a729-6dc3-6016-8a67342ebba3-a9891d7f"
+                                className="icon-1x1-small text-color-neutral-800 w-embed"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="100%"
+                                  height="100%"
+                                  fill="none"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M12 12.75c1.63 0 3.07.39 4.24.9 1.08.48 1.76 1.56 1.76 2.73V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-.61c0-1.18.68-2.26 1.76-2.73 1.17-.52 2.61-.91 4.24-.91ZM4 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2Zm1.13 1.1c-.37-.06-.74-.1-1.13-.1-.99 0-1.93.21-2.78.58A2.01 2.01 0 0 0 0 16.43V17c0 .55.45 1 1 1h3.5v-1.61c0-.83.23-1.61.63-2.29ZM20 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2Zm4 3.43c0-.81-.48-1.53-1.22-1.85A6.95 6.95 0 0 0 20 14c-.39 0-.76.04-1.13.1.4.68.63 1.46.63 2.29V18H23c.55 0 1-.45 1-1v-.57ZM12 6c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3Z"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className="padding-bottom padding-small" />
+                            <div className="text-size-medium text-weight-bold text-color-neutral-800">
+                              Improve collaboration
+                            </div>
+                            <div className="padding-bottom padding-xsmall" />
+                            <p className="text-size-small text-color-neutral-600">
+                              Team members can use the view to see what tasks
+                              are assigned to them and what tasks are being
+                              worked on by other team members.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="button-group">
+                          <a
+                            href="/sign-up"
+                            className="button is-small w-button"
+                          >
+                            Get started
+                          </a>
+                          <a
+                            href="/features"
+                            className="link is-small w-inline-block"
+                          >
+                            <div>All features</div>
+                            <div className="icon-1x1-xxsmall w-embed">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="100%"
+                                height="100%"
+                                fill="none"
+                                viewBox="0 0 16 16"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="m8 2.667-.94.94 3.72 3.727H2.665v1.333h8.113l-3.72 3.727.94.94L13.333 8 7.999 2.667Z"
+                                />
+                              </svg>
+                            </div>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <img
+                      src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ac615d50fb_dashboard_spreadsheet.webp"
+                      loading="lazy"
+                      sizes="(max-width: 479px) 92vw, (max-width: 767px) 95vw, (max-width: 991px) 92vw, 57vw"
+                      width={1440}
+                      srcSet="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ac615d50fb_dashboard_spreadsheet-p-500.webp 500w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ac615d50fb_dashboard_spreadsheet-p-800.webp 800w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ac615d50fb_dashboard_spreadsheet-p-1080.webp 1080w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ac615d50fb_dashboard_spreadsheet-p-1600.webp 1600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ac615d50fb_dashboard_spreadsheet-p-2000.webp 2000w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ac615d50fb_dashboard_spreadsheet-p-2600.webp 2600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ac615d50fb_dashboard_spreadsheet.webp 2880w"
+                      alt=""
+                      className="views-image"
+                    />
+                  </div>
+                  <div className="views-item">
+                    <div className="views-content-wrapper">
+                      <div className="views-content-left">
+                        <div className="views-list">
+                          <div className="views-list-item">
+                            <div className="views-icon-wrapper">
+                              <div
+                                id="w-node-_91e6b7e1-6117-7a1b-5618-230e76ea64df-a9891d7f"
+                                className="icon-1x1-small text-color-neutral-800 w-embed"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="100%"
+                                  height="100%"
+                                  fill="none"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M4 7v13h13c.55 0 1 .45 1 1s-.45 1-1 1H4c-1.1 0-2-.9-2-2V7c0-.55.45-1 1-1s1 .45 1 1Z"
+                                  />
+                                  <path
+                                    fill="currentColor"
+                                    d="M6 4v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2Zm9 7h5v5h-5v-5Zm-7 0h5v5H8v-5Zm0-7h12v5H8V4Z"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className="padding-bottom padding-small" />
+                            <div className="text-size-medium text-weight-bold text-color-neutral-800">
+                              Prioritization
+                            </div>
+                            <div className="padding-bottom padding-xsmall" />
+                            <p className="text-size-small text-color-neutral-600">
+                              Allows users to see all of their tasks in a
+                              simple, easy-to-read list format.
+                            </p>
+                          </div>
+                          <div className="padding-bottom padding-small" />
+                          <div className="views-list-item">
+                            <div className="views-icon-wrapper">
+                              <div
+                                id="w-node-_91e6b7e1-6117-7a1b-5618-230e76ea64e9-a9891d7f"
+                                className="icon-1x1-small text-color-neutral-800 w-embed"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="100%"
+                                  height="100%"
+                                  fill="none"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M4.25 5.61C6.57 8.59 10 13 10 13v5c0 1.1.9 2 2 2s2-.9 2-2v-5s3.43-4.41 5.75-7.39c.51-.66.04-1.61-.8-1.61H5.04c-.83 0-1.3.95-.79 1.61Z"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className="padding-bottom padding-small" />
+                            <div className="text-size-medium text-weight-bold text-color-neutral-800">
+                              Smart filtering
+                            </div>
+                            <div className="padding-bottom padding-xsmall" />
+                            <p className="text-size-small text-color-neutral-600">
+                              Allows you to quickly and easily filter tasks by
+                              various criteria, such as task status, assigned
+                              team member, and more.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="button-group">
+                          <a
+                            href="/sign-up"
+                            className="button is-small w-button"
+                          >
+                            Get started
+                          </a>
+                          <a
+                            href="/features"
+                            className="link is-small w-inline-block"
+                          >
+                            <div>All features</div>
+                            <div className="icon-1x1-xxsmall w-embed">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="100%"
+                                height="100%"
+                                fill="none"
+                                viewBox="0 0 16 16"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="m8 2.667-.94.94 3.72 3.727H2.665v1.333h8.113l-3.72 3.727.94.94L13.333 8 7.999 2.667Z"
+                                />
+                              </svg>
+                            </div>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <img
+                      src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban.webp"
+                      loading="lazy"
+                      sizes="(max-width: 479px) 92vw, (max-width: 767px) 95vw, (max-width: 991px) 92vw, 57vw"
+                      width={1440}
+                      srcSet="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban-p-500.webp 500w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban-p-800.webp 800w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban-p-1080.webp 1080w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban-p-1600.webp 1600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban-p-2000.webp 2000w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban-p-2600.webp 2600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban.webp 2880w"
+                      alt=""
+                      className="views-image"
+                    />
+                  </div>
+                  <div className="views-item">
+                    <div className="views-content-wrapper">
+                      <div className="views-content-left">
+                        <div className="views-list">
+                          <div className="views-list-item">
+                            <div className="views-icon-wrapper">
+                              <div
+                                id="w-node-b03b39ab-7722-1f4a-1f38-b09015002559-a9891d7f"
+                                className="icon-1x1-small text-color-neutral-800 w-embed"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="100%"
+                                  height="100%"
+                                  fill="none"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M3.505 10.424a4.985 4.985 0 0 0 4.07 5.18l-.79-.79a.996.996 0 1 1 1.41-1.41l2.59 2.59c.39.39.39 1.02 0 1.41l-2.58 2.6a.996.996 0 1 1-1.41-1.41l.88-.88v-.06a6.995 6.995 0 0 1-6.15-7.47c.26-3.7 3.52-6.48 7.23-6.48h1.74c.55 0 1 .45 1 1s-.45 1-1 1h-1.78c-2.7 0-5.07 2.04-5.21 4.72ZM15.495 10.704h5c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2h-5c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2Zm5-2h-5v-3h5v3ZM20.495 19.704h-5c-1.1 0-2-.9-2-2v-3c0-1.1.9-2 2-2h5c1.1 0 2 .9 2 2v3c0 1.1-.9 2-2 2Z"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className="padding-bottom padding-small" />
+                            <div className="text-size-medium text-weight-bold text-color-neutral-800">
+                              Dependencies between tasks
+                            </div>
+                            <div className="padding-bottom padding-xsmall" />
+                            <p className="text-size-small text-color-neutral-600">
+                              If one task depends on another task being
+                              completed first, the this view will show this
+                              relationship visually.
+                            </p>
+                          </div>
+                          <div className="padding-bottom padding-small" />
+                          <div className="views-list-item">
+                            <div className="views-icon-wrapper">
+                              <div
+                                id="w-node-b03b39ab-7722-1f4a-1f38-b09015002563-a9891d7f"
+                                className="icon-1x1-small text-color-neutral-800 w-embed"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="100%"
+                                  height="100%"
+                                  fill="none"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M14.5 3.5c0 1.5-1.5 6-1.5 6h-2S9.5 5 9.5 3.5a2.5 2.5 0 0 1 5 0ZM12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2Zm4.08-4.89c.18-.75.33-1.47.39-2.06A9.996 9.996 0 0 1 22 13c0 5.52-4.48 10-10 10S2 18.52 2 13c0-3.92 2.25-7.31 5.53-8.95.07.59.21 1.32.39 2.06A8.028 8.028 0 0 0 4 13c0 4.42 3.58 8 8 8s8-3.58 8-8c0-2.93-1.58-5.49-3.92-6.89ZM18 13c0 3.31-2.69 6-6 6s-6-2.69-6-6c0-2 .98-3.77 2.48-4.86.23.81.65 2.07.65 2.07C8.43 10.93 8 11.92 8 13c0 2.21 1.79 4 4 4s4-1.79 4-4c0-1.08-.43-2.07-1.13-2.79 0 0 .41-1.22.65-2.07A5.998 5.998 0 0 1 18 13Z"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className="padding-bottom padding-small" />
+                            <div className="text-size-medium text-weight-bold text-color-neutral-800">
+                              Useful insights
+                            </div>
+                            <div className="padding-bottom padding-xsmall" />
+                            <p className="text-size-small text-color-neutral-600">
+                              Understand project's status and identify potential
+                              issues before they become serious problems.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="button-group">
+                          <a
+                            href="/sign-up"
+                            className="button is-small w-button"
+                          >
+                            Get started
+                          </a>
+                          <a
+                            href="/features"
+                            className="link is-small w-inline-block"
+                          >
+                            <div>All features</div>
+                            <div className="icon-1x1-xxsmall w-embed">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="100%"
+                                height="100%"
+                                fill="none"
+                                viewBox="0 0 16 16"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="m8 2.667-.94.94 3.72 3.727H2.665v1.333h8.113l-3.72 3.727.94.94L13.333 8 7.999 2.667Z"
+                                />
+                              </svg>
+                            </div>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <img
+                      src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt.webp"
+                      loading="lazy"
+                      sizes="(max-width: 479px) 92vw, (max-width: 767px) 95vw, (max-width: 991px) 92vw, 57vw"
+                      width={1440}
+                      srcSet="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt-p-500.webp 500w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt-p-800.webp 800w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt-p-1080.webp 1080w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt-p-1600.webp 1600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt-p-2000.webp 2000w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt-p-2600.webp 2600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt.webp 2880w"
+                      alt=""
+                      className="views-image"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="section-testimonials">
+          <div className="padding-global">
+            <div className="container-large">
+              <div className="padding-section-large">
+                <div className="testimonials-component">
+                  <div className="text-align-center">
+                    <div className="max-width-xlarge align-center">
+                      <div className="testimonials-heading-component">
+                        <div className="tagline">Testimonials</div>
+                        <div className="padding-bottom padding-small" />
+                        <h2 className="heading-style-h2">
+                          What customers say about Gem
+                        </h2>
+                        <div className="padding-bottom padding-medium" />
+                        <p className="text-size-large">
+                          We've received many positive responses from people
+                          about our product. The following reviews are from our
+                          customers.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="padding-bottom padding-huge" />
+                  <div
+                    id="testimonials"
+                    data-w-id="c423261c-d896-23a8-ea7c-07c4e989edb1"
+                    style={{ height: "700px" }}
+                    className="testimonials-content-wrapper"
+                  >
+                    <div className="testimonials-components">
+                      <div className="testimonials-content">
+                        <div className="testimonials-customer">
+                          <div className="testimonials-image-wrapper">
+                            <img
+                              src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51804e565d50b6_avatar_128_02.webp"
+                              loading="lazy"
+                              alt=""
+                              className="testimonials-customer-image"
+                            />
+                          </div>
+                          <div className="testimonials-info">
+                            <p className="text-size-regular text-weight-medium text-color-neutral-900">
+                              Erick Alvarez
+                            </p>
+                            <p className="text-size-small">Project assistant</p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="text-size-regular">
+                          We optimize the entire workflow around Gem and results
+                          are visible immediately. Our productivity went up by
+                          30% in the first month.
+                        </div>
+                      </div>
+                      <div className="testimonials-content">
+                        <div className="testimonials-customer">
+                          <div className="testimonials-image-wrapper">
+                            <img
+                              src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180cf015d50cb_avatar_128_03.webp"
+                              loading="lazy"
+                              alt=""
+                              className="testimonials-customer-image"
+                            />
+                          </div>
+                          <div className="testimonials-info">
+                            <p className="text-size-regular text-weight-medium text-color-neutral-900">
+                              Bo Woods
+                            </p>
+                            <p className="text-size-small">UI/UX Designer</p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="text-size-regular">
+                          Gem saves us 45 minutes per day. Everything is simple
+                          and intuitive.
+                        </div>
+                      </div>
+                      <div className="testimonials-content">
+                        <div className="testimonials-customer">
+                          <div className="testimonials-image-wrapper">
+                            <img
+                              src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180eb6c5d50b7_avatar_128_04.webp"
+                              loading="lazy"
+                              alt=""
+                              className="testimonials-customer-image"
+                            />
+                          </div>
+                          <div className="testimonials-info">
+                            <p className="text-size-regular text-weight-medium text-color-neutral-900">
+                              Kevin Clayton
+                            </p>
+                            <p className="text-size-small">Event manager</p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="text-size-regular">
+                          Our Team-setup on Gem has tripled our output. It’s
+                          fascinating how small but clever changes in UI can
+                          make such an impact on the workflow.
+                        </div>
+                      </div>
+                      <div className="testimonials-content">
+                        <div className="testimonials-customer">
+                          <div className="testimonials-image-wrapper">
+                            <img
+                              src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518012185d5104_avatar_128_30.webp"
+                              loading="lazy"
+                              alt=""
+                              className="testimonials-customer-image"
+                            />
+                          </div>
+                          <div className="testimonials-info">
+                            <p className="text-size-regular text-weight-medium text-color-neutral-900">
+                              Rachael Clark
+                            </p>
+                            <p className="text-size-small">
+                              Customer service manager
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="text-size-regular">
+                          The entire app works seamlessly and the team members
+                          can see and respond to our tasks in no time.
+                        </div>
+                      </div>
+                      <div className="testimonials-content">
+                        <div className="testimonials-customer">
+                          <div className="testimonials-image-wrapper">
+                            <img
+                              src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180229e5d50c4_avatar_128_05.webp"
+                              loading="lazy"
+                              alt=""
+                              className="testimonials-customer-image"
+                            />
+                          </div>
+                          <div className="testimonials-info">
+                            <p className="text-size-regular text-weight-medium text-color-neutral-900">
+                              Dominick Blake
+                            </p>
+                            <p className="text-size-small">
+                              Customer service manager
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="text-size-regular">
+                          The amount of work that we did after implementing Gem
+                          is mind blowing. Beyond that, the team at Gem have
+                          gone above beyond to understand our business needs,
+                          provide support and build models that work for our
+                          objectives!
+                        </div>
+                      </div>
+                      <div className="testimonials-content">
+                        <div className="testimonials-customer">
+                          <div className="testimonials-image-wrapper">
+                            <img
+                              src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51801d1b5d5101_avatar_128_06.webp"
+                              loading="lazy"
+                              alt=""
+                              className="testimonials-customer-image"
+                            />
+                          </div>
+                          <div className="testimonials-info">
+                            <p className="text-size-regular text-weight-medium text-color-neutral-900">
+                              Landon Smith
+                            </p>
+                            <p className="text-size-small">
+                              Project management consultant
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="text-size-regular">
+                          Beautifully designed, expertly crafted software that
+                          follows all accessibility best practices and are easy
+                          to customize. I appreciate the approach.
+                        </div>
+                      </div>
+                      <div className="testimonials-content">
+                        <div className="testimonials-customer">
+                          <div className="testimonials-image-wrapper">
+                            <img
+                              src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518075555d5105_avatar_128_26.webp"
+                              loading="lazy"
+                              alt=""
+                              className="testimonials-customer-image"
+                            />
+                          </div>
+                          <div className="testimonials-info">
+                            <p className="text-size-regular text-weight-medium text-color-neutral-900">
+                              Alexus Reed
+                            </p>
+                            <p className="text-size-small">
+                              Operations manager
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="text-size-regular">
+                          Real time sync provides us with critical insight into
+                          our business which allows us to make fast decisions
+                          and ultimately become more dynamic and competitive in
+                          the marketplace.
+                        </div>
+                      </div>
+                      <div className="testimonials-content">
+                        <div className="testimonials-customer">
+                          <div className="testimonials-image-wrapper">
+                            <img
+                              src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518022825d50ee_avatar_128_21.webp"
+                              loading="lazy"
+                              alt=""
+                              className="testimonials-customer-image"
+                            />
+                          </div>
+                          <div className="testimonials-info">
+                            <p className="text-size-regular text-weight-medium text-color-neutral-900">
+                              Amber Gray
+                            </p>
+                            <p className="text-size-small">
+                              IT project manager
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="text-size-regular">
+                          When we first start using Gem, we were skeptical. We'd
+                          tried lots of products and none of them made any
+                          difference. But Gem proved to be more incremental than
+                          anything we used before.
+                        </div>
+                      </div>
+                      <div className="testimonials-content">
+                        <div className="testimonials-customer">
+                          <div className="testimonials-image-wrapper">
+                            <img
+                              src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180434d5d5106_avatar_128_22.webp"
+                              loading="lazy"
+                              alt=""
+                              className="testimonials-customer-image"
+                            />
+                          </div>
+                          <div className="testimonials-info">
+                            <p className="text-size-regular text-weight-medium text-color-neutral-900">
+                              Rebecca Herman
+                            </p>
+                            <p className="text-size-small">
+                              Project administrator
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="text-size-regular">
+                          This magical product actually works! Gem has radically
+                          changed the way we work. Increasing our productivity
+                          by 2X in all our teams.
+                        </div>
+                      </div>
+                      <div className="testimonials-content">
+                        <div className="testimonials-customer">
+                          <div className="testimonials-image-wrapper">
+                            <img
+                              src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51801b995d50b8_avatar_128_29.webp"
+                              loading="lazy"
+                              alt=""
+                              className="testimonials-customer-image"
+                            />
+                          </div>
+                          <div className="testimonials-info">
+                            <p className="text-size-regular text-weight-medium text-color-neutral-900">
+                              Yuliana Austin
+                            </p>
+                            <p className="text-size-small">
+                              Customer sercice manager
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="text-size-regular">
+                          Management automation is a way to future-proof my
+                          business. I’m a freelancer and Gem helps a lot.
+                          Thanks!
+                        </div>
+                      </div>
+                      <div className="testimonials-content">
+                        <div className="testimonials-customer">
+                          <div className="testimonials-image-wrapper">
+                            <img
+                              src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518096fa5d5103_avatar_128_23.webp"
+                              loading="lazy"
+                              alt=""
+                              className="testimonials-customer-image"
+                            />
+                          </div>
+                          <div className="testimonials-info">
+                            <p className="text-size-regular text-weight-medium text-color-neutral-900">
+                              Camilla Evans
+                            </p>
+                            <p className="text-size-small">
+                              Administrative assistant
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-medium" />
+                        <div className="text-size-regular">
+                          We've completely automated the management process in
+                          our company - from start to finish sent to execution
+                          and after.
+                        </div>
+                      </div>
+                      <div className="testimonials-content">
+                        <div className="testimonials-customer">
+                          <div className="testimonials-image-wrapper">
+                            <img
+                              src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180c0615d50ca_avatar_128_16.webp"
+                              loading="lazy"
+                              alt=""
+                              className="testimonials-customer-image"
+                            />
+                          </div>
+                          <div className="testimonials-info">
+                            <p className="text-size-regular text-weight-medium text-color-neutral-900">
+                              Erik Wilkins
+                            </p>
+                            <p className="text-size-small">
+                              Marketing coordinator
+                            </p>
+                          </div>
+                        </div>
+                        <div className="padding-bottom padding-small" />
+                        <div className="text-size-regular">
+                          We use Gem to focus on incremental growth. The ROI has
+                          been fantastic!
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      data-w-id="f449f4fd-f42a-cb66-62d8-29eabeac8eb4"
+                      style={{ opacity: 1 }}
+                      className="testimonials-gradient"
+                    />
+                  </div>
+                  <a
+                    data-w-id="4f658662-1f44-7c46-7cfd-0d456f60b1de"
+                    href="#"
+                    className="button is-tertiary-black w-button"
+                  >
+                    Show more
+                  </a>
+                  <a
+                    href="#testimonials"
+                    data-w-id="2509525f-9740-8d64-7f52-16bf00fab62b"
+                    className="button is-tertiary-black is-hide w-button"
+                  >
+                    Show less
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div className="section-featured-blog background-color-neutral-50">
+          <div className="padding-global">
+            <div className="container-large" />
+          </div>
+        </div>
+        <section className="section-cta">
+          <div className="padding-global">
+            <div className="container-large">
+              <div className="cta-component">
+                <div className="cta-content">
+                  <h2 className="heading-style-h5 text-color-white">
+                    Try Gem today
+                  </h2>
+                  <div className="padding-bottom padding-xsmall" />
+                  <div className="text-size-regular text-color-white">
+                    Start a free trial now and see the results for yourself.
+                  </div>
+                </div>
+                <a href="/sign-up" className="button is-tertiary w-button">
+                  Start 14-day free trial
+                </a>
+              </div>
+            </div>
+            <div className="cta-background" />
+          </div>
+        </section>
+        <footer className="section-footer">
+          <div className="padding-global">
+            <div className="container-large">
+              <div className="footer-component">
+                <div className="padding-bottom padding-xxlarge" />
+                <div className="footer-content">
+                  <div
+                    id="w-node-b7a98846-3fbb-6bdf-6352-414eabb9ad7f-abb9ad79"
+                    className="footer-menu"
+                  >
+                    <div
+                      id="w-node-_751bf445-5a04-0b5b-bc0b-f61a063847ca-abb9ad79"
+                      className="footer-column is-logo"
+                    >
+                      <a
+                        href="/"
+                        aria-current="page"
+                        className="footer-logo-link w-inline-block w--current"
+                      >
+                        <img
+                          src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51806ff55d50c2_Logo%20white.svg"
+                          loading="lazy"
+                          alt="Logo link"
+                          className="nav-logo"
+                        />
+                      </a>
+                    </div>
+                    <div
+                      id="w-node-b7a98846-3fbb-6bdf-6352-414eabb9ad80-abb9ad79"
+                      className="footer-column"
+                    >
+                      <div className="text-size-regular text-weight-semibold text-color-white">
+                        Pages
+                      </div>
+                      <div className="padding-bottom padding-medium" />
+                      <div className="footer-list">
+                        <a
+                          href="/"
+                          aria-current="page"
+                          className="footer-link w-inline-block w--current"
+                        >
+                          <div>Home</div>
+                        </a>
+                        <a
+                          href="/features"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Features</div>
+                          <div className="footer-label">New</div>
+                        </a>
+                        <a href="#" className="footer-link w-inline-block">
+                          <div>Blog</div>
+                        </a>
+                        <a
+                          href="/blog-posts/work-less-work-smart-the-best-ways-to-achieve-more-in-less-time"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Blog post</div>
+                        </a>
+                        <a
+                          href="/pricing"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Pricing</div>
+                        </a>
+                        <a href="#" className="footer-link w-inline-block">
+                          <div>Integrations</div>
+                        </a>
+                        <a
+                          href="/download"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Download</div>
+                        </a>
+                        <a
+                          href="https://webflow.com/templates/designers/minimal-square"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Other templates</div>
+                        </a>
+                      </div>
+                    </div>
+                    <div
+                      id="w-node-b7a98846-3fbb-6bdf-6352-414eabb9ad8f-abb9ad79"
+                      className="footer-column"
+                    >
+                      <div className="text-size-regular text-weight-semibold text-color-white">
+                        Company
+                      </div>
+                      <div className="padding-bottom padding-medium" />
+                      <div className="footer-list">
+                        <a
+                          href="/about-us"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>About us</div>
+                        </a>
+                        <a
+                          href="/careers"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Careers</div>
+                          <div className="footer-label">New</div>
+                        </a>
+                        <a
+                          href="/career/visual-designer"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Job post</div>
+                          <div className="footer-label">New</div>
+                        </a>
+                        <a href="/faqs" className="footer-link w-inline-block">
+                          <div>FAQs</div>
+                        </a>
+                        <a
+                          href="/latest-updates"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Changelog</div>
+                        </a>
+                        <a
+                          href="/contact"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Contact sales</div>
+                        </a>
+                        <a
+                          href="https://gemtemplate.webflow.io/team-membes/jane-palmer"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Team members</div>
+                        </a>
+                        <a
+                          href="https://gemtemplate.webflow.io/author/alexus-reed"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Author</div>
+                        </a>
+                      </div>
+                    </div>
+                    <div
+                      id="w-node-b7a98846-3fbb-6bdf-6352-414eabb9ad9c-abb9ad79"
+                      className="footer-column"
+                    >
+                      <div className="text-size-regular text-weight-semibold text-color-white">
+                        Account
+                      </div>
+                      <div className="padding-bottom padding-medium" />
+                      <div className="footer-list">
+                        <a
+                          href="/log-in"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Log in</div>
+                        </a>
+                        <a
+                          href="/sign-up"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Sign up</div>
+                        </a>
+                        <a
+                          href="/reset-password"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Reset password</div>
+                        </a>
+                        <a
+                          href="/access-denied"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Access denied</div>
+                        </a>
+                        <a
+                          href="/user-account"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>User account</div>
+                        </a>
+                      </div>
+                    </div>
+                    <div
+                      id="w-node-_7352c6ad-fddc-dd58-80b3-bea4e3fb461f-abb9ad79"
+                      className="footer-column"
+                    >
+                      <div className="text-size-regular text-weight-semibold text-color-white">
+                        Social
+                      </div>
+                      <div className="padding-bottom padding-medium" />
+                      <div className="footer-list">
+                        <a href="#" className="footer-link w-inline-block">
+                          <div>Style guide</div>
+                        </a>
+                        <a href="/404" className="footer-link w-inline-block">
+                          <div>404</div>
+                        </a>
+                        <a href="/401" className="footer-link w-inline-block">
+                          <div>Protected</div>
+                        </a>
+                        <a
+                          href="/search"
+                          className="footer-link w-inline-block"
+                        >
+                          <div>Search</div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="padding-bottom padding-xxlarge" />
+                <div className="footer-bottom">
+                  <div className="text-size-small text-color-neutral-400">
+                    © Minimal UI 2022
+                  </div>
+                  <div className="footer-bottom-link-wrapper">
+                    <a
+                      href="/legal"
+                      className="text-size-small text-color-neutral-400"
+                    >
+                      Terms of service
+                    </a>
+                    <a
+                      href="/legal"
+                      className="text-size-small text-color-neutral-400"
+                    >
+                      Privacy policy
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </main>
+    </div>
   );
 };
 
@@ -209,15 +2025,114 @@ const styles = StyleSheet.create({
     width: 188,
     marginTop: 25,
   },
-  footerContainer: {
-    height: 54,
-    backgroundColor: "rgba(70,68,68,1)",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   copyrightTxt: {
     color: "rgba(255,255,255,1)",
     fontSize: 17,
+  },
+  btnContainer: {
+    backgroundColor: "rgba(255,255,255,1)",
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 150,
+    height: 52,
+    marginRight: 25,
+  },
+  getStarted: {
+    fontWeight: "700",
+    color: "#121212",
+    fontSize: 16,
+  },
+  btnContainer2: {
+    borderColor: "rgba(255,255,255,1)",
+    borderWidth: 1,
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 150,
+    height: 52,
+  },
+  btnContainer3: {
+    borderColor: "rgba(255,255,255,1)",
+    borderWidth: 1,
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 250,
+    height: 52,
+  },
+  findOut: {
+    fontWeight: "700",
+    color: "white",
+    fontSize: 16,
+  },
+  whyUs: {
+    fontWeight: "700",
+    color: "#175cd3",
+    fontSize: 18,
+    marginBottom: 15,
+    paddingTop: 450,
+  },
+  keyB: {
+    fontWeight: "600",
+    color: "#121212",
+    fontSize: 60,
+    width: 620,
+    height: 163,
+    textAlign: "center",
+    lineHeight: 70,
+    marginBottom: 15,
+  },
+  section2Container: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 1000,
+  },
+  p2: {
+    fontWeight: "500",
+    color: "#6c737f",
+    fontSize: 20,
+    width: 756,
+    height: 67,
+    lineHeight: 30,
+    textAlign: "center",
+  },
+  footerContainer: {
+    backgroundColor: "#1f2a37",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    width: "100%",
+    height: 70,
+    marginTop: 100,
+  },
+  innerContainer: {
+    width: "80%",
+    height: 50,
+    borderColor: "rgba(56,66,80,1)",
+    borderTopWidth: 1,
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  divinePos2023: {
+    color: "#9da4ae",
+  },
+  freeTrialContainer: {
+    backgroundColor: "#1470ef",
+    borderRadius: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "80%",
+    height: 160,
+    paddingRight: 50,
+    paddingLeft: 50,
+    alignSelf: "center",
+    marginTop: 200,
+  },
+  tryDivinePosToday: {
+    fontWeight: "700",
+    color: "rgba(255,255,255,1)",
+    fontSize: 28,
   },
 });
