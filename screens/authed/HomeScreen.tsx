@@ -11,13 +11,14 @@ import React, { useEffect, useState } from "react";
 import MenuScreen from "./MenuScreen";
 import CartScreen from "./CartScreen";
 import { Button } from "@react-native-material/core";
-import { storeDetailState, userStoreState } from "state/state";
+import { storeDetailState, transListState, userStoreState } from "state/state";
 import { auth } from "state/firebaseConfig";
 import Logo from "assets/dpos-logo.png";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import useWindowDimensions from "components/useWindowDimensions";
 import CompletePaymentPhoneOrder from "components/CompletePaymentPhoneOrder";
 import SettingsPasswordModal from "components/SettingsPasswordModal";
+import { updateTransList } from "state/firebaseFunctions";
 
 const HomeScreen = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
@@ -26,6 +27,18 @@ const HomeScreen = ({ navigation }) => {
   const [ongoingOrderListModal, setongoingOrderListModal] = useState(false);
   const [settingsPasswordModalVis, setsettingsPasswordModalVis] =
     useState(false);
+  
+  //only used for fixing purposes :)
+  // const transList = transListState.use();
+
+  // const Test = () => {
+  //   const newtrans = JSON.parse(transList);
+
+  //   newtrans.forEach((element) => {
+  //     updateTransList(element);
+  //   });
+  // };
+  //Dont use again :(
 
   const Header = () => {
     return (

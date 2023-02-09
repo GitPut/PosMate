@@ -53,35 +53,8 @@ const CartScreen = ({ navigation }) => {
     }
   }, [cart]);
 
-  useEffect(() => {
-    if (
-      !deliveryModal &&
-      !cashModal &&
-      !changeModal &&
-      !ongoingDelivery &&
-      cart.length === 0
-    ) {
-      const waitTranslist = localStorage.getItem("waitTranslist");
-      if (waitTranslist) {
-        updateTransList(waitTranslist);
-        localStorage.removeItem("waitTranslist");
-      }
-    }
-  }, [deliveryModal, cashModal, changeModal, ongoingDelivery, cart]);
-
   const AddToList = async (payload) => {
-    const local = structuredClone(transList);
-
-    const waitTranslist = localStorage.getItem("waitTranslist");
-
-    if (waitTranslist) {
-      waitTranslist.push(payload);
-      updateTransList(waitTranslist);
-      localStorage.removeItem("waitTranslist");
-    } else {
-      local.push(payload);
-      updateTransList(local);
-    }
+    updateTransList(payload);
   };
 
   const Print = (method) => {
@@ -177,17 +150,17 @@ const CartScreen = ({ navigation }) => {
       //     console.log(respData);
       //   })
       //   .catch((e) => alert("Error with printer"));
-      // const qz = require("qz-tray");
-      // qz.websocket
-      //   .connect()
-      //   .then(function () {
-      //     let config = qz.configs.create("storeDetails.comSelected");
-      //     return qz.print(config, data);
-      //   })
-      //   .then(qz.websocket.disconnect)
-      //   .catch(function (err) {
-      //     console.error(err);
-      //   });
+      const qz = require("qz-tray");
+      qz.websocket
+        .connect()
+        .then(function () {
+          let config = qz.configs.create("storeDetails.comSelected");
+          return qz.print(config, data);
+        })
+        .then(qz.websocket.disconnect)
+        .catch(function (err) {
+          console.error(err);
+        });
 
       AddToList({
         id: Math.random().toString(36).substr(2, 9) + "-l",
@@ -292,17 +265,17 @@ const CartScreen = ({ navigation }) => {
       //     console.log(respData);
       //   })
       //   .catch((e) => alert("Error with printer"));
-      // const qz = require("qz-tray");
-      // qz.websocket
-      //   .connect()
-      //   .then(function () {
-      //     let config = qz.configs.create("storeDetails.comSelected");
-      //     return qz.print(config, data);
-      //   })
-      //   .then(qz.websocket.disconnect)
-      //   .catch(function (err) {
-      //     console.error(err);
-      //   });
+      const qz = require("qz-tray");
+      qz.websocket
+        .connect()
+        .then(function () {
+          let config = qz.configs.create("storeDetails.comSelected");
+          return qz.print(config, data);
+        })
+        .then(qz.websocket.disconnect)
+        .catch(function (err) {
+          console.error(err);
+        });
 
       AddToList({
         id: Math.random().toString(36).substr(2, 9) + "-l",
@@ -426,17 +399,17 @@ const CartScreen = ({ navigation }) => {
       //     console.log(respData);
       //   })
       //   .catch((e) => alert("Error with printer"));
-      // const qz = require("qz-tray");
-      // qz.websocket
-      //   .connect()
-      //   .then(function () {
-      //     let config = qz.configs.create("storeDetails.comSelected");
-      //     return qz.print(config, data);
-      //   })
-      //   .then(qz.websocket.disconnect)
-      //   .catch(function (err) {
-      //     console.error(err);
-      //   });
+      const qz = require("qz-tray");
+      qz.websocket
+        .connect()
+        .then(function () {
+          let config = qz.configs.create("storeDetails.comSelected");
+          return qz.print(config, data);
+        })
+        .then(qz.websocket.disconnect)
+        .catch(function (err) {
+          console.error(err);
+        });
 
       AddToList({
         id: Math.random().toString(36).substr(2, 9) + "-l",
@@ -614,7 +587,15 @@ const CartScreen = ({ navigation }) => {
                   Extra Info: {cartItem.extraDetails}
                 </Text>
               )}
-              <Button title="Edit" onPress={() => navigation.navigate('ProductListing', {product: cartItem.editableObj, itemIndex: index})} />
+              <Button
+                title="Edit"
+                onPress={() =>
+                  navigation.navigate("ProductListing", {
+                    product: cartItem.editableObj,
+                    itemIndex: index,
+                  })
+                }
+              />
             </View>
           ))}
         </View>

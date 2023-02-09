@@ -3,7 +3,7 @@ import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ViewTransactions from "./ViewTransactions";
 
-const StatsScreen = () => {
+const StatsScreen = ({transList, todaysDetails}) => {
   return (
     <ScrollView contentContainerStyle={styles.mainScrollView}>
       <ScrollView horizontal={true}>
@@ -13,7 +13,7 @@ const StatsScreen = () => {
         <InfoBlock label="Monthly Orders" stat="226" icon="cart" />
       </ScrollView>
       <View style={styles.detailsBlock}>
-        <ViewTransactions />
+        <ViewTransactions transList={transList} todaysDetails={todaysDetails} />
       </View>
     </ScrollView>
   );

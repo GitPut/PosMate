@@ -51,10 +51,11 @@ export const updateWooCredentials = (wooCredentials) => {
   });
 };
 
-export const updateTransList = (transList) => {
-  db.collection("users").doc(auth.currentUser?.uid).update({
-    transList: transList,
-  });
+export const updateTransList = (reciept) => {
+  db.collection("users")
+    .doc(auth.currentUser?.uid)
+    .collection("transList")
+    .add(reciept);
 };
 
 export const updateStoreDetails = (storeDetails) => {

@@ -228,7 +228,9 @@ const ProductListing = ({ navigation, route }) => {
     myObjProfile.options.forEach((op) => {
       op.optionsList
         .filter((f) => f.selected === true)
-        .map((e) => (total += parseFloat(e.priceIncrease)));
+        .map(
+          (e) => (total += e.priceIncrease ? parseFloat(e.priceIncrease) : 0)
+        );
     });
     return total;
   };

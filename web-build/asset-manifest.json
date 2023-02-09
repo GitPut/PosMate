@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/static/js/app.4a955b3a.chunk.js",
-    "app.js.map": "/static/js/app.4a955b3a.chunk.js.map",
+    "app.js": "/static/js/app.0419fa76.chunk.js",
+    "app.js.map": "/static/js/app.0419fa76.chunk.js.map",
     "runtime~app.js": "/static/js/runtime~app.27401809.js",
     "runtime~app.js.map": "/static/js/runtime~app.27401809.js.map",
-    "static/js/2.76a627cb.chunk.js": "/static/js/2.76a627cb.chunk.js",
-    "static/js/2.76a627cb.chunk.js.map": "/static/js/2.76a627cb.chunk.js.map",
+    "static/js/2.44cb40eb.chunk.js": "/static/js/2.44cb40eb.chunk.js",
+    "static/js/2.44cb40eb.chunk.js.map": "/static/js/2.44cb40eb.chunk.js.map",
     "fonts/Feather.ttf": "/./fonts/Feather.ttf",
     "fonts/Foundation.ttf": "/./fonts/Foundation.ttf",
     "fonts/Ionicons.ttf": "/./fonts/Ionicons.ttf",
@@ -17,13 +17,13 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
-    "static/js/2.76a627cb.chunk.js.LICENSE.txt": "/static/js/2.76a627cb.chunk.js.LICENSE.txt",
+    "static/js/2.44cb40eb.chunk.js.LICENSE.txt": "/static/js/2.44cb40eb.chunk.js.LICENSE.txt",
     "static/media/dpos-logo-black.png": "/static/media/dpos-logo-black.9464d239.png",
     "static/media/dpos-logo.png": "/static/media/dpos-logo.58fecdd6.png"
   },
   "entrypoints": [
     "static/js/runtime~app.27401809.js",
-    "static/js/2.76a627cb.chunk.js",
-    "static/js/app.4a955b3a.chunk.js"
+    "static/js/2.44cb40eb.chunk.js",
+    "static/js/app.0419fa76.chunk.js"
   ]
 }
