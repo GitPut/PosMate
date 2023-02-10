@@ -123,7 +123,7 @@ const RouteManager = () => {
 
           getOrders().then(() => {
             let array1 = localStorage.getItem("prevWooOrders");
-            array1 = JSON.parse(array1)
+            array1 = JSON.parse(array1);
             if (array1) {
               const array2 = orders;
 
@@ -135,12 +135,12 @@ const RouteManager = () => {
 
               const CleanupOps = (metaList) => {
                 const opsArray = [];
-            
+
                 metaList.forEach((op) => {
                   const arrContaingMe = opsArray.filter(
                     (filterOp) => filterOp.key === op.key
                   );
-            
+
                   if (arrContaingMe.length > 0) {
                     opsArray.forEach((opsArrItem, index) => {
                       if (opsArrItem.key === op.key) {
@@ -228,13 +228,15 @@ const RouteManager = () => {
                           printData.push(`${returnedItem.key} : `);
                           returnedItem.vals.map((val, index) => {
                             printData.push(`${val}`);
-                            if(index >= 0 &&
-                                    index < returnedItem.vals.length - 1){
-                                      printData.push( ", ");
-                                    }
-                          })
+                            if (
+                              index >= 0 &&
+                              index < returnedItem.vals.length - 1
+                            ) {
+                              printData.push(", ");
+                            }
+                          });
                           printData.push("\x0A");
-                        })
+                        });
                       } else {
                         printData.push("\x0A" + "\x0A");
                       }
@@ -297,7 +299,7 @@ const RouteManager = () => {
                       .connect()
                       .then(function () {
                         let config = qz.configs.create(
-                         storeDetails.comSelected
+                          storeDetails.comSelected
                         );
                         return qz.print(config, printData);
                       })
@@ -365,13 +367,15 @@ const RouteManager = () => {
                         printData.push(`${returnedItem.key} : `);
                         returnedItem.vals.map((val, index) => {
                           printData.push(`${val}`);
-                          if(index >= 0 &&
-                                  index < returnedItem.vals.length - 1){
-                                    printData.push( ", ");
-                                  }
-                        })
+                          if (
+                            index >= 0 &&
+                            index < returnedItem.vals.length - 1
+                          ) {
+                            printData.push(", ");
+                          }
+                        });
                         printData.push("\x0A");
-                      })
+                      });
                     } else {
                       printData.push("\x0A" + "\x0A");
                     }
@@ -433,9 +437,7 @@ const RouteManager = () => {
                   qz.websocket
                     .connect()
                     .then(function () {
-                      let config = qz.configs.create(
-                       storeDetails.comSelected
-                      );
+                      let config = qz.configs.create(storeDetails.comSelected);
                       return qz.print(config, printData);
                     })
                     .then(qz.websocket.disconnect)
