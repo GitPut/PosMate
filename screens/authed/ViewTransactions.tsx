@@ -9,9 +9,172 @@ import {
 import { auth, db } from "state/firebaseConfig";
 const tz = require("moment-timezone");
 
-const ViewTransactions = ({ transList, todaysDetails }) => {
+const ViewTransactions = () => {
   const today = new Date();
   const storeDetails = storeDetailState.use();
+  const wooCredentials = woocommerceState.use();
+  const [transList, settransList] = useState([]);
+  const [todaysDetails, setTodaysDetails] = useState({
+    todaysReceiptValue: 0,
+    todaysReceipts: 0,
+  });
+
+  useEffect(() => {
+    try {
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .collection("transList")
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            // console.log(doc.id, " => ", doc.data());
+            settransList((prevState) => [...prevState, doc.data()]);
+            console.log(doc.data());
+          });
+        });
+    } catch {
+      console.log("Error occured retrieving tranasctions");
+    }
+
+    if (wooCredentials.useWoocommerce === true) {
+      try {
+        const WooCommerceAPI = require("woocommerce-api");
+
+        const WooCommerce = new WooCommerceAPI({
+          url: wooCredentials.apiUrl,
+          consumerKey: wooCredentials.ck,
+          consumerSecret: wooCredentials.cs,
+          wpAPI: true,
+          version: "wc/v1",
+        });
+
+        let page = 1;
+        let orders = [];
+
+        const getOrders = async () => {
+          const response = await WooCommerce.getAsync(
+            `orders?page=${page}&per_page=100`
+          );
+          const data = JSON.parse(response.body);
+          orders = [...orders, ...data];
+          if (data.length === 100) {
+            page++;
+            getOrders();
+          } else {
+            // console.log(orders);
+          }
+        };
+
+        getOrders().then(() =>
+          settransList((prevState) => [...prevState, ...orders])
+        );
+      } catch {
+        console.log("Something occured with woo");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      if (transList.length > 0) {
+        settransList((prev) =>
+          prev
+            .sort(function (a, b) {
+              if (a.date && b.date) {
+                return a.date.seconds - b.date.seconds;
+              } else if (a.date && b.date_created) {
+                const targetTimezone =
+                  Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const newDateA = new Date(a.date.seconds * 1000);
+                const newDateB = new Date(b.date_created + "Z");
+                const resultA = tz(newDateA).tz(targetTimezone, true);
+                const resultB = tz(newDateB).tz(targetTimezone, true);
+
+                return resultA.valueOf() - resultB.valueOf();
+              } else if (a.date_created && b.date) {
+                const targetTimezone =
+                  Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const newDateA = new Date(a.date_created + "Z");
+                const newDateB = new Date(b.date.seconds * 1000);
+                const resultA = tz(newDateA).tz(targetTimezone, true);
+                const resultB = tz(newDateB).tz(targetTimezone, true);
+
+                return resultA.valueOf() - resultB.valueOf();
+              } else {
+                const targetTimezone =
+                  Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const newDateA = new Date(a.date_created + "Z");
+                const newDateB = new Date(b.date_created + "Z");
+                const resultA = tz(newDateA).tz(targetTimezone, true);
+                const resultB = tz(newDateB).tz(targetTimezone, true);
+
+                return resultA.valueOf() - resultB.valueOf();
+              }
+            })
+            .reverse()
+        );
+        // settransList(sortedTransList);
+        const todaysReceiptValue = transList.reduce((accumulator, current) => {
+          let date;
+          const targetTimezone =
+            Intl.DateTimeFormat().resolvedOptions().timeZone;
+          if (current.date) {
+            const localDatePreConv = new Date(current.date.seconds * 1000);
+            date = tz(localDatePreConv).tz(targetTimezone, true);
+          } else {
+            const localDatePreConv = new Date(current.date_created + "Z");
+            date = tz(localDatePreConv).tz(targetTimezone, true);
+          }
+          // Get the current date in the desired time zone
+          let today = tz().tz(targetTimezone);
+
+          if (
+            today.year() === date.year() &&
+            today.month() === date.month() &&
+            today.dayOfYear() === date.dayOfYear()
+          ) {
+            return (
+              accumulator +
+              parseFloat(current.date ? current.total : current.total / 1.13)
+            );
+          } else {
+            return accumulator;
+          }
+        }, 0);
+        const todaysReceipts = transList.reduce((accumulator, current) => {
+          let date;
+          const targetTimezone =
+            Intl.DateTimeFormat().resolvedOptions().timeZone;
+          if (current.date) {
+            const localDatePreConv = new Date(current.date.seconds * 1000);
+            date = tz(localDatePreConv).tz(targetTimezone, true);
+          } else {
+            const localDatePreConv = new Date(current.date_created + "Z");
+            date = tz(localDatePreConv).tz(targetTimezone, true);
+          }
+          // Get the current date in the desired time zone
+          let today = tz().tz(targetTimezone);
+
+          if (
+            today.year() === date.year() &&
+            today.month() === date.month() &&
+            today.dayOfYear() === date.dayOfYear()
+          ) {
+            return accumulator + 1;
+          } else {
+            return accumulator;
+          }
+        }, 0);
+        setTodaysDetails({
+          todaysReceiptValue: todaysReceiptValue.toFixed(2),
+          todaysReceipts: todaysReceipts,
+        });
+      }
+    } catch {
+      console.log("Error Occured when sorting dates");
+    }
+  }, [transList]);
 
   const PrintTodaysTotal = () => {
     let data = [
@@ -133,6 +296,7 @@ const ViewTransactions = ({ transList, todaysDetails }) => {
       <View style={styles.contentContainer}>
         {transList ? (
           <FlatList
+            maxToRenderPerBatch={6}
             data={transList}
             renderItem={({ item, index }) => {
               const element = item;
@@ -165,11 +329,29 @@ const ViewTransactions = ({ transList, todaysDetails }) => {
 
               return (
                 <View
-                  style={{ backgroundColor: "grey", padding: 30, margin: 10 }}
+                  style={{
+                    backgroundColor: "white",
+                    borderWidth: 1,
+                    padding: 30,
+                    margin: 10,
+                  }}
                   key={index}
                 >
-                  {element.cart_hash && <Text>Online Order</Text>}
-                  <Text>{date}</Text>
+                  <Text>
+                    {element.cart_hash ? "Online Order" : "POS Order"}
+                  </Text>
+                  {element.customer && (
+                    <>
+                      <Text>
+                        {element.customer.address
+                          ? `Delivery Order To: ${element.customer.address}`
+                          : "Pickup Order"}
+                      </Text>
+                      <Text>Name: {element.customer.name}</Text>
+                      <Text>Phone Number: {element.customer.phone}</Text>
+                    </>
+                  )}
+                  <Text style={{ marginBottom: 10 }}>{date}</Text>
                   {element.cart?.map((cartItem, index) => (
                     <View style={{ marginBottom: 20 }} key={index}>
                       <Text>Name: {cartItem.name}</Text>
@@ -203,13 +385,28 @@ const ViewTransactions = ({ transList, todaysDetails }) => {
                     </View>
                   ))}
                   {element.billing && (
-                    <Text>Phone Number: {element.billing.phone}</Text>
-                  )}
-                  {element.customer_note?.length > 0 && (
-                    <Text>Customer Note: {element.customer_note}</Text>
+                    <>
+                      <Text>Customer Details:</Text>
+                      <Text>Address: {element.shipping.address_1}</Text>
+                      <Text>City: {element.shipping.city}</Text>
+                      <Text>Postal Code: {element.shipping.postcode}</Text>
+                      <Text>Province/State: {element.shipping.state}</Text>
+                      <Text>
+                        Name: {element.shipping.first_name}{" "}
+                        {element.shipping.last_name}
+                      </Text>
+                      {element.shipping_lines.map((line) => (
+                        <Text>Shipping Method: {line.method_title}</Text>
+                      ))}
+                      <Text>Phone Number: {element.billing.phone}</Text>
+                      {element.customer_note?.length > 0 && (
+                        <Text>Customer Note: {element.customer_note}</Text>
+                      )}
+                    </>
                   )}
                   <Button
                     title="Print"
+                    style={{ marginTop: 10 }}
                     onPress={() => {
                       if (element.date) {
                         let total = 0;
@@ -222,12 +419,9 @@ const ViewTransactions = ({ transList, todaysDetails }) => {
                           storeDetails.address + "\x0A",
                           storeDetails.website + "\x0A", // text and line break
                           storeDetails.phoneNumber + "\x0A", // text and line break
-                          date.toLocaleDateString() +
-                            " " +
-                            date.toLocaleTimeString() +
-                            "\x0A",
+                          date + "\x0A",
                           "\x0A",
-                          `Transaction # ${element.transNum}` + "\x0A",
+                          `Transaction ID ${element.transNum}` + "\x0A",
                           "\x0A",
                           "\x0A",
                           "\x0A",
@@ -326,7 +520,7 @@ const ViewTransactions = ({ transList, todaysDetails }) => {
                           date + "\x0A",
                           "\x0A",
                           "Online Order" + "\x0A", // text and line break
-                          `Transaction # ${element.number}` + "\x0A",
+                          `Transaction ID ${element.number}` + "\x0A",
                           "\x0A",
                           "\x0A",
                           "\x0A",
@@ -347,6 +541,7 @@ const ViewTransactions = ({ transList, todaysDetails }) => {
                               printData.push(`${returnedItem.key} : `);
                               returnedItem.vals.map((val, index) => {
                                 printData.push(`${val}`);
+<<<<<<< HEAD
                                 if(index >= 0 &&
                                         index < returnedItem.vals.length - 1){
                                           printData.push( ", ");
@@ -354,6 +549,17 @@ const ViewTransactions = ({ transList, todaysDetails }) => {
                               })
                               printData.push("\x0A");
                             })
+=======
+                                if (
+                                  index >= 0 &&
+                                  index < returnedItem.vals.length - 1
+                                ) {
+                                  printData.push(", ");
+                                }
+                              });
+                              printData.push("\x0A");
+                            });
+>>>>>>> 690b67f (Working)
                           } else {
                             printData.push("\x0A" + "\x0A");
                           }
@@ -381,12 +587,21 @@ const ViewTransactions = ({ transList, todaysDetails }) => {
                           `Name: ${element.shipping.first_name} ${element.shipping.last_name}`
                         );
                         printData.push("\x0A");
+<<<<<<< HEAD
                         element.shipping_lines.map((line) =>
                          { printData.push(
                             `Shipping Method: ${line.method_title}`
                           )
                           printData.push("\x0A")}
                         );
+=======
+                        element.shipping_lines.map((line) => {
+                          printData.push(
+                            `Shipping Method: ${line.method_title}`
+                          );
+                          printData.push("\x0A");
+                        });
+>>>>>>> 690b67f (Working)
                         if (element.billing) {
                           printData.push(
                             `Phone Number: ${element.billing.phone}`

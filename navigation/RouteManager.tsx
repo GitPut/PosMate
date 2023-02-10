@@ -17,6 +17,8 @@ import { auth, db } from "state/firebaseConfig";
 import Spinner from "components/Spinner";
 import { updateTransList } from "state/firebaseFunctions";
 const tz = require("moment-timezone");
+import useSound from "use-sound";
+import mySound from "assets/alarm.mp3";
 
 const RouteManager = () => {
   const userS = userState.use();
@@ -24,6 +26,7 @@ const RouteManager = () => {
   const transList = transListState.use();
   const storeDetails = storeDetailState.use();
   const [loading, setloading] = useState(true);
+  const [playSound] = useSound(mySound);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -178,6 +181,10 @@ const RouteManager = () => {
                 }
               });
               if (newArray.length > array1.length) {
+<<<<<<< HEAD
+=======
+                playSound();
+>>>>>>> 690b67f (Working)
                 const newItems = structuredClone(newArray).splice(
                   array1.length,
                   newArray.length - array1.length
@@ -207,7 +214,7 @@ const RouteManager = () => {
                       resultDate + "\x0A",
                       "\x0A",
                       "Online Order" + "\x0A", // text and line break
-                      `Transaction # ${e.number}` + "\x0A",
+                      `Transaction ID ${e.number}` + "\x0A",
                       "\x0A",
                       "\x0A",
                       "\x0A",
@@ -226,8 +233,15 @@ const RouteManager = () => {
                       if (cartItem.meta) {
                         CleanupOps(cartItem.meta).map((returnedItem) => {
                           printData.push(`${returnedItem.key} : `);
+<<<<<<< HEAD
                           returnedItem.vals.map((val, index) => {
                             printData.push(`${val}`);
+=======
+                          printData.push("\x0A");
+                          returnedItem.vals.map((val, index) => {
+                            printData.push(`${val}`);
+                            printData.push("\x0A");
+>>>>>>> 690b67f (Working)
                             if (
                               index >= 0 &&
                               index < returnedItem.vals.length - 1
@@ -260,9 +274,10 @@ const RouteManager = () => {
                     printData.push("\x0A");
                     printData.push(`Phone Number: ${e.billing.phone}`);
                     printData.push("\x0A");
-                    e.shipping_lines.map((line) =>
-                      printData.push(`Shipping Method: ${line.method_title}`)
-                    );
+                    e.shipping_lines.map((line) => {
+                      printData.push(`Shipping Method: ${line.method_title}`);
+                      printData.push("\x0A");
+                    });
                     if (e.customer_note) {
                       printData.push(`Customer Note: ${e.customer_note}`);
                       printData.push("\x0A");
@@ -346,7 +361,7 @@ const RouteManager = () => {
                     resultDate + "\x0A",
                     "\x0A",
                     "Online Order" + "\x0A", // text and line break
-                    `Transaction # ${e.number}` + "\x0A",
+                    `Transaction ID ${e.number}` + "\x0A",
                     "\x0A",
                     "\x0A",
                     "\x0A",
@@ -365,8 +380,15 @@ const RouteManager = () => {
                     if (cartItem.meta) {
                       CleanupOps(cartItem.meta).map((returnedItem) => {
                         printData.push(`${returnedItem.key} : `);
+<<<<<<< HEAD
                         returnedItem.vals.map((val, index) => {
                           printData.push(`${val}`);
+=======
+                        printData.push("\x0A");
+                        returnedItem.vals.map((val, index) => {
+                          printData.push(`${val}`);
+                          printData.push("\x0A");
+>>>>>>> 690b67f (Working)
                           if (
                             index >= 0 &&
                             index < returnedItem.vals.length - 1
@@ -399,9 +421,10 @@ const RouteManager = () => {
                   printData.push("\x0A");
                   printData.push(`Phone Number: ${e.billing.phone}`);
                   printData.push("\x0A");
-                  e.shipping_lines.map((line) =>
-                    printData.push(`Shipping Method: ${line.method_title}`)
-                  );
+                  e.shipping_lines.map((line) => {
+                    printData.push(`Shipping Method: ${line.method_title}`);
+                    printData.push("\x0A");
+                  });
                   if (e.customer_note) {
                     printData.push(`Customer Note: ${e.customer_note}`);
                     printData.push("\x0A");

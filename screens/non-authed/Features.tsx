@@ -21,7 +21,7 @@ const Features = () => {
                     Keep your team communicating efficiently and building
                     faster.
                     <br />
-                    Gem unlocks your team’s full potential.
+                    Divine Pos unlocks your team’s full potential.
                   </p>
                 </div>
               </div>
@@ -522,8 +522,8 @@ const Features = () => {
                       </div>
                       <div className="padding-bottom padding-xsmall" />
                       <p className="text-size-regular">
-                        Gem is protected on many levels. Securing our customer's
-                        data is our first priority.
+                        Divine Pos is protected on many levels. Securing our
+                        customer's data is our first priority.
                       </p>
                     </div>
                     <div
@@ -553,8 +553,8 @@ const Features = () => {
                       </div>
                       <div className="padding-bottom padding-xsmall" />
                       <p className="text-size-regular">
-                        We do not have any access to your information.Gem is
-                        encrypted and follows industry best practices.
+                        We do not have any access to your information.Divine Pos
+                        is encrypted and follows industry best practices.
                       </p>
                     </div>
                     <div
@@ -584,8 +584,8 @@ const Features = () => {
                       </div>
                       <div className="padding-bottom padding-xsmall" />
                       <p className="text-size-regular">
-                        Everything you do in Gem is backed up by default. You
-                        can access your projects. Always.
+                        Everything you do in Divine Pos is backed up by default.
+                        You can access your projects. Always.
                       </p>
                     </div>
                     <div
@@ -649,7 +649,7 @@ const Features = () => {
               <div className="cta-component">
                 <div className="cta-content">
                   <h2 className="heading-style-h5 text-color-white">
-                    Try Gem today
+                    Try Divine Pos today
                   </h2>
                   <div className="padding-bottom padding-xsmall" />
                   <div className="text-size-regular text-color-white">

@@ -202,7 +202,7 @@ const WebHome = () => {
     //     <Text style={styles.whyUs}>Why us</Text>
     //     <Text style={styles.keyB}>Key benefits of using Divine Pos</Text>
     //     <Text style={styles.p2}>
-    //       We’re more than a productivity tool. Customize Gem to work the way you
+    //       We’re more than a productivity tool. Customize Divine Pos to work the way you
     //       do. There are no limitations.
     //     </Text>
     //     <View
@@ -652,12 +652,12 @@ const WebHome = () => {
                       <div className="tagline">Why us</div>
                       <div className="padding-bottom padding-small" />
                       <h2 className="heading-style-h2">
-                        Key benefits of using Gem
+                        Key benefits of using Divine Pos
                       </h2>
                       <div className="padding-bottom padding-medium" />
                       <p className="text-size-large">
-                        We’re more than a productivity tool. Customize Gem to
-                        work the way you do. There are no limitations.
+                        We’re more than a productivity tool. Customize Divine
+                        Pos to work the way you do. There are no limitations.
                       </p>
                     </div>
                   </div>
@@ -1295,7 +1295,7 @@ const WebHome = () => {
                         <div className="tagline">Testimonials</div>
                         <div className="padding-bottom padding-small" />
                         <h2 className="heading-style-h2">
-                          What customers say about Gem
+                          What customers say about Divine Pos
                         </h2>
                         <div className="padding-bottom padding-medium" />
                         <p className="text-size-large">
@@ -1333,9 +1333,9 @@ const WebHome = () => {
                         </div>
                         <div className="padding-bottom padding-small" />
                         <div className="text-size-regular">
-                          We optimize the entire workflow around Gem and results
-                          are visible immediately. Our productivity went up by
-                          30% in the first month.
+                          We optimize the entire workflow around Divine Pos and
+                          results are visible immediately. Our productivity went
+                          up by 30% in the first month.
                         </div>
                       </div>
                       <div className="testimonials-content">
@@ -1357,8 +1357,8 @@ const WebHome = () => {
                         </div>
                         <div className="padding-bottom padding-small" />
                         <div className="text-size-regular">
-                          Gem saves us 45 minutes per day. Everything is simple
-                          and intuitive.
+                          Divine Pos saves us 45 minutes per day. Everything is
+                          simple and intuitive.
                         </div>
                       </div>
                       <div className="testimonials-content">
@@ -1380,9 +1380,9 @@ const WebHome = () => {
                         </div>
                         <div className="padding-bottom padding-small" />
                         <div className="text-size-regular">
-                          Our Team-setup on Gem has tripled our output. It’s
-                          fascinating how small but clever changes in UI can
-                          make such an impact on the workflow.
+                          Our Team-setup on Divine Pos has tripled our output.
+                          It’s fascinating how small but clever changes in UI
+                          can make such an impact on the workflow.
                         </div>
                       </div>
                       <div className="testimonials-content">
@@ -1431,11 +1431,11 @@ const WebHome = () => {
                         </div>
                         <div className="padding-bottom padding-small" />
                         <div className="text-size-regular">
-                          The amount of work that we did after implementing Gem
-                          is mind blowing. Beyond that, the team at Gem have
-                          gone above beyond to understand our business needs,
-                          provide support and build models that work for our
-                          objectives!
+                          The amount of work that we did after implementing
+                          Divine Pos is mind blowing. Beyond that, the team at
+                          Divine Pos have gone above beyond to understand our
+                          business needs, provide support and build models that
+                          work for our objectives!
                         </div>
                       </div>
                       <div className="testimonials-content">
@@ -1512,10 +1512,10 @@ const WebHome = () => {
                         </div>
                         <div className="padding-bottom padding-small" />
                         <div className="text-size-regular">
-                          When we first start using Gem, we were skeptical. We'd
-                          tried lots of products and none of them made any
-                          difference. But Gem proved to be more incremental than
-                          anything we used before.
+                          When we first start using Divine Pos, we were
+                          skeptical. We'd tried lots of products and none of
+                          them made any difference. But Divine Pos proved to be
+                          more incremental than anything we used before.
                         </div>
                       </div>
                       <div className="testimonials-content">
@@ -1539,9 +1539,9 @@ const WebHome = () => {
                         </div>
                         <div className="padding-bottom padding-small" />
                         <div className="text-size-regular">
-                          This magical product actually works! Gem has radically
-                          changed the way we work. Increasing our productivity
-                          by 2X in all our teams.
+                          This magical product actually works! Divine Pos has
+                          radically changed the way we work. Increasing our
+                          productivity by 2X in all our teams.
                         </div>
                       </div>
                       <div className="testimonials-content">
@@ -1566,7 +1566,7 @@ const WebHome = () => {
                         <div className="padding-bottom padding-small" />
                         <div className="text-size-regular">
                           Management automation is a way to future-proof my
-                          business. I’m a freelancer and Gem helps a lot.
+                          business. I’m a freelancer and Divine Pos helps a lot.
                           Thanks!
                         </div>
                       </div>
@@ -1617,8 +1617,8 @@ const WebHome = () => {
                         </div>
                         <div className="padding-bottom padding-small" />
                         <div className="text-size-regular">
-                          We use Gem to focus on incremental growth. The ROI has
-                          been fantastic!
+                          We use Divine Pos to focus on incremental growth. The
+                          ROI has been fantastic!
                         </div>
                       </div>
                     </div>
@@ -1658,7 +1658,7 @@ const WebHome = () => {
               <div className="cta-component">
                 <div className="cta-content">
                   <h2 className="heading-style-h5 text-color-white">
-                    Try Gem today
+                    Try Divine Pos today
                   </h2>
                   <div className="padding-bottom padding-xsmall" />
                   <div className="text-size-regular text-color-white">

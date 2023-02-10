@@ -24,7 +24,7 @@ const Contact = () => {
                           </h1>
                           <div className="padding-bottom padding-medium" />
                           <p className="text-size-medium text-color-white">
-                            Wondering if Gem is the right tool for your
+                            Wondering if Divine Pos is the right tool for your
                             business? Chat with our team to see if there’s a
                             fit.
                           </p>
@@ -62,9 +62,9 @@ const Contact = () => {
                             </div>
                             <div className="padding-bottom padding-xsmall" />
                             <p className="text-size-small">
-                              Need a hand using Gem or managing your account?
-                              Chat with a real, live human and get all the
-                              answers you need.
+                              Need a hand using Divine Pos or managing your
+                              account? Chat with a real, live human and get all
+                              the answers you need.
                             </p>
                           </div>
                           <div className="contact-benefit-item">
@@ -206,7 +206,7 @@ const Contact = () => {
                             maxLength={256}
                             name="Company-name"
                             data-name="Company name"
-                            placeholder="Gem Inc."
+                            placeholder="Divine Pos Inc."
                             id="Company-name"
                             required
                           />
@@ -255,7 +255,7 @@ const Contact = () => {
                             maxLength={256}
                             name="Notes"
                             data-name="Notes"
-                            placeholder="How are you looking to use Gem?"
+                            placeholder="How are you looking to use Divine Pos?"
                             id="Notes"
                             required
                           />
@@ -457,13 +457,13 @@ const Contact = () => {
                     >
                       <div className="review-content-wrapper">
                         <div className="heading-style-h5 text-weight-medium">
-                          "I've been using the Gem template on my business's
-                          website for a few months now, and I've been really
-                          impressed with the results. Our website has never
-                          looked better, and we've seen a noticeable increase in
-                          sales since making the switch. I highly recommend Gem
-                          to anyone looking to improve their website and attract
-                          more customers."
+                          "I've been using the Divine Pos template on my
+                          business's website for a few months now, and I've been
+                          really impressed with the results. Our website has
+                          never looked better, and we've seen a noticeable
+                          increase in sales since making the switch. I highly
+                          recommend Divine Pos to anyone looking to improve
+                          their website and attract more customers."
                         </div>
                         <div className="padding-bottom padding-xxlarge" />
                         <div className="review-customer">
@@ -495,12 +495,13 @@ const Contact = () => {
                     >
                       <div className="review-content-wrapper">
                         <div className="heading-style-h5 text-weight-medium">
-                          "Gem has been a game-changer for our team. Before we
-                          started using it, we were struggling to keep track of
-                          our tasks and deadlines, and it felt like we were
-                          always falling behind. But with Gem, everything is
-                          organized and in one place, and it's easy to see what
-                          needs to be done and who is working on what."
+                          "Divine Pos has been a game-changer for our team.
+                          Before we started using it, we were struggling to keep
+                          track of our tasks and deadlines, and it felt like we
+                          were always falling behind. But with Divine Pos,
+                          everything is organized and in one place, and it's
+                          easy to see what needs to be done and who is working
+                          on what."
                         </div>
                         <div className="padding-bottom padding-xxlarge" />
                         <div className="review-customer">
@@ -535,10 +536,10 @@ const Contact = () => {
                           "As a SaaS startup, it was important for us to have a
                           professional and user-friendly platform that could
                           help us reach more customers and showcase our
-                          products. We chose Gem template, and it exceeded our
-                          expectations. The template was easy to customize, and
-                          the finished product was beautifully designed and
-                          highly functional."
+                          products. We chose Divine Pos template, and it
+                          exceeded our expectations. The template was easy to
+                          customize, and the finished product was beautifully
+                          designed and highly functional."
                         </div>
                         <div className="padding-bottom padding-xxlarge" />
                         <div className="review-customer">
@@ -573,10 +574,10 @@ const Contact = () => {
                           "Since launching our platform, we've seen an increase
                           in sales and a greater interest in our business from
                           potential customers. We're confident that our
-                          platform, powered by Gem template, has been a major
-                          factor in our success. We highly recommend Gem to any
-                          business looking to elevate their online presence and
-                          grow their customer base."
+                          platform, powered by Divine Pos template, has been a
+                          major factor in our success. We highly recommend
+                          Divine Pos to any business looking to elevate their
+                          online presence and grow their customer base."
                         </div>
                         <div className="padding-bottom padding-xxlarge" />
                         <div className="review-customer">
@@ -612,7 +613,7 @@ const Contact = () => {
               <div className="cta-component">
                 <div className="cta-content">
                   <h2 className="heading-style-h5 text-color-white">
-                    Try Gem today
+                    Try Divine Pos today
                   </h2>
                   <div className="padding-bottom padding-xsmall" />
                   <div className="text-size-regular text-color-white">

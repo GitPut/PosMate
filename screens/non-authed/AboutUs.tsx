@@ -18,7 +18,7 @@ const AboutUs = () => {
                       <div className="tagline text-color-white">Our story</div>
                       <div className="padding-bottom padding-small" />
                       <h1 className="heading-style-h2 text-color-white">
-                        Meet the Gem
+                        Meet the Divine Pos
                       </h1>
                       <div className="padding-bottom padding-medium" />
                       <p className="text-size-large text-color-white">
@@ -344,7 +344,7 @@ const AboutUs = () => {
                     73+
                   </div>
                   <div className="text-size-regular">
-                    Happy small and medium size companies that use Gem
+                    Happy small and medium size companies that use Divine Pos
                   </div>
                 </div>
               </div>
@@ -368,7 +368,7 @@ const AboutUs = () => {
               <div className="cta-component">
                 <div className="cta-content">
                   <h2 className="heading-style-h5 text-color-white">
-                    Try Gem today
+                    Try Divine Pos today
                   </h2>
                   <div className="padding-bottom padding-xsmall" />
                   <div className="text-size-regular text-color-white">

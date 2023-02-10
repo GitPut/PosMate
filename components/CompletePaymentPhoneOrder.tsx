@@ -15,12 +15,19 @@ import useWindowDimensions from "./useWindowDimensions";
 
 const CompletePaymentPhoneOrder = ({ setongoingOrderListModal }) => {
   const { height, width } = useWindowDimensions();
-  const transList = transListState.use();
+  // const transList = transListState.use();
+  const [ongoingListState, setongoingListState] = useState(
+    JSON.parse(localStorage.getItem("ongoingList"))
+  );
   const [changeModal, setChangeModal] = useState(false);
   const [currentOrder, setcurrentOrder] = useState({
     element: null,
     index: null,
   });
+
+  useEffect(() => {
+    localStorage.setItem("ongoingList", JSON.stringify(ongoingListState));
+  }, [ongoingListState]);
 
   return (
     <View
@@ -76,110 +83,133 @@ const CompletePaymentPhoneOrder = ({ setongoingOrderListModal }) => {
           <View style={{ width: "25%" }} />
         </View>
         <ScrollView contentContainerStyle={styles.contentContainer}>
-          {transList ? (
-            transList?.map((element, index) => {
+          {ongoingListState ? (
+            ongoingListState?.map((element, index) => {
               try {
-                if (element.id) {
-                  if (
-                    element.id?.substr(element.id?.length - 2, 2) === "-l" &&
-                    element.completed === false &&
-                    element.cancelled !== true
-                  ) {
-                    const date = element.date
-                      ? new Date(element.date.seconds * 1000)
-                      : element.date_created
-                      ? new Date(element.date_created)
-                      : null;
+                // if (element.id) {
+                //   if (
+                //     element.id?.substr(element.id?.length - 2, 2) === "-l" &&
+                //     element.completed === false &&
+                //     element.cancelled !== true
+                //   ) {
+                const date = new Date(element.date);
 
-                    return (
-                      <View
-                        style={{
-                          backgroundColor: "rgba(243,243,243,1)",
-                          borderRadius: 30,
-                          width: "100%",
-                          height: 68,
-                          padding: 30,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          marginBottom: 20,
+                return (
+                  <View
+                    style={{
+                      backgroundColor: "rgba(243,243,243,1)",
+                      borderRadius: 30,
+                      width: "100%",
+                      height: 68,
+                      padding: 30,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginBottom: 20,
+                    }}
+                    key={index}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "60%",
+                      }}
+                    >
+                      <Text>{element.customer?.name}</Text>
+                      <Text>{date?.toLocaleTimeString()}</Text>
+                    </View>
+                    <View
+                      style={{
+                        borderRightWidth: 1,
+                        height: 35,
+                        backgroundColor: "black",
+                      }}
+                    />
+                    {element.method === "pickupOrder" ? (
+                      <MaterialCommunityIcons
+                        onPress={() => {
+                          if (element.method === "pickupOrder") {
+                            setChangeModal(true);
+                            setcurrentOrder({
+                              element: element,
+                              index: index,
+                            });
+                          } else {
+                            const local = structuredClone(ongoingListState);
+                            if (local.length > 0) {
+                              local.splice(index, 1);
+                              setongoingListState(local);
+                            } else {
+                              setongoingListState([]);
+                            }
+                            // ongoingList.splice(index, 1);
+                            // localStorage.setItem(
+                            //   "ongoingList",
+                            //   JSON.stringify(ongoingList)
+                            // );
+                          }
                         }}
-                        key={index}
-                      >
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            width: "60%",
-                          }}
-                        >
-                          <Text>{element.customer?.name}</Text>
-                          <Text>{date?.toLocaleTimeString()}</Text>
-                        </View>
-                        <View
-                          style={{
-                            borderRightWidth: 1,
-                            height: 35,
-                            backgroundColor: "black",
-                          }}
-                        />
-                        {element.method === "pickupOrder" ? (
-                          <MaterialCommunityIcons
-                            onPress={() => {
-                              if (element.method === "pickupOrder") {
-                                setChangeModal(true);
-                                setcurrentOrder({
-                                  element: element,
-                                  index: index,
-                                });
-                              } else {
-                                const localChange = structuredClone(transList);
-                                localChange[index].completed = true;
-                                updateTransList(localChange);
-                              }
-                            }}
-                            name="store"
-                            size={26}
-                            color="rgba(74,74,74,1)"
-                          />
-                        ) : (
-                          <MaterialCommunityIcons
-                            onPress={() => {
-                              if (element.method === "pickupOrder") {
-                                setChangeModal(true);
-                                setcurrentOrder({
-                                  element: element,
-                                  index: index,
-                                });
-                              } else {
-                                const localChange = structuredClone(transList);
-                                localChange[index].completed = true;
-                                updateTransList(localChange);
-                              }
-                            }}
-                            name="car"
-                            size={26}
-                            color="rgba(74,74,74,1)"
-                          />
-                        )}
-                        <MaterialCommunityIcons
-                          onPress={() => {
-                            const localChange = structuredClone(transList);
-                            localChange[index].cancelled = true;
-                            updateTransList(localChange);
-                          }}
-                          name="cancel"
-                          size={26}
-                          color="rgba(74,74,74,1)"
-                        />
-                        {/* <Text>
+                        name="store"
+                        size={26}
+                        color="rgba(74,74,74,1)"
+                      />
+                    ) : (
+                      <MaterialCommunityIcons
+                        onPress={() => {
+                          if (element.method === "pickupOrder") {
+                            setChangeModal(true);
+                            setcurrentOrder({
+                              element: element,
+                              index: index,
+                            });
+                          } else {
+                            const local = structuredClone(ongoingListState);
+                            if (local.length > 0) {
+                              local.splice(index, 1);
+                              setongoingListState(local);
+                            } else {
+                              setongoingListState([]);
+                            }
+                            // ongoingList.splice(index, 1);
+                            // localStorage.setItem(
+                            //   "ongoingList",
+                            //   JSON.stringify(ongoingList)
+                            // );
+                          }
+                        }}
+                        name="car"
+                        size={26}
+                        color="rgba(74,74,74,1)"
+                      />
+                    )}
+                    <MaterialCommunityIcons
+                      onPress={() => {
+                        const local = structuredClone(ongoingListState);
+                        if (local.length > 0) {
+                          local.splice(index, 1);
+                          setongoingListState(local);
+                        } else {
+                          setongoingListState([]);
+                        }
+                        // ongoingList.splice(index, 1);
+                        // localStorage.setItem(
+                        //   "ongoingList",
+                        //   JSON.stringify(ongoingList)
+                        // );
+                      }}
+                      name="cancel"
+                      size={26}
+                      color="rgba(74,74,74,1)"
+                    />
+                    {/* <Text>
                       Method:{" "}
                       {element.method === "pickupOrder"
                         ? "Pick Up"
                         : "Delivery"}
                     </Text> */}
-                        {/* <Button
+                    {/* <Button
                       title="Complete Order"
                       onPress={() => {
                         if (element.method === "pickupOrder") {
@@ -201,10 +231,10 @@ const CompletePaymentPhoneOrder = ({ setongoingOrderListModal }) => {
                         updateTransList(localChange);
                       }}
                     /> */}
-                      </View>
-                    );
-                  }
-                }
+                  </View>
+                );
+                //   }
+                // }
               } catch {
                 console.log("Error at complete phone order");
               }
@@ -219,9 +249,15 @@ const CompletePaymentPhoneOrder = ({ setongoingOrderListModal }) => {
             setcurrentOrder={setcurrentOrder}
             order={currentOrder.element}
             completeOrder={() => {
-              const localChange = structuredClone(transList);
-              localChange[currentOrder.index].completed = true;
-              updateTransList(localChange);
+              const local = structuredClone(ongoingListState);
+              if (local.length > 0) {
+                local.splice(currentOrder.index, 1);
+                setongoingListState(local);
+              } else {
+                setongoingListState([]);
+              }
+              // ongoingList.splice(currentOrder.index, 1);
+              // localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
               setChangeModal(false);
             }}
             goBack={() => {

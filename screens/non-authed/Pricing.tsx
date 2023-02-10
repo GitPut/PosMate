@@ -1702,7 +1702,7 @@ const Pricing = () => {
                           className="faq-question is-first"
                         >
                           <div className="text-size-medium text-weight-semibold">
-                            How does Gem's pricing work?
+                            How does Divine Pos's pricing work?
                           </div>
                           <div className="icon-1x1-small w-embed">
                             <svg
@@ -1742,7 +1742,7 @@ const Pricing = () => {
                           className="faq-question"
                         >
                           <div className="text-size-medium text-weight-semibold">
-                            What data does Gem track?
+                            What data does Divine Pos track?
                           </div>
                           <div className="icon-1x1-small w-embed">
                             <svg
@@ -1782,7 +1782,7 @@ const Pricing = () => {
                           className="faq-question"
                         >
                           <div className="text-size-medium text-weight-semibold">
-                            How does Gem handle my data?
+                            How does Divine Pos handle my data?
                           </div>
                           <div className="icon-1x1-small w-embed">
                             <svg
@@ -1822,7 +1822,7 @@ const Pricing = () => {
                           className="faq-question"
                         >
                           <div className="text-size-medium text-weight-semibold">
-                            Can I try Gem for free?
+                            Can I try Divine Pos for free?
                           </div>
                           <div className="icon-1x1-small w-embed">
                             <svg
@@ -2037,7 +2037,7 @@ const Pricing = () => {
               <div className="cta-component">
                 <div className="cta-content">
                   <h2 className="heading-style-h5 text-color-white">
-                    Try Gem today
+                    Try Divine Pos today
                   </h2>
                   <div className="padding-bottom padding-xsmall" />
                   <div className="text-size-regular text-color-white">

@@ -24,7 +24,7 @@ const ChangeScreen = ({
       storeDetails.phoneNumber + "\x0A", // text and line break
       "\x0A",
       "Pickup Order Paid" + "\x0A", // text and line break
-      `Transaction # ${order.transNum}` + "\x0A",
+      `Transaction ID ${order.transNum}` + "\x0A",
       "\x0A",
       `Customer Name: ${order.customer.name}` + "\x0A", // text and line break
       "\x0A",
@@ -52,6 +52,7 @@ const ChangeScreen = ({
 
     const qz = require("qz-tray");
     qz.websocket
+<<<<<<< HEAD
           .connect()
           .then(function () {
             let config = qz.configs.create(storeDetails.comSelected);
@@ -61,6 +62,17 @@ const ChangeScreen = ({
           .catch(function (err) {
             console.error(err);
           });
+=======
+      .connect()
+      .then(function () {
+        let config = qz.configs.create("storeDetails.comSelected");
+        return qz.print(config, data);
+      })
+      .then(qz.websocket.disconnect)
+      .catch(function (err) {
+        console.error(err);
+      });
+>>>>>>> 690b67f (Working)
 
     // fetch("http://localhost:8080/print", {
     //   method: "POST",

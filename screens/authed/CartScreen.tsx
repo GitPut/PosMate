@@ -58,7 +58,7 @@ const CartScreen = ({ navigation }) => {
   };
 
   const Print = (method) => {
-    const transNum = transList?.length + 1;
+    const transNum = Math.random().toString(36).substr(2, 9);
     if (method === "deliveryOrder") {
       let total =
         storeDetails.deliveryPrice > 0
@@ -76,7 +76,7 @@ const CartScreen = ({ navigation }) => {
         storeDetails.phoneNumber + "\x0A", // text and line break
         today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
         "\x0A",
-        `Transaction # ${transNum}` + "\x0A",
+        `Transaction ID ${transNum}` + "\x0A",
         "\x0A",
         `Delivery Order: $${storeDetails.deliveryPrice} Fee` + "\x0A",
         "\x0A",
@@ -88,6 +88,7 @@ const CartScreen = ({ navigation }) => {
       cart.map((cartItem) => {
         total += parseFloat(cartItem.price);
         data.push(`Name: ${cartItem.name}`);
+        data.push("\x0A");
         data.push(`Price: $${cartItem.price}`);
 
         if (cartItem.description) {
@@ -169,13 +170,50 @@ const CartScreen = ({ navigation }) => {
         total: total,
         method: "deliveryOrder",
         cart: cart,
-        completed: false,
+        // completed: false,
         customer: {
           name: name,
           phone: phone,
           address: address,
         },
       });
+
+      let ongoingList = JSON.parse(localStorage.getItem("ongoingList"));
+      if (ongoingList) {
+        ongoingList.push({
+          id: Math.random().toString(36).substr(2, 9) + "-l",
+          date: today,
+          transNum: transNum,
+          total: total,
+          method: "deliveryOrder",
+          cart: cart,
+          customer: {
+            name: name,
+            phone: phone,
+            address: address,
+          },
+        });
+        localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
+      } else {
+        localStorage.setItem(
+          "ongoingList",
+          JSON.stringify([
+            {
+              id: Math.random().toString(36).substr(2, 9) + "-l",
+              date: today,
+              transNum: transNum,
+              total: total,
+              method: "deliveryOrder",
+              cart: cart,
+              customer: {
+                name: name,
+                phone: phone,
+                address: address,
+              },
+            },
+          ])
+        );
+      }
 
       setCartState([]);
       setDeliveryModal(false);
@@ -193,7 +231,7 @@ const CartScreen = ({ navigation }) => {
         storeDetails.phoneNumber + "\x0A", // text and line break
         today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
         "\x0A",
-        `Transaction # ${transNum}` + "\x0A",
+        `Transaction ID ${transNum}` + "\x0A",
         "\x0A",
         "Pickup Order" + "\x0A",
         "\x0A",
@@ -205,6 +243,7 @@ const CartScreen = ({ navigation }) => {
       cart.map((cartItem) => {
         total += parseFloat(cartItem.price);
         data.push(`Name: ${cartItem.name}`);
+        data.push("\x0A");
         data.push(`Price: $${cartItem.price}`);
 
         if (cartItem.description) {
@@ -284,13 +323,49 @@ const CartScreen = ({ navigation }) => {
         total: total,
         method: "pickupOrder",
         cart: cart,
-        completed: false,
         customer: {
           name: name,
           phone: phone,
           address: address,
         },
       });
+
+      let ongoingList = JSON.parse(localStorage.getItem("ongoingList"));
+      if (ongoingList) {
+        ongoingList.push({
+          id: Math.random().toString(36).substr(2, 9) + "-l",
+          date: today,
+          transNum: transNum,
+          total: total,
+          method: "pickupOrder",
+          cart: cart,
+          customer: {
+            name: name,
+            phone: phone,
+            address: address,
+          },
+        });
+        localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
+      } else {
+        localStorage.setItem(
+          "ongoingList",
+          JSON.stringify([
+            {
+              id: Math.random().toString(36).substr(2, 9) + "-l",
+              date: today,
+              transNum: transNum,
+              total: total,
+              method: "pickupOrder",
+              cart: cart,
+              customer: {
+                name: name,
+                phone: phone,
+                address: address,
+              },
+            },
+          ])
+        );
+      }
 
       setCartState([]);
       setDeliveryModal(false);
@@ -308,7 +383,7 @@ const CartScreen = ({ navigation }) => {
         storeDetails.phoneNumber + "\x0A", // text and line break
         today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
         "\x0A",
-        `Transaction # ${transNum}` + "\x0A",
+        `Transaction ID ${transNum}` + "\x0A",
         "\x0A",
         "\x0A",
         "\x0A",
