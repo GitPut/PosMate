@@ -154,7 +154,7 @@ const CartScreen = ({ navigation }) => {
       qz.websocket
         .connect()
         .then(function () {
-          let config = qz.configs.create("storeDetails.comSelected");
+          let config = qz.configs.create(storeDetails.comSelected);
           return qz.print(config, data);
         })
         .then(qz.websocket.disconnect)
@@ -269,7 +269,7 @@ const CartScreen = ({ navigation }) => {
       qz.websocket
         .connect()
         .then(function () {
-          let config = qz.configs.create("storeDetails.comSelected");
+          let config = qz.configs.create(storeDetails.comSelected);
           return qz.print(config, data);
         })
         .then(qz.websocket.disconnect)
@@ -403,7 +403,7 @@ const CartScreen = ({ navigation }) => {
       qz.websocket
         .connect()
         .then(function () {
-          let config = qz.configs.create("storeDetails.comSelected");
+          let config = qz.configs.create(storeDetails.comSelected);
           return qz.print(config, data);
         })
         .then(qz.websocket.disconnect)

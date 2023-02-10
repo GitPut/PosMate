@@ -343,32 +343,17 @@ const ViewTransactions = ({ transList, todaysDetails }) => {
                           printData.push("\x0A");
 
                           if (cartItem.meta) {
-                            cartItem.meta?.map((meta, index) => {
-                              if (index === 0) {
-                                printData.push(`${meta.key} : ${meta.value}`);
-                                if (cartItem.meta[index + 1].key !== meta.key) {
-                                  printData.push("\x0A");
-                                }
-                              } else {
-                                if (index !== cartItem.meta.length - 1) {
-                                  if (
-                                    cartItem.meta[index - 1].key === meta.key
-                                  ) {
-                                    printData.push(` , ${meta.value}`);
-                                  } else {
-                                    printData.push(
-                                      `${meta.key} : ${meta.value}`
-                                    );
-                                  }
-
-                                  if (
-                                    cartItem.meta[index + 1].key !== meta.key
-                                  ) {
-                                    printData.push("\x0A");
-                                  }
-                                }
-                              }
-                            });
+                            CleanupOps(cartItem.meta).map((returnedItem) => {
+                              printData.push(`${returnedItem.key} : `);
+                              returnedItem.vals.map((val, index) => {
+                                printData.push(`${val}`);
+                                if(index >= 0 &&
+                                        index < returnedItem.vals.length - 1){
+                                          printData.push( ", ");
+                                        }
+                              })
+                              printData.push("\x0A");
+                            })
                           } else {
                             printData.push("\x0A" + "\x0A");
                           }
@@ -397,9 +382,10 @@ const ViewTransactions = ({ transList, todaysDetails }) => {
                         );
                         printData.push("\x0A");
                         element.shipping_lines.map((line) =>
-                          printData.push(
+                         { printData.push(
                             `Shipping Method: ${line.method_title}`
                           )
+                          printData.push("\x0A")}
                         );
                         if (element.billing) {
                           printData.push(

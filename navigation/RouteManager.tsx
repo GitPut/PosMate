@@ -123,41 +123,64 @@ const RouteManager = () => {
 
           getOrders().then(() => {
             let array1 = localStorage.getItem("prevWooOrders");
+            array1 = JSON.parse(array1)
             if (array1) {
               const array2 = orders;
+
+              // console.log('prev: ', array1, ' New: ', orders, ' are the same? ', JSON.stringify(array1) === JSON.stringify(array2))
 
               const newArray = [];
 
               let acc = [];
 
-              if (Array.isArray(array1)) {
-                array1.concat(array2).forEach((combinedItem) => {
-                  if (!acc.includes(combinedItem.id)) {
-                    acc.push(combinedItem.id);
-                    newArray.push(combinedItem);
+              const CleanupOps = (metaList) => {
+                const opsArray = [];
+            
+                metaList.forEach((op) => {
+                  const arrContaingMe = opsArray.filter(
+                    (filterOp) => filterOp.key === op.key
+                  );
+            
+                  if (arrContaingMe.length > 0) {
+                    opsArray.forEach((opsArrItem, index) => {
+                      if (opsArrItem.key === op.key) {
+                        opsArray[index].vals.push(op.value);
+                      }
+                    });
+                  } else {
+                    opsArray.push({ key: op.key, vals: [op.value] });
                   }
                 });
-              } else {
-                JSON.parse(array1)
-                  .concat(array2)
-                  .forEach((combinedItem) => {
-                    if (!acc.includes(combinedItem.id)) {
-                      acc.push(combinedItem.id);
-                      newArray.push(combinedItem);
-                    }
-                  });
-              }
-              // array1.concat(array2).forEach((combinedItem) => {
-              //   if (!acc.includes(combinedItem.id)) {
-              //     acc.push(combinedItem.id);
-              //     newArray.push(combinedItem);
-              //   }
-              // });
+                return opsArray;
+              };
 
-              if (newArray.length > transList.length) {
+              // if (Array.isArray(array1)) {
+              //   array1.concat(array2).forEach((combinedItem) => {
+              //     if (!acc.includes(combinedItem.id)) {
+              //       acc.push(combinedItem.id);
+              //       newArray.push(combinedItem);
+              //     }
+              //   });
+              // } else {
+              //   JSON.parse(array1)
+              //     .concat(array2)
+              //     .forEach((combinedItem) => {
+              //       if (!acc.includes(combinedItem.id)) {
+              //         acc.push(combinedItem.id);
+              //         newArray.push(combinedItem);
+              //       }
+              //     });
+              // }
+              array1.concat(array2).forEach((combinedItem) => {
+                if (!acc.includes(combinedItem.id)) {
+                  acc.push(combinedItem.id);
+                  newArray.push(combinedItem);
+                }
+              });
+              if (newArray.length > array1.length) {
                 const newItems = structuredClone(newArray).splice(
-                  transList.length,
-                  newArray.length - transList.length
+                  array1.length,
+                  newArray.length - array1.length
                 );
                 // updateTransList(newArray);
                 localStorage.setItem("prevWooOrders", JSON.stringify(newArray));
@@ -201,26 +224,17 @@ const RouteManager = () => {
                       printData.push("\x0A");
 
                       if (cartItem.meta) {
-                        cartItem.meta?.map((meta, index) => {
-                          if (index === 0) {
-                            printData.push(`${meta.key} : ${meta.value}`);
-                            if (cartItem.meta[index + 1].key !== meta.key) {
-                              printData.push("\x0A");
-                            }
-                          } else {
-                            if (index !== cartItem.meta.length - 1) {
-                              if (cartItem.meta[index - 1].key === meta.key) {
-                                printData.push(` , ${meta.value}`);
-                              } else {
-                                printData.push(`${meta.key} : ${meta.value}`);
-                              }
-
-                              if (cartItem.meta[index + 1].key !== meta.key) {
-                                printData.push("\x0A");
-                              }
-                            }
-                          }
-                        });
+                        CleanupOps(cartItem.meta).map((returnedItem) => {
+                          printData.push(`${returnedItem.key} : `);
+                          returnedItem.vals.map((val, index) => {
+                            printData.push(`${val}`);
+                            if(index >= 0 &&
+                                    index < returnedItem.vals.length - 1){
+                                      printData.push( ", ");
+                                    }
+                          })
+                          printData.push("\x0A");
+                        })
                       } else {
                         printData.push("\x0A" + "\x0A");
                       }
@@ -283,7 +297,7 @@ const RouteManager = () => {
                       .connect()
                       .then(function () {
                         let config = qz.configs.create(
-                          "storeDetails.comSelected"
+                         storeDetails.comSelected
                         );
                         return qz.print(config, printData);
                       })
@@ -347,26 +361,17 @@ const RouteManager = () => {
                     printData.push("\x0A");
 
                     if (cartItem.meta) {
-                      cartItem.meta?.map((meta, index) => {
-                        if (index === 0) {
-                          printData.push(`${meta.key} : ${meta.value}`);
-                          if (cartItem.meta[index + 1].key !== meta.key) {
-                            printData.push("\x0A");
-                          }
-                        } else {
-                          if (index !== cartItem.meta.length - 1) {
-                            if (cartItem.meta[index - 1].key === meta.key) {
-                              printData.push(` , ${meta.value}`);
-                            } else {
-                              printData.push(`${meta.key} : ${meta.value}`);
-                            }
-
-                            if (cartItem.meta[index + 1].key !== meta.key) {
-                              printData.push("\x0A");
-                            }
-                          }
-                        }
-                      });
+                      CleanupOps(cartItem.meta).map((returnedItem) => {
+                        printData.push(`${returnedItem.key} : `);
+                        returnedItem.vals.map((val, index) => {
+                          printData.push(`${val}`);
+                          if(index >= 0 &&
+                                  index < returnedItem.vals.length - 1){
+                                    printData.push( ", ");
+                                  }
+                        })
+                        printData.push("\x0A");
+                      })
                     } else {
                       printData.push("\x0A" + "\x0A");
                     }
@@ -429,7 +434,7 @@ const RouteManager = () => {
                     .connect()
                     .then(function () {
                       let config = qz.configs.create(
-                        "storeDetails.comSelected"
+                       storeDetails.comSelected
                       );
                       return qz.print(config, printData);
                     })
