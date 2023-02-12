@@ -13,6 +13,7 @@ import Contact from "screens/non-authed/Contact";
 import Signup from "screens/non-authed/Signup";
 import ResetPassword from "screens/non-authed/ResetPassword";
 import LatestUpdates from "screens/non-authed/LatestUpdates";
+import Legal from "screens/non-authed/Legal";
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,7 @@ export default function MainNonAuth() {
       <Stack.Screen name="Faqs" component={Faqs} />
       <Stack.Screen name="Contact" component={Contact} />
       <Stack.Screen name="Latest Updates" component={LatestUpdates} />
+      <Stack.Screen name="Legal" component={Legal} />
       <Stack.Screen
         name="Login"
         component={Login}

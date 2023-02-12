@@ -66,9 +66,9 @@ const ViewTransactions = () => {
           }
         };
 
-        getOrders().then(() =>
-          settransList((prevState) => [...prevState, ...orders])
-        );
+        getOrders()
+          .then(() => settransList((prevState) => [...prevState, ...orders]))
+          .catch((e) => console.log("error has occured"));
       } catch {
         console.log("Something occured with woo");
       }
@@ -541,15 +541,6 @@ const ViewTransactions = () => {
                               printData.push(`${returnedItem.key} : `);
                               returnedItem.vals.map((val, index) => {
                                 printData.push(`${val}`);
-<<<<<<< HEAD
-                                if(index >= 0 &&
-                                        index < returnedItem.vals.length - 1){
-                                          printData.push( ", ");
-                                        }
-                              })
-                              printData.push("\x0A");
-                            })
-=======
                                 if (
                                   index >= 0 &&
                                   index < returnedItem.vals.length - 1
@@ -559,7 +550,6 @@ const ViewTransactions = () => {
                               });
                               printData.push("\x0A");
                             });
->>>>>>> 690b67f (Working)
                           } else {
                             printData.push("\x0A" + "\x0A");
                           }
@@ -587,21 +577,12 @@ const ViewTransactions = () => {
                           `Name: ${element.shipping.first_name} ${element.shipping.last_name}`
                         );
                         printData.push("\x0A");
-<<<<<<< HEAD
-                        element.shipping_lines.map((line) =>
-                         { printData.push(
-                            `Shipping Method: ${line.method_title}`
-                          )
-                          printData.push("\x0A")}
-                        );
-=======
                         element.shipping_lines.map((line) => {
                           printData.push(
                             `Shipping Method: ${line.method_title}`
                           );
                           printData.push("\x0A");
                         });
->>>>>>> 690b67f (Working)
                         if (element.billing) {
                           printData.push(
                             `Phone Number: ${element.billing.phone}`

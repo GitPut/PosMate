@@ -5,63 +5,16 @@ import { auth } from "state/firebaseConfig";
 import { sectionState, setsectionState, userStoreState } from "state/state";
 import Logo from "assets/dpos-logo.png";
 import Icon from "@expo/vector-icons/Entypo";
+import { set } from "react-native-reanimated";
 
 const WebHomeHeader = ({ navigation, route, options, back }) => {
-  // return (
-  //   <View style={styles.container}>
-  //     <Image source={Logo} resizeMode="contain" style={styles.logo}></Image>
-  //     <TouchableOpacity>
-  //       <Text style={styles.homeTxt}>Home</Text>
-  //     </TouchableOpacity>
-  //     <TouchableOpacity>
-  //       <Text style={styles.pricingTxt}>Pricing</Text>
-  //     </TouchableOpacity>
-  //     <TouchableOpacity>
-  //       <Text style={styles.demoTxt}>Demo</Text>
-  //     </TouchableOpacity>
-  //     <TouchableOpacity
-  //       style={styles.loginBtn}
-  //       onPress={() => navigation.navigate("Login")}
-  //     >
-  //       <Text style={styles.loginTxt}>Login</Text>
-  //     </TouchableOpacity>
-  //     <TouchableOpacity>
-  //       <Icon name="help-with-circle" style={styles.helpIcon}></Icon>
-  //     </TouchableOpacity>
-  //   </View>
-  // );
+  const [hidden, sethidden] = useState(false);
+
+  useEffect(() => {
+    document.getElementById("w-nav-overlay-0").style.overflow = "hidden";
+  }, []);
+
   return (
-    // <View style={styles.container}>
-    //   <View style={styles.half}>
-    //     <TouchableOpacity onPress={() => navigation.navigate("WebHome")}>
-    //       <Image source={Logo} resizeMode="contain" style={styles.logo} />
-    //     </TouchableOpacity>
-    //     <TouchableOpacity onPress={() => navigation.navigate("WebHome")}>
-    //       <Text style={styles.home}>Home</Text>
-    //     </TouchableOpacity>
-    //     <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-    //       <Text style={styles.features}>Features</Text>
-    //     </TouchableOpacity>
-    //     <TouchableOpacity onPress={() => navigation.navigate("AboutUs")}>
-    //       <Text style={styles.aboutUs}>About Us</Text>
-    //     </TouchableOpacity>
-    //     <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-    //       <Text style={styles.pricing}>Pricing</Text>
-    //     </TouchableOpacity>
-    //     <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-    //       <Text style={styles.faQs}>FAQs</Text>
-    //     </TouchableOpacity>
-    //   </View>
-    //   <View style={styles.half2}>
-    //     <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-    //       <Text style={styles.contactSales}>Contact Sales</Text>
-    //     </TouchableOpacity>
-    //     <View style={styles.rect2}></View>
-    //     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-    //       <Text style={styles.login}>Login</Text>
-    //     </TouchableOpacity>
-    //   </View>
-    // </View>
     <div
       data-animation="default"
       className="section-nav w-nav"
@@ -79,7 +32,9 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
             <a
               href="/"
               aria-current="page"
-              className="nav-logo-link w-nav-brand w--current"
+              className="nav-logo-link w--current"
+              //OLD
+              // className="nav-logo-link w-nav-brand w--current"
               aria-label="home"
             >
               <img src={Logo} loading="lazy" alt="" className="nav-logo" />
@@ -129,6 +84,17 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
               aria-controls="w-nav-overlay-0"
               aria-haspopup="menu"
               aria-expanded="false"
+              onClick={() => {
+                if (!hidden) {
+                  document.getElementById("w-nav-overlay-0").style.overflow =
+                    null;
+                  sethidden((prev) => !prev);
+                } else {
+                  document.getElementById("w-nav-overlay-0").style.overflow =
+                    "hidden";
+                  sethidden((prev) => !prev);
+                }
+              }}
             >
               <div className="menu-icon">
                 <div className="menu-icon-line-top" />
@@ -141,7 +107,73 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
           </div>
         </div>
       </div>
-      <div className="w-nav-overlay" data-wf-ignore id="w-nav-overlay-0" />
+      <div className="w-nav-overlay" data-wf-ignore id="w-nav-overlay-0">
+        <div
+          className="w-nav-overlay"
+          data-wf-ignore
+          id="w-nav-overlay-0"
+          style={{ height: "6808.97px", display: "block" }}
+        >
+          <nav
+            role="navigation"
+            className="nav-menu w-nav-menu"
+            data-nav-menu-open
+            style={{
+              transform: "translateY(0px) translateX(0px)",
+              transition: "transform 400ms ease 0s",
+            }}
+          >
+            <div className="nav-menu-left">
+              <a
+                href="/"
+                aria-current="page"
+                className="nav-link w-nav-link w--current w--nav-link-open"
+              >
+                Home
+              </a>
+              <a
+                href="/features"
+                className="nav-link w-nav-link w--nav-link-open"
+              >
+                Features
+              </a>
+              <a
+                href="/about-us"
+                className="nav-link w-nav-link w--nav-link-open"
+              >
+                About us
+              </a>
+              <a
+                href="/pricing"
+                className="nav-link w-nav-link w--nav-link-open"
+              >
+                Pricing
+              </a>
+              <a href="/faqs" className="nav-link w-nav-link w--nav-link-open">
+                FAQs
+              </a>
+            </div>
+            <div className="nav-menu-right">
+              <a
+                href="/contact"
+                className="nav-link w-nav-link w--nav-link-open"
+              >
+                Contact sales
+              </a>
+              <div className="nav-divider-vertical" />
+              <button
+                className="nav-link is-login"
+                data-wf-user-logout="Log out"
+                data-wf-user-login="Log in"
+                type="button"
+                onClick={() => (window.location.href = "log-in")}
+              >
+                Log in
+              </button>
+            </div>
+          </nav>
+        </div>
+      </div>
     </div>
   );
 };

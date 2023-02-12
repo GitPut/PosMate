@@ -2149,8 +2149,16 @@ figcaption {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  width: 100%;
+  /* width: 100%; */
   height: 100%;
+}
+
+.footer-logo {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 50%;
 }
 
 .text-color-neutral-600 {

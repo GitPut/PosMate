@@ -1657,8 +1657,8 @@ textarea.w-select {
 }
 .w-nav-overlay {
   position: absolute;
-  overflow: hidden;
-  display: none;
+  /* overflow: hidden; */
+  /* display: none; */
   top: 100%;
   left: 0;
   right: 0;
@@ -1790,7 +1790,7 @@ textarea.w-select {
 }
 .w-tab-pane {
   position: relative;
-  display: none;
+
 }
 .w--tab-active {
   display: block;
