@@ -5,11 +5,12 @@ import { signUp } from "state/firebaseFunctions";
 const Signup = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [showPassword, setShowPassword] = useState(false);
+  const [name, setname] = useState();
+  const [phoneNumber, setphoneNumber] = useState();
 
   const attemptSignUp = () => {
     if (email && password) {
-      signUp(email, password);
+      signUp(email, password, name, phoneNumber);
     }
   };
 
@@ -111,6 +112,9 @@ const Signup = () => {
                     </a>
                   </div>
                 </div>
+                <div className="padding-bottom padding-large" />
+                <div className="padding-bottom padding-large" />
+                <div className="padding-bottom padding-large" />
                 <form
                   className="signup-form"
                   method="post"
@@ -132,6 +136,25 @@ const Signup = () => {
                       data-wf-user-field="wf-user-field-name"
                       id="wf-sign-up-name"
                       required
+                      onChange={(event) => setname(event.target.value)}
+                      value={name}
+                    />
+                  </div>
+                  <div className="padding-bottom padding-small" />
+                  <div className="signup-item-wrapper">
+                    <label htmlFor="wf-sign-up-password" className="form-label">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      id="wf-sign-up-phoneNumber"
+                      maxLength={256}
+                      name="Company Name"
+                      className="form-input is-last w-input"
+                      required
+                      data-wf-user-form-input-type="Phone Number"
+                      onChange={(event) => setphoneNumber(event.target.value)}
+                      value={phoneNumber}
                     />
                   </div>
                   <div className="padding-bottom padding-small" />
@@ -170,7 +193,6 @@ const Signup = () => {
                   </div>
                   <div className="padding-bottom padding-large" />
                   <label className="w-checkbox signup-form-checkbox is-2-lines">
-                    <div className="w-checkbox-input w-checkbox-input--inputType-custom form-checkbox-icon" />
                     <input
                       type="checkbox"
                       name="Checkbox"
@@ -184,34 +206,13 @@ const Signup = () => {
                       className="signup-checkbox-label w-form-label"
                       htmlFor="Checkbox"
                     >
-                      By creating an account, I agree to this website's{" "}
-                      <a href="/legal" className="form-link is-small">
-                        privacy policy
-                      </a>{" "}
-                      and{" "}
+                      By creating an account, I agree to Divine Pos's{" "}
                       <a href="/legal" className="form-link is-small">
                         terms of service
                       </a>
                     </span>
                   </label>
                   <div className="padding-bottom padding-small" />
-                  <label className="w-checkbox signup-form-checkbox">
-                    <div className="w-checkbox-input w-checkbox-input--inputType-custom form-checkbox-icon" />
-                    <input
-                      type="checkbox"
-                      name="Checkbox"
-                      id="wf-sign-up-accept-communications"
-                      data-name="Checkbox"
-                      data-wf-user-field="wf-user-field-accept-communications"
-                      style={{ opacity: 0, position: "absolute", zIndex: -1 }}
-                    />
-                    <span
-                      className="signup-checkbox-label w-form-label"
-                      htmlFor="Checkbox"
-                    >
-                      I consent to receive marketing emails.
-                    </span>
-                  </label>
                   <div className="padding-bottom padding-large" />
                   <Button
                     title="Sign Up"

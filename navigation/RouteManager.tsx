@@ -19,14 +19,17 @@ import { updateTransList } from "state/firebaseFunctions";
 const tz = require("moment-timezone");
 import useSound from "use-sound";
 import mySound from "assets/alarm.mp3";
+import PlanUpdateTest from "screens/authed/PlanUpdateTest";
+import NewUserPayment from "screens/authed/NewUserPayment";
 
 const RouteManager = () => {
   const userS = userState.use();
   const wooCredentials = woocommerceState.use();
-  const transList = transListState.use();
   const storeDetails = storeDetailState.use();
   const [loading, setloading] = useState(true);
   const [playSound] = useSound(mySound);
+  const [isNewUser, setisNewUser] = useState(null);
+  const [isSubscribed, setisSubscribed] = useState(null);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -36,9 +39,29 @@ const RouteManager = () => {
           .doc(user.uid)
           .get()
           .then((doc) => {
+            doc.ref
+              .collection("subscriptions")
+              .get()
+              .then((docs) => {
+                if (!docs.empty) {
+                  docs.forEach((element) => {
+                    if (
+                      element.data().status === "active" &&
+                      element.data().role === "Test Plan"
+                    ) {
+                      setisSubscribed(true);
+                      setisNewUser(false);
+                    }
+                    // console.log("DATA: ", element.data());
+                  });
+                } else {
+                  setisNewUser(true);
+                  setisSubscribed(false);
+                }
+              });
             setUserStoreState({
-              products: doc.data().products,
-              categories: doc.data().categories,
+              products: doc.data().products ? doc.data().products : [],
+              categories: doc.data().categories ? doc.data().categories : [],
             });
             //Dont need now
             // if (doc.data().transList) {
@@ -52,29 +75,25 @@ const RouteManager = () => {
               setStoreDetailState(doc.data().storeDetails);
             }
           });
-        setTimeout(() => {
-          setloading(false);
-        }, 1);
       } else {
         setUserState(null);
         setUserStoreState({ products: null, categories: null });
-        setTimeout(() => {
-          setloading(false);
-        }, 1);
+        setisNewUser(false);
+        setisSubscribed(false);
       }
     });
   }, []);
 
   useEffect(() => {
-    if (userS) {
+    if (userS && isSubscribed) {
       const unsub = db
         .collection("users")
         .doc(userS.uid)
         .onSnapshot((doc) => {
           // setloading(true);
           setUserStoreState({
-            products: doc.data().products,
-            categories: doc.data().categories,
+            products: doc.data().products ? doc.data().products : [],
+            categories: doc.data().categories ? doc.data().categories : [],
           });
           // if (doc.data().transList) {
           //   setTransListState(doc.data().transList);
@@ -91,10 +110,10 @@ const RouteManager = () => {
         });
       return () => unsub();
     }
-  }, [userS]);
+  }, [userS, isSubscribed]);
 
   useEffect(() => {
-    if (wooCredentials.useWoocommerce === true) {
+    if (wooCredentials.useWoocommerce === true && isSubscribed) {
       const interval = setInterval(() => {
         try {
           const WooCommerceAPI = require("woocommerce-api");
@@ -490,7 +509,7 @@ const RouteManager = () => {
       }, 5000); // this will check for new orders every minute
       return () => clearInterval(interval);
     }
-  }, [wooCredentials]);
+  }, [wooCredentials, isSubscribed]);
 
   const linking = {
     prefixes: [
@@ -514,12 +533,30 @@ const RouteManager = () => {
     },
   };
 
+  useEffect(() => {
+    if (isNewUser !== null && isSubscribed !== null) {
+      setloading(false);
+    }
+  }, [isNewUser, isSubscribed]);
+
   return (
     <NavigationContainer linking={linking}>
       {loading ? (
         <Spinner isModalVisible={true} />
       ) : (
-        <>{userS ? <MainAuthed /> : <MainNonAuth />}</>
+        <>
+          {userS ? (
+            isSubscribed ? (
+              <MainAuthed />
+            ) : isNewUser ? (
+              <NewUserPayment />
+            ) : (
+              <PlanUpdateTest />
+            )
+          ) : (
+            <MainNonAuth />
+          )}
+        </>
       )}
     </NavigationContainer>
   );

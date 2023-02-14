@@ -1,7 +1,11 @@
-import { View, Text } from "react-native";
-import React from "react";
+import { View, Text, Button } from "react-native";
+import React, { useState } from "react";
+import Axios from "axios";
 
 const ResetPassword = () => {
+  const [email, setEmail] = useState("");
+  const [error, seterror] = useState(false);
+
   return (
     <div className="w-users-userformpagewrap page-wrapper reset-password">
       <div
@@ -120,6 +124,7 @@ const ResetPassword = () => {
                     </label>
                     <input
                       type="email"
+                      onChange={(event) => setEmail(event.target.value)}
                       maxLength={256}
                       name="Email"
                       id="wf-reset-password-email"
@@ -127,6 +132,7 @@ const ResetPassword = () => {
                       className="form-input is-last w-input"
                       required
                       data-wf-user-form-input-type="email"
+                      value={email}
                     />
                   </div>
                   <div className="padding-bottom padding-large" />
@@ -136,10 +142,36 @@ const ResetPassword = () => {
                     data-wait="Please wait..."
                     className="w-users-userformbutton button w-button"
                     wf-submit-button-value="Reset password"
+                    onClick={() => {
+                      event.preventDefault();
+                      var data = JSON.stringify({
+                        email: email,
+                      });
+
+                      var config = {
+                        method: "post",
+                        maxBodyLength: Infinity,
+                        url: "https://us-central1-posmate-5fc0a.cloudfunctions.net/sendPasswordResetEmail",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        data: data,
+                      };
+
+                      Axios(config)
+                        .then(function (response) {
+                          console.log(JSON.stringify(response.data));
+                        })
+                        .catch(function (error) {
+                          console.log(error);
+                          seterror(true);
+                        });
+                      setEmail("");
+                    }}
                   />
                 </form>
                 <div
-                  style={{ display: "none" }}
+                  style={!error ? { display: "none" } : { display: "inline" }}
                   data-wf-user-form-error="true"
                   className="w-users-userformerrorstate error-message w-form-fail"
                 >

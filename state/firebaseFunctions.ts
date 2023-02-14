@@ -3,7 +3,7 @@ import { auth, db } from "./firebaseConfig";
 export const signIn = (email, password) =>
   auth.signInWithEmailAndPassword(email, password);
 
-export const signUp = (email, password) =>
+export const signUp = (email, password, name, phoneNumber) =>
   auth
     .createUserWithEmailAndPassword(email, password)
     .then((userAuth) => {
@@ -11,11 +11,9 @@ export const signUp = (email, password) =>
         db.collection("users")
           .doc(userAuth.user.uid)
           .set({
-            paid: true,
             products: [],
             categories: [],
             wooCredentials: { ck: null, cs: null, useWoocommerce: false },
-            transList: [],
             storeDetails: {
               name: null,
               address: null,
@@ -23,6 +21,12 @@ export const signUp = (email, password) =>
               website: null,
               comSelected: null,
               deliveryPrice: null,
+            },
+            ownerDetails: {
+              name: name,
+              address: null,
+              phoneNumber: phoneNumber,
+              email: email
             },
             //company name
             //adddress

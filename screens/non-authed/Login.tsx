@@ -59,7 +59,7 @@ const Login = () => {
                 aria-label="home"
               >
                 <img
-                  src={require('assets/dpos-logo-black.png')}
+                  src={require("assets/dpos-logo-black.png")}
                   loading="lazy"
                   alt=""
                   className="nav-logo"
@@ -117,13 +117,21 @@ const Login = () => {
                     />
                   </div>
                   <div className="padding-bottom padding-large" />
-                  {/* <button
+                  <a
                     className="w-users-userformbutton button w-button"
-                    onClick={attemptSignIn}
+                    type="button"
+                    onClick={() => {
+                      event.preventDefault();
+                      attemptSignIn();
+                    }}
                   >
                     Log In
-                  </button> */}
-                  <Button title="Login" onPress={attemptSignIn} />
+                  </a>
+                  {/* <Button
+                    title="Login"
+                    onPress={attemptSignIn}
+                    style={{ backgroundColor: "darkblue" }}
+                  /> */}
                   <div className="padding-bottom padding-small" />
                   <div className="form-footer-wrapper">
                     <div className="w-users-userformfooter form-footer-content-wrapper">

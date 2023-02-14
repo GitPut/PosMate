@@ -63,12 +63,12 @@ const Footer = () => {
                     <a href="/faqs" className="footer-link w-inline-block">
                       <div>FAQs</div>
                     </a>
-                    <a
+                    {/* <a
                       href="/latest-updates"
                       className="footer-link w-inline-block"
                     >
                       <div>Changelog</div>
-                    </a>
+                    </a> */}
                     <a
                       href="/contact"
                       aria-current="page"

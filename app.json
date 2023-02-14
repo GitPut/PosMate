@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "best-route",
-    "slug": "best-route",
+    "name": "divine-pos",
+    "slug": "divine-pos",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,9 +14,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },

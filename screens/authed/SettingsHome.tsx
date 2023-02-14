@@ -11,6 +11,7 @@ import EditStoreDetails from "components/EditStoreDetails";
 import ProductAndCatManager from "./ProductAndCatManager";
 import { woocommerceState } from "state/state";
 import { auth, db } from "state/firebaseConfig";
+import PlanUpdateTest from "./PlanUpdateTest";
 
 const SettingsHome = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
@@ -145,6 +146,24 @@ const SettingsHome = ({ navigation }) => {
             />
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => setcurrentSettingPage("test")}
+            style={{
+              backgroundColor: "rgba(41,44,56,1)",
+              borderRadius: 100,
+              width: 60,
+              height: 60,
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 30,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="star"
+              size={32}
+              color={currentSettingPage === "test" ? "white" : "#777777"}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={logout}
             style={{
               backgroundColor: "rgba(41,44,56,1)",
@@ -171,11 +190,13 @@ const SettingsHome = ({ navigation }) => {
           >
             {/* <Text>HEllo</Text> */}
             {currentSettingPage !== "productManager" &&
-              currentSettingPage !== "storeManager" && <StatsScreen />}
+              currentSettingPage !== "storeManager" &&
+              currentSettingPage !== "test" && <StatsScreen />}
             {currentSettingPage === "storeManager" && <EditStoreDetails />}
             {currentSettingPage === "productManager" && (
               <ProductAndCatManager navigation={navigation} />
             )}
+            {currentSettingPage === "test" && <PlanUpdateTest />}
           </View>
         </View>
       </View>

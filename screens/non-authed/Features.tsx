@@ -38,13 +38,6 @@ const Features = () => {
               <div className="padding-bottom padding-xxhuge" />
               <div className="features-info-component">
                 <div className="features-info-item-wrapper">
-                  <div className="features-info-content-left">
-                    <div className="heading-gradient-text-color">
-                      <h2 className="heading-style-h6 text-color-neutral-900">
-                        Organization
-                      </h2>
-                    </div>
-                  </div>
                   <div className="features-info-content-right">
                     <div
                       id="w-node-_0e64dbf1-b55c-a8ff-d256-5e59a57ec182-cf891d94"
@@ -69,12 +62,13 @@ const Features = () => {
                       </div>
                       <div className="padding-bottom padding-small" />
                       <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Projects
+                        Affordability
                       </div>
                       <div className="padding-bottom padding-xsmall" />
                       <p className="text-size-regular">
-                        Intuitive design helps in organizing projects so you do
-                        not need to search through all files every time.
+                        Your software offers competitive pricing, making it an
+                        affordable option for businesses of all sizes, without
+                        sacrificing important features or functionality.
                       </p>
                     </div>
                     <div
@@ -100,12 +94,13 @@ const Features = () => {
                       </div>
                       <div className="padding-bottom padding-small" />
                       <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Custom views
+                        Ease of use
                       </div>
                       <div className="padding-bottom padding-xsmall" />
                       <p className="text-size-regular">
-                        Premade views with best practices. With them you can
-                        oversee projects however suits you the most.
+                        Your software is designed to be user-friendly and
+                        intuitive, making it easy for businesses to get started
+                        and use effectively.
                       </p>
                     </div>
                     <div
@@ -131,13 +126,13 @@ const Features = () => {
                       </div>
                       <div className="padding-bottom padding-small" />
                       <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Advanced filters
+                        Customization
                       </div>
                       <div className="padding-bottom padding-xsmall" />
                       <p className="text-size-regular">
-                        Control who has access to specific tasks — whether some
-                        tasks are only for your eyes or private to a select
-                        group of people.
+                        Your software is highly customizable, allowing
+                        businesses to tailor it to their specific needs and
+                        workflows.
                       </p>
                     </div>
                     <div
@@ -163,12 +158,14 @@ const Features = () => {
                       </div>
                       <div className="padding-bottom padding-small" />
                       <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Powerful command line
+                        Versatility
                       </div>
                       <div className="padding-bottom padding-xsmall" />
                       <p className="text-size-regular">
-                        Everything you need is one click away. Explore and speed
-                        up your workflow in no time.
+                        Your software is suitable for a wide range of
+                        businesses, from small retail shops to large
+                        restaurants, making it a versatile solution for many
+                        different industries.
                       </p>
                     </div>
                     <div
@@ -194,12 +191,14 @@ const Features = () => {
                       </div>
                       <div className="padding-bottom padding-small" />
                       <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Real-time sync
+                        Reporting and analytics
                       </div>
                       <div className="padding-bottom padding-xsmall" />
                       <p className="text-size-regular">
-                        Notify all team members in real-time. There is no more
-                        need for sync meetings and endless chats.
+                        Your software provides businesses with valuable data and
+                        insights, such as sales tracking and inventory
+                        management, to help them make informed decisions and
+                        drive success.
                       </p>
                     </div>
                     <div
@@ -225,444 +224,21 @@ const Features = () => {
                       </div>
                       <div className="padding-bottom padding-small" />
                       <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Bookmark tasks
+                        Integration with other tools
                       </div>
                       <div className="padding-bottom padding-xsmall" />
                       <p className="text-size-regular">
-                        Important tasks can be bookmarked and saved for easier
-                        access and better productivity.
+                        Your software integrates with other tools that
+                        businesses may be using, such as payment processors or
+                        accounting software, making it a seamless addition to
+                        their existing tech stack.
                       </p>
                     </div>
                   </div>
                 </div>
                 <div className="padding-bottom padding-xxhuge" />
-                <div className="features-info-image-wrapper">
-                  <img
-                    src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar.webp"
-                    loading="lazy"
-                    width={1440}
-                    sizes="(max-width: 479px) 89vw, (max-width: 767px) 93vw, 90vw"
-                    srcSet="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar-p-500.webp 500w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar-p-800.webp 800w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar-p-1080.webp 1080w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar-p-1600.webp 1600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar-p-2000.webp 2000w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar-p-2600.webp 2600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab51803f315d50f8_dashboard_calendar.webp 2880w"
-                    alt=""
-                    className="features-info-image"
-                  />
-                </div>
               </div>
             </div>
-          </div>
-        </section>
-        <section className="section-features-info">
-          <div className="padding-global">
-            <div className="container-large">
-              <div className="features-info-component">
-                <div className="padding-bottom padding-xxhuge" />
-                <div className="features-info-item-wrapper">
-                  <div className="features-info-content-left">
-                    <div className="heading-gradient-text-color">
-                      <h2 className="heading-style-h6 text-color-neutral-900">
-                        Collaborate
-                      </h2>
-                    </div>
-                  </div>
-                  <div className="features-info-content-right">
-                    <div
-                      id="w-node-_607b738b-0d54-b89d-aceb-6dd67228c74f-cf891d94"
-                      className="features-info-item"
-                    >
-                      <div
-                        id="w-node-_607b738b-0d54-b89d-aceb-6dd67228c750-cf891d94"
-                        className="icon-1x1-small text-color-primary-700 w-embed"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="100%"
-                          height="100%"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M20 6h-1v8c0 .55-.45 1-1 1H6v1c0 1.1.9 2 2 2h10l4 4V8c0-1.1-.9-2-2-2Zm-3 5V4c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v13l4-4h9c1.1 0 2-.9 2-2Z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="padding-bottom padding-small" />
-                      <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Real-time chat
-                      </div>
-                      <div className="padding-bottom padding-xsmall" />
-                      <p className="text-size-regular">
-                        Discuss your tasks with other team members in real-time.
-                        You can keep all information in one place. No need for
-                        third-party apps.
-                      </p>
-                    </div>
-                    <div
-                      id="w-node-_607b738b-0d54-b89d-aceb-6dd67228c757-cf891d94"
-                      className="features-info-item"
-                    >
-                      <div
-                        id="w-node-_607b738b-0d54-b89d-aceb-6dd67228c758-cf891d94"
-                        className="icon-1x1-small text-color-primary-700 w-embed"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="100%"
-                          height="100%"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V18c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-1.5c0-2.33-4.67-3.5-7-3.5Zm8 0c-.29 0-.62.02-.97.05.02.01.03.03.04.04 1.14.83 1.93 1.94 1.93 3.41V18c0 .35-.07.69-.18 1H22c.55 0 1-.45 1-1v-1.5c0-2.33-4.67-3.5-7-3.5Z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="padding-bottom padding-small" />
-                      <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Cross-team projects
-                      </div>
-                      <div className="padding-bottom padding-xsmall" />
-                      <p className="text-size-regular">
-                        Collaborate with other teams and unlock more power
-                        together. You can share, chat and assign tasks to
-                        members outside of your team.
-                      </p>
-                    </div>
-                    <div
-                      id="w-node-_607b738b-0d54-b89d-aceb-6dd67228c75f-cf891d94"
-                      className="features-info-item"
-                    >
-                      <div
-                        id="w-node-_607b738b-0d54-b89d-aceb-6dd67228c760-cf891d94"
-                        className="icon-1x1-small text-color-primary-700 w-embed"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="100%"
-                          height="100%"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm3.61 6.34c1.07 0 1.93.86 1.93 1.93 0 1.07-.86 1.93-1.93 1.93-1.07 0-1.93-.86-1.93-1.93-.01-1.07.86-1.93 1.93-1.93Zm-6-1.58c1.3 0 2.36 1.06 2.36 2.36 0 1.3-1.06 2.36-2.36 2.36-1.3 0-2.36-1.06-2.36-2.36 0-1.31 1.05-2.36 2.36-2.36Zm0 9.13v3.75c-2.4-.75-4.3-2.6-5.14-4.96 1.05-1.12 3.67-1.69 5.14-1.69.53 0 1.2.08 1.9.22-1.64.87-1.9 2.02-1.9 2.68ZM12 20c-.27 0-.53-.01-.79-.04v-4.07c0-1.42 2.94-2.13 4.4-2.13 1.07 0 2.92.39 3.84 1.15C18.28 17.88 15.39 20 12 20Z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="padding-bottom padding-small" />
-                      <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Group permissions
-                      </div>
-                      <div className="padding-bottom padding-xsmall" />
-                      <p className="text-size-regular">
-                        Organize staff members into groups with permissions,
-                        enabling access to specific features and functions such
-                        as creating and deleting sites.
-                      </p>
-                    </div>
-                    <div
-                      id="w-node-_607b738b-0d54-b89d-aceb-6dd67228c767-cf891d94"
-                      className="features-info-item"
-                    >
-                      <div
-                        id="w-node-_607b738b-0d54-b89d-aceb-6dd67228c768-cf891d94"
-                        className="icon-1x1-small text-color-primary-700 w-embed"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="100%"
-                          height="100%"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M19.996 2H4.006c-1.1 0-2 .9-2 2v18l3.99-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2Zm-7 12h-2v-2h2v2Zm0-5c0 .55-.45 1-1 1s-1-.45-1-1V7c0-.55.45-1 1-1s1 .45 1 1v2Z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="padding-bottom padding-small" />
-                      <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Team member feedback
-                      </div>
-                      <div className="padding-bottom padding-xsmall" />
-                      <p className="text-size-regular">
-                        Empower your team to leave comments directly on top of a
-                        website as it's being built. No more back and forth over
-                        the phone or endless vague emailing.
-                      </p>
-                    </div>
-                    <div
-                      id="w-node-_607b738b-0d54-b89d-aceb-6dd67228c76f-cf891d94"
-                      className="features-info-item"
-                    >
-                      <div
-                        id="w-node-_607b738b-0d54-b89d-aceb-6dd67228c770-cf891d94"
-                        className="icon-1x1-small text-color-primary-700 w-embed"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="100%"
-                          height="100%"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M14.17 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9.83c0-.53-.21-1.04-.59-1.41l-4.83-4.83c-.37-.38-.88-.59-1.41-.59ZM8 15h8c.55 0 1 .45 1 1s-.45 1-1 1H8c-.55 0-1-.45-1-1s.45-1 1-1Zm0-4h8c.55 0 1 .45 1 1s-.45 1-1 1H8c-.55 0-1-.45-1-1s.45-1 1-1Zm0-4h5c.55 0 1 .45 1 1s-.45 1-1 1H8c-.55 0-1-.45-1-1s.45-1 1-1Z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="padding-bottom padding-small" />
-                      <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Comment Log
-                      </div>
-                      <div className="padding-bottom padding-xsmall" />
-                      <p className="text-size-regular">
-                        All website comments are automatically logged in one
-                        location, enabling you to easily track conversations,
-                        even after they’ve been resolved.
-                      </p>
-                    </div>
-                    <div
-                      id="w-node-_607b738b-0d54-b89d-aceb-6dd67228c777-cf891d94"
-                      className="features-info-item"
-                    >
-                      <div
-                        id="w-node-_607b738b-0d54-b89d-aceb-6dd67228c778-cf891d94"
-                        className="icon-1x1-small text-color-primary-700 w-embed"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="100%"
-                          height="100%"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <g clipPath="url(#a)">
-                            <path
-                              fill="currentColor"
-                              d="M8.4 18.7c.38.5.6 1.12.6 1.8 0 1.66-1.34 3-3 3s-3-1.34-3-3 1.34-3 3-3c.44 0 .85.09 1.23.26l1.41-1.77a4.504 4.504 0 0 1-1.09-3.69l-2.03-.68A2.997 2.997 0 0 1 0 10c0-1.66 1.34-3 3-3s3 1.34 3 3c0 .07 0 .14-.01.21l2.03.68a4.468 4.468 0 0 1 3.22-2.32V6.41A3.018 3.018 0 0 1 9 3.5c0-1.66 1.34-3 3-3s3 1.34 3 3c0 1.4-.96 2.57-2.25 2.91v2.16c1.4.23 2.58 1.11 3.22 2.32l2.03-.68V10c0-1.66 1.34-3 3-3s3 1.34 3 3-1.34 3-3 3c-1.06 0-1.98-.55-2.52-1.37l-2.03.68A4.49 4.49 0 0 1 15.36 16l1.41 1.77c.38-.18.79-.27 1.23-.27 1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3c0-.68.22-1.3.6-1.8l-1.41-1.77c-1.35.75-3.01.76-4.37 0L8.4 18.7Z"
-                            />
-                          </g>
-                          <defs>
-                            <clipPath id="a">
-                              <path fill="currentColor" d="M0 0h24v24H0z" />
-                            </clipPath>
-                          </defs>
-                        </svg>
-                      </div>
-                      <div className="padding-bottom padding-small" />
-                      <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Shared commands
-                      </div>
-                      <div className="padding-bottom padding-xsmall" />
-                      <p className="text-size-regular">
-                        All team members have access to team-shared commands.
-                        You can use and share your favorite commands with other
-                        team members.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="padding-bottom padding-xxhuge" />
-                <div className="features-info-image-wrapper">
-                  <img
-                    src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban.webp"
-                    loading="lazy"
-                    width={1440}
-                    sizes="(max-width: 479px) 89vw, (max-width: 767px) 93vw, 90vw"
-                    srcSet="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban-p-500.webp 500w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban-p-800.webp 800w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban-p-1080.webp 1080w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban-p-1600.webp 1600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban-p-2000.webp 2000w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban-p-2600.webp 2600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab518028375d50fa_dashboard_kanban.webp 2880w"
-                    alt=""
-                    className="features-info-image"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section className="section-features-info">
-          <div className="padding-global">
-            <div className="container-large">
-              <div className="features-info-component">
-                <div className="padding-bottom padding-xxhuge" />
-                <div className="features-info-item-wrapper">
-                  <div className="features-info-content-left">
-                    <div className="heading-gradient-text-color">
-                      <h2 className="heading-style-h6 text-color-neutral-900">
-                        Security
-                      </h2>
-                    </div>
-                  </div>
-                  <div className="features-info-content-right">
-                    <div
-                      id="w-node-d635b614-6dbe-2c54-54b0-9d342be3e693-cf891d94"
-                      className="features-info-item"
-                    >
-                      <div
-                        id="w-node-d635b614-6dbe-2c54-54b0-9d342be3e694-cf891d94"
-                        className="icon-1x1-small text-color-primary-700 w-embed"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="100%"
-                          height="100%"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="m11.3 2.187-6 2.25c-.78.3-1.3 1.04-1.3 1.88v4.71c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91v-4.71a2 2 0 0 0-1.3-1.87l-6-2.25c-.45-.18-.95-.18-1.4-.01Zm-1.07 12.57-2.12-2.12a.996.996 0 1 1 1.41-1.41l1.41 1.41 3.54-3.54a.996.996 0 1 1 1.41 1.41l-4.24 4.24c-.38.4-1.02.4-1.41.01Z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="padding-bottom padding-small" />
-                      <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Safe and secure
-                      </div>
-                      <div className="padding-bottom padding-xsmall" />
-                      <p className="text-size-regular">
-                        Divine Pos is protected on many levels. Securing our
-                        customer's data is our first priority.
-                      </p>
-                    </div>
-                    <div
-                      id="w-node-d635b614-6dbe-2c54-54b0-9d342be3e69b-cf891d94"
-                      className="features-info-item"
-                    >
-                      <div
-                        id="w-node-d635b614-6dbe-2c54-54b0-9d342be3e69c-cf891d94"
-                        className="icon-1x1-small text-color-primary-700 w-embed"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="100%"
-                          height="100%"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M18 8.499h-1v-2c0-2.76-2.24-5-5-5s-5 2.24-5 5v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-10c0-1.1-.9-2-2-2Zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2Zm-3-9v-2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9Z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="padding-bottom padding-small" />
-                      <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Data encryption
-                      </div>
-                      <div className="padding-bottom padding-xsmall" />
-                      <p className="text-size-regular">
-                        We do not have any access to your information.Divine Pos
-                        is encrypted and follows industry best practices.
-                      </p>
-                    </div>
-                    <div
-                      id="w-node-d635b614-6dbe-2c54-54b0-9d342be3e6a3-cf891d94"
-                      className="features-info-item"
-                    >
-                      <div
-                        id="w-node-d635b614-6dbe-2c54-54b0-9d342be3e6a4-cf891d94"
-                        className="icon-1x1-small text-color-primary-700 w-embed"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="100%"
-                          height="100%"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M19.35 10.039A7.49 7.49 0 0 0 12 3.999c-2.89 0-5.4 1.64-6.65 4.04A5.994 5.994 0 0 0 0 13.999c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96Z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="padding-bottom padding-small" />
-                      <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Cloud-based
-                      </div>
-                      <div className="padding-bottom padding-xsmall" />
-                      <p className="text-size-regular">
-                        Everything you do in Divine Pos is backed up by default.
-                        You can access your projects. Always.
-                      </p>
-                    </div>
-                    <div
-                      id="w-node-d635b614-6dbe-2c54-54b0-9d342be3e6ab-cf891d94"
-                      className="features-info-item"
-                    >
-                      <div
-                        id="w-node-d635b614-6dbe-2c54-54b0-9d342be3e6ac-cf891d94"
-                        className="icon-1x1-small text-color-primary-700 w-embed"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="100%"
-                          height="100%"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M17.815 4.469c-.08 0-.16-.02-.23-.06-1.92-.99-3.58-1.41-5.57-1.41-1.98 0-3.86.47-5.57 1.41-.24.13-.54.04-.68-.2a.506.506 0 0 1 .2-.68c1.86-1.01 3.9-1.53 6.05-1.53 2.13 0 3.99.47 6.03 1.52.25.13.34.43.21.67a.49.49 0 0 1-.44.28Zm-14.31 5.25a.499.499 0 0 1-.41-.79c.99-1.4 2.25-2.5 3.75-3.27 3.14-1.62 7.16-1.63 10.31-.01 1.5.77 2.76 1.86 3.75 3.25a.5.5 0 0 1-.12.7c-.23.16-.54.11-.7-.12a9.388 9.388 0 0 0-3.39-2.94c-2.87-1.47-6.54-1.47-9.4.01-1.36.7-2.5 1.7-3.4 2.96-.08.14-.23.21-.39.21Zm6.25 12.07a.47.47 0 0 1-.35-.15c-.87-.87-1.34-1.43-2.01-2.64-.69-1.23-1.05-2.73-1.05-4.34 0-2.97 2.54-5.39 5.66-5.39s5.66 2.42 5.66 5.39c0 .28-.22.5-.5.5s-.5-.22-.5-.5c0-2.42-2.09-4.39-4.66-4.39-2.57 0-4.66 1.97-4.66 4.39 0 1.44.32 2.77.93 3.85.64 1.15 1.08 1.64 1.85 2.42.19.2.19.51 0 .71-.11.1-.24.15-.37.15Zm7.17-1.85c-1.19 0-2.24-.3-3.1-.89-1.49-1.01-2.38-2.65-2.38-4.39 0-.28.22-.5.5-.5s.5.22.5.5c0 1.41.72 2.74 1.94 3.56.71.48 1.54.71 2.54.71.24 0 .64-.03 1.04-.1.27-.05.53.13.58.41.05.27-.13.53-.41.58-.57.11-1.07.12-1.21.12Zm-2.01 2.06c-.04 0-.09-.01-.13-.02-1.59-.44-2.63-1.03-3.72-2.1a7.297 7.297 0 0 1-2.17-5.22c0-1.62 1.38-2.94 3.08-2.94 1.7 0 3.08 1.32 3.08 2.94 0 1.07.93 1.94 2.08 1.94s2.08-.87 2.08-1.94c0-3.77-3.25-6.83-7.25-6.83-2.84 0-5.44 1.58-6.61 4.03-.39.81-.59 1.76-.59 2.8 0 .78.07 2.01.67 3.61.1.26-.03.55-.29.64-.26.1-.55-.04-.64-.29a11.14 11.14 0 0 1-.73-3.96c0-1.2.23-2.29.68-3.24 1.33-2.79 4.28-4.6 7.51-4.6 4.55 0 8.25 3.51 8.25 7.83 0 1.62-1.38 2.94-3.08 2.94-1.7 0-3.08-1.32-3.08-2.94 0-1.07-.93-1.94-2.08-1.94s-2.08.87-2.08 1.94c0 1.71.66 3.31 1.87 4.51.95.94 1.86 1.46 3.27 1.85.27.07.42.35.35.61-.05.23-.26.38-.47.38Z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="padding-bottom padding-small" />
-                      <div className="text-size-regular text-weight-semibold text-color-neutral-900">
-                        Powerful authentication
-                      </div>
-                      <div className="padding-bottom padding-xsmall" />
-                      <p className="text-size-regular">
-                        2 step authentication makes it impossible for
-                        third-party to use your account.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="padding-bottom padding-xxhuge" />
-                <div className="features-info-image-wrapper">
-                  <img
-                    src="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt.webp"
-                    loading="lazy"
-                    width={1440}
-                    sizes="(max-width: 479px) 89vw, (max-width: 767px) 93vw, 90vw"
-                    srcSet="https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt-p-500.webp 500w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt-p-800.webp 800w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt-p-1080.webp 1080w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt-p-1600.webp 1600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt-p-2000.webp 2000w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt-p-2600.webp 2600w, https://uploads-ssl.webflow.com/63e16bdbab518005085d506a/63e16bdbab5180ff525d50f5_dashboard_gantt.webp 2880w"
-                    alt=""
-                    className="features-info-image"
-                  />
-                </div>
-              </div>
-              <div className="padding-bottom padding-xxhuge" />
-            </div>
-          </div>
-        </section>
-        <section className="section-features-integrations background-color-neutral-50">
-          <div className="padding-global">
-            <div className="container-large" />
-          </div>
-        </section>
-        <section className="section-cta">
-          <div className="padding-global">
-            <div className="container-large">
-              <div className="cta-component">
-                <div className="cta-content">
-                  <h2 className="heading-style-h5 text-color-white">
-                    Try Divine Pos today
-                  </h2>
-                  <div className="padding-bottom padding-xsmall" />
-                  <div className="text-size-regular text-color-white">
-                    Start a free trial now and see the results for yourself.
-                  </div>
-                </div>
-                <a href="/sign-up" className="button is-tertiary w-button">
-                  Start 14-day free trial
-                </a>
-              </div>
-            </div>
-            <div className="cta-background" />
           </div>
         </section>
       </main>

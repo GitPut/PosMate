@@ -42,31 +42,81 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
             <nav role="navigation" className="nav-menu w-nav-menu">
               <div className="nav-menu-left">
                 <a
+                  style={
+                    route.name === "Home"
+                      ? { "background-color": "#175cd3" }
+                      : { "background-color": "transparent" }
+                  }
                   href="/"
                   aria-current="page"
                   className="nav-link w-nav-link w--current"
                 >
                   Home
                 </a>
-                <a href="/features" className="nav-link w-nav-link">
+                <a
+                  href="/features"
+                  className="nav-link w-nav-link"
+                  style={
+                    route.name === "Features"
+                      ? { "background-color": "#175cd3" }
+                      : { "background-color": "transparent" }
+                  }
+                >
                   Features
                 </a>
-                <a href="/about-us" className="nav-link w-nav-link">
+                <a
+                  href="/about-us"
+                  className="nav-link w-nav-link"
+                  style={
+                    route.name === "About Us"
+                      ? { "background-color": "#175cd3" }
+                      : { "background-color": "transparent" }
+                  }
+                >
                   About us
                 </a>
-                <a href="/pricing" className="nav-link w-nav-link">
+                <a
+                  href="/pricing"
+                  className="nav-link w-nav-link"
+                  style={
+                    route.name === "Pricing"
+                      ? { "background-color": "#175cd3" }
+                      : { "background-color": "transparent" }
+                  }
+                >
                   Pricing
                 </a>
-                <a href="/faqs" className="nav-link w-nav-link">
+                <a
+                  href="/faqs"
+                  className="nav-link w-nav-link"
+                  style={
+                    route.name === "Faqs"
+                      ? { "background-color": "#175cd3" }
+                      : { "background-color": "transparent" }
+                  }
+                >
                   FAQs
                 </a>
               </div>
               <div className="nav-menu-right">
-                <a href="/contact" className="nav-link w-nav-link">
+                <a
+                  href="/contact"
+                  className="nav-link w-nav-link"
+                  style={
+                    route.name === "Contact"
+                      ? { "background-color": "#175cd3" }
+                      : { "background-color": "transparent" }
+                  }
+                >
                   Contact sales
                 </a>
                 <div className="nav-divider-vertical" />
                 <button
+                  style={
+                    route.name === "Login"
+                      ? { "background-color": "#175cd3" }
+                      : { "background-color": "transparent" }
+                  }
                   className="nav-link is-login"
                   type="button"
                   onClick={() => (window.location.href = "log-in")}

@@ -1,9 +1,20 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@react-native-material/core";
 import Footer from "components/Footer";
+import firebase from "firebase/app";
+import Axios from "axios";
 
 const Contact = () => {
+  const [first, setfirst] = useState("");
+  const [last, setlast] = useState("");
+  const [email, setemail] = useState("");
+  const [companyName, setcompanyName] = useState("");
+  const [country, setcountry] = useState("");
+  const [anythingElse, setanythingElse] = useState("");
+  const [error, seterror] = useState(false);
+  const [success, setsuccess] = useState(false);
+
   return (
     <div className="page-wrapper">
       <main className="main-wrapper">
@@ -67,8 +78,12 @@ const Contact = () => {
                               account? Chat with a real, live human and get all
                               the answers you need.
                             </p>
+                            <br />
+                            <p className="text-size-small">
+                              Call (226) 600-5925
+                            </p>
                           </div>
-                          <div className="contact-benefit-item">
+                          {/* <div className="contact-benefit-item">
                             <div className="icon-1x1-small w-embed">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -119,7 +134,7 @@ const Contact = () => {
                               out the form here, and our Partnerships Manager
                               will circle back.
                             </p>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
@@ -156,6 +171,8 @@ const Contact = () => {
                               placeholder="John"
                               id="First-name"
                               required
+                              value={first}
+                              onChange={(event) => setfirst(event.target.value)}
                             />
                           </div>
                           <div className="contact-item-wrapper">
@@ -175,6 +192,8 @@ const Contact = () => {
                               placeholder="Doe"
                               id="Last-name-2"
                               required
+                              value={last}
+                              onChange={(event) => setlast(event.target.value)}
                             />
                           </div>
                         </div>
@@ -193,6 +212,8 @@ const Contact = () => {
                             placeholder="john@gmail.com"
                             id="Work-email"
                             required
+                            value={email}
+                            onChange={(event) => setemail(event.target.value)}
                           />
                         </div>
                         <div className="padding-bottom padding-medium" />
@@ -210,6 +231,10 @@ const Contact = () => {
                             placeholder="Divine Pos Inc."
                             id="Company-name"
                             required
+                            value={companyName}
+                            onChange={(event) =>
+                              setcompanyName(event.target.value)
+                            }
                           />
                         </div>
                         <div className="padding-bottom padding-medium" />
@@ -227,6 +252,8 @@ const Contact = () => {
                             placeholder="Name of country/region"
                             id="Region"
                             required
+                            value={country}
+                            onChange={(event) => setcountry(event.target.value)}
                           />
                         </div>
                         <div className="padding-bottom padding-medium" />
@@ -242,6 +269,10 @@ const Contact = () => {
                             placeholder="How are you looking to use Divine Pos?"
                             id="Notes"
                             required
+                            value={anythingElse}
+                            onChange={(event) =>
+                              setanythingElse(event.target.value)
+                            }
                           />
                         </div>
                         <div className="padding-bottom padding-medium" />
@@ -261,15 +292,58 @@ const Contact = () => {
                           defaultValue="Submit"
                           data-wait="Please wait..."
                           className="button w-button"
+                          onClick={() => {
+                            if (
+                              !first ||
+                              !last ||
+                              !email ||
+                              !companyName ||
+                              !country
+                            ) {
+                              seterror(true);
+                              return;
+                            }
+                            event.preventDefault();
+                            setsuccess(false);
+                            seterror(false);
+                            var data = JSON.stringify({
+                              email: email,
+                              name: "",
+                              message: `Hello ${first} ${last} with the company ${companyName} in the country ${country}, wants more information. Here are the notes: ${anythingElse}`,
+                            });
+
+                            var config = {
+                              method: "post",
+                              maxBodyLength: Infinity,
+                              url: "https://us-central1-posmate-5fc0a.cloudfunctions.net/sendEmail",
+                              headers: {
+                                "Content-Type": "application/json",
+                              },
+                              data: data,
+                            };
+
+                            Axios(config)
+                              .then(function (response) {
+                                console.log(JSON.stringify(response.data));
+                                setsuccess(true);
+                              })
+                              .catch(function (error) {
+                                console.log(error);
+                                seterror(true);
+                              });
+                            setfirst("");
+                            setlast("");
+                            setemail("");
+                            setcountry("");
+                            setcompanyName("");
+                            setanythingElse("");
+                          }}
                         />
-                        <a
-                          href={`mailto:contact@mictonwebdesign.com?subject=Hello Sub&body=IM the body`}
-                        >
-                          Click to Send an Email
-                        </a>
-                        {/* <Button title="Send Email" onPress={SendEmail} /> */}
                       </form>
                       <div
+                        style={
+                          !success ? { display: "none" } : { display: "block" }
+                        }
                         className="success-message contact w-form-done"
                         tabIndex={-1}
                         role="region"
@@ -278,6 +352,9 @@ const Contact = () => {
                         <div>Thank you! Your submission has been received!</div>
                       </div>
                       <div
+                        style={
+                          !error ? { display: "none" } : { display: "block" }
+                        }
                         className="error-message w-form-fail"
                         tabIndex={-1}
                         role="region"

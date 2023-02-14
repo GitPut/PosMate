@@ -1788,6 +1788,7 @@ figcaption {
 .section-pricing {
   position: relative;
   background-color: #fff;
+  padding: 50px;
 }
 
 .pricing-tabs-content {
@@ -1820,7 +1821,7 @@ figcaption {
   grid-column-gap: 2rem;
   grid-row-gap: 2rem;
   -ms-grid-columns: 1fr 1fr 1fr;
-  grid-template-columns: 1fr 1fr 1fr;
+  /* grid-template-columns: 1fr 1fr 1fr; */
   -ms-grid-rows: auto;
   grid-template-rows: auto;
 }
@@ -2150,7 +2151,9 @@ figcaption {
   display: -ms-flexbox;
   display: flex;
   /* width: 100%; */
+  width: 162px;
   height: 100%;
+  object-fit: contain;
 }
 
 .footer-logo {
@@ -4913,7 +4916,7 @@ figcaption {
   top: 0%;
   right: 0%;
   bottom: auto;
-  height: 50rem;
+  height: 100%;
   background-color: #175cd3;
 }
 

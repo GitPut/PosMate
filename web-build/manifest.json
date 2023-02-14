@@ -2,8 +2,8 @@
   "background_color": "#ffffff",
   "display": "standalone",
   "lang": "en",
-  "name": "best-route",
-  "short_name": "best-route",
+  "name": "divine-pos",
+  "short_name": "divine-pos",
   "start_url": "/?utm_source=web_app_manifest",
   "orientation": "portrait",
   "icons": [
