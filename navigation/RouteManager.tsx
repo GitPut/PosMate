@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import MainAuthed from "./authed/MainAuthed";
 import {
@@ -21,8 +21,10 @@ import useSound from "use-sound";
 import mySound from "assets/alarm.mp3";
 import PlanUpdateTest from "screens/authed/PlanUpdateTest";
 import NewUserPayment from "screens/authed/NewUserPayment";
+import { Animated, Image, Modal, View } from "react-native";
 
 const RouteManager = () => {
+  const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
   const userS = userState.use();
   const wooCredentials = woocommerceState.use();
   const storeDetails = storeDetailState.use();
@@ -30,10 +32,16 @@ const RouteManager = () => {
   const [playSound] = useSound(mySound);
   const [isNewUser, setisNewUser] = useState(null);
   const [isSubscribed, setisSubscribed] = useState(null);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [viewVisible, setviewVisible] = useState(true);
 
   useEffect(() => {
+    setUserState(savedUserState ? savedUserState : null);
     auth.onAuthStateChanged((user) => {
+      fadeAnim.setValue(1);
+      setviewVisible(true);
       if (user) {
+        localStorage.setItem("savedUserState", true);
         setUserState(user);
         db.collection("users")
           .doc(user.uid)
@@ -76,6 +84,7 @@ const RouteManager = () => {
             }
           });
       } else {
+        localStorage.removeItem("savedUserState");
         setUserState(null);
         setUserStoreState({ products: null, categories: null });
         setisNewUser(false);
@@ -533,30 +542,55 @@ const RouteManager = () => {
     },
   };
 
+  const fadeOut = () => {
+    // Will change fadeAnim value to 0 in 3 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: false,
+    }).start(() => setviewVisible(false));
+  };
+
   useEffect(() => {
     if (isNewUser !== null && isSubscribed !== null) {
+      //  setTimeout(() => setloading(false), 2);
       setloading(false);
+      fadeOut();
     }
   }, [isNewUser, isSubscribed]);
 
   return (
     <NavigationContainer linking={linking}>
-      {loading ? (
-        <Spinner isModalVisible={true} />
-      ) : (
+      {userS ? (
         <>
-          {userS ? (
-            isSubscribed ? (
-              <MainAuthed />
-            ) : isNewUser ? (
-              <NewUserPayment />
-            ) : (
-              <PlanUpdateTest />
-            )
+          {isSubscribed ? (
+            <MainAuthed />
+          ) : isNewUser ? (
+            <NewUserPayment />
           ) : (
-            <MainNonAuth />
+            <PlanUpdateTest />
+          )}
+          {viewVisible && (
+            <Animated.View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "white",
+                position: "absolute",
+                opacity: fadeAnim,
+                height: "100%",
+                width: "100%",
+              }}
+            >
+              <Image
+                source={require("assets/loading.gif")}
+                style={{ width: 450, height: 450, resizeMode: "contain" }}
+              />
+            </Animated.View>
           )}
         </>
+      ) : (
+        <MainNonAuth />
       )}
     </NavigationContainer>
   );

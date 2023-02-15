@@ -576,103 +576,118 @@ const CartScreen = ({ navigation }) => {
         contentContainerStyle={styles({ height, width }).contentContainer}
       >
         <View>
-          {cart.map((cartItem, index) => (
-            <View
-              style={{
-                backgroundColor: "white",
-                shadowColor: "rgba(0,0,0,1)",
-                shadowOffset: {
-                  width: 3,
-                  height: 3,
-                },
-                elevation: 30,
-                shadowOpacity: 0.07,
-                shadowRadius: 10,
-                marginBottom: 20,
-                padding: 15,
-              }}
-            >
+          {cart.length > 0 ? (
+            cart.map((cartItem, index) => (
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: 10,
+                  backgroundColor: "white",
+                  shadowColor: "rgba(0,0,0,1)",
+                  shadowOffset: {
+                    width: 3,
+                    height: 3,
+                  },
+                  elevation: 30,
+                  shadowOpacity: 0.07,
+                  shadowRadius: 10,
+                  marginBottom: 20,
+                  padding: 15,
                 }}
               >
-                <View style={{ width: "33%" }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  <View style={{ width: "33%" }}>
+                    <View
+                      style={{
+                        backgroundColor: "#E6E6E6",
+                        width: 50,
+                        height: 50,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={styles({ height, width }).headerTxt}>
+                        {index + 1}
+                      </Text>
+                    </View>
+                  </View>
                   <View
                     style={{
-                      backgroundColor: "#E6E6E6",
-                      width: 50,
-                      height: 50,
-                      justifyContent: "center",
+                      width: "33%",
                       alignItems: "center",
                     }}
                   >
                     <Text style={styles({ height, width }).headerTxt}>
-                      {index + 1}
+                      {cartItem.name}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      width: "33%",
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <Text
+                      style={{ color: "red", fontSize: 15, fontWeight: "600" }}
+                      onPress={() => {
+                        const local = structuredClone(cart);
+                        local.splice(index, 1);
+                        setCartState(local);
+                      }}
+                    >
+                      X
                     </Text>
                   </View>
                 </View>
-                <View
-                  style={{
-                    width: "33%",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={styles({ height, width }).headerTxt}>
-                    {cartItem.name}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: "33%",
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <Text
-                    style={{ color: "red", fontSize: 15, fontWeight: "600" }}
-                    onPress={() => {
-                      const local = structuredClone(cart);
-                      local.splice(index, 1);
-                      setCartState(local);
-                    }}
-                  >
-                    X
-                  </Text>
-                </View>
-              </View>
-              <Text style={styles({ height, width }).innerTxt}>
-                Price: ${cartItem.price}
-              </Text>
-              {cartItem.description && (
                 <Text style={styles({ height, width }).innerTxt}>
-                  Description: {cartItem.description}
+                  Price: ${cartItem.price}
                 </Text>
-              )}
-              {cartItem.options &&
-                cartItem.options.map((option) => (
+                {cartItem.description && (
                   <Text style={styles({ height, width }).innerTxt}>
-                    {option}
+                    Description: {cartItem.description}
                   </Text>
-                ))}
-              {cartItem.extraDetails && (
-                <Text style={styles({ height, width }).innerTxt}>
-                  Extra Info: {cartItem.extraDetails}
-                </Text>
-              )}
-              <Button
-                title="Edit"
-                onPress={() =>
-                  navigation.navigate("ProductListing", {
-                    product: cartItem.editableObj,
-                    itemIndex: index,
-                  })
-                }
-              />
+                )}
+                {cartItem.options &&
+                  cartItem.options.map((option) => (
+                    <Text style={styles({ height, width }).innerTxt}>
+                      {option}
+                    </Text>
+                  ))}
+                {cartItem.extraDetails && (
+                  <Text style={styles({ height, width }).innerTxt}>
+                    Extra Info: {cartItem.extraDetails}
+                  </Text>
+                )}
+               {cartItem.options.length > 0 && <Button
+                  title="Edit"
+                  onPress={() =>
+                    navigation.navigate("Product Listing", {
+                      product: cartItem.editableObj,
+                      itemIndex: index,
+                    })
+                  }
+                />}
+              </View>
+            ))
+          ) : (
+            <View
+              style={{
+                height: height * 0.7,
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 16, color: "white", fontWeight: "600" }}>
+                Cart is empty...
+              </Text>
             </View>
-          ))}
+          )}
         </View>
       </ScrollView>
       <View style={styles({ height, width }).totalContainer}>

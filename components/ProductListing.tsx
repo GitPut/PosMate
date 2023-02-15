@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import { Button, TextInput } from "@react-native-material/core";
 import ProductOptionDropDown from "./ProductOptionDropDown";
 import { addCartState, cartState, setCartState } from "state/state";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const ProductListing = ({ navigation, route }) => {
   const { product, itemIndex } = route.params;
@@ -296,11 +297,61 @@ const ProductListing = ({ navigation, route }) => {
 
   return (
     <ScrollView style={styles.modalContainer}>
-      <Text style={styles.h2Black}>Name: {myObj.name}</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <Text style={styles.h2Black}>{myObj.name}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            width: "50%",
+          }}
+        >
+          <Text style={{ fontSize: 15 }}>Grand total: ${total}</Text>
+          <TouchableOpacity
+            style={{
+              width: 50,
+              height: 50,
+              borderRadius: 25,
+              backgroundColor: "red",
+              justifyContent: "center",
+              alignItems: "center",
+              marginLeft: 50,
+              marginRight: 50,
+            }}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="close" size={32} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: 50,
+              height: 50,
+              borderRadius: 25,
+              backgroundColor: "green",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={AddToCart}
+          >
+            <Ionicons
+              name={itemIndex >= 0 ? "checkmark" : "cart"}
+              size={32}
+              color="white"
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
       {myObj.description && (
         <Text style={styles.h2Black}>Name: {myObj.description}</Text>
       )}
-      <Text style={[{ marginBottom: 25 }, styles.h2Black]}>Price: {total}</Text>
       {myObjProfile.options.map((e, index) => (
         <DisplayOption e={e} index={index} key={index} />
       ))}
@@ -311,16 +362,6 @@ const ProductListing = ({ navigation, route }) => {
         value={extraInput}
         style={{ marginTop: 15, marginBottom: 15 }}
         inputStyle={{ padding: 10 }}
-      />
-      <Button
-        title={itemIndex >= 0 ? "Save" : "Add To Cart"}
-        onPress={AddToCart}
-        style={styles.btn}
-      />
-      <Button
-        title="Cancel"
-        onPress={() => navigation.goBack()}
-        style={styles.btn}
       />
     </ScrollView>
   );
@@ -354,7 +395,8 @@ const styles = StyleSheet.create({
     width: 300,
   },
   modalContainer: {
-    padding: 50,
+    padding: "5%",
+    backgroundColor: "white",
   },
   btn: {
     marginBottom: 25,
@@ -367,7 +409,8 @@ const styles = StyleSheet.create({
     color: "white",
   },
   h2Black: {
-    fontSize: 20,
+    fontSize: 25,
     color: "black",
+    fontWeight: "600",
   },
 });

@@ -7,11 +7,11 @@ const ProductAndCatManager = ({ navigation }) => {
       <Text>ProductAndCatManager</Text>
       <Button
         title="Edit Products"
-        onPress={() => navigation.navigate("EditProductList")}
+        onPress={() => navigation.navigate("Edit ProductList")}
       />
       <Button
         title="Edit Categories"
-        onPress={() => navigation.navigate("EditCategories")}
+        onPress={() => navigation.navigate("Edit Categories")}
       />
     </View>
   );

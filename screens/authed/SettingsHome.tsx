@@ -201,35 +201,6 @@ const SettingsHome = ({ navigation }) => {
         </View>
       </View>
     </View>
-    // <View>
-    //   <Text>Settings Home</Text>
-    //   <Button
-    //     title="Edit Categories"
-    //     onPress={() => navigation.navigate("EditCategories")}
-    //     style={{ marginBottom: 15 }}
-    //   />
-    //   <Button
-    //     title="Edit Products"
-    //     onPress={() => navigation.navigate("EditProductList")}
-    //     style={{ marginBottom: 15 }}
-    //   />
-    //   <Button
-    //     title="Edit Woocommerce Settings"
-    //     onPress={() => navigation.navigate("EditWoocommerce")}
-    //     style={{ marginBottom: 15 }}
-    //   />
-    //   <Button
-    //     title="Edit Store Details"
-    //     onPress={() => navigation.navigate("StoreDetails")}
-    //     style={{ marginBottom: 15 }}
-    //   />
-    //   <Button
-    //     title="View Transactions"
-    //     onPress={() => navigation.navigate("Transactions")}
-    //     style={{ marginBottom: 15 }}
-    //   />
-    //   <Button title="Logout" onPress={logout} style={{ marginBottom: 15 }} />
-    // </View>
   );
 };
 

@@ -78,7 +78,7 @@ const HomeScreen = ({ navigation }) => {
             onPress={() =>
               storeDetails.settingsPassword
                 ? setsettingsPasswordModalVis(true)
-                : navigation.navigate("SettingsHome")
+                : navigation.navigate("Settings")
             }
             style={{
               backgroundColor: "rgba(41,44,56,1)",

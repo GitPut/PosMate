@@ -17,8 +17,20 @@ const DisplayTest = ({ navigation, product, productIndex }) => {
     <Button
       key={productIndex}
       title={product.name}
-      onPress={() =>
-        navigation.navigate("ProductListing", { product: product })
+      onPress={() => {
+        if (product.options.length > 0) {
+          navigation.navigate("Product Listing", { product: product })
+        }
+        else {
+          addCartState({
+            name: product.name,
+            price: product.price,
+            description: product.description,
+            options: [],
+            extraDetails: null,
+          });
+      }
+      }
       }
       contentContainerStyle={styles.touchable}
       style={styles.touchable}

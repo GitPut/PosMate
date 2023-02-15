@@ -3,7 +3,7 @@ import React from "react";
 
 const Spinner = ({ isModalVisible }) => {
   return (
-    <Modal visible={isModalVisible} transparent={true}>
+    <Modal visible={isModalVisible}>
       <View
         style={{
           alignItems: "center",

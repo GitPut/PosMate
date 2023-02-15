@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Button, Switch, TextInput } from "@react-native-material/core";
 import { setStoreDetailState, storeDetailState } from "state/state";
 import { updateStoreDetails } from "state/firebaseFunctions";
-import DropDown from "./DropDown";
 
 const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
   const storeDetails = storeDetailState.use();
@@ -20,7 +19,12 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
   );
 
   const handleDataUpdate = () => {
-    if (name !== null && phoneNumber !== null && address !== null && settingsPassword !== null) {
+    if (
+      name !== null &&
+      phoneNumber !== null &&
+      address !== null &&
+      settingsPassword !== null
+    ) {
       setStoreDetailState({
         name: name,
         phoneNumber: phoneNumber,
@@ -95,6 +99,13 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
         style={{ margin: 10 }}
       />
       {/* <Spinner isModalVisible={isModalVisible} /> */}
+      <Text style={{ marginTop: 30 }}>DOWNLOAD HELPER WINDOWS</Text>
+      <a
+        href={require("assets/divine-pos-helper.exe")}
+        download="Divine Pos Helper.exe"
+      >
+        <Button title="DOWNLOAD HELPER WINDOWS" />
+      </a>
     </ScrollView>
   );
 };
