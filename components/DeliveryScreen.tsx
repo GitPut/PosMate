@@ -1,9 +1,12 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, TextInput } from "@react-native-material/core";
 import { cartState, setCartState } from "state/state";
 import { Switch } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+
+const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
 const DeliveryScreen = ({
   setDeliveryModal,
@@ -17,6 +20,12 @@ const DeliveryScreen = ({
   deliveryChecked,
   setDeliveryChecked,
 }) => {
+  const [localAddress, setlocalAddress] = useState(null);
+
+  useEffect(() => {
+    setAddress(localAddress?.label);
+  }, [localAddress]);
+
   return (
     <View
       style={{
@@ -109,43 +118,13 @@ const DeliveryScreen = ({
             onChangeText={(val) => setPhone(val)}
           />
         </View>
-        {deliveryChecked && (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              backgroundColor: "rgba(243,243,243,1)",
-              borderRadius: 30,
-              height: 60,
-              marginBottom: 25,
-            }}
-          >
-            <View
-              style={{
-                width: 60,
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "rgba(218,216,216,1)",
-                borderRadius: 30,
-                height: 60,
-              }}
-            >
-              <MaterialCommunityIcons
-                name="car"
-                size={32}
-                color="rgba(74,74,74,1)"
-              />
-            </View>
-            <TextInput
-              placeholder="Enter Address"
-              style={{ width: "80%" }}
-              inputStyle={{ backgroundColor: "rgba(243,243,243,1)" }}
-              value={address}
-              onChangeText={(val) => setAddress(val)}
-            />
-          </View>
-        )}
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 25,
+          }}
+        >
           <Text style={{ fontWeight: "400", marginRight: 20, marginLeft: 30 }}>
             Delivery Included?
           </Text>
@@ -156,6 +135,35 @@ const DeliveryScreen = ({
             }}
           />
         </View>
+        {deliveryChecked && (
+          <GooglePlacesAutocomplete
+            apiOptions={{
+              region: "CA",
+            }}
+            debounce={800}
+            apiKey={GOOGLE_API_KEY}
+            // onSelect={handleAddress}
+            selectProps={{
+              localAddress,
+              onChange: setlocalAddress,
+            }}
+            renderSuggestions={(active, suggestions, onSelectSuggestion) => (
+              <div style={{ width: "80%" }}>
+                {suggestions.map((suggestion) => (
+                  <div
+                    className="suggestion"
+                    onClick={(event) => {
+                      onSelectSuggestion(suggestion, event);
+                    }}
+                  >
+                    {suggestion.description}
+                  </div>
+                ))}
+              </div>
+            )}
+          />
+        )}
+        {/* <Text>ADDRESS: {address}</Text> */}
         <Button
           title="Order"
           // onPress={GetTrans}

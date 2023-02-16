@@ -19,7 +19,7 @@ const ChangeScreen = ({
       "\x1B" + "\x61" + "\x31", // center align
       storeDetails.name,
       "\x0A",
-      storeDetails.address + "\x0A",
+      storeDetails.address?.label + "\x0A",
       storeDetails.website + "\x0A", // text and line break
       storeDetails.phoneNumber + "\x0A", // text and line break
       "\x0A",

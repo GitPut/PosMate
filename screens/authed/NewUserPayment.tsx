@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import EditStoreDetails from "components/EditStoreDetails";
 import DropDown from "components/DropDown";
 import { auth, db } from "state/firebaseConfig";
 import { loadStripe } from "@stripe/stripe-js";
+import { logout } from "state/firebaseFunctions";
 
 const NewUserPayment = () => {
   const [planType, setplanType] = useState("Pay $50 each month");
@@ -76,6 +77,7 @@ const NewUserPayment = () => {
               });
           }}
         />
+        <Button title="Leave" onPress={logout} />
       </View>
     </View>
   );
