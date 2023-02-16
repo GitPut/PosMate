@@ -38,14 +38,14 @@ const AboutUs = () => {
           <div className="graphic-circle" />
           <div className="graphic-circle-3" />
         </section>
-        <section className="background-color-neutral-50">
+        <section className="backgroundColor-neutral-50">
           <div className="padding-global">
             <div className="container-large">
               <div className="padding-bottom padding-xxhuge" />
-              <div className="background-color-neutral-50">
+              <div className="backgroundColor-neutral-50">
                 <div
                   id="w-node-_8d0fd77d-83f9-49e3-4c28-49dc430741ee-99891d87"
-                  className="background-color-neutral-50"
+                  className="backgroundColor-neutral-50"
                 >
                   <h2 className="heading-style-h3">How it started</h2>
                   <div className="padding-bottom padding-medium" />

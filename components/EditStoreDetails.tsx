@@ -106,6 +106,13 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
       >
         <Button title="DOWNLOAD HELPER WINDOWS" />
       </a>
+      <Text style={{ marginTop: 30 }}>DOWNLOAD HELPER MAC</Text>
+      <a
+        href={require("assets/divine-pos-helper.pkg")}
+        download="Divine Pos Helper.pkg"
+      >
+        <Button title="DOWNLOAD HELPER MAC" />
+      </a>
     </ScrollView>
   );
 };

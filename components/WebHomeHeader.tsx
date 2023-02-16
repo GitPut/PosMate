@@ -44,8 +44,8 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                 <a
                   style={
                     route.name === "Home"
-                      ? { "background-color": "#175cd3" }
-                      : { "background-color": "transparent" }
+                      ? { backgroundColor: "#175cd3" }
+                      : { backgroundColor: "transparent" }
                   }
                   href="/"
                   aria-current="page"
@@ -58,8 +58,8 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                   className="nav-link w-nav-link"
                   style={
                     route.name === "Features"
-                      ? { "background-color": "#175cd3" }
-                      : { "background-color": "transparent" }
+                      ? { backgroundColor: "#175cd3" }
+                      : { backgroundColor: "transparent" }
                   }
                 >
                   Features
@@ -69,8 +69,8 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                   className="nav-link w-nav-link"
                   style={
                     route.name === "About Us"
-                      ? { "background-color": "#175cd3" }
-                      : { "background-color": "transparent" }
+                      ? { backgroundColor: "#175cd3" }
+                      : { backgroundColor: "transparent" }
                   }
                 >
                   About us
@@ -80,8 +80,8 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                   className="nav-link w-nav-link"
                   style={
                     route.name === "Pricing"
-                      ? { "background-color": "#175cd3" }
-                      : { "background-color": "transparent" }
+                      ? { backgroundColor: "#175cd3" }
+                      : { backgroundColor: "transparent" }
                   }
                 >
                   Pricing
@@ -91,8 +91,8 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                   className="nav-link w-nav-link"
                   style={
                     route.name === "Faqs"
-                      ? { "background-color": "#175cd3" }
-                      : { "background-color": "transparent" }
+                      ? { backgroundColor: "#175cd3" }
+                      : { backgroundColor: "transparent" }
                   }
                 >
                   FAQs
@@ -104,8 +104,8 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                   className="nav-link w-nav-link"
                   style={
                     route.name === "Contact"
-                      ? { "background-color": "#175cd3" }
-                      : { "background-color": "transparent" }
+                      ? { backgroundColor: "#175cd3" }
+                      : { backgroundColor: "transparent" }
                   }
                 >
                   Contact sales
@@ -114,8 +114,8 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                 <button
                   style={
                     route.name === "Login"
-                      ? { "background-color": "#175cd3" }
-                      : { "background-color": "transparent" }
+                      ? { backgroundColor: "#175cd3" }
+                      : { backgroundColor: "transparent" }
                   }
                   className="nav-link is-login"
                   type="button"

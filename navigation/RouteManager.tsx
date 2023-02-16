@@ -34,6 +34,7 @@ const RouteManager = () => {
   const [isSubscribed, setisSubscribed] = useState(null);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const [viewVisible, setviewVisible] = useState(true);
+  const [isCanceled, setisCanceled] = useState(null);
 
   useEffect(() => {
     setUserState(savedUserState ? savedUserState : null);
@@ -53,12 +54,18 @@ const RouteManager = () => {
               .then((docs) => {
                 if (!docs.empty) {
                   docs.forEach((element) => {
-                    if (
-                      element.data().status === "active" &&
-                      element.data().role === "Test Plan"
-                    ) {
-                      setisSubscribed(true);
-                      setisNewUser(false);
+                    if (element.data().role === "Test Plan") {
+                      if (element.data().status === "active") {
+                        setisSubscribed(true);
+                        setisNewUser(false);
+                      } else if (element.data().status === "canceled") {
+                        setisSubscribed(false);
+                        setisNewUser(false);
+                        setisCanceled(true);
+                      } else {
+                        setisSubscribed(false);
+                        setisNewUser(false);
+                      }
                     }
                     // console.log("DATA: ", element.data());
                   });
@@ -66,7 +73,8 @@ const RouteManager = () => {
                   setisNewUser(true);
                   setisSubscribed(false);
                 }
-              });
+              })
+              .catch(() => console.log("Error has occured with db"));
             setUserStoreState({
               products: doc.data().products ? doc.data().products : [],
               categories: doc.data().categories ? doc.data().categories : [],
@@ -82,7 +90,8 @@ const RouteManager = () => {
             if (doc.data().storeDetails) {
               setStoreDetailState(doc.data().storeDetails);
             }
-          });
+          })
+          .catch(() => console.log("Error has occured with db"));
       } else {
         localStorage.removeItem("savedUserState");
         setUserState(null);
@@ -542,6 +551,15 @@ const RouteManager = () => {
     },
   };
 
+  const fadeIn = () => {
+    // Will change fadeAnim value to 0 in 3 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+  };
+
   const fadeOut = () => {
     // Will change fadeAnim value to 0 in 3 seconds
     Animated.timing(fadeAnim, {
@@ -559,6 +577,11 @@ const RouteManager = () => {
     }
   }, [isNewUser, isSubscribed]);
 
+  const resetLoader = () => {
+    setviewVisible(true);
+    fadeIn();
+  };
+
   return (
     <NavigationContainer linking={linking}>
       {userS ? (
@@ -568,7 +591,7 @@ const RouteManager = () => {
           ) : isNewUser ? (
             <NewUserPayment />
           ) : (
-            <PlanUpdateTest />
+            <PlanUpdateTest resetLoader={resetLoader} isCanceled={isCanceled} />
           )}
           {viewVisible && (
             <Animated.View

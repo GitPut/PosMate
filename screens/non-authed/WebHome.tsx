@@ -61,7 +61,7 @@ const WebHome = () => {
                     </div>
                   </div>
                   <div className="padding-bottom padding-xxlarge" />
-                  </div>
+                </div>
                 <div className="padding-bottom padding-xhuge" />
               </div>
             </div>
@@ -73,7 +73,7 @@ const WebHome = () => {
             <div className="padding-global"></div>
           </div>
         </div>
-        <section className="section-why-us section-featured-blog background-color-neutral-50">
+        <section className="section-why-us section-featured-blog backgroundColor-neutral-50">
           <div className="padding-global">
             <div className="container-medium">
               <div className="padding-section-large">
@@ -290,7 +290,7 @@ const WebHome = () => {
             </div>
           </div>
         </section>
-        <div className="section-featured-blog background-color-neutral-50">
+        <div className="section-featured-blog backgroundColor-neutral-50">
           <div className="padding-global">
             <div className="container-large" />
           </div>

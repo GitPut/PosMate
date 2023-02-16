@@ -1,12 +1,21 @@
-import { View, Text, Button } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import React from "react";
 import { auth, db } from "state/firebaseConfig";
 import { loadStripe } from "@stripe/stripe-js";
 import Axios from "axios";
 import firebase from "firebase/app";
+import Logo from "assets/dpos-logo-black.png";
 
-const PlanUpdateTest = () => {
+const PlanUpdateTest = ({ resetLoader, isCanceled }) => {
   const sendToCheckout = async () => {
+    resetLoader();
     await db
       .collection("users")
       .doc(auth.currentUser.uid)
@@ -40,6 +49,7 @@ const PlanUpdateTest = () => {
   };
 
   const Manage = () => {
+    resetLoader();
     firebase
       .functions()
       .httpsCallable("ext-firestore-stripe-payments-createPortalLink")({
@@ -47,11 +57,11 @@ const PlanUpdateTest = () => {
         locale: "auto",
       })
       .then((response) => {
-          console.log(response.data);
-          window.location = response.data.url;
+        console.log(response.data);
+        window.location = response.data.url;
       })
       .catch((error) => {
-        alert('Unknown error has occured: ',error);
+        alert("Unknown error has occured: ", error);
       });
     // var data = JSON.stringify({
     //   email: email,
@@ -85,14 +95,141 @@ const PlanUpdateTest = () => {
   //     const { data } = await functionRef({ returnUrl: window.location.origin });
   //     window.location.assign(data.url);
   //   }
-
-  return (
-    <View>
-      <Text>PlanUpdateTest</Text>
-      <Button title="TEST" onPress={sendToCheckout} />
-      <Button title="Manage" onPress={Manage} />
-    </View>
-  );
+  if (isCanceled) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Image source={Logo} resizeMode="contain" style={styles.logo}></Image>
+          <View style={styles.attentionWrapper}>
+            <Text style={styles.attentionNeeded}>ATTENTION NEEDED</Text>
+          </View>
+        </View>
+        <Text style={styles.txt1}>We're sad to see you go :(</Text>
+        <Text style={styles.txt2}>
+          Please let us make this right! If theres a feature that missing or
+          something you dont like about the software, we can change that.
+        </Text>
+        <Text style={styles.txt3}>
+          Resubscribe to have access of your store again. At $40/month instead of the normal $50/month
+        </Text>
+        <TouchableOpacity style={[styles.updateBtn, {width: 450}]} onPress={sendToCheckout}>
+          <Text style={styles.updateBilling}>Resubscribe for $40/month</Text>
+        </TouchableOpacity>
+        <Text style={styles.txt4}>
+          Please call (226) 600-5925 or email us at contact@mictonwebdesign.com
+          so that we can solve the problem you had
+        </Text>
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Image source={Logo} resizeMode="contain" style={styles.logo}></Image>
+          <View style={styles.attentionWrapper}>
+            <Text style={styles.attentionNeeded}>ATTENTION NEEDED</Text>
+          </View>
+        </View>
+        <Text style={styles.txt1}>
+          Unfortunualy there was issue with your payment
+        </Text>
+        <Text style={styles.txt2}>
+          This can occur for multiple reasons; if your billing details dont
+          match the card attached. Have a look with your credit/debit provider
+        </Text>
+        <Text style={styles.txt3}>
+          We dont your store to have any down time so please have a look at
+          updating the details.
+        </Text>
+        <TouchableOpacity style={styles.updateBtn} onPress={Manage}>
+          <Text style={styles.updateBilling}>UPDATE BILLING</Text>
+        </TouchableOpacity>
+        <Text style={styles.txt4}>
+          If. you have any questions or need help please call (226) 600-5925 or
+          email us at contact@mictonwebdesign.com
+        </Text>
+      </View>
+    );
+  }
 };
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    justifyContent: "space-around",
+    width: "100%",
+    height: "100%",
+    paddingBottom: 50,
+  },
+  headerContainer: {
+    width: "90%",
+    height: 90,
+    borderWidth: 1,
+    borderColor: "rgba(170,164,164,1)",
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 1,
+    borderLeftWidth: 0,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingBottom: 25,
+  },
+  logo: {
+    width: 220,
+    height: 85,
+  },
+  attentionWrapper: {
+    width: 248,
+    height: 64,
+    backgroundColor: "#ffed95",
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  attentionNeeded: {
+    fontWeight: "700",
+    color: "#c2a61f",
+    fontSize: 22,
+  },
+  txt1: {
+    fontWeight: "700",
+    color: "#121212",
+    fontSize: 25,
+    width: 792,
+    height: 29,
+  },
+  txt2: {
+    color: "#121212",
+    fontSize: 22,
+    width: 792,
+    height: 73,
+  },
+  updateBtn: {
+    width: 326,
+    height: 90,
+    backgroundColor: "#7c2bfe",
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  updateBilling: {
+    fontWeight: "700",
+    color: "rgba(255,255,255,1)",
+    fontSize: 25,
+  },
+  txt3: {
+    color: "#121212",
+    fontSize: 22,
+    width: 792,
+    height: 73,
+  },
+  txt4: {
+    color: "#121212",
+    fontSize: 22,
+    width: 792,
+    height: 73,
+  },
+});
 
 export default PlanUpdateTest;
