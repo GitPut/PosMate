@@ -24,6 +24,8 @@ import { updateTransList } from "state/firebaseFunctions";
 import useWindowDimensions from "components/useWindowDimensions";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Foundation from "@expo/vector-icons/Foundation";
+import SaveCustomer from "./SaveCustomer";
+import { auth, db } from "state/firebaseConfig";
 
 const CartScreen = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
@@ -37,9 +39,10 @@ const CartScreen = ({ navigation }) => {
   const [deliveryChecked, setDeliveryChecked] = useState(false);
   const [changeDue, setChangeDue] = useState();
   const cart = cartState.use();
-  const transList = transListState.use();
   const storeDetails = storeDetailState.use();
   const [cartSub, setCartSub] = useState(0);
+  const [saveCustomerModal, setSaveCustomerModal] = useState(false);
+  const [savedCustomerDetails, setsavedCustomerDetails] = useState(null);
 
   useEffect(() => {
     if (cart.length > 0) {
@@ -58,6 +61,30 @@ const CartScreen = ({ navigation }) => {
   };
 
   const Print = (method) => {
+    if (savedCustomerDetails) {
+      if (savedCustomerDetails.orders?.length > 0) {
+        console.log("Greater than 0");
+        console.log("CART: ", cart);
+        db.collection("users")
+          .doc(auth.currentUser?.uid)
+          .collection("customers")
+          .doc(savedCustomerDetails.id)
+          .update({
+            orders: JSON.stringify([...savedCustomerDetails.orders, cart]),
+          });
+      } else {
+        console.log("Not Greater than 0");
+        console.log("CART: ", cart);
+        db.collection("users")
+          .doc(auth.currentUser?.uid)
+          .collection("customers")
+          .doc(savedCustomerDetails.id)
+          .update({
+            orders: JSON.stringify([cart]),
+          });
+      }
+    }
+
     const transNum = Math.random().toString(36).substr(2, 9);
     if (method === "deliveryOrder") {
       let total =
@@ -561,7 +588,11 @@ const CartScreen = ({ navigation }) => {
         <Text style={{ fontSize: 25, width: "50%", color: "white" }}>
           Bill Total
         </Text>
-        <TouchableOpacity style={styles({ height, width }).iconContainer}>
+        <TouchableOpacity
+          style={styles({ height, width }).iconContainer}
+          onPress={() => setSaveCustomerModal(true)}
+          disabled={cart.length > 0}
+        >
           <Ionicons name="person-add" size={26} color="white" />
         </TouchableOpacity>
         <TouchableOpacity
@@ -719,6 +750,17 @@ const CartScreen = ({ navigation }) => {
         </View>
         <DeliveryBtn />
       </View>
+      <Modal visible={saveCustomerModal} transparent={true}>
+        <SaveCustomer
+          setSaveCustomerModal={setSaveCustomerModal}
+          setOngoingDelivery={setOngoingDelivery}
+          setNameForDelivery={setName}
+          setPhoneForDelivery={setPhone}
+          setAddressForDelivery={setAddress}
+          setDeliveryChecked={setDeliveryChecked}
+          setsavedCustomerDetails={setsavedCustomerDetails}
+        />
+      </Modal>
       <Modal visible={deliveryModal} transparent={true}>
         <DeliveryScreen
           setDeliveryModal={setDeliveryModal}

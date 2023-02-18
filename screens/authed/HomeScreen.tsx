@@ -27,18 +27,6 @@ const HomeScreen = ({ navigation }) => {
   const [ongoingOrderListModal, setongoingOrderListModal] = useState(false);
   const [settingsPasswordModalVis, setsettingsPasswordModalVis] =
     useState(false);
-  
-  //only used for fixing purposes :)
-  // const transList = transListState.use();
-
-  // const Test = () => {
-  //   const newtrans = JSON.parse(transList);
-
-  //   newtrans.forEach((element) => {
-  //     updateTransList(element);
-  //   });
-  // };
-  //Dont use again :(
 
   const Header = () => {
     return (

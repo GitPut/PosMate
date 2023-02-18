@@ -1,13 +1,13 @@
 {
   "files": {
-    "app.js": "/static/js/app.e2947d5a.chunk.js",
-    "app.js.map": "/static/js/app.e2947d5a.chunk.js.map",
-    "runtime~app.js": "/static/js/runtime~app.b5fec4a6.js",
-    "runtime~app.js.map": "/static/js/runtime~app.b5fec4a6.js.map",
-    "static/js/2.0f229c91.chunk.js": "/static/js/2.0f229c91.chunk.js",
-    "static/js/2.0f229c91.chunk.js.map": "/static/js/2.0f229c91.chunk.js.map",
-    "static/js/3.438fe382.chunk.js": "/static/js/3.438fe382.chunk.js",
-    "static/js/3.438fe382.chunk.js.map": "/static/js/3.438fe382.chunk.js.map",
+    "app.js": "/static/js/app.8d6c8b87.chunk.js",
+    "app.js.map": "/static/js/app.8d6c8b87.chunk.js.map",
+    "runtime~app.js": "/static/js/runtime~app.44623d56.js",
+    "runtime~app.js.map": "/static/js/runtime~app.44623d56.js.map",
+    "static/js/2.caed1222.chunk.js": "/static/js/2.caed1222.chunk.js",
+    "static/js/2.caed1222.chunk.js.map": "/static/js/2.caed1222.chunk.js.map",
+    "static/js/3.2892f1cf.chunk.js": "/static/js/3.2892f1cf.chunk.js",
+    "static/js/3.2892f1cf.chunk.js.map": "/static/js/3.2892f1cf.chunk.js.map",
     "fonts/Feather.ttf": "/./fonts/Feather.ttf",
     "fonts/Foundation.ttf": "/./fonts/Foundation.ttf",
     "fonts/Ionicons.ttf": "/./fonts/Ionicons.ttf",
@@ -19,17 +19,18 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
-    "static/js/2.0f229c91.chunk.js.LICENSE.txt": "/static/js/2.0f229c91.chunk.js.LICENSE.txt",
-    "static/js/3.438fe382.chunk.js.LICENSE.txt": "/static/js/3.438fe382.chunk.js.LICENSE.txt",
+    "static/js/2.caed1222.chunk.js.LICENSE.txt": "/static/js/2.caed1222.chunk.js.LICENSE.txt",
+    "static/js/3.2892f1cf.chunk.js.LICENSE.txt": "/static/js/3.2892f1cf.chunk.js.LICENSE.txt",
     "static/media/alarm.mp3": "/static/media/alarm.2e7250d2.mp3",
+    "static/media/divine-pos-helper.pkg": "/static/media/divine-pos-helper.477496c9.pkg",
     "static/media/divine-pos-helper.exe": "/static/media/divine-pos-helper.95df85e7.exe",
     "static/media/dpos-logo-black.png": "/static/media/dpos-logo-black.9464d239.png",
     "static/media/dpos-logo.png": "/static/media/dpos-logo.58fecdd6.png",
     "static/media/loading.gif": "/static/media/loading.a8fdca7c.gif"
   },
   "entrypoints": [
-    "static/js/runtime~app.b5fec4a6.js",
-    "static/js/2.0f229c91.chunk.js",
-    "static/js/app.e2947d5a.chunk.js"
+    "static/js/runtime~app.44623d56.js",
+    "static/js/2.caed1222.chunk.js",
+    "static/js/app.8d6c8b87.chunk.js"
   ]
 }

@@ -69,3 +69,10 @@ export const updateStoreDetails = (storeDetails) => {
 };
 
 export const logout = () => auth.signOut()
+
+export const addCustomerDetailsToDb = (customer) => {
+  db.collection("users")
+    .doc(auth.currentUser?.uid)
+    .collection("customers")
+    .add(customer);
+};
