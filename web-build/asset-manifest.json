@@ -1,15 +1,18 @@
 {
   "files": {
-    "app.js": "/static/js/app.8d6c8b87.chunk.js",
-    "app.js.map": "/static/js/app.8d6c8b87.chunk.js.map",
-    "runtime~app.js": "/static/js/runtime~app.44623d56.js",
-    "runtime~app.js.map": "/static/js/runtime~app.44623d56.js.map",
-    "static/js/2.caed1222.chunk.js": "/static/js/2.caed1222.chunk.js",
-    "static/js/2.caed1222.chunk.js.map": "/static/js/2.caed1222.chunk.js.map",
-    "static/js/3.2892f1cf.chunk.js": "/static/js/3.2892f1cf.chunk.js",
-    "static/js/3.2892f1cf.chunk.js.map": "/static/js/3.2892f1cf.chunk.js.map",
+    "app.js": "/static/js/app.90d030e4.chunk.js",
+    "app.js.map": "/static/js/app.90d030e4.chunk.js.map",
+    "runtime~app.js": "/static/js/runtime~app.12bc0fb5.js",
+    "runtime~app.js.map": "/static/js/runtime~app.12bc0fb5.js.map",
+    "static/js/2.b7ce9627.chunk.js": "/static/js/2.b7ce9627.chunk.js",
+    "static/js/2.b7ce9627.chunk.js.map": "/static/js/2.b7ce9627.chunk.js.map",
+    "static/js/3.91fb11d7.chunk.js": "/static/js/3.91fb11d7.chunk.js",
+    "static/js/3.91fb11d7.chunk.js.map": "/static/js/3.91fb11d7.chunk.js.map",
+    "fonts/Archivo-Regular.ttf": "/./fonts/Archivo-Regular.ttf",
+    "fonts/Archivo-SemiBold.ttf": "/./fonts/Archivo-SemiBold.ttf",
+    "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/./fonts/Feather.ttf",
-    "fonts/Foundation.ttf": "/./fonts/Foundation.ttf",
+    "fonts/FontAwesome.ttf": "/./fonts/FontAwesome.ttf",
     "fonts/Ionicons.ttf": "/./fonts/Ionicons.ttf",
     "fonts/MaterialCommunityIcons.ttf": "/./fonts/MaterialCommunityIcons.ttf",
     "fonts/password.ttf": "/./fonts/password.ttf",
@@ -19,8 +22,8 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
-    "static/js/2.caed1222.chunk.js.LICENSE.txt": "/static/js/2.caed1222.chunk.js.LICENSE.txt",
-    "static/js/3.2892f1cf.chunk.js.LICENSE.txt": "/static/js/3.2892f1cf.chunk.js.LICENSE.txt",
+    "static/js/2.b7ce9627.chunk.js.LICENSE.txt": "/static/js/2.b7ce9627.chunk.js.LICENSE.txt",
+    "static/js/3.91fb11d7.chunk.js.LICENSE.txt": "/static/js/3.91fb11d7.chunk.js.LICENSE.txt",
     "static/media/alarm.mp3": "/static/media/alarm.2e7250d2.mp3",
     "static/media/divine-pos-helper.pkg": "/static/media/divine-pos-helper.477496c9.pkg",
     "static/media/divine-pos-helper.exe": "/static/media/divine-pos-helper.95df85e7.exe",
@@ -29,8 +32,8 @@
     "static/media/loading.gif": "/static/media/loading.a8fdca7c.gif"
   },
   "entrypoints": [
-    "static/js/runtime~app.44623d56.js",
-    "static/js/2.caed1222.chunk.js",
-    "static/js/app.8d6c8b87.chunk.js"
+    "static/js/runtime~app.12bc0fb5.js",
+    "static/js/2.b7ce9627.chunk.js",
+    "static/js/app.90d030e4.chunk.js"
   ]
 }

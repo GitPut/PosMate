@@ -26,7 +26,7 @@ export const signUp = (email, password, name, phoneNumber) =>
               name: name,
               address: null,
               phoneNumber: phoneNumber,
-              email: email
+              email: email,
             },
             //company name
             //adddress
@@ -68,11 +68,11 @@ export const updateStoreDetails = (storeDetails) => {
   });
 };
 
-export const logout = () => auth.signOut()
+export const logout = () => auth.signOut();
 
-export const addCustomerDetailsToDb = (customer) => {
-  db.collection("users")
+export const addCustomerDetailsToDb = (customer) =>
+  db
+    .collection("users")
     .doc(auth.currentUser?.uid)
     .collection("customers")
     .add(customer);
-};

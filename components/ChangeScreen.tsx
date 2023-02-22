@@ -1,4 +1,11 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { Button, TextInput } from "@react-native-material/core";
 import { storeDetailState } from "state/state";
@@ -8,10 +15,12 @@ const ChangeScreen = ({
   order,
   completeOrder,
   setcurrentOrder,
+  setongoingOrderListModal,
 }) => {
-  const total = order.total;
+  const total = order?.total ? order?.total : 0;
   const [cash, setCash] = useState("");
   const storeDetails = storeDetailState.use();
+  const { height, width } = useWindowDimensions();
 
   const openCash = () => {
     const data = [
@@ -87,35 +96,80 @@ const ChangeScreen = ({
   };
 
   return (
-    <ScrollView style={styles.modalContainer}>
-      <View style={styles.sizeRow}>
-        <Text>Cash Payment Details</Text>
-      </View>
-      <Text>Total: ${total}</Text>
-      <TextInput
-        label="Enter Cash Given"
-        variant="outlined"
-        style={styles.input}
-        onChangeText={(val) => setCash(val)}
-        autoCorrect={false}
-        value={cash}
-      />
-      <Text>Change Due: {(parseFloat(cash) - total).toFixed(2)}</Text>
-      <Button
-        title="Finsh Payment"
+    <>
+      <TouchableOpacity
         onPress={() => {
-          openCash();
+          CancelPayment();
+          setongoingOrderListModal(false);
         }}
-        contentContainerStyle={styles.btn}
-        style={{ margin: 25 }}
+        style={{
+          backgroundColor: "rgba(0, 0, 0, 0)",
+          justifyContent: "center",
+          alignItems: "center",
+          height: height,
+          width: width,
+        }}
       />
-      <Button
-        title="Cancel"
-        onPress={CancelPayment}
-        contentContainerStyle={styles.btn}
-        style={{ margin: 25 }}
-      />
-    </ScrollView>
+      <View
+        style={{
+          position: "absolute",
+          backgroundColor: "rgba(255,255,255,1)",
+          borderRadius: 30,
+          shadowColor: "rgba(0,0,0,1)",
+          shadowOffset: {
+            width: 3,
+            height: 3,
+          },
+          elevation: 30,
+          shadowOpacity: 0.57,
+          shadowRadius: 10,
+          height: height * 0.7,
+          width: height * 0.7,
+          padding: 40,
+          alignSelf: "center",
+          top: "15%",
+        }}
+      >
+        <View style={styles.sizeRow}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "600",
+              textAlign: "center",
+            }}
+          >
+            Payment Details
+          </Text>
+        </View>
+        <Text>Total: ${total}</Text>
+        <TextInput
+          label="Enter Cash Given"
+          variant="outlined"
+          style={styles.input}
+          onChangeText={(val) => setCash(val)}
+          autoCorrect={false}
+          value={cash}
+        />
+        <Text>
+          Change Due:{" "}
+          {(parseFloat(cash.length > 0 ? cash : 0) - total).toFixed(2)}
+        </Text>
+        <Button
+          title="Finsh Payment"
+          onPress={() => {
+            openCash();
+          }}
+          contentContainerStyle={styles.btn}
+          style={{ margin: 25 }}
+        />
+        <Button
+          title="Cancel"
+          onPress={CancelPayment}
+          contentContainerStyle={styles.btn}
+          style={{ margin: 25 }}
+        />
+      </View>
+    </>
   );
 };
 

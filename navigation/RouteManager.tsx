@@ -8,7 +8,6 @@ import {
   setUserStoreState,
   setWoocommerceState,
   storeDetailState,
-  transListState,
   userState,
   woocommerceState,
 } from "state/state";
@@ -22,6 +21,7 @@ import mySound from "assets/alarm.mp3";
 import PlanUpdateTest from "screens/authed/PlanUpdateTest";
 import NewUserPayment from "screens/authed/NewUserPayment";
 import { Animated, Image, Modal, View } from "react-native";
+import * as Font from "expo-font";
 
 const RouteManager = () => {
   const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
@@ -36,6 +36,11 @@ const RouteManager = () => {
   const [viewVisible, setviewVisible] = useState(true);
   const [isCanceled, setisCanceled] = useState(null);
 
+  const [fontsLoaded] = Font.useFonts({
+    "archivo-600": require("assets/fonts/Archivo-SemiBold.ttf"),
+    "archivo-500": require("assets/fonts/Archivo-Regular.ttf"),
+  });
+
   useEffect(() => {
     setUserState(savedUserState ? savedUserState : null);
     auth.onAuthStateChanged((user) => {
@@ -44,6 +49,12 @@ const RouteManager = () => {
       if (user) {
         localStorage.setItem("savedUserState", true);
         setUserState(user);
+
+        let customers = localStorage.getItem("customers");
+        if (customers) {
+          customers = JSON.parse(customers);
+        }
+
         db.collection("users")
           .doc(user.uid)
           .get()
@@ -75,6 +86,28 @@ const RouteManager = () => {
                 }
               })
               .catch(() => console.log("Error has occured with db"));
+
+            doc.ref
+              .collection("customers")
+              .get()
+              .then((docs) => {
+                const newCustomerList = [];
+
+                docs.forEach((element) => {
+                  newCustomerList.push({ ...element.data(), id: element.id });
+                });
+
+                if (
+                  JSON.stringify(customers) !== JSON.stringify(newCustomerList)
+                ) {
+                  localStorage.setItem(
+                    "customers",
+                    JSON.stringify(newCustomerList)
+                  );
+                }
+              })
+              .catch(() => console.log("Error has occured with db"));
+
             setUserStoreState({
               products: doc.data().products ? doc.data().products : [],
               categories: doc.data().categories ? doc.data().categories : [],
@@ -589,7 +622,7 @@ const RouteManager = () => {
           {isSubscribed ? (
             <MainAuthed />
           ) : isNewUser ? (
-            <NewUserPayment />
+            <NewUserPayment resetLoader={resetLoader} />
           ) : (
             <PlanUpdateTest resetLoader={resetLoader} isCanceled={isCanceled} />
           )}

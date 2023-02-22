@@ -24,8 +24,11 @@ import { updateTransList } from "state/firebaseFunctions";
 import useWindowDimensions from "components/useWindowDimensions";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Foundation from "@expo/vector-icons/Foundation";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Feather from "@expo/vector-icons/Feather";
 import SaveCustomer from "./SaveCustomer";
 import { auth, db } from "state/firebaseConfig";
+import CartItem from "components/CartItem";
 
 const CartScreen = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
@@ -50,7 +53,11 @@ const CartScreen = ({ navigation }) => {
       for (var i = 0; i < cart.length; i++) {
         newVal += parseFloat(cart[i].price);
       }
-      setCartSub(newVal);
+      setCartSub(
+        newVal + storeDetails.deliveryPrice
+          ? parseFloat(storeDetails.deliveryPrice)
+          : 0
+      );
     } else {
       setCartSub(0);
     }
@@ -70,7 +77,7 @@ const CartScreen = ({ navigation }) => {
           .collection("customers")
           .doc(savedCustomerDetails.id)
           .update({
-            orders: JSON.stringify([...savedCustomerDetails.orders, cart]),
+            orders: [...savedCustomerDetails.orders, { cart }],
           });
       } else {
         console.log("Not Greater than 0");
@@ -80,17 +87,14 @@ const CartScreen = ({ navigation }) => {
           .collection("customers")
           .doc(savedCustomerDetails.id)
           .update({
-            orders: JSON.stringify([cart]),
+            orders: [{ cart }],
           });
       }
     }
 
     const transNum = Math.random().toString(36).substr(2, 9);
     if (method === "deliveryOrder") {
-      let total =
-        storeDetails.deliveryPrice > 0
-          ? parseFloat(storeDetails.deliveryPrice)
-          : 0;
+      let total = cartSub;
       const today = new Date();
 
       let data = [
@@ -105,7 +109,9 @@ const CartScreen = ({ navigation }) => {
         "\x0A",
         `Transaction ID ${transNum}` + "\x0A",
         "\x0A",
-        `Delivery Order: $${storeDetails.deliveryPrice} Fee` + "\x0A",
+        `Delivery Order: $${
+          storeDetails.deliveryPrice ? storeDetails.deliveryPrice : "0"
+        } Fee` + "\x0A",
         "\x0A",
         "\x0A",
         "\x0A",
@@ -201,7 +207,7 @@ const CartScreen = ({ navigation }) => {
         customer: {
           name: name,
           phone: phone,
-          address: address,
+          address: address ? address : null,
         },
       });
 
@@ -217,7 +223,7 @@ const CartScreen = ({ navigation }) => {
           customer: {
             name: name,
             phone: phone,
-            address: address,
+            address: address ? address : null,
           },
         });
         localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
@@ -235,7 +241,7 @@ const CartScreen = ({ navigation }) => {
               customer: {
                 name: name,
                 phone: phone,
-                address: address,
+                address: address ? address : null,
               },
             },
           ])
@@ -353,7 +359,7 @@ const CartScreen = ({ navigation }) => {
         customer: {
           name: name,
           phone: phone,
-          address: address,
+          address: address ? address : null,
         },
       });
 
@@ -369,7 +375,7 @@ const CartScreen = ({ navigation }) => {
           customer: {
             name: name,
             phone: phone,
-            address: address,
+            address: address ? address : null,
           },
         });
         localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
@@ -387,7 +393,7 @@ const CartScreen = ({ navigation }) => {
               customer: {
                 name: name,
                 phone: phone,
-                address: address,
+                address: address ? address : null,
               },
             },
           ])
@@ -536,17 +542,24 @@ const CartScreen = ({ navigation }) => {
             alignSelf: "center",
             justifyContent: "space-between",
             alignItems: "center",
+            marginBottom: 10,
           }}
         >
           <TouchableOpacity
-            style={styles({ height, width }).cashButton}
+            style={[
+              styles({ height, width }).cashButton,
+              cartSub === 0 && { opacity: 0.5 },
+            ]}
             onPress={() => setCashModal(true)}
             disabled={cart.length < 1 || ongoingDelivery}
           >
             <Text style={styles({ height, width }).btnTxt}>Cash</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles({ height, width }).cardButton}
+            style={[
+              styles({ height, width }).cardButton,
+              cartSub === 0 && { opacity: 0.5 },
+            ]}
             onPress={() => Print("Card")}
             disabled={cart.length < 1 || ongoingDelivery}
           >
@@ -574,7 +587,10 @@ const CartScreen = ({ navigation }) => {
       return (
         <TouchableOpacity
           style={styles({ height, width }).bigButton}
-          onPress={() => setOngoingDelivery(null)}
+          onPress={() => {
+            setOngoingDelivery(null);
+            setDeliveryChecked(false);
+          }}
         >
           <Text style={styles({ height, width }).btnTxt}>Cancel</Text>
         </TouchableOpacity>
@@ -585,23 +601,37 @@ const CartScreen = ({ navigation }) => {
   return (
     <View style={styles({ height, width }).container}>
       <View style={styles({ height, width }).cartHeader}>
-        <Text style={{ fontSize: 25, width: "50%", color: "white" }}>
-          Bill Total
+        <Text
+          style={{
+            fontFamily: "archivo-600",
+            color: "rgba(255,255,255,1)",
+            fontSize: 25,
+          }}
+        >
+          Order
         </Text>
-        <TouchableOpacity
-          style={styles({ height, width }).iconContainer}
-          onPress={() => setSaveCustomerModal(true)}
-          disabled={cart.length > 0}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
-          <Ionicons name="person-add" size={26} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles({ height, width }).iconContainer}
-          onPress={() => setDeliveryModal(true)}
-          disabled={cart.length > 0}
-        >
-          <Foundation name="telephone" size={32} color="white" />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles({ height, width }).iconContainer}
+            onPress={() => setSaveCustomerModal(true)}
+            disabled={cart.length > 0}
+          >
+            <MaterialCommunityIcons name="history" size={26} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles({ height, width }).iconContainer}
+            onPress={() => setDeliveryModal(true)}
+            disabled={cart.length > 0}
+          >
+            <Feather name="phone-call" size={28} color="white" />
+          </TouchableOpacity>
+        </View>
       </View>
       <ScrollView
         contentContainerStyle={styles({ height, width }).contentContainer}
@@ -609,103 +639,22 @@ const CartScreen = ({ navigation }) => {
         <View>
           {cart.length > 0 ? (
             cart.map((cartItem, index) => (
-              <View
-                style={{
-                  backgroundColor: "white",
-                  shadowColor: "rgba(0,0,0,1)",
-                  shadowOffset: {
-                    width: 3,
-                    height: 3,
-                  },
-                  elevation: 30,
-                  shadowOpacity: 0.07,
-                  shadowRadius: 10,
-                  marginBottom: 20,
-                  padding: 15,
+              <CartItem
+                cartItem={cartItem}
+                index={index}
+                isPrev={false}
+                removeAction={() => {
+                  const local = structuredClone(cart);
+                  local.splice(index, 1);
+                  setCartState(local);
                 }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: 10,
-                  }}
-                >
-                  <View style={{ width: "33%" }}>
-                    <View
-                      style={{
-                        backgroundColor: "#E6E6E6",
-                        width: 50,
-                        height: 50,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text style={styles({ height, width }).headerTxt}>
-                        {index + 1}
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      width: "33%",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text style={styles({ height, width }).headerTxt}>
-                      {cartItem.name}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      width: "33%",
-                      alignItems: "flex-end",
-                    }}
-                  >
-                    <Text
-                      style={{ color: "red", fontSize: 15, fontWeight: "600" }}
-                      onPress={() => {
-                        const local = structuredClone(cart);
-                        local.splice(index, 1);
-                        setCartState(local);
-                      }}
-                    >
-                      X
-                    </Text>
-                  </View>
-                </View>
-                <Text style={styles({ height, width }).innerTxt}>
-                  Price: ${cartItem.price}
-                </Text>
-                {cartItem.description && (
-                  <Text style={styles({ height, width }).innerTxt}>
-                    Description: {cartItem.description}
-                  </Text>
-                )}
-                {cartItem.options &&
-                  cartItem.options.map((option) => (
-                    <Text style={styles({ height, width }).innerTxt}>
-                      {option}
-                    </Text>
-                  ))}
-                {cartItem.extraDetails && (
-                  <Text style={styles({ height, width }).innerTxt}>
-                    Extra Info: {cartItem.extraDetails}
-                  </Text>
-                )}
-                {cartItem.options.length > 0 && (
-                  <Button
-                    title="Edit"
-                    onPress={() =>
-                      navigation.navigate("Product Listing", {
-                        product: cartItem.editableObj,
-                        itemIndex: index,
-                      })
-                    }
-                  />
-                )}
-              </View>
+                editAction={() =>
+                  navigation.navigate("Product Listing", {
+                    product: cartItem.editableObj,
+                    itemIndex: index,
+                  })
+                }
+              />
             ))
           ) : (
             <View
@@ -716,35 +665,154 @@ const CartScreen = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              <Text style={{ fontSize: 16, color: "white", fontWeight: "600" }}>
-                Cart is empty...
+              <Text style={styles({ height, width }).empty}>Empty...</Text>
+              <Text style={styles({ height, width }).fillTheCart}>
+                Fill the Cart!
               </Text>
             </View>
           )}
         </View>
       </ScrollView>
-      <View style={styles({ height, width }).totalContainer}>
+      <View
+        style={{
+          justifyContent: "space-around",
+          alignItems: "center",
+          width: "90%",
+          alignSelf: "center",
+        }}
+      >
+        {deliveryChecked && parseFloat(storeDetails.deliveryPrice) && (
+          <View
+            style={{
+              alignSelf: "stretch",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 2,
+              paddingTop: 5,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "archivo-600",
+                color: "rgba(74,74,74,1)",
+                fontSize: 16,
+                alignSelf: "flex-start",
+              }}
+            >
+              Delivery
+            </Text>
+            <Text
+              style={[
+                {
+                  fontFamily: "archivo-600",
+                  color: "rgba(255,255,255,1)",
+                  fontSize: 20,
+                  alignSelf: "flex-start",
+                },
+                cartSub === 0 && { opacity: 0.5 },
+              ]}
+            >
+              ${parseFloat(storeDetails.deliveryPrice).toFixed(2)}
+            </Text>
+          </View>
+        )}
         <View
           style={{
+            alignSelf: "stretch",
             flexDirection: "row",
-            alignItems: "center",
             justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 2,
           }}
         >
-          <Text style={styles({ height, width }).totalTxt}>Sub:</Text>
-          <Text style={styles({ height, width }).totalTxtPrice}>
+          <Text
+            style={{
+              fontFamily: "archivo-600",
+              color: "rgba(74,74,74,1)",
+              fontSize: 16,
+              alignSelf: "flex-start",
+            }}
+          >
+            Sub Total
+          </Text>
+          <Text
+            style={[
+              {
+                fontFamily: "archivo-600",
+                color: "rgba(255,255,255,1)",
+                fontSize: 20,
+                alignSelf: "flex-start",
+              },
+              cartSub === 0 && { opacity: 0.5 },
+            ]}
+          >
             ${cartSub.toFixed(2)}
           </Text>
         </View>
         <View
           style={{
+            alignSelf: "stretch",
             flexDirection: "row",
-            alignItems: "center",
             justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 2,
           }}
         >
-          <Text style={styles({ height, width }).totalTxt}>Total:</Text>
-          <Text style={styles({ height, width }).totalTxtPrice}>
+          <Text
+            style={{
+              fontFamily: "archivo-600",
+              color: "rgba(74,74,74,1)",
+              fontSize: 16,
+              alignSelf: "flex-start",
+            }}
+          >
+            Tax
+          </Text>
+          <Text
+            style={[
+              {
+                fontFamily: "archivo-600",
+                color: "rgba(255,255,255,1)",
+                fontSize: 20,
+                alignSelf: "flex-start",
+              },
+              cartSub === 0 && { opacity: 0.5 },
+            ]}
+          >
+            ${(cartSub * 0.13).toFixed(2)}
+          </Text>
+        </View>
+        <View
+          style={{
+            alignSelf: "stretch",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 10,
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "archivo-600",
+              color: "rgba(74,74,74,1)",
+              fontSize: 16,
+              alignSelf: "flex-start",
+            }}
+          >
+            Total
+          </Text>
+          <Text
+            style={[
+              {
+                fontFamily: "archivo-600",
+                color: "rgba(255,255,255,1)",
+                fontSize: 20,
+                alignSelf: "flex-start",
+              },
+              cartSub === 0 && { opacity: 0.5 },
+            ]}
+          >
             ${(cartSub * 1.13).toFixed(2)}
           </Text>
         </View>
@@ -763,6 +831,7 @@ const CartScreen = ({ navigation }) => {
       </Modal>
       <Modal visible={deliveryModal} transparent={true}>
         <DeliveryScreen
+          setsavedCustomerDetails={setsavedCustomerDetails}
           setDeliveryModal={setDeliveryModal}
           setOngoingDelivery={setOngoingDelivery}
           setName={setName}
@@ -793,6 +862,7 @@ const CartScreen = ({ navigation }) => {
 export default CartScreen;
 
 const styles = (props) =>
+  //81838B
   StyleSheet.create({
     container: {
       height: props.height,
@@ -833,9 +903,10 @@ const styles = (props) =>
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: "rgba(41,44,56,1)",
-      borderRadius: 20,
-      width: 62,
-      height: 58,
+      borderRadius: 15,
+      width: 50,
+      height: 50,
+      margin: 10,
     },
     cashButton: {
       backgroundColor: "rgba(51,81,243,1)",
@@ -890,5 +961,16 @@ const styles = (props) =>
     headerTxt: {
       fontSize: 15,
       fontWeight: "600",
+    },
+    empty: {
+      fontFamily: "archivo-600",
+      color: "rgba(255,255,255,1)",
+      fontSize: 20,
+      opacity: 0.44,
+    },
+    fillTheCart: {
+      fontFamily: "archivo-500",
+      color: "rgba(74,74,74,1)",
+      fontSize: 20,
     },
   });

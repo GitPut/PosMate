@@ -15,6 +15,7 @@ import { storeDetailState, transListState, userStoreState } from "state/state";
 import { auth } from "state/firebaseConfig";
 import Logo from "assets/dpos-logo.png";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Entypo from "@expo/vector-icons/Entypo";
 import useWindowDimensions from "components/useWindowDimensions";
 import CompletePaymentPhoneOrder from "components/CompletePaymentPhoneOrder";
 import SettingsPasswordModal from "components/SettingsPasswordModal";
@@ -52,14 +53,14 @@ const HomeScreen = ({ navigation }) => {
             style={{
               backgroundColor: "rgba(41,44,56,1)",
               borderRadius: 100,
-              width: 62,
-              height: 58,
+              width: 55,
+              height: 55,
               justifyContent: "center",
               alignItems: "center",
-              marginRight: 10,
+              marginRight: 15,
             }}
           >
-            <Ionicons name="chevron-down" size={32} color="white" />
+            <Ionicons name="chevron-down" size={28} color="white" />
           </TouchableOpacity>
           <TouchableOpacity
             // onPress={() => navigation.navigate("SettingsHome")}
@@ -71,14 +72,14 @@ const HomeScreen = ({ navigation }) => {
             style={{
               backgroundColor: "rgba(41,44,56,1)",
               borderRadius: 100,
-              width: 62,
-              height: 58,
+              width: 55,
+              height: 55,
               justifyContent: "center",
               alignItems: "center",
               marginRight: 10,
             }}
           >
-            <Ionicons name="settings" size={32} color="white" />
+            <Entypo name="cog" size={28} color="white" />
           </TouchableOpacity>
         </View>
       </View>

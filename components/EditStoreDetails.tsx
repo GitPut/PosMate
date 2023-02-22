@@ -22,17 +22,8 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
     storeDetails.settingsPassword
   );
 
-  useEffect(() => {
-    console.log("Jellp address is: ", address);
-  }, [address]);
-
   const handleDataUpdate = () => {
-    if (
-      name !== null &&
-      phoneNumber !== null &&
-      address !== null &&
-      settingsPassword !== null
-    ) {
+    if (name !== null && phoneNumber !== null && address !== null) {
       setStoreDetailState({
         name: name,
         phoneNumber: phoneNumber,
@@ -54,6 +45,8 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
       if (customBtnExtraFunction) {
         customBtnExtraFunction();
       }
+    } else {
+      alert("Please fill in all fields");
     }
   };
 
