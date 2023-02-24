@@ -1,13 +1,13 @@
 {
   "files": {
-    "app.js": "/static/js/app.90d030e4.chunk.js",
-    "app.js.map": "/static/js/app.90d030e4.chunk.js.map",
-    "runtime~app.js": "/static/js/runtime~app.12bc0fb5.js",
-    "runtime~app.js.map": "/static/js/runtime~app.12bc0fb5.js.map",
-    "static/js/2.b7ce9627.chunk.js": "/static/js/2.b7ce9627.chunk.js",
-    "static/js/2.b7ce9627.chunk.js.map": "/static/js/2.b7ce9627.chunk.js.map",
-    "static/js/3.91fb11d7.chunk.js": "/static/js/3.91fb11d7.chunk.js",
-    "static/js/3.91fb11d7.chunk.js.map": "/static/js/3.91fb11d7.chunk.js.map",
+    "app.js": "/static/js/app.703ced1d.chunk.js",
+    "app.js.map": "/static/js/app.703ced1d.chunk.js.map",
+    "runtime~app.js": "/static/js/runtime~app.0ce973da.js",
+    "runtime~app.js.map": "/static/js/runtime~app.0ce973da.js.map",
+    "static/js/2.0221bb30.chunk.js": "/static/js/2.0221bb30.chunk.js",
+    "static/js/2.0221bb30.chunk.js.map": "/static/js/2.0221bb30.chunk.js.map",
+    "static/js/3.5822e6bb.chunk.js": "/static/js/3.5822e6bb.chunk.js",
+    "static/js/3.5822e6bb.chunk.js.map": "/static/js/3.5822e6bb.chunk.js.map",
     "fonts/Archivo-Regular.ttf": "/./fonts/Archivo-Regular.ttf",
     "fonts/Archivo-SemiBold.ttf": "/./fonts/Archivo-SemiBold.ttf",
     "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
@@ -22,8 +22,8 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
-    "static/js/2.b7ce9627.chunk.js.LICENSE.txt": "/static/js/2.b7ce9627.chunk.js.LICENSE.txt",
-    "static/js/3.91fb11d7.chunk.js.LICENSE.txt": "/static/js/3.91fb11d7.chunk.js.LICENSE.txt",
+    "static/js/2.0221bb30.chunk.js.LICENSE.txt": "/static/js/2.0221bb30.chunk.js.LICENSE.txt",
+    "static/js/3.5822e6bb.chunk.js.LICENSE.txt": "/static/js/3.5822e6bb.chunk.js.LICENSE.txt",
     "static/media/alarm.mp3": "/static/media/alarm.2e7250d2.mp3",
     "static/media/divine-pos-helper.pkg": "/static/media/divine-pos-helper.477496c9.pkg",
     "static/media/divine-pos-helper.exe": "/static/media/divine-pos-helper.95df85e7.exe",
@@ -32,8 +32,8 @@
     "static/media/loading.gif": "/static/media/loading.a8fdca7c.gif"
   },
   "entrypoints": [
-    "static/js/runtime~app.12bc0fb5.js",
-    "static/js/2.b7ce9627.chunk.js",
-    "static/js/app.90d030e4.chunk.js"
+    "static/js/runtime~app.0ce973da.js",
+    "static/js/2.0221bb30.chunk.js",
+    "static/js/app.703ced1d.chunk.js"
   ]
 }

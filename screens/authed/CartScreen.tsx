@@ -6,8 +6,9 @@ import {
   View,
   Dimensions,
   TouchableOpacity,
+  Animated,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   cartState,
   cartSubState,
@@ -29,6 +30,123 @@ import Feather from "@expo/vector-icons/Feather";
 import SaveCustomer from "./SaveCustomer";
 import { auth, db } from "state/firebaseConfig";
 import CartItem from "components/CartItem";
+import ProductListingTest from "components/ProductListingTest";
+
+const CartItemEditable = ({ cartItem, index, removeAction }) => {
+  const [showProductScreen, setshowProductScreen] = useState(false);
+  const xPos = useRef(new Animated.Value(-1000)).current;
+  const shadowOpacity = useRef(new Animated.Value(0)).current;
+
+  const fadeIn = () => {
+    // Will change xPos value to 0 in 3 seconds
+    setshowProductScreen(true);
+    Animated.timing(xPos, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver: false,
+    }).start();
+    Animated.timing(shadowOpacity, {
+      toValue: 1,
+      duration: 100,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const fadeOut = () => {
+    // Will change xPos value to 0 in 3 seconds
+    Animated.timing(shadowOpacity, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver: false,
+    }).start();
+    Animated.timing(xPos, {
+      toValue: -1000,
+      duration: 100,
+      useNativeDriver: false,
+    }).start(() => setshowProductScreen(false));
+  };
+
+  return (
+    <>
+      <CartItem
+        cartItem={cartItem}
+        index={index}
+        isPrev={false}
+        removeAction={removeAction}
+        editAction={() => fadeIn()}
+      />
+      {showProductScreen && (
+        <Modal transparent={true}>
+          <Animated.View
+            style={{
+              flex: 1,
+              justifyContent: "flex-end",
+              alignItems: "flex-start",
+              position: "absolute",
+              height: "100%",
+              width: "100%",
+              bottom: 0,
+              left: xPos,
+              zIndex: 0,
+            }}
+          >
+            <View
+              style={{
+                height: "90%",
+                width: "70%",
+                borderTopRightRadius: 3,
+              }}
+            >
+              <ProductListingTest
+                product={cartItem.editableObj}
+                itemIndex={index}
+                goBack={() => fadeOut()}
+              />
+            </View>
+          </Animated.View>
+          <Animated.View
+            style={{
+              height: "100%",
+              width: "30%",
+              padding: 20,
+              shadowColor: "rgba(0,0,0,1)",
+              shadowOffset: {
+                width: -3,
+                height: 3,
+              },
+              elevation: 30,
+              shadowOpacity: 0.5,
+              shadowRadius: 5,
+              position: "absolute",
+              opacity: shadowOpacity,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+          <Animated.View
+            style={{
+              height: "10%",
+              width: "70%",
+              padding: 20,
+              shadowColor: "rgba(0,0,0,1)",
+              shadowOffset: {
+                width: -3,
+                height: 3,
+              },
+              elevation: 30,
+              shadowOpacity: 0.5,
+              shadowRadius: 5,
+              position: "absolute",
+              opacity: shadowOpacity,
+              left: 0,
+              top: 0,
+            }}
+          />
+        </Modal>
+      )}
+    </>
+  );
+};
 
 const CartScreen = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
@@ -48,16 +166,18 @@ const CartScreen = ({ navigation }) => {
   const [savedCustomerDetails, setsavedCustomerDetails] = useState(null);
 
   useEffect(() => {
+    console.log("hello", cartSub);
     if (cart.length > 0) {
       let newVal = 0;
       for (var i = 0; i < cart.length; i++) {
         newVal += parseFloat(cart[i].price);
+        console.log("item price: ", cart[i].price);
       }
-      setCartSub(
-        newVal + storeDetails.deliveryPrice
-          ? parseFloat(storeDetails.deliveryPrice)
-          : 0
-      );
+      if (deliveryChecked) {
+        setCartSub(newVal + parseFloat(storeDetails.deliveryPrice));
+      } else {
+        setCartSub(newVal);
+      }
     } else {
       setCartSub(0);
     }
@@ -157,7 +277,7 @@ const CartScreen = ({ navigation }) => {
         "\x0A" + "\x0A",
         "Customer Phone #:  " + phone,
         "\x0A" + "\x0A",
-        "Customer Address #:  " + address,
+        "Customer Address #:  " + address?.label,
         "\x0A" + "\x0A",
         "Total Including (13% Tax): " + total + "\x0A" + "\x0A",
         "------------------------------------------" + "\x0A",
@@ -618,14 +738,20 @@ const CartScreen = ({ navigation }) => {
           }}
         >
           <TouchableOpacity
-            style={styles({ height, width }).iconContainer}
+            style={[
+              styles({ height, width }).iconContainer,
+              cart.length > 0 && { opacity: 0.5 },
+            ]}
             onPress={() => setSaveCustomerModal(true)}
             disabled={cart.length > 0}
           >
             <MaterialCommunityIcons name="history" size={26} color="white" />
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles({ height, width }).iconContainer}
+            style={[
+              styles({ height, width }).iconContainer,
+              cart.length > 0 && { opacity: 0.5 },
+            ]}
             onPress={() => setDeliveryModal(true)}
             disabled={cart.length > 0}
           >
@@ -639,21 +765,14 @@ const CartScreen = ({ navigation }) => {
         <View>
           {cart.length > 0 ? (
             cart.map((cartItem, index) => (
-              <CartItem
+              <CartItemEditable
                 cartItem={cartItem}
                 index={index}
-                isPrev={false}
                 removeAction={() => {
                   const local = structuredClone(cart);
                   local.splice(index, 1);
                   setCartState(local);
                 }}
-                editAction={() =>
-                  navigation.navigate("Product Listing", {
-                    product: cartItem.editableObj,
-                    itemIndex: index,
-                  })
-                }
               />
             ))
           ) : (
@@ -880,7 +999,7 @@ const styles = (props) =>
       },
       elevation: 30,
       shadowOpacity: 0.92,
-      shadowRadius: 10,
+      shadowRadius: 5,
     },
     contentContainer: {
       height: "100%",

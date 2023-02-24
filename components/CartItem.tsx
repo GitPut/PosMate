@@ -89,7 +89,7 @@ const CartItem = ({ cartItem, index, isPrev, removeAction, editAction }) => {
   } else {
     return (
       <TouchableOpacity
-        onPress={() => cartItem.options > 0 && setisOpen(true)}
+        onPress={() => cartItem.options.length > 0 && setisOpen(true)}
         style={styles.closedItemContainer}
         activeOpacity={0.8}
       >
@@ -217,24 +217,23 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   optionsContainer: {
-    width: 122,
-    height: 38,
     justifyContent: "space-between",
     margin: 13,
     marginLeft: 19,
   },
   optionTxt: {
     fontFamily: "archivo-500",
-    color: "rgba(187,187,186,1)",
+    color: "grey",
+    marginTop: 5,
   },
   editContainer: {
     width: 61,
     height: 38,
     flexDirection: "row",
     margin: 13,
+    marginLeft: 19,
     alignItems: "center",
     justifyContent: "space-between",
-    marginLeft: 19,
   },
   editIcon: {
     color: "rgba(128,128,128,1)",
@@ -258,7 +257,6 @@ const styles = StyleSheet.create({
   },
   closedLeftContainer: {
     flexDirection: "row",
-    width: "25%",
     height: "100%",
     alignItems: "center",
     justifyContent: "flex-start",

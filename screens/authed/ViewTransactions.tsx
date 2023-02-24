@@ -1,6 +1,13 @@
-import { FlatList, ScrollView, StyleSheet, View } from "react-native";
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { Button, Text } from "@react-native-material/core";
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+  TextInput,
+} from "react-native";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   storeDetailState,
   transListState,
@@ -8,6 +15,30 @@ import {
 } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 const tz = require("moment-timezone");
+import {
+  ReactGrid,
+  CellChange,
+  Row,
+  Column,
+  Id,
+  MenuOption,
+  SelectionMode,
+} from "@silevis/reactgrid";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+
+import "@silevis/reactgrid/styles.css";
+import ReceiptPrint from "components/ReceiptPrint";
+
+const getDate = (seconds) => {
+  const newDate = new Date(seconds * 1000);
+  const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  const result = tz(newDate)
+    .tz(targetTimezone, true)
+    .format("YYYY-MM-DD, h:mm:ss a z");
+
+  return result;
+};
 
 const ViewTransactions = () => {
   const today = new Date();
@@ -18,6 +49,122 @@ const ViewTransactions = () => {
     todaysReceiptValue: 0,
     todaysReceipts: 0,
   });
+  const { width, height } = useWindowDimensions();
+  const [search, setsearch] = useState(null);
+
+  const getColumns = (): Column[] => [
+    { columnId: "name", width: 150 },
+    { columnId: "phone", width: 150 },
+    { columnId: "address", width: 300 },
+    { columnId: "orderFrom", width: 150 },
+    { columnId: "method", width: 150 },
+    { columnId: "cart", width: 150 },
+    { columnId: "total", width: 150 },
+    { columnId: "date", width: 300 },
+  ];
+
+  const headerRow: Row = {
+    rowId: "header",
+    cells: [
+      { type: "header", text: "Name", nonEditable: true },
+      { type: "header", text: "Phone #", nonEditable: true },
+      { type: "header", text: "Address", nonEditable: true },
+      { type: "header", text: "Order From", nonEditable: true },
+      { type: "header", text: "Method", nonEditable: true },
+      { type: "header", text: "ID", nonEditable: true },
+      { type: "header", text: "Total", nonEditable: true },
+      { type: "header", text: "Date", nonEditable: true },
+    ],
+  };
+
+  const getRows = () => [
+    headerRow,
+    ...transList
+      .filter(
+        (fReceipt) =>
+          !(
+            search?.length > 0 &&
+            !fReceipt.customer.name?.includes(search) &&
+            !fReceipt.customer.phone?.includes(search) &&
+            !fReceipt.customer.address?.label?.includes(search) &&
+            !fReceipt.cart_hash?.includes(search) &&
+            !fReceipt.method?.includes(search) &&
+            !fReceipt.transNum?.includes(search) &&
+            !getDate(fReceipt.date.seconds).includes(search)
+          )
+      )
+      .map<Row>((receipt, idx) => {
+        return {
+          rowId: idx,
+          cells: [
+            {
+              type: "text",
+              text: receipt.customer.name,
+              nonEditable: true,
+              style: { flex: 1 },
+            },
+            {
+              type: "text",
+              text: receipt.customer.phone ? receipt.customer.phone : "",
+              nonEditable: true,
+              style: { flex: 1 },
+            },
+            {
+              type: "text",
+              text: receipt.customer.address?.label
+                ? receipt.customer.address?.label
+                : "",
+              nonEditable: true,
+              style: { flex: 1 },
+            },
+            {
+              type: "text",
+              text: receipt.cart_hash ? "Online" : "POS",
+              nonEditable: true,
+              style: { flex: 1 },
+            },
+            {
+              type: "text",
+              text: receipt.method === "deliveryOrder" ? "Delivery" : "Pickup",
+              nonEditable: true,
+              style: { flex: 1 },
+            },
+            {
+              type: "text",
+              text: receipt.transNum ? receipt.transNum : "",
+              nonEditable: true,
+              style: { flex: 1 },
+            },
+            {
+              type: "text",
+              text: receipt.total ? "$" + receipt.total : "",
+              nonEditable: true,
+              style: { flex: 1 },
+            },
+            {
+              type: "text",
+              text: receipt.date ? getDate(receipt.date.seconds) : "",
+              nonEditable: true,
+              style: { flex: 1 },
+            },
+          ],
+        };
+      }),
+  ];
+
+  ///
+
+  const [rows, setrows] = useState(getRows());
+
+  useEffect(() => {
+    setrows(getRows());
+  }, [search, transList]);
+
+  const columns = getColumns();
+
+  const testRef = useRef(null);
+
+  ///
 
   useEffect(() => {
     try {
@@ -229,48 +376,15 @@ const ViewTransactions = () => {
       .catch(function (err) {
         console.error(err);
       });
-
-    // fetch("http://localhost:8080/print", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     printData: data,
-    //     comSelected: storeDetails.comSelected,
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((respData) => {
-    //     console.log(respData);
-    //   })
-    //   .catch((e) => alert("Error with printer"));
   };
 
-  const CleanupOps = (metaList) => {
-    const opsArray = [];
-
-    metaList.forEach((op) => {
-      const arrContaingMe = opsArray.filter(
-        (filterOp) => filterOp.key === op.key
-      );
-
-      if (arrContaingMe.length > 0) {
-        opsArray.forEach((opsArrItem, index) => {
-          if (opsArrItem.key === op.key) {
-            opsArray[index].vals.push(op.value);
-          }
-        });
-      } else {
-        opsArray.push({ key: op.key, vals: [op.value] });
-      }
-    });
-    return opsArray;
-  };
+  // useEffect(() => {
+  //   if(transList.length > )
+  // }, [search])
 
   return (
     <View style={styles.container}>
-      <Text style={{ textAlign: "center", margin: 25 }}>
+      {/* <Text style={{ textAlign: "center", margin: 25 }}>
         List Of Transactions
       </Text>
       <View
@@ -292,376 +406,89 @@ const ViewTransactions = () => {
         <Text style={{ textAlign: "center", margin: 25 }}>
           Todays Total Receipts: {todaysDetails.todaysReceipts}
         </Text>
-      </View>
-      <View style={styles.contentContainer}>
-        {transList ? (
-          <FlatList
-            maxToRenderPerBatch={6}
-            data={transList}
-            renderItem={({ item, index }) => {
-              const element = item;
-              let date;
+      </View> */}
+      <View
+        style={{
+          flexDirection: "row",
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <TextInput
+          placeholder="Enter term to search by (name, phone, address, method, id, date)"
+          onChangeText={(val) => setsearch(val)}
+          value={search}
+          style={{ width: "80%", height: 60, padding: 10 }}
+        />
+        <TouchableOpacity
+          style={{
+            backgroundColor: "lightgrey",
+            width: "20%",
+            height: 60,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={() => {
+            if (testRef.current.state.selectedIds.length > 0) {
+              let data = [];
+              testRef.current.state.selectedIds.forEach((idx) => {
+                const element = transList[idx];
+                const formatedData = ReceiptPrint(element, storeDetails);
+                data = data.concat(formatedData);
+              });
+              const qz = require("qz-tray");
+              qz.websocket
+                .connect()
+                .then(function () {
+                  let config = qz.configs.create(storeDetails.comSelected);
+                  return qz.print(config, data);
+                })
+                .then(qz.websocket.disconnect)
+                .catch(function (err) {
+                  console.error(err);
+                });
+            } else if (testRef.current.state.selectedRanges[0].rows[0]) {
+              let data = [];
+              const element =
+                transList[
+                  testRef.current.state.selectedRanges[0].rows[0].rowId
+                ];
 
-              if (element.date_created) {
-                const dateString = element.date_created;
+              const formatedData = ReceiptPrint(element, storeDetails);
+              data = data.concat(formatedData);
 
-                const newDate = new Date(dateString + "Z");
-
-                const targetTimezone =
-                  Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-                const result = tz(newDate)
-                  .tz(targetTimezone, true)
-                  .format("dddd, MMMM Do YYYY, h:mm:ss a z");
-
-                date = result;
-              } else if (element.date) {
-                const newDate = new Date(element.date.seconds * 1000);
-                const targetTimezone =
-                  Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-                const result = tz(newDate)
-                  .tz(targetTimezone, true)
-                  .format("dddd, MMMM Do YYYY, h:mm:ss a z");
-
-                date = result;
-              }
-
-              return (
-                <View
-                  style={{
-                    backgroundColor: "white",
-                    borderWidth: 1,
-                    padding: 30,
-                    margin: 10,
-                  }}
-                  key={index}
-                >
-                  <Text>
-                    {element.cart_hash ? "Online Order" : "POS Order"}
-                  </Text>
-                  {element.customer && (
-                    <>
-                      <Text>
-                        {element.customer.address
-                          ? `Delivery Order To: ${element.customer.address}`
-                          : "Pickup Order"}
-                      </Text>
-                      <Text>Name: {element.customer.name}</Text>
-                      <Text>Phone Number: {element.customer.phone}</Text>
-                    </>
-                  )}
-                  <Text style={{ marginBottom: 10 }}>{date}</Text>
-                  {element.cart?.map((cartItem, index) => (
-                    <View style={{ marginBottom: 20 }} key={index}>
-                      <Text>Name: {cartItem.name}</Text>
-                      <Text>Quantity: {cartItem.quantity}</Text>
-                      <Text>Price: {cartItem.price}</Text>
-                      {cartItem.options &&
-                        cartItem.options?.map((option) => (
-                          <Text>{option}</Text>
-                        ))}
-                    </View>
-                  ))}
-                  {element.line_items?.map((cartItem, index) => (
-                    <View style={{ marginBottom: 20 }} key={index}>
-                      <Text>Name: {cartItem.name}</Text>
-                      <Text>Quantity: {cartItem.quantity}</Text>
-                      <Text>Price: {cartItem.price}</Text>
-                      {cartItem.meta &&
-                        CleanupOps(cartItem.meta).map((returnedItem) => (
-                          <View style={{ flexDirection: "row" }}>
-                            <Text>{returnedItem.key} : </Text>
-                            {returnedItem.vals.map((val, index) => (
-                              <Text>
-                                {val}
-                                {index >= 0 &&
-                                  index < returnedItem.vals.length - 1 &&
-                                  ", "}
-                              </Text>
-                            ))}
-                          </View>
-                        ))}
-                    </View>
-                  ))}
-                  {element.billing && (
-                    <>
-                      <Text>Customer Details:</Text>
-                      <Text>Address: {element.shipping.address_1}</Text>
-                      <Text>City: {element.shipping.city}</Text>
-                      <Text>Postal Code: {element.shipping.postcode}</Text>
-                      <Text>Province/State: {element.shipping.state}</Text>
-                      <Text>
-                        Name: {element.shipping.first_name}{" "}
-                        {element.shipping.last_name}
-                      </Text>
-                      {element.shipping_lines.map((line) => (
-                        <Text>Shipping Method: {line.method_title}</Text>
-                      ))}
-                      <Text>Phone Number: {element.billing.phone}</Text>
-                      {element.customer_note?.length > 0 && (
-                        <Text>Customer Note: {element.customer_note}</Text>
-                      )}
-                    </>
-                  )}
-                  <Button
-                    title="Print"
-                    style={{ marginTop: 10 }}
-                    onPress={() => {
-                      if (element.date) {
-                        let total = 0;
-
-                        let data = [
-                          "\x1B" + "\x40", // init
-                          "\x1B" + "\x61" + "\x31", // center align
-                          storeDetails.name,
-                          "\x0A",
-                          storeDetails.address?.label + "\x0A",
-                          storeDetails.website + "\x0A", // text and line break
-                          storeDetails.phoneNumber + "\x0A", // text and line break
-                          date + "\x0A",
-                          "\x0A",
-                          `Transaction ID ${element.transNum}` + "\x0A",
-                          "\x0A",
-                          "\x0A",
-                          "\x0A",
-                          "\x1B" + "\x61" + "\x30", // left align
-                        ];
-
-                        element.cart?.map((cartItem) => {
-                          total += parseFloat(cartItem.price);
-                          data.push(`Name: ${cartItem.name}`);
-                          data.push("\x0A");
-                          data.push(`Price: $${cartItem.price}`);
-
-                          if (cartItem.options) {
-                            data.push("\x0A");
-                            cartItem.options?.map((option) => {
-                              data.push(option);
-                              data.push("\x0A");
-                            });
-                          }
-                          data.push("\x0A" + "\x0A");
-                        });
-
-                        total = total * 1.13;
-                        total = total.toFixed(2);
-
-                        if (element.billing) {
-                          data.push(`Phone Number: ${element.billing.phone}`);
-                          data.push("\x0A");
-                        }
-
-                        if (element.customer_note) {
-                          data.push(`Customer Note: ${element.customer_note}`);
-                          data.push("\x0A");
-                        }
-
-                        //push ending
-                        data.push(
-                          "\x0A",
-                          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-                          "\x0A" + "\x0A",
-                          "Total Including (13% Tax): " +
-                            "$" +
-                            total +
-                            "\x0A" +
-                            "\x0A",
-                          "------------------------------------------" + "\x0A",
-                          "\x0A", // line break
-                          "\x0A", // line break
-                          "\x0A", // line break
-                          "\x0A", // line break
-                          "\x0A", // line break
-                          "\x0A", // line break
-                          //"\x1D" + "\x56" + "\x00",
-                          "\x1D" + "\x56" + "\x30"
-                        );
-
-                        const qz = require("qz-tray");
-                        qz.websocket
-                          .connect()
-                          .then(function () {
-                            let config = qz.configs.create(
-                              storeDetails.comSelected
-                            );
-                            return qz.print(config, data);
-                          })
-                          .then(qz.websocket.disconnect)
-                          .catch(function (err) {
-                            console.error(err);
-                          });
-                        // fetch("http://localhost:8080/print", {
-                        //   method: "POST",
-                        //   headers: {
-                        //     "Content-Type": "application/json",
-                        //   },
-                        //   body: JSON.stringify({
-                        //     printData: data,
-                        //     comSelected: storeDetails.comSelected,
-                        //   }),
-                        // })
-                        //   .then((response) => response.json())
-                        //   .then((respData) => {
-                        //     console.log(respData);
-                        //   })
-                        //   .catch((e) => alert("Error with printer"));
-                      } else {
-                        const printData = [];
-
-                        printData.push(
-                          "\x1B" + "\x40", // init
-                          "\x1B" + "\x61" + "\x31", // center align
-                          storeDetails.name,
-                          "\x0A",
-                          storeDetails.address?.label + "\x0A",
-                          storeDetails.website + "\x0A", // text and line break
-                          storeDetails.phoneNumber + "\x0A", // text and line break
-                          date + "\x0A",
-                          "\x0A",
-                          "Online Order" + "\x0A", // text and line break
-                          `Transaction ID ${element.number}` + "\x0A",
-                          "\x0A",
-                          "\x0A",
-                          "\x0A",
-                          "\x1B" + "\x61" + "\x30" // left align
-                        );
-
-                        element.line_items?.map((cartItem) => {
-                          printData.push("\x0A");
-                          printData.push(`Name: ${cartItem.name}`);
-                          printData.push("\x0A");
-                          printData.push(`Quantity: ${cartItem.quantity}`);
-                          printData.push("\x0A");
-                          printData.push(`Price: $${cartItem.price}`);
-                          printData.push("\x0A");
-
-                          if (cartItem.meta) {
-                            CleanupOps(cartItem.meta).map((returnedItem) => {
-                              printData.push(`${returnedItem.key} : `);
-                              returnedItem.vals.map((val, index) => {
-                                printData.push(`${val}`);
-                                if (
-                                  index >= 0 &&
-                                  index < returnedItem.vals.length - 1
-                                ) {
-                                  printData.push(", ");
-                                }
-                              });
-                              printData.push("\x0A");
-                            });
-                          } else {
-                            printData.push("\x0A" + "\x0A");
-                          }
-                        });
-
-                        printData.push("\x0A");
-                        printData.push("\x0A");
-                        printData.push(`Customer Details:`);
-                        printData.push("\x0A");
-                        printData.push(
-                          `Address: ${element.shipping.address_1}`
-                        );
-                        printData.push("\x0A");
-                        printData.push(`City: ${element.shipping.city}`);
-                        printData.push("\x0A");
-                        printData.push(
-                          `Zip/Postal Code: ${element.shipping.postcode}`
-                        );
-                        printData.push("\x0A");
-                        printData.push(
-                          `Province/State: ${element.shipping.state}`
-                        );
-                        printData.push("\x0A");
-                        printData.push(
-                          `Name: ${element.shipping.first_name} ${element.shipping.last_name}`
-                        );
-                        printData.push("\x0A");
-                        element.shipping_lines.map((line) => {
-                          printData.push(
-                            `Shipping Method: ${line.method_title}`
-                          );
-                          printData.push("\x0A");
-                        });
-                        if (element.billing) {
-                          printData.push(
-                            `Phone Number: ${element.billing.phone}`
-                          );
-                          printData.push("\x0A");
-                        }
-                        if (element.customer_note) {
-                          printData.push(
-                            `Customer Note: ${element.customer_note}`
-                          );
-                          printData.push("\x0A");
-                        }
-                        printData.push("\x0A");
-                        printData.push("\x0A");
-
-                        printData.push(
-                          "\x0A",
-                          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-                          "\x0A" + "\x0A",
-                          "Payment Method: " +
-                            element.payment_method_title +
-                            "\x0A" +
-                            "\x0A",
-                          "Total Including (13% Tax): " +
-                            "$" +
-                            element.total +
-                            "\x0A" +
-                            "\x0A",
-                          "------------------------------------------" + "\x0A",
-                          "\x0A", // line break
-                          "\x0A", // line break
-                          "\x0A", // line break
-                          "\x0A", // line break
-                          "\x0A", // line break
-                          "\x0A" // line break
-                        );
-
-                        printData.push("\x1D" + "\x56" + "\x00");
-
-                        const qz = require("qz-tray");
-                        qz.websocket
-                          .connect()
-                          .then(function () {
-                            let config = qz.configs.create(
-                              storeDetails.comSelected
-                            );
-                            return qz.print(config, printData);
-                          })
-                          .then(qz.websocket.disconnect)
-                          .catch(function (err) {
-                            console.error(err);
-                          });
-
-                        // fetch("http://localhost:8080/print", {
-                        //   method: "POST",
-                        //   headers: {
-                        //     "Content-Type": "application/json",
-                        //   },
-                        //   body: JSON.stringify({
-                        //     printData: printData,
-                        //     comSelected: storeDetails.comSelected,
-                        //   }),
-                        // })
-                        //   .then((response) => response.json())
-                        //   .then((respData) => {
-                        //     console.log(respData);
-                        //   })
-                        //   .catch((e) => alert("Error with printer"));
-                      }
-                    }}
-                  />
-                </View>
+              const qz = require("qz-tray");
+              qz.websocket
+                .connect()
+                .then(function () {
+                  let config = qz.configs.create(storeDetails.comSelected);
+                  return qz.print(config, data);
+                })
+                .then(qz.websocket.disconnect)
+                .catch(function (err) {
+                  console.error(err);
+                });
+            } else {
+              alert(
+                "Higlight one or multiple receipt then click to print them"
               );
-            }}
-          />
-        ) : (
-          <Text>No receipts yet</Text>
-        )}
+            }
+          }}
+        >
+          <MaterialCommunityIcons name="printer" size={32} color="white" />
+        </TouchableOpacity>
       </View>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <ScrollView contentContainerStyle={styles.contentContainer} horizontal>
+          <ReactGrid
+            ref={testRef}
+            rows={rows}
+            columns={columns}
+            enableRowSelection={true}
+          />
+        </ScrollView>
+      </ScrollView>
     </View>
   );
 };
@@ -673,17 +500,16 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flex: 1,
     height: "100%",
+    width: "100%",
   },
   contentContainer: {
     flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    paddingLeft: 50,
-    paddingRight: 50,
-    paddingBottom: 50,
+    // justifyContent: "space-between",
+    // paddingLeft: 50,
+    // paddingRight: 50,
+    // paddingBottom: 50,
+    // padding: 50,
     height: "100%",
     width: "100%",
-    alignItems: "center",
   },
 });

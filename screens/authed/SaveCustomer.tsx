@@ -335,7 +335,7 @@ const SaveCustomer = ({
                   name="home"
                   style={[styles.personIcon, { marginRight: 15 }]}
                 />
-                <Text>{customerSelected.address}</Text>
+                <Text>{customerSelected.address?.label}</Text>
               </View>
               <TouchableOpacity
                 onPress={() => {
@@ -387,7 +387,7 @@ const SaveCustomer = ({
                   search?.length > 0 &&
                   !customer.name?.includes(search) &&
                   !customer.phone?.includes(search) &&
-                  !customer.address?.includes(search)
+                  !customer.address?.label?.includes(search)
                 )
                   return;
                 return (

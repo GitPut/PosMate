@@ -110,7 +110,8 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
           </View>
           <TextInput
             placeholder="Enter Password"
-            inputStyle={[{ width: 200 },
+            inputStyle={[
+              { width: 200 },
               { backgroundColor: "rgba(241,241,241,1)" },
               !showPassword &&
                 password.length !== 0 && { fontFamily: "Password" },
@@ -166,7 +167,7 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
           }}
           onPress={() => {
             if (password == storeDetails.settingsPassword) {
-              navigation.navigate("Settings");
+              navigation.navigate("settings");
               setsettingsPasswordModalVis(false);
               setinccorectPass(false);
             } else {

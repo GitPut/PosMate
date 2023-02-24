@@ -23,7 +23,7 @@ const MenuScreen = ({ navigation, catalog }) => {
           return catalog.products
             .filter((e) => e.catagory === catalog.categories[0])
             .map((product, index) => (
-              <DisplayTest 
+              <DisplayTest
                 product={product}
                 productIndex={index}
                 key={index}

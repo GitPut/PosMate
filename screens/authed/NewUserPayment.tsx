@@ -264,6 +264,10 @@ const NewUserPayment = ({ resetLoader }) => {
                       onChange: setlocalStoreAddress,
                       defaultValue: localStoreAddress,
                       placeholder: "Enter store address",
+                      menuPortalTarget: document.body,
+                      styles: {
+                        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                      },
                     }}
                     renderSuggestions={(
                       active,
@@ -297,7 +301,7 @@ const NewUserPayment = ({ resetLoader }) => {
             updateStoreDetails({
               name: storeName,
               phoneNumber: phoneNumber,
-              address: address?.label,
+              address: address,
               website: website ? website : null,
               deliveryPrice: deliveryPrice ? deliveryPrice : null,
               comSelected: com ? com : null,

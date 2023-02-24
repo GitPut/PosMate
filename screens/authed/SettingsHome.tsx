@@ -12,6 +12,7 @@ import ProductAndCatManager from "./ProductAndCatManager";
 import { woocommerceState } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 import PlanUpdateTest from "./PlanUpdateTest";
+import ViewTransactions from "./ViewTransactions";
 
 const SettingsHome = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
@@ -191,7 +192,10 @@ const SettingsHome = ({ navigation }) => {
             {/* <Text>HEllo</Text> */}
             {currentSettingPage !== "productManager" &&
               currentSettingPage !== "storeManager" &&
-              currentSettingPage !== "test" && <StatsScreen />}
+              currentSettingPage !== "test" && (
+                // <StatsScreen />
+                <ViewTransactions />
+              )}
             {currentSettingPage === "storeManager" && <EditStoreDetails />}
             {currentSettingPage === "productManager" && (
               <ProductAndCatManager navigation={navigation} />

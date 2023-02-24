@@ -215,6 +215,8 @@ const DeliveryScreen = ({
                 localAddress,
                 onChange: setlocalAddress,
                 placeholder: "Enter customer address",
+                menuPortalTarget: document.body,
+                styles: { menuPortal: (base) => ({ ...base, zIndex: 9999 }) },
               }}
               renderSuggestions={(active, suggestions, onSelectSuggestion) => (
                 <div style={{ width: "80%" }}>

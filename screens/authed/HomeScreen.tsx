@@ -29,6 +29,11 @@ const HomeScreen = ({ navigation }) => {
   const [settingsPasswordModalVis, setsettingsPasswordModalVis] =
     useState(false);
 
+  // useEffect(() => {
+  //   console.log("PATH: ", window.location.pathname);
+  //   if (window.location.pathname === '/settings') { document.title = "Settings"; navigation }
+  // }, []);
+
   const Header = () => {
     return (
       <View
@@ -41,6 +46,14 @@ const HomeScreen = ({ navigation }) => {
           backgroundColor: "rgba(31,35,48,1)",
           paddingLeft: 25,
           paddingRight: 25,
+          shadowColor: "rgba(0,0,0,1)",
+          shadowOffset: {
+            width: -3,
+            height: 3,
+          },
+          elevation: 30,
+          shadowOpacity: 0.5,
+          shadowRadius: 5,
         }}
       >
         <Image
@@ -67,7 +80,7 @@ const HomeScreen = ({ navigation }) => {
             onPress={() =>
               storeDetails.settingsPassword
                 ? setsettingsPasswordModalVis(true)
-                : navigation.navigate("Settings")
+                : navigation.navigate("settings")
             }
             style={{
               backgroundColor: "rgba(41,44,56,1)",
