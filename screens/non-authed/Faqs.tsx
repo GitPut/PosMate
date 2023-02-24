@@ -363,7 +363,7 @@ const Faqs = () => {
           <div className="graphic-circle-3" />
         </section>
       </main>
-     <Footer />
+      <Footer />
     </div>
   );
 };

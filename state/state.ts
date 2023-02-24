@@ -29,9 +29,9 @@ export const setTransListState = (val) => {
 };
 
 export const woocommerceState = entity({
-  apiUrl: null,
-  ck: null,
-  cs: null,
+  apiUrl: "",
+  ck: "",
+  cs: "",
   useWoocommerce: false,
 });
 
@@ -40,13 +40,13 @@ export const setWoocommerceState = (val) => {
 };
 
 export const storeDetailState = entity({
-  name: null,
-  address: null,
-  phoneNumber: null,
-  website: null,
-  comSelected: null,
-  deliveryPrice: null,
-  settingsPassword: null,
+  name: "",
+  address: "",
+  phoneNumber: "",
+  website: "",
+  comSelected: "",
+  deliveryPrice: "",
+  settingsPassword: "",
 });
 
 export const setStoreDetailState = (val) => {

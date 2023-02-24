@@ -8,5 +8,4 @@ const App = () => {
   return <RouteManager />;
 };
 
-//hello love u
 export default App;

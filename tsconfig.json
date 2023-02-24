@@ -11,7 +11,7 @@
     "strict": true,
     "target": "esnext",
     "baseUrl": "./",
-      "paths": {
+    "paths": {
       "assets/*": ["assets/*"],
       "components/*": ["components/*"],
       "navigation/*": ["navigation/*"],

@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { userStoreState } from "state/state";
 import { Button, TextInput } from "@react-native-material/core";
-import TestAdd from "./TestAdd";
+import ProductBuilder from "./ProductBuilder";
 import Spinner from "./Spinner";
 import { updateData } from "state/firebaseFunctions";
 

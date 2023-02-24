@@ -4,21 +4,22 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  TextInput,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Button, TextInput } from "@react-native-material/core";
+import { Button } from "@react-native-material/core";
 import ProductOptionDropDown from "./ProductOptionDropDown";
 import { addCartState, cartState, setCartState } from "state/state";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
-const ProductListing = ({ navigation, route }) => {
-  const { product, itemIndex } = route.params;
+const ProductListing = ({ product, itemIndex, goBack }) => {
   const cart = cartState.use();
   const myObj = product;
   const [myObjProfile, setmyObjProfile] = useState(myObj);
   const [total, settotal] = useState(myObj.total ? myObj.total : myObj.price);
   const [extraInput, setextraInput] = useState(
-    myObj.extraDetails ? myObj.extraDetails : null
+    myObj.extraDetails ? myObj.extraDetails : ""
   );
 
   const DisplayOption = ({ e, index }) => {
@@ -86,38 +87,12 @@ const ProductListing = ({ navigation, route }) => {
                       newMyObjProfile.options[index].optionsList[
                         indexOfOl
                       ].selected = false;
-                      // settotal((prevState) =>
-                      //   (
-                      //     parseFloat(prevState) -
-                      //     parseFloat(
-                      //       newMyObjProfile.options[index].optionsList[
-                      //         indexOfOl
-                      //       ].priceIncrease !== null
-                      //         ? newMyObjProfile.options[index].optionsList[
-                      //             indexOfOl
-                      //           ].priceIncrease
-                      //         : 0
-                      //     )
-                      //   ).toFixed(2)
-                      //);
                     }
                   }
                 );
 
                 newMyObjProfile.options[index].optionsList[listIndex].selected =
                   true;
-                // settotal((prevState) =>
-                //   (
-                //     parseFloat(prevState) +
-                //     parseFloat(
-                //       newMyObjProfile.options[index].optionsList[listIndex]
-                //         .priceIncrease !== null
-                //         ? newMyObjProfile.options[index].optionsList[listIndex]
-                //             .priceIncrease
-                //         : 0
-                //     )
-                //   ).toFixed(2)
-                // );
                 setoptionVal(option);
                 setmyObjProfile(newMyObjProfile);
               }}
@@ -145,19 +120,18 @@ const ProductListing = ({ navigation, route }) => {
                   <TouchableOpacity
                     key={listIndex}
                     style={[
+                      styles.multiOption,
                       myObjProfile.options[index].optionsList[listIndex]
-                        .selected == true && {
-                        backgroundColor: "green",
-                      },
-                      {
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        padding: 10,
-                        margin: 5,
-                        borderColor: "black",
-                        borderWidth: 2,
-                        // width: "50%",
-                      },
+                        .selected == true
+                        ? {
+                            backgroundColor: "rgba(205,213,255,1)",
+                            borderWidth: 2,
+                            borderColor: "rgba(205,213,255,1)",
+                          }
+                        : {
+                            borderWidth: 2,
+                            borderColor: "rgba(203,202,202,1)",
+                          },
                     ]}
                     onPress={() => {
                       const newMyObjProfile = structuredClone(myObjProfile);
@@ -183,13 +157,31 @@ const ProductListing = ({ navigation, route }) => {
                       setmyObjProfile(newMyObjProfile);
                     }}
                   >
-                    <Text style={styles.h2Black}>Name: {selection.label}</Text>
-                    <View style={{ width: 20 }} />
-                    <Text style={styles.h2Black}>
-                      Price: $
+                    <Text
+                      style={[
+                        styles.optionNameTxt,
+                        myObjProfile.options[index].optionsList[listIndex]
+                          .selected == true
+                          ? { color: "rgba(41,122,217,1)" }
+                          : { color: "rgba(155, 155, 155, 1) " },
+                      ]}
+                    >
+                      {selection.label}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.optionPriceTxt,
+                        myObjProfile.options[index].optionsList[listIndex]
+                          .selected == true
+                          ? { color: "rgba(41,122,217,1)" }
+                          : { color: "rgba(155, 155, 155, 1) " },
+                      ]}
+                    >
+                      (+$
                       {selection.priceIncrease !== null
                         ? selection.priceIncrease
                         : 0}
+                      )
                     </Text>
                   </TouchableOpacity>
                 );
@@ -200,7 +192,6 @@ const ProductListing = ({ navigation, route }) => {
       }
     } else if (checkCases() === false) {
       const newMyObjProfile = structuredClone(myObjProfile);
-      // let newSubtract = 0;
       newMyObjProfile.options[index].optionsList.forEach(
         (item, indexOfItem) => {
           if (item.selected === true) {
@@ -210,14 +201,7 @@ const ProductListing = ({ navigation, route }) => {
           }
         }
       );
-      // console.log("new subtract: ", newSubtract);
-      // if (newSubtract > 0) {
-      //   settotal((prevState) =>
-      //     (parseFloat(prevState) - newSubtract).toFixed(2)
-      //   );
-      // }
     }
-    // return null;
   };
 
   useEffect(() => {
@@ -289,14 +273,61 @@ const ProductListing = ({ navigation, route }) => {
       });
     }
 
-    navigation.goBack();
+    goBack();
     setmyObjProfile(myObj);
     settotal(myObjProfile.price);
     setextraInput(null);
   };
 
   return (
-    <ScrollView style={styles.modalContainer}>
+    <View style={{ padding: "5%", backgroundColor: "white", height: "100%" }}>
+      <View
+        style={{
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexDirection: "row",
+        }}
+      >
+        <TouchableOpacity
+          onPress={goBack}
+          style={{
+            alignItems: "center",
+            flexDirection: "row",
+          }}
+        >
+          <MaterialCommunityIcons
+            name="chevron-left"
+            size={32}
+            color="#4A4A4A"
+          />
+          <Text
+            style={{
+              fontFamily: "archivo-600",
+              fontSize: 22,
+              color: "#4A4A4A",
+            }}
+          >
+            Dashboard
+          </Text>
+        </TouchableOpacity>
+        <Text style={{ fontFamily: "archivo-600", fontSize: 24 }}>
+          {myObj.name}
+        </Text>
+        <Text
+          style={{ fontFamily: "archivo-600", fontSize: 22, color: "#4A4A4A" }}
+        >
+          Total: ${parseFloat(total).toFixed(2)}
+        </Text>
+      </View>
+      <ScrollView style={styles.modalContainer}>
+        {myObj.description && (
+          <Text style={styles.h2Black}>Name: {myObj.description}</Text>
+        )}
+        {myObjProfile.options.map((e, index) => (
+          <DisplayOption e={e} index={index} key={index} />
+        ))}
+      </ScrollView>
       <View
         style={{
           flexDirection: "row",
@@ -305,66 +336,29 @@ const ProductListing = ({ navigation, route }) => {
           width: "100%",
         }}
       >
-        <Text style={styles.h2Black}>{myObj.name}</Text>
-        <View
+        <TextInput
+          placeholder="Write any extra info here.."
+          onChangeText={(val) => setextraInput(val)}
+          value={extraInput}
           style={{
-            flexDirection: "row",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            width: "50%",
+            width: "70%",
+            height: 45,
+            borderColor: "lightgrey",
+            borderWidth: 1,
+            padding: 5,
+            borderRadius: 3,
+            paddingLeft: 10,
+            fontSize: 14,
           }}
-        >
-          <Text style={{ fontSize: 15 }}>Grand total: ${total}</Text>
-          <TouchableOpacity
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: 25,
-              backgroundColor: "red",
-              justifyContent: "center",
-              alignItems: "center",
-              marginLeft: 50,
-              marginRight: 50,
-            }}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="close" size={32} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: 25,
-              backgroundColor: "green",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={AddToCart}
-          >
-            <Ionicons
-              name={itemIndex >= 0 ? "checkmark" : "cart"}
-              size={32}
-              color="white"
-            />
-          </TouchableOpacity>
-        </View>
+        />
+        <Button
+          title={itemIndex >= 0 ? "Save" : "Add To Cart"}
+          onPress={AddToCart}
+          style={{ backgroundColor: "#3351F3", width: 140, height: 40 }}
+          titleStyle={{ fontSize: 16, textTransform: "capitalize" }}
+        />
       </View>
-      {myObj.description && (
-        <Text style={styles.h2Black}>Name: {myObj.description}</Text>
-      )}
-      {myObjProfile.options.map((e, index) => (
-        <DisplayOption e={e} index={index} key={index} />
-      ))}
-      <TextInput
-        color="black"
-        placeholder="Write any extra info here.."
-        multiline={true}
-        onChangeText={(val) => setextraInput(val)}
-        value={extraInput}
-        style={{ marginTop: 15, marginBottom: 15 }}
-        inputStyle={{ padding: 10 }}
-      />
-    </ScrollView>
+    </View>
   );
 };
 
@@ -396,8 +390,22 @@ const styles = StyleSheet.create({
     width: 300,
   },
   modalContainer: {
+    marginTop: 25,
+    marginBottom: 25,
     padding: "5%",
     backgroundColor: "white",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "rgba(232,232,232,1)",
+    shadowColor: "rgba(0,0,0,1)",
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    elevation: 30,
+    shadowOpacity: 0.03,
+    shadowRadius: 10,
+    height: "70%",
   },
   btn: {
     marginBottom: 25,
@@ -413,5 +421,29 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: "black",
     fontWeight: "600",
+  },
+  multiOption: {
+    // backgroundColor: "rgba(205,213,255,1)",
+    borderRadius: 10,
+    shadowColor: "rgba(0,0,0,1)",
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    elevation: 30,
+    shadowOpacity: 0.03,
+    shadowRadius: 10,
+    alignItems: "center",
+    justifyContent: "space-around",
+    padding: 10,
+    margin: 5,
+  },
+  optionNameTxt: {
+    fontFamily: "archivo-600",
+    fontSize: 18,
+  },
+  optionPriceTxt: {
+    fontFamily: "archivo-600",
+    fontSize: 16,
   },
 });

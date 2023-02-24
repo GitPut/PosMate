@@ -30,7 +30,7 @@ import Feather from "@expo/vector-icons/Feather";
 import SaveCustomer from "./SaveCustomer";
 import { auth, db } from "state/firebaseConfig";
 import CartItem from "components/CartItem";
-import ProductListingTest from "components/ProductListingTest";
+import ProductListing from "components/ProductListing";
 
 const CartItemEditable = ({ cartItem, index, removeAction }) => {
   const [showProductScreen, setshowProductScreen] = useState(false);
@@ -97,7 +97,7 @@ const CartItemEditable = ({ cartItem, index, removeAction }) => {
                 borderTopRightRadius: 3,
               }}
             >
-              <ProductListingTest
+              <ProductListing
                 product={cartItem.editableObj}
                 itemIndex={index}
                 goBack={() => fadeOut()}
@@ -166,12 +166,10 @@ const CartScreen = ({ navigation }) => {
   const [savedCustomerDetails, setsavedCustomerDetails] = useState(null);
 
   useEffect(() => {
-    console.log("hello", cartSub);
     if (cart.length > 0) {
       let newVal = 0;
       for (var i = 0; i < cart.length; i++) {
         newVal += parseFloat(cart[i].price);
-        console.log("item price: ", cart[i].price);
       }
       if (deliveryChecked) {
         setCartSub(newVal + parseFloat(storeDetails.deliveryPrice));
@@ -766,6 +764,7 @@ const CartScreen = ({ navigation }) => {
           {cart.length > 0 ? (
             cart.map((cartItem, index) => (
               <CartItemEditable
+                key={index}
                 cartItem={cartItem}
                 index={index}
                 removeAction={() => {

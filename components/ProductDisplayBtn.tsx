@@ -12,9 +12,9 @@ import { userStoreState } from "state/state";
 import { Button, TextInput } from "@react-native-material/core";
 import { addCartState } from "state/state";
 import ProductOptionDropDown from "./ProductOptionDropDown";
-import ProductListingTest from "./ProductListingTest";
+import ProductListing from "./ProductListing";
 
-const DisplayTest = ({ navigation, product, productIndex }) => {
+const ProductDisplayBtn = ({ navigation, product, productIndex }) => {
   const [showProductScreen, setshowProductScreen] = useState(false);
   const xPos = useRef(new Animated.Value(-1000)).current;
   const shadowOpacity = useRef(new Animated.Value(0)).current;
@@ -93,7 +93,7 @@ const DisplayTest = ({ navigation, product, productIndex }) => {
                 borderTopRightRadius: 3,
               }}
             >
-              <ProductListingTest product={product} goBack={() => fadeOut()} />
+              <ProductListing product={product} goBack={() => fadeOut()} />
             </View>
           </Animated.View>
           <Animated.View
@@ -140,7 +140,7 @@ const DisplayTest = ({ navigation, product, productIndex }) => {
   );
 };
 
-export default DisplayTest;
+export default ProductDisplayBtn;
 
 const styles = StyleSheet.create({
   touchable: {

@@ -23,11 +23,11 @@ const AddProduct = ({ route, navigation }) => {
     existingProduct
       ? existingProduct
       : {
-          name: null,
-          price: null,
+          name: "",
+          price: "",
           catagory: null,
           options: [],
-          description: null,
+          description: "",
         }
   );
   const newProductOptions = useRef(

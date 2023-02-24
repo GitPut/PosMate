@@ -4,7 +4,7 @@ import { auth, db } from "state/firebaseConfig";
 import firebase from "firebase/app";
 
 const AddCategory = ({ setaddCategoryModal }) => {
-  const [name, setname] = useState();
+  const [name, setname] = useState("");
 
   function AddToDb() {
     db.collection("users")

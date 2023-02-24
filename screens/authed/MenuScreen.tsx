@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { userStoreState } from "state/state";
-import DisplayTest from "components/DisplayTest";
+import ProductDisplayBtn from "components/ProductDisplayBtn";
 import useWindowDimensions from "components/useWindowDimensions";
 const wh = Dimensions.get("window").height;
 
@@ -23,7 +23,7 @@ const MenuScreen = ({ navigation, catalog }) => {
           return catalog.products
             .filter((e) => e.catagory === catalog.categories[0])
             .map((product, index) => (
-              <DisplayTest
+              <ProductDisplayBtn
                 product={product}
                 productIndex={index}
                 key={index}
@@ -34,7 +34,7 @@ const MenuScreen = ({ navigation, catalog }) => {
           return catalog.products
             .filter((e) => e.catagory === section)
             .map((product, index) => (
-              <DisplayTest
+              <ProductDisplayBtn
                 product={product}
                 productIndex={index}
                 key={index}

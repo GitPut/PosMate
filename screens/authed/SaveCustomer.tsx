@@ -335,7 +335,13 @@ const SaveCustomer = ({
                   name="home"
                   style={[styles.personIcon, { marginRight: 15 }]}
                 />
-                <Text>{customerSelected.address?.label}</Text>
+                <Text>
+                  {customerSelected.address?.label
+                    ? customerSelected.address?.label
+                    : customerSelected.address
+                    ? customerSelected.address
+                    : null}
+                </Text>
               </View>
               <TouchableOpacity
                 onPress={() => {
