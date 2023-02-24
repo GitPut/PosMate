@@ -29,15 +29,29 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import "@silevis/reactgrid/styles.css";
 import ReceiptPrint from "components/ReceiptPrint";
 
-const getDate = (seconds) => {
-  const newDate = new Date(seconds * 1000);
-  const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const getDate = (receipt) => {
+  if (receipt.date_created) {
+    const dateString = receipt.date_created;
 
-  const result = tz(newDate)
-    .tz(targetTimezone, true)
-    .format("YYYY-MM-DD, h:mm:ss a z");
+    const newDate = new Date(dateString + "Z");
 
-  return result;
+    const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const result = tz(newDate)
+      .tz(targetTimezone, true)
+      .format("dddd, MMMM Do YYYY, h:mm:ss a z");
+
+    return result;
+  } else if (receipt.date) {
+    const newDate = new Date(receipt.date.seconds * 1000);
+    const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const result = tz(newDate)
+      .tz(targetTimezone, true)
+      .format("dddd, MMMM Do YYYY, h:mm:ss a z");
+
+    return result;
+  }
 };
 
 const ViewTransactions = () => {
@@ -94,61 +108,127 @@ const ViewTransactions = () => {
           )
       )
       .map<Row>((receipt, idx) => {
-        return {
-          rowId: idx,
-          cells: [
-            {
-              type: "text",
-              text: receipt.customer.name,
-              nonEditable: true,
-              style: { flex: 1 },
-            },
-            {
-              type: "text",
-              text: receipt.customer.phone ? receipt.customer.phone : "",
-              nonEditable: true,
-              style: { flex: 1 },
-            },
-            {
-              type: "text",
-              text: receipt.customer.address?.label
-                ? receipt.customer.address?.label
-                : "",
-              nonEditable: true,
-              style: { flex: 1 },
-            },
-            {
-              type: "text",
-              text: receipt.cart_hash ? "Online" : "POS",
-              nonEditable: true,
-              style: { flex: 1 },
-            },
-            {
-              type: "text",
-              text: receipt.method === "deliveryOrder" ? "Delivery" : "Pickup",
-              nonEditable: true,
-              style: { flex: 1 },
-            },
-            {
-              type: "text",
-              text: receipt.transNum ? receipt.transNum : "",
-              nonEditable: true,
-              style: { flex: 1 },
-            },
-            {
-              type: "text",
-              text: receipt.total ? "$" + receipt.total : "",
-              nonEditable: true,
-              style: { flex: 1 },
-            },
-            {
-              type: "text",
-              text: receipt.date ? getDate(receipt.date.seconds) : "",
-              nonEditable: true,
-              style: { flex: 1 },
-            },
-          ],
-        };
+        if (receipt.cart_hash) {
+          return {
+            rowId: idx,
+            cells: [
+              {
+                type: "text",
+                text:
+                  receipt.shipping.first_name +
+                  " " +
+                  receipt.shipping.last_name,
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text: receipt.billing.phone,
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text:
+                  receipt.shipping.address_1 +
+                  receipt.shipping.city +
+                  receipt.shipping.postcode +
+                  receipt.shipping.state,
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text: "Online",
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text: receipt.shipping_lines[0].line.method_title,
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text: receipt.transNum ? receipt.transNum : "",
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text: receipt.total,
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text: getDate(receipt),
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+            ],
+          };
+        } else {
+          return {
+            rowId: idx,
+            cells: [
+              {
+                type: "text",
+                text: receipt.customer.name,
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text: receipt.customer.phone ? receipt.customer.phone : "",
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text: receipt.customer?.address?.label
+                  ? receipt.customer?.address?.label
+                  : receipt.customer?.address
+                  ? receipt.customer?.address
+                  : "",
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text: receipt.cart_hash ? "Online" : "POS",
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text:
+                  receipt.method === "deliveryOrder" ? "Delivery" : "Pickup",
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text: receipt.transNum ? receipt.transNum : "",
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text: receipt.total ? "$" + receipt.total : "",
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+              {
+                type: "text",
+                text: getDate(receipt),
+                nonEditable: true,
+                style: { flex: 1 },
+              },
+            ],
+          };
+        }
       }),
   ];
 

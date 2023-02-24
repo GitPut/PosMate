@@ -161,6 +161,7 @@ const OptionView = ({
             </TouchableOpacity>
           </TouchableOpacity>
           <TextInput
+            color="black"
             placeholder="Enter Select List Label"
             onChangeText={(val) => {
               sete((prevState) => ({ ...prevState, label: val }));
@@ -188,6 +189,7 @@ const OptionView = ({
             style={{ marginBottom: 25 }}
           />
           <TextInput
+            color="black"
             placeholder="Enter Number Of Selectable; If There Is"
             onChangeText={(val) => {
               sete((prevState) => ({ ...prevState, numOfSelectable: val }));
@@ -207,6 +209,7 @@ const OptionView = ({
                 }}
               >
                 <TextInput
+                  color="black"
                   placeholder="Enter Option Label"
                   onChangeText={(val) => {
                     const clone = structuredClone(testMap);
@@ -217,6 +220,7 @@ const OptionView = ({
                   value={eInnerList.label}
                 />
                 <TextInput
+                  color="black"
                   placeholder="Enter price increase"
                   //   onChangeText={(val) => {
                   //     newProductOptions.current[index].optionsList[
@@ -267,7 +271,7 @@ const OptionView = ({
               newProductOptions.current[index].optionsList = clone;
               settestMap(clone);
             }}
-            style={{ marginBottom: 25 }}
+            style={{ marginBottom: 25, backgroundColor: "#4050B5" }}
           />
           {e.selectedCaseList?.map((ifStatement, indexOfIf) => {
             const local = newProduct.options.filter(
@@ -344,6 +348,7 @@ const OptionView = ({
                         newProductOptions.current[index].selectedCaseList,
                     }));
                   }}
+                  style={{ backgroundColor: "#4050B5" }}
                 />
               </View>
             );
@@ -377,6 +382,7 @@ const OptionView = ({
                   }));
                 }
               }}
+              style={{ backgroundColor: "#4050B5" }}
             />
           )}
         </View>

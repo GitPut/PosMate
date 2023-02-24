@@ -143,6 +143,7 @@ const ChangeScreen = ({
         </View>
         <Text>Total: ${total}</Text>
         <TextInput
+          color="black"
           label="Enter Cash Given"
           variant="outlined"
           style={styles.input}
@@ -160,13 +161,13 @@ const ChangeScreen = ({
             openCash();
           }}
           contentContainerStyle={styles.btn}
-          style={{ margin: 25 }}
+          style={{ margin: 25, backgroundColor: "#4050B5" }}
         />
         <Button
           title="Cancel"
           onPress={CancelPayment}
           contentContainerStyle={styles.btn}
-          style={{ margin: 25 }}
+          style={{ margin: 25, backgroundColor: "#4050B5" }}
         />
       </View>
     </>

@@ -181,6 +181,7 @@ const NewUserPayment = ({ resetLoader }) => {
                       Fill In Your Stores Information!
                     </Text>
                     <TextInput
+                      color="black"
                       onChangeText={(val) => setlocalStoreName(val)}
                       value={localStoreName}
                       style={styles.textInput}
@@ -190,6 +191,7 @@ const NewUserPayment = ({ resetLoader }) => {
                       )}
                     />
                     <TextInput
+                      color="black"
                       onChangeText={(val) => setlocalStorePhone(val)}
                       value={localStorePhone}
                       style={styles.textInput}
@@ -199,6 +201,7 @@ const NewUserPayment = ({ resetLoader }) => {
                       )}
                     />
                     <TextInput
+                      color="black"
                       onChangeText={(val) => setlocalStoreWebsite(val)}
                       value={localStoreWebsite}
                       style={styles.textInput}
@@ -367,6 +370,7 @@ const NewUserPayment = ({ resetLoader }) => {
                     Add your woocommerce and set up printer!
                   </Text>
                   <TextInput
+                    color="black"
                     style={styles.textInput}
                     label="Enter receipt printer name"
                     leading={(props) => (
@@ -385,18 +389,21 @@ const NewUserPayment = ({ resetLoader }) => {
                   {useWoocommerce && (
                     <>
                       <TextInput
+                        color="black"
                         style={styles.textInput}
                         label="Enter Woocommerce 'API Url'"
                         onChangeText={(val) => setapiUrl(val)}
                         value={apiUrl}
                       />
                       <TextInput
+                        color="black"
                         style={styles.textInput}
                         label="Enter Woocommerce 'CK'"
                         onChangeText={(val) => setck(val)}
                         value={ck}
                       />
                       <TextInput
+                        color="black"
                         style={styles.textInput}
                         label="Enter Woocommerce 'CS'"
                         onChangeText={(val) => setcs(val)}

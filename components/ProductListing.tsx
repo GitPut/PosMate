@@ -356,6 +356,7 @@ const ProductListing = ({ navigation, route }) => {
         <DisplayOption e={e} index={index} key={index} />
       ))}
       <TextInput
+        color="black"
         placeholder="Write any extra info here.."
         multiline={true}
         onChangeText={(val) => setextraInput(val)}

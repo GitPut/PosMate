@@ -59,6 +59,7 @@ const AddCategory = () => {
         );
       })}
       <TextInput
+        color="black"
         placeholder="Enter New Category"
         onChangeText={(val) => setcategoryName(val)}
         style={{ margin: 10 }}
@@ -66,7 +67,7 @@ const AddCategory = () => {
       <Button
         title="Add New Category"
         onPress={handleDataUpdate}
-        style={{ margin: 10 }}
+        style={{ margin: 10, backgroundColor: "#4050B5" }}
       />
       <Spinner isModalVisible={isModalVisible} />
     </ScrollView>

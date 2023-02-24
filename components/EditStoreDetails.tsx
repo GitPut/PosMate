@@ -11,8 +11,16 @@ import {
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Switch, TextInput } from "@react-native-material/core";
-import { setStoreDetailState, storeDetailState } from "state/state";
-import { updateStoreDetails } from "state/firebaseFunctions";
+import {
+  setStoreDetailState,
+  setWoocommerceState,
+  storeDetailState,
+  woocommerceState,
+} from "state/state";
+import {
+  updateStoreDetails,
+  updateWooCredentials,
+} from "state/firebaseFunctions";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import Foundation from "@expo/vector-icons/Foundation";
 import { auth, db } from "state/firebaseConfig";
@@ -37,6 +45,31 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
   );
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [viewVisible, setviewVisible] = useState(false);
+  const [screen, setscreen] = useState("general");
+  const wooCredentials = woocommerceState.use();
+  const [apiUrl, setapiUrl] = useState(wooCredentials.apiUrl);
+  const [ck, setck] = useState(wooCredentials.ck);
+  const [cs, setcs] = useState(wooCredentials.cs);
+  const [useWoocommerce, setuseWoocommerce] = useState(
+    wooCredentials.useWoocommerce
+  );
+
+  const handleWooDataUpdate = () => {
+    if (apiUrl !== null && ck !== null && cs !== null) {
+      setWoocommerceState({
+        apiUrl: apiUrl,
+        ck: ck,
+        cs: cs,
+        useWoocommerce: useWoocommerce,
+      });
+      updateWooCredentials({
+        apiUrl: apiUrl,
+        ck: ck,
+        cs: cs,
+        useWoocommerce: useWoocommerce,
+      });
+    }
+  };
 
   const fadeIn = () => {
     // Will change fadeAnim value to 0 in 3 seconds
@@ -106,126 +139,233 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.detailInputContainer}>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", flex: 1 }}>
-          <TextInput
-            variant="outlined"
-            placeholder="Enter Store Name"
-            label="Enter Store Name"
-            onChangeText={(val) => setname(val)}
-            style={{ margin: 10, width: "48%" }}
-            value={name}
-          />
-          <TextInput
-            variant="outlined"
-            placeholder="Enter Store Website Url"
-            label="Enter Store Website Url"
-            onChangeText={(val) => setwebsite(val)}
-            style={{ margin: 10, width: "48%" }}
-            value={website}
-          />
-          <TextInput
-            variant="outlined"
-            placeholder="Enter Store Phone Number"
-            label="Enter Store Phone Number"
-            onChangeText={(val) => setphoneNumber(val)}
-            style={{ margin: 10, width: "48%" }}
-            value={phoneNumber}
-          />
-          <View style={{ margin: 10, width: "48%" }}>
-            <GooglePlacesAutocomplete
-              apiOptions={{
-                region: "CA",
-              }}
-              debounce={800}
-              apiKey={GOOGLE_API_KEY}
-              // onSelect={handleAddress}
-              selectProps={{
-                address,
-                onChange: setaddress,
-                defaultValue: address,
-                menuPortalTarget: document.body,
-                styles: { menuPortal: (base) => ({ ...base, zIndex: 9999 }) },
-              }}
-              renderSuggestions={(active, suggestions, onSelectSuggestion) => (
-                <div>
-                  {suggestions.map((suggestion) => (
-                    <div
-                      className="suggestion"
-                      onClick={(event) => {
-                        onSelectSuggestion(suggestion, event);
-                      }}
-                    >
-                      {suggestion.description}
-                    </div>
-                  ))}
-                </div>
-              )}
-            />
-          </View>
-          <TextInput
-            variant="outlined"
-            placeholder="Enter Delivery Price"
-            label="Enter Delivery Price"
-            onChangeText={(val) => setdeliveryPrice(val)}
-            style={{ margin: 10, width: "48%" }}
-            value={deliveryPrice}
-          />
-          <TextInput
-            variant="outlined"
-            placeholder="Enter Printer Name"
-            label="Enter Printer Name"
-            onChangeText={(val) => setcom(val)}
-            style={{ margin: 10, width: "48%" }}
-            value={com}
-          />
-          <TextInput
-            variant="outlined"
-            placeholder="Enter Settings Page Password"
-            label="Enter Settings Page Password"
-            onChangeText={(val) => setsettingsPassword(val)}
-            style={{ margin: 10, width: "48%" }}
-            value={settingsPassword}
-          />
-          <Button
-            title={customBtnLbl ? customBtnLbl : "Save"}
-            onPress={handleDataUpdate}
+        <View
+          style={{
+            position: "absolute",
+            top: -30,
+            left: -1,
+            flexDirection: "row",
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => setscreen("general")}
             style={{
-              margin: 10,
-              width: "48%",
-              height: 55,
+              width: 120,
+              height: 30,
               justifyContent: "center",
               alignItems: "center",
-              backgroundColor: "#4050B5",
+              backgroundColor: screen === "general" ? "#D2D2D2" : "#F5F3F3",
             }}
-            titleStyle={{ textAlign: "center" }}
-          />
-        </View>
-        <View style={styles.helperDownloadContainer}>
-          <Text style={styles.helperTxt}>
-            Download helper program that makes your printer work with our
-            service
-          </Text>
-          <a
-            href={require("assets/divine-pos-helper.exe")}
-            download="Divine Pos Helper.exe"
           >
-            <Image
-              source={require("assets/badge-windows.png")}
-              resizeMode="contain"
-              style={styles.badgeWindows}
-            />
-          </a>
-          <a
-            href={require("assets/divine-pos-helper.pkg")}
-            download="Divine Pos Helper.pkg"
+            <Text>General</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setscreen("woocommerce")}
+            style={{
+              width: 120,
+              height: 30,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: screen === "woocommerce" ? "#D2D2D2" : "#F5F3F3",
+            }}
           >
-            <Image
-              source={require("assets/badge-mac.png")}
-              resizeMode="contain"
-              style={styles.badgeMac}
-            />
-          </a>
+            <Text>WooCommerce</Text>
+          </TouchableOpacity>
         </View>
+        {screen === "general" ? (
+          <>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", flex: 1 }}>
+              <TextInput
+                color="black"
+                variant="outlined"
+                placeholder="Enter Store Name"
+                label="Enter Store Name"
+                onChangeText={(val) => setname(val)}
+                style={{ margin: 10, width: "48%" }}
+                value={name}
+              />
+              <TextInput
+                color="black"
+                variant="outlined"
+                placeholder="Enter Store Website Url"
+                label="Enter Store Website Url"
+                onChangeText={(val) => setwebsite(val)}
+                style={{ margin: 10, width: "48%" }}
+                value={website}
+              />
+              <TextInput
+                color="black"
+                variant="outlined"
+                placeholder="Enter Store Phone Number"
+                label="Enter Store Phone Number"
+                onChangeText={(val) => setphoneNumber(val)}
+                style={{ margin: 10, width: "48%" }}
+                value={phoneNumber}
+              />
+              <View style={{ margin: 10, width: "48%" }}>
+                <GooglePlacesAutocomplete
+                  apiOptions={{
+                    region: "CA",
+                  }}
+                  debounce={800}
+                  apiKey={GOOGLE_API_KEY}
+                  // onSelect={handleAddress}
+                  selectProps={{
+                    address,
+                    onChange: setaddress,
+                    defaultValue: address,
+                    menuPortalTarget: document.body,
+                    styles: {
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    },
+                  }}
+                  renderSuggestions={(
+                    active,
+                    suggestions,
+                    onSelectSuggestion
+                  ) => (
+                    <div>
+                      {suggestions.map((suggestion) => (
+                        <div
+                          className="suggestion"
+                          onClick={(event) => {
+                            onSelectSuggestion(suggestion, event);
+                          }}
+                        >
+                          {suggestion.description}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                />
+              </View>
+              <TextInput
+                color="black"
+                variant="outlined"
+                placeholder="Enter Delivery Price"
+                label="Enter Delivery Price"
+                onChangeText={(val) => setdeliveryPrice(val)}
+                style={{ margin: 10, width: "48%" }}
+                value={deliveryPrice}
+              />
+              <TextInput
+                color="black"
+                variant="outlined"
+                placeholder="Enter Printer Name"
+                label="Enter Printer Name"
+                onChangeText={(val) => setcom(val)}
+                style={{ margin: 10, width: "48%" }}
+                value={com}
+              />
+              <TextInput
+                color="black"
+                variant="outlined"
+                placeholder="Enter Settings Page Password"
+                label="Enter Settings Page Password"
+                onChangeText={(val) => setsettingsPassword(val)}
+                style={{ margin: 10, width: "48%" }}
+                value={settingsPassword}
+              />
+              <Button
+                title={customBtnLbl ? customBtnLbl : "Save"}
+                onPress={handleDataUpdate}
+                style={{
+                  margin: 10,
+                  width: "48%",
+                  height: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#4050B5",
+                }}
+                titleStyle={{ textAlign: "center" }}
+              />
+            </View>
+            <View style={styles.helperDownloadContainer}>
+              <Text style={styles.helperTxt}>
+                Download helper program that makes your printer work with our
+                service
+              </Text>
+              <a
+                href={require("assets/divine-pos-helper.exe")}
+                download="Divine Pos Helper.exe"
+              >
+                <Image
+                  source={require("assets/badge-windows.png")}
+                  resizeMode="contain"
+                  style={styles.badgeWindows}
+                />
+              </a>
+              <a
+                href={require("assets/divine-pos-helper.pkg")}
+                download="Divine Pos Helper.pkg"
+              >
+                <Image
+                  source={require("assets/badge-mac.png")}
+                  resizeMode="contain"
+                  style={styles.badgeMac}
+                />
+              </a>
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={{ margin: 10 }}>
+              <Text style={{ paddingBottom: 30, fontSize: 17 }}>
+                Connect your WooCommerce website using the 'Rest API'. Click
+                help to learn more
+              </Text>
+              <Text style={{ marginBottom: 5, fontSize: 14 }}>
+                Use WooCommerce?
+              </Text>
+              <Switch
+                value={useWoocommerce}
+                onValueChange={(val) => setuseWoocommerce(val)}
+              />
+            </View>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", flex: 1 }}>
+              <TextInput
+                color="black"
+                label="Enter Woocommerce 'API Url'"
+                variant="outlined"
+                placeholder="Enter Woocommerce 'API Url'"
+                onChangeText={(val) => setapiUrl(val)}
+                style={{ margin: 10, width: "48%" }}
+                value={apiUrl}
+              />
+              <TextInput
+                color="black"
+                label="Enter Woocommerce 'CK'"
+                variant="outlined"
+                placeholder="Enter Woocommerce 'CK'"
+                onChangeText={(val) => setck(val)}
+                style={{ margin: 10, width: "48%" }}
+                value={ck}
+              />
+              <TextInput
+                color="black"
+                label="Enter Woocommerce 'CS'"
+                variant="outlined"
+                placeholder="Enter Woocommerce 'CS'"
+                onChangeText={(val) => setcs(val)}
+                style={{ margin: 10, width: "48%" }}
+                value={cs}
+              />
+              <Button
+                title="Save"
+                onPress={handleWooDataUpdate}
+                style={{
+                  margin: 10,
+                  width: "48%",
+                  height: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#4050B5",
+                }}
+                titleStyle={{ textAlign: "center" }}
+              />
+            </View>
+          </>
+        )}
       </View>
       {viewVisible && (
         <Modal visible={true}>
@@ -298,7 +438,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 15,
     padding: 30,
-    minHeight: "80%",
+    minHeight: "75%",
+    marginTop: 15,
+    borderTopLeftRadius: 0,
   },
   materialStackedLabelTextbox1: {
     height: 60,

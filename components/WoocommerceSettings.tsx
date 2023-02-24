@@ -13,7 +13,7 @@ const WoocommerceSettings = () => {
     wooCredentials.useWoocommerce
   );
 
-  const handleDataUpdate = () => {
+  const handleWooDataUpdate = () => {
     if (apiUrl !== null && ck !== null && cs !== null) {
       setWoocommerceState({
         apiUrl: apiUrl,
@@ -36,18 +36,21 @@ const WoocommerceSettings = () => {
         Current categories
       </Text>
       <TextInput
+        color="black"
         placeholder="Enter Woocommerce 'API Url'"
         onChangeText={(val) => setapiUrl(val)}
         style={{ margin: 10 }}
         value={apiUrl}
       />
       <TextInput
+        color="black"
         placeholder="Enter Woocommerce 'CK'"
         onChangeText={(val) => setck(val)}
         style={{ margin: 10 }}
         value={ck}
       />
       <TextInput
+        color="black"
         placeholder="Enter Woocommerce 'CS'"
         onChangeText={(val) => setcs(val)}
         style={{ margin: 10 }}
@@ -57,7 +60,11 @@ const WoocommerceSettings = () => {
         value={useWoocommerce}
         onValueChange={(val) => setuseWoocommerce(val)}
       />
-      <Button title="Save" onPress={handleDataUpdate} style={{ margin: 10 }} />
+      <Button
+        title="Save"
+        onPress={handleWooDataUpdate}
+        style={{ margin: 10 }}
+      />
       {/* <Spinner isModalVisible={isModalVisible} /> */}
     </ScrollView>
   );

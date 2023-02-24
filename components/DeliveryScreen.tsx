@@ -122,6 +122,7 @@ const DeliveryScreen = ({
               />
             </View>
             <TextInput
+              color="black"
               placeholder="Enter name"
               style={{ width: "80%" }}
               inputStyle={{ backgroundColor: "rgba(243,243,243,1)" }}
@@ -158,6 +159,7 @@ const DeliveryScreen = ({
               />
             </View>
             <TextInput
+              color="black"
               placeholder="Enter Phone #"
               style={{ width: "80%" }}
               inputStyle={{ backgroundColor: "rgba(243,243,243,1)" }}
@@ -248,7 +250,7 @@ const DeliveryScreen = ({
               }
             }}
             contentContainerStyle={styles.btn}
-            style={{ margin: 25 }}
+            style={{ margin: 25, backgroundColor: "#4050B5" }}
           />
           <Button
             title="Cancel"
@@ -260,7 +262,7 @@ const DeliveryScreen = ({
               setAddress(null);
             }}
             contentContainerStyle={styles.btn}
-            style={{ margin: 25 }}
+            style={{ margin: 25, backgroundColor: "#4050B5" }}
           />
         </View>
       </View>

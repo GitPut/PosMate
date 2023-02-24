@@ -58,7 +58,7 @@ const EditProductList = ({ navigation }) => {
                       [...catalog.products, copy]
                     );
                   }}
-                  style={{ margin: 10 }}
+                  style={{ margin: 10, backgroundColor: "#4050B5" }}
                 />
                 <Button
                   title="Edit"
@@ -69,7 +69,7 @@ const EditProductList = ({ navigation }) => {
                       existingProductIndex: index,
                     })
                   }
-                  style={{ margin: 10 }}
+                  style={{ margin: 10, backgroundColor: "#4050B5" }}
                 />
                 <TouchableOpacity
                   onPress={() => handleRemoveCatagory(index)}
@@ -105,7 +105,7 @@ const EditProductList = ({ navigation }) => {
       <Button
         title="Add New Product"
         onPress={() => navigation.navigate("AddProduct")}
-        style={{ margin: 10 }}
+        style={{ margin: 10, backgroundColor: "#4050B5" }}
         disabled={catalog.categories.length < 1}
       />
       {/* <Spinner isModalVisible={isModalVisible} /> */}

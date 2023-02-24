@@ -147,24 +147,6 @@ const SettingsHome = ({ navigation }) => {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setcurrentSettingPage("test")}
-            style={{
-              backgroundColor: "rgba(41,44,56,1)",
-              borderRadius: 100,
-              width: 60,
-              height: 60,
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 30,
-            }}
-          >
-            <MaterialCommunityIcons
-              name="star"
-              size={32}
-              color={currentSettingPage === "test" ? "white" : "#777777"}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
             onPress={logout}
             style={{
               backgroundColor: "rgba(41,44,56,1)",
@@ -191,8 +173,7 @@ const SettingsHome = ({ navigation }) => {
           >
             {/* <Text>HEllo</Text> */}
             {currentSettingPage !== "productManager" &&
-              currentSettingPage !== "storeManager" &&
-              currentSettingPage !== "test" && (
+              currentSettingPage !== "storeManager" && (
                 // <StatsScreen />
                 <ViewTransactions />
               )}
@@ -200,7 +181,6 @@ const SettingsHome = ({ navigation }) => {
             {currentSettingPage === "productManager" && (
               <ProductAndCatManager navigation={navigation} />
             )}
-            {currentSettingPage === "test" && <PlanUpdateTest />}
           </View>
         </View>
       </View>

@@ -30,6 +30,7 @@ const Register = ({ navigation }) => {
         />
         <View style={styles.innerContainer}>
           <TextInput
+            color="black"
             label="Email"
             variant="outlined"
             style={{ width: "100%", marginBottom: 10 }}
@@ -39,6 +40,7 @@ const Register = ({ navigation }) => {
             textContentType={"emailAddress"}
           />
           <TextInput
+            color="black"
             label="Password"
             variant="outlined"
             trailing={(props) => (

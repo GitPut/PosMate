@@ -113,7 +113,7 @@ const AddProduct = ({ route, navigation }) => {
             }));
             setindexOn(newProductOptions.current.length - 1);
           }}
-          style={{ marginBottom: 25 }}
+          style={{ marginBottom: 25, backgroundColor: "#4050B5" }}
         />
       </View>
     );
@@ -156,6 +156,7 @@ const AddProduct = ({ route, navigation }) => {
           <Text style={{ marginBottom: 25 }}>AddProduct</Text>
         </View>
         <TextInput
+          color="black"
           placeholder="Enter Product Name"
           onChangeText={(val) => {
             setnewProduct((prevState) => ({ ...prevState, name: val }));
@@ -164,6 +165,7 @@ const AddProduct = ({ route, navigation }) => {
           style={{ marginBottom: 25 }}
         />
         <TextInput
+          color="black"
           placeholder="Enter any other items that come with this"
           onChangeText={(val) => {
             setnewProduct((prevState) => ({ ...prevState, description: val }));
@@ -172,6 +174,7 @@ const AddProduct = ({ route, navigation }) => {
           value={newProduct.description}
         />
         <TextInput
+          color="black"
           placeholder="Enter Product Price"
           onChangeText={(val) => {
             setnewProduct((prevState) => ({ ...prevState, price: val }));

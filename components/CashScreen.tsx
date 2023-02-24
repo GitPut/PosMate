@@ -14,6 +14,7 @@ const CashScreen = ({ setCashModal, GetTrans, total, setChangeDue }) => {
       </View>
       <Text>Total: {total}</Text>
       <TextInput
+        color="black"
         label="Enter Cash Given"
         variant="outlined"
         style={styles.input}
@@ -35,13 +36,13 @@ const CashScreen = ({ setCashModal, GetTrans, total, setChangeDue }) => {
           setCashModal(false);
         }}
         contentContainerStyle={styles.btn}
-        style={{ margin: 25 }}
+        style={{ margin: 25, backgroundColor: "#4050B5" }}
       />
       <Button
         title="Cancel"
         onPress={() => setCashModal(false)}
         contentContainerStyle={styles.btn}
-        style={{ margin: 25 }}
+        style={{ margin: 25, backgroundColor: "#4050B5" }}
       />
     </ScrollView>
   );

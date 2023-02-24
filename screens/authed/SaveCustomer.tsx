@@ -365,6 +365,7 @@ const SaveCustomer = ({
             </View>
           ) : (
             <TextInput
+              color="black"
               placeholder="Enter any of customer details"
               value={search}
               onChangeText={(val) => setsearch(val)}
@@ -430,7 +431,12 @@ const SaveCustomer = ({
                 setSaveCustomerModal(false);
               }}
               contentContainerStyle={styles.btn}
-              style={{ margin: 25, width: "80%", alignSelf: "center" }}
+              style={{
+                margin: 25,
+                width: "80%",
+                alignSelf: "center",
+                backgroundColor: "#4050B5",
+              }}
             />
           )}
         </View>

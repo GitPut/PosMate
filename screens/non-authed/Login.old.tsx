@@ -86,6 +86,7 @@ const Login = ({ navigation }) => {
               />
             </View>
             <TextInput
+              color="black"
               placeholder="Enter email"
               style={{ width: "80%" }}
               inputStyle={{ backgroundColor: "rgba(241,241,241,1)" }}
@@ -122,6 +123,7 @@ const Login = ({ navigation }) => {
               />
             </View>
             <TextInput
+              color="black"
               placeholder="Enter Password"
               style={{ width: "75%" }}
               inputStyle={{ backgroundColor: "rgba(241,241,241,1)" }}
@@ -183,6 +185,7 @@ const Login = ({ navigation }) => {
         />
         <View style={styles.innerContainer}>
           <TextInput
+          color="black"
             label="Email"
             variant="outlined"
             style={{ width: "100%", marginBottom: 10 }}
@@ -192,6 +195,7 @@ const Login = ({ navigation }) => {
             textContentType={"emailAddress"}
           />
           <TextInput
+          color="black"
             label="Password"
             variant="outlined"
             trailing={(props) => (

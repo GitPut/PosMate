@@ -109,6 +109,7 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
             />
           </View>
           <TextInput
+            color="black"
             placeholder="Enter Password"
             inputStyle={[
               { width: 200 },
