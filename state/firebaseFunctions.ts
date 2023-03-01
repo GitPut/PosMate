@@ -37,16 +37,13 @@ export const signUp = (email, password, name, phoneNumber) =>
     .catch((e) => console.log(e));
 
 export const updateData = (categories, products) => {
-  return new Promise((resolve, reject) => {
-    db.collection("users")
-      .doc(auth.currentUser?.uid)
-      .update({
-        products: products,
-        categories: categories,
-      })
-      .then(() => resolve("Promise resolved!"))
-      .catch(() => reject("Promise rejected!"));
-  });
+  db.collection("users")
+    .doc(auth.currentUser?.uid)
+    .update({
+      products: products,
+      categories: categories,
+    })
+    .catch((e) => console.log("ERROR HAS OCCURE FB: ", e));
 };
 
 export const updateWooCredentials = (wooCredentials) => {

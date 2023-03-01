@@ -39,7 +39,7 @@ const getDate = (receipt) => {
 
     const result = tz(newDate)
       .tz(targetTimezone, true)
-      .format("dddd, MMMM Do YYYY, h:mm:ss a z");
+      .format("YYYY-MM-DD HH:mm a");
 
     return result;
   } else if (receipt.date) {
@@ -48,21 +48,21 @@ const getDate = (receipt) => {
 
     const result = tz(newDate)
       .tz(targetTimezone, true)
-      .format("dddd, MMMM Do YYYY, h:mm:ss a z");
+      .format("YYYY-MM-DD HH:mm a");
 
     return result;
   }
 };
 
-const ViewTransactions = () => {
+const ViewTransactions = ({ transList, todaysDetails }) => {
   const today = new Date();
   const storeDetails = storeDetailState.use();
   const wooCredentials = woocommerceState.use();
-  const [transList, settransList] = useState([]);
-  const [todaysDetails, setTodaysDetails] = useState({
-    todaysReceiptValue: 0,
-    todaysReceipts: 0,
-  });
+  // const [transList, settransList] = useState([]);
+  // const [todaysDetails, setTodaysDetails] = useState({
+  //   todaysReceiptValue: 0,
+  //   todaysReceipts: 0,
+  // });
   const { width, height } = useWindowDimensions();
   const [search, setsearch] = useState(null);
 
@@ -104,10 +104,17 @@ const ViewTransactions = () => {
             !fReceipt.cart_hash?.includes(search) &&
             !fReceipt.method?.includes(search) &&
             !fReceipt.transNum?.includes(search) &&
-            !getDate(fReceipt.date.seconds).includes(search)
+            !getDate(fReceipt)?.includes(search) &&
+            !fReceipt.shipping?.first_name?.includes(search) &&
+            !fReceipt.shipping?.last_name?.includes(search) &&
+            !fReceipt.billing?.phone?.includes(search) &&
+            !fReceipt.shipping?.address_1?.includes(search) &&
+            !fReceipt.shipping?.city?.includes(search) &&
+            !fReceipt.shipping?.postcode?.includes(search) &&
+            !fReceipt.shipping?.state?.includes(search)
           )
       )
-      .map<Row>((receipt, idx) => {
+      .map((receipt, idx) => {
         if (receipt.cart_hash) {
           return {
             rowId: idx,
@@ -246,217 +253,217 @@ const ViewTransactions = () => {
 
   ///
 
-  useEffect(() => {
-    try {
-      db.collection("users")
-        .doc(auth.currentUser?.uid)
-        .collection("transList")
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            // console.log(doc.id, " => ", doc.data());
-            settransList((prevState) => [...prevState, doc.data()]);
-            console.log(doc.data());
-          });
-        });
-    } catch {
-      console.log("Error occured retrieving tranasctions");
-    }
+  // useEffect(() => {
+  //   try {
+  //     db.collection("users")
+  //       .doc(auth.currentUser?.uid)
+  //       .collection("transList")
+  //       .get()
+  //       .then((querySnapshot) => {
+  //         querySnapshot.forEach((doc) => {
+  //           // doc.data() is never undefined for query doc snapshots
+  //           // console.log(doc.id, " => ", doc.data());
+  //           settransList((prevState) => [...prevState, doc.data()]);
+  //           console.log(doc.data());
+  //         });
+  //       });
+  //   } catch {
+  //     console.log("Error occured retrieving tranasctions");
+  //   }
 
-    if (wooCredentials.useWoocommerce === true) {
-      try {
-        const WooCommerceAPI = require("woocommerce-api");
+  //   if (wooCredentials.useWoocommerce === true) {
+  //     try {
+  //       const WooCommerceAPI = require("woocommerce-api");
 
-        const WooCommerce = new WooCommerceAPI({
-          url: wooCredentials.apiUrl,
-          consumerKey: wooCredentials.ck,
-          consumerSecret: wooCredentials.cs,
-          wpAPI: true,
-          version: "wc/v1",
-        });
+  //       const WooCommerce = new WooCommerceAPI({
+  //         url: wooCredentials.apiUrl,
+  //         consumerKey: wooCredentials.ck,
+  //         consumerSecret: wooCredentials.cs,
+  //         wpAPI: true,
+  //         version: "wc/v1",
+  //       });
 
-        let page = 1;
-        let orders = [];
+  //       let page = 1;
+  //       let orders = [];
 
-        const getOrders = async () => {
-          const response = await WooCommerce.getAsync(
-            `orders?page=${page}&per_page=100`
-          );
-          const data = JSON.parse(response.body);
-          orders = [...orders, ...data];
-          if (data.length === 100) {
-            page++;
-            getOrders();
-          } else {
-            // console.log(orders);
-          }
-        };
+  //       const getOrders = async () => {
+  //         const response = await WooCommerce.getAsync(
+  //           `orders?page=${page}&per_page=100`
+  //         );
+  //         const data = JSON.parse(response.body);
+  //         orders = [...orders, ...data];
+  //         if (data.length === 100) {
+  //           page++;
+  //           getOrders();
+  //         } else {
+  //           // console.log(orders);
+  //         }
+  //       };
 
-        getOrders()
-          .then(() => settransList((prevState) => [...prevState, ...orders]))
-          .catch((e) => console.log("error has occured"));
-      } catch {
-        console.log("Something occured with woo");
-      }
-    }
-  }, []);
+  //       getOrders()
+  //         .then(() => settransList((prevState) => [...prevState, ...orders]))
+  //         .catch((e) => console.log("error has occured"));
+  //     } catch {
+  //       console.log("Something occured with woo");
+  //     }
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    try {
-      if (transList.length > 0) {
-        settransList((prev) =>
-          prev
-            .sort(function (a, b) {
-              if (a.date && b.date) {
-                return a.date.seconds - b.date.seconds;
-              } else if (a.date && b.date_created) {
-                const targetTimezone =
-                  Intl.DateTimeFormat().resolvedOptions().timeZone;
-                const newDateA = new Date(a.date.seconds * 1000);
-                const newDateB = new Date(b.date_created + "Z");
-                const resultA = tz(newDateA).tz(targetTimezone, true);
-                const resultB = tz(newDateB).tz(targetTimezone, true);
+  // useEffect(() => {
+  //   try {
+  //     if (transList.length > 0) {
+  //       settransList((prev) =>
+  //         prev
+  //           .sort(function (a, b) {
+  //             if (a.date && b.date) {
+  //               return a.date.seconds - b.date.seconds;
+  //             } else if (a.date && b.date_created) {
+  //               const targetTimezone =
+  //                 Intl.DateTimeFormat().resolvedOptions().timeZone;
+  //               const newDateA = new Date(a.date.seconds * 1000);
+  //               const newDateB = new Date(b.date_created + "Z");
+  //               const resultA = tz(newDateA).tz(targetTimezone, true);
+  //               const resultB = tz(newDateB).tz(targetTimezone, true);
 
-                return resultA.valueOf() - resultB.valueOf();
-              } else if (a.date_created && b.date) {
-                const targetTimezone =
-                  Intl.DateTimeFormat().resolvedOptions().timeZone;
-                const newDateA = new Date(a.date_created + "Z");
-                const newDateB = new Date(b.date.seconds * 1000);
-                const resultA = tz(newDateA).tz(targetTimezone, true);
-                const resultB = tz(newDateB).tz(targetTimezone, true);
+  //               return resultA.valueOf() - resultB.valueOf();
+  //             } else if (a.date_created && b.date) {
+  //               const targetTimezone =
+  //                 Intl.DateTimeFormat().resolvedOptions().timeZone;
+  //               const newDateA = new Date(a.date_created + "Z");
+  //               const newDateB = new Date(b.date.seconds * 1000);
+  //               const resultA = tz(newDateA).tz(targetTimezone, true);
+  //               const resultB = tz(newDateB).tz(targetTimezone, true);
 
-                return resultA.valueOf() - resultB.valueOf();
-              } else {
-                const targetTimezone =
-                  Intl.DateTimeFormat().resolvedOptions().timeZone;
-                const newDateA = new Date(a.date_created + "Z");
-                const newDateB = new Date(b.date_created + "Z");
-                const resultA = tz(newDateA).tz(targetTimezone, true);
-                const resultB = tz(newDateB).tz(targetTimezone, true);
+  //               return resultA.valueOf() - resultB.valueOf();
+  //             } else {
+  //               const targetTimezone =
+  //                 Intl.DateTimeFormat().resolvedOptions().timeZone;
+  //               const newDateA = new Date(a.date_created + "Z");
+  //               const newDateB = new Date(b.date_created + "Z");
+  //               const resultA = tz(newDateA).tz(targetTimezone, true);
+  //               const resultB = tz(newDateB).tz(targetTimezone, true);
 
-                return resultA.valueOf() - resultB.valueOf();
-              }
-            })
-            .reverse()
-        );
-        // settransList(sortedTransList);
-        const todaysReceiptValue = transList.reduce((accumulator, current) => {
-          let date;
-          const targetTimezone =
-            Intl.DateTimeFormat().resolvedOptions().timeZone;
-          if (current.date) {
-            const localDatePreConv = new Date(current.date.seconds * 1000);
-            date = tz(localDatePreConv).tz(targetTimezone, true);
-          } else {
-            const localDatePreConv = new Date(current.date_created + "Z");
-            date = tz(localDatePreConv).tz(targetTimezone, true);
-          }
-          // Get the current date in the desired time zone
-          let today = tz().tz(targetTimezone);
+  //               return resultA.valueOf() - resultB.valueOf();
+  //             }
+  //           })
+  //           .reverse()
+  //       );
+  //       // settransList(sortedTransList);
+  //       const todaysReceiptValue = transList.reduce((accumulator, current) => {
+  //         let date;
+  //         const targetTimezone =
+  //           Intl.DateTimeFormat().resolvedOptions().timeZone;
+  //         if (current.date) {
+  //           const localDatePreConv = new Date(current.date.seconds * 1000);
+  //           date = tz(localDatePreConv).tz(targetTimezone, true);
+  //         } else {
+  //           const localDatePreConv = new Date(current.date_created + "Z");
+  //           date = tz(localDatePreConv).tz(targetTimezone, true);
+  //         }
+  //         // Get the current date in the desired time zone
+  //         let today = tz().tz(targetTimezone);
 
-          if (
-            today.year() === date.year() &&
-            today.month() === date.month() &&
-            today.dayOfYear() === date.dayOfYear()
-          ) {
-            return (
-              accumulator +
-              parseFloat(current.date ? current.total : current.total / 1.13)
-            );
-          } else {
-            return accumulator;
-          }
-        }, 0);
-        const todaysReceipts = transList.reduce((accumulator, current) => {
-          let date;
-          const targetTimezone =
-            Intl.DateTimeFormat().resolvedOptions().timeZone;
-          if (current.date) {
-            const localDatePreConv = new Date(current.date.seconds * 1000);
-            date = tz(localDatePreConv).tz(targetTimezone, true);
-          } else {
-            const localDatePreConv = new Date(current.date_created + "Z");
-            date = tz(localDatePreConv).tz(targetTimezone, true);
-          }
-          // Get the current date in the desired time zone
-          let today = tz().tz(targetTimezone);
+  //         if (
+  //           today.year() === date.year() &&
+  //           today.month() === date.month() &&
+  //           today.dayOfYear() === date.dayOfYear()
+  //         ) {
+  //           return (
+  //             accumulator +
+  //             parseFloat(current.date ? current.total : current.total / 1.13)
+  //           );
+  //         } else {
+  //           return accumulator;
+  //         }
+  //       }, 0);
+  //       const todaysReceipts = transList.reduce((accumulator, current) => {
+  //         let date;
+  //         const targetTimezone =
+  //           Intl.DateTimeFormat().resolvedOptions().timeZone;
+  //         if (current.date) {
+  //           const localDatePreConv = new Date(current.date.seconds * 1000);
+  //           date = tz(localDatePreConv).tz(targetTimezone, true);
+  //         } else {
+  //           const localDatePreConv = new Date(current.date_created + "Z");
+  //           date = tz(localDatePreConv).tz(targetTimezone, true);
+  //         }
+  //         // Get the current date in the desired time zone
+  //         let today = tz().tz(targetTimezone);
 
-          if (
-            today.year() === date.year() &&
-            today.month() === date.month() &&
-            today.dayOfYear() === date.dayOfYear()
-          ) {
-            return accumulator + 1;
-          } else {
-            return accumulator;
-          }
-        }, 0);
-        setTodaysDetails({
-          todaysReceiptValue: todaysReceiptValue.toFixed(2),
-          todaysReceipts: todaysReceipts,
-        });
-      }
-    } catch {
-      console.log("Error Occured when sorting dates");
-    }
-  }, [transList]);
+  //         if (
+  //           today.year() === date.year() &&
+  //           today.month() === date.month() &&
+  //           today.dayOfYear() === date.dayOfYear()
+  //         ) {
+  //           return accumulator + 1;
+  //         } else {
+  //           return accumulator;
+  //         }
+  //       }, 0);
+  //       setTodaysDetails({
+  //         todaysReceiptValue: todaysReceiptValue.toFixed(2),
+  //         todaysReceipts: todaysReceipts,
+  //       });
+  //     }
+  //   } catch {
+  //     console.log("Error Occured when sorting dates");
+  //   }
+  // }, [transList]);
 
-  const PrintTodaysTotal = () => {
-    let data = [
-      "\x1B" + "\x40", // init
-      "\x1B" + "\x61" + "\x31", // center align
-      storeDetails.name,
-      "\x0A",
-      storeDetails.address?.label + "\x0A",
-      storeDetails.website + "\x0A", // text and line break
-      storeDetails.phoneNumber + "\x0A", // text and line break
-      today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
-      "\x0A",
-      "\x0A",
-      "\x0A",
-      "\x0A",
-      "\x1B" + "\x61" + "\x30", // left align
-      "\x0A" + "\x0A",
-      "Number Of Receipts: " + todaysDetails.todaysReceipts + "\x0A" + "\x0A",
-      "Sub-Total: " +
-        "$" +
-        (todaysDetails.todaysReceiptValue / 1.13).toFixed(2) +
-        "\x0A" +
-        "\x0A",
-      "Tax: " +
-        "$" +
-        ((todaysDetails.todaysReceiptValue / 1.13) * 0.13).toFixed(2) +
-        "\x0A" +
-        "\x0A",
-      "Total Including (13% Tax): " +
-        "$" +
-        todaysDetails.todaysReceiptValue +
-        "\x0A" +
-        "\x0A",
-      "------------------------------------------" + "\x0A",
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x1D" + "\x56" + "\x30",
-    ];
+  // const PrintTodaysTotal = () => {
+  //   let data = [
+  //     "\x1B" + "\x40", // init
+  //     "\x1B" + "\x61" + "\x31", // center align
+  //     storeDetails.name,
+  //     "\x0A",
+  //     storeDetails.address?.label + "\x0A",
+  //     storeDetails.website + "\x0A", // text and line break
+  //     storeDetails.phoneNumber + "\x0A", // text and line break
+  //     today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
+  //     "\x0A",
+  //     "\x0A",
+  //     "\x0A",
+  //     "\x0A",
+  //     "\x1B" + "\x61" + "\x30", // left align
+  //     "\x0A" + "\x0A",
+  //     "Number Of Receipts: " + todaysDetails.todaysReceipts + "\x0A" + "\x0A",
+  //     "Sub-Total: " +
+  //       "$" +
+  //       (todaysDetails.todaysReceiptValue / 1.13).toFixed(2) +
+  //       "\x0A" +
+  //       "\x0A",
+  //     "Tax: " +
+  //       "$" +
+  //       ((todaysDetails.todaysReceiptValue / 1.13) * 0.13).toFixed(2) +
+  //       "\x0A" +
+  //       "\x0A",
+  //     "Total Including (13% Tax): " +
+  //       "$" +
+  //       todaysDetails.todaysReceiptValue +
+  //       "\x0A" +
+  //       "\x0A",
+  //     "------------------------------------------" + "\x0A",
+  //     "\x0A", // line break
+  //     "\x0A", // line break
+  //     "\x0A", // line break
+  //     "\x0A", // line break
+  //     "\x0A", // line break
+  //     "\x0A", // line break
+  //     "\x1D" + "\x56" + "\x30",
+  //   ];
 
-    const qz = require("qz-tray");
-    qz.websocket
-      .connect()
-      .then(function () {
-        let config = qz.configs.create(storeDetails.comSelected);
-        return qz.print(config, data);
-      })
-      .then(qz.websocket.disconnect)
-      .catch(function (err) {
-        console.error(err);
-      });
-  };
+  //   const qz = require("qz-tray");
+  //   qz.websocket
+  //     .connect()
+  //     .then(function () {
+  //       let config = qz.configs.create(storeDetails.comSelected);
+  //       return qz.print(config, data);
+  //     })
+  //     .then(qz.websocket.disconnect)
+  //     .catch(function (err) {
+  //       console.error(err);
+  //     });
+  // };
 
   // useEffect(() => {
   //   if(transList.length > )

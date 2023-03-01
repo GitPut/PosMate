@@ -342,12 +342,12 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                 value={ck}
               />
               <TextInput
-                color="black"
-                label="Enter Woocommerce 'CS'"
-                variant="outlined"
                 placeholder="Enter Woocommerce 'CS'"
                 onChangeText={(val) => setcs(val)}
+                label="Enter Woocommerce 'CS'"
+                variant="outlined"
                 style={{ margin: 10, width: "48%" }}
+                color="black"
                 value={cs}
               />
               <Button
