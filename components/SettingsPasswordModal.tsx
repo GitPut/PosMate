@@ -15,6 +15,8 @@ import Feather from "@expo/vector-icons/Feather";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import useWindowDimensions from "./useWindowDimensions";
 import { useFonts } from "expo-font";
+import Axios from "axios";
+import { auth } from "state/firebaseConfig";
 
 const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
   const { height, width } = useWindowDimensions();
@@ -26,6 +28,32 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
   useFonts({
     Password: require("/assets/password.ttf"),
   });
+
+  const SendEmail = () => {
+    var data = JSON.stringify({
+      email: auth.currentUser?.email,
+      password: storeDetails.settingsPassword,
+    });
+
+    var config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://us-central1-posmate-5fc0a.cloudfunctions.net/sendSettingsPass",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    Axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+        alert("Settings password has been sent to your account email");
+      })
+      .catch(function (error) {
+        alert(error);
+      });
+  };
 
   return (
     <>
@@ -54,8 +82,14 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
           shadowOpacity: 0.57,
           shadowRadius: 10,
           position: "absolute",
-          top: height * 0.15,
-          right: width * 0.22,
+          marginLeft: "auto",
+          marginRight: "auto",
+          marginTop: "auto",
+          marginBottom: "auto",
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
           alignItems: "center",
         }}
       >
@@ -180,6 +214,9 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
             Go
           </Text>
           <Feather name="arrow-up-right" size={32} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={SendEmail} style={{ marginTop: 10 }}>
+          <Text style={{ color: "blue", fontSize: 14 }}>Forgot Password?</Text>
         </TouchableOpacity>
       </View>
     </>

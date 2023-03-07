@@ -16,7 +16,7 @@ const ChangeScreen = ({
   completeOrder,
   setcurrentOrder,
   setongoingOrderListModal,
-}) => {
+}) => { 
   const total = order?.total ? order?.total : 0;
   const [cash, setCash] = useState("");
   const storeDetails = storeDetailState.use();
@@ -126,8 +126,14 @@ const ChangeScreen = ({
           height: height * 0.7,
           width: height * 0.7,
           padding: 40,
-          alignSelf: "center",
-          top: "15%",
+          marginLeft: "auto",
+          marginRight: "auto",
+          marginTop: "auto",
+          marginBottom: "auto",
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
         }}
       >
         <View style={styles.sizeRow}>

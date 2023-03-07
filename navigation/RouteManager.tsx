@@ -4,24 +4,27 @@ import MainAuthed from "./authed/MainAuthed";
 import {
   setStoreDetailState,
   setTransListState,
+  setTrialDetailsState,
   setUserState,
   setUserStoreState,
   setWoocommerceState,
   storeDetailState,
+  trialDetailsState,
   userState,
   woocommerceState,
 } from "state/state";
 import MainNonAuth from "./non-authed/MainNonAuth";
 import { auth, db } from "state/firebaseConfig";
 import Spinner from "components/Spinner";
-import { updateTransList } from "state/firebaseFunctions";
+import { updateFreeTrial, updateTransList } from "state/firebaseFunctions";
 const tz = require("moment-timezone");
 import useSound from "use-sound";
 import mySound from "assets/alarm.mp3";
 import PlanUpdateTest from "screens/authed/PlanUpdateTest";
 import NewUserPayment from "screens/authed/NewUserPayment";
-import { Animated, Image, Modal, View } from "react-native";
+import { Animated, Image, Modal, Text, View } from "react-native";
 import * as Font from "expo-font";
+import TrialEnded from "components/TrialEnded";
 
 const RouteManager = () => {
   const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
@@ -35,6 +38,7 @@ const RouteManager = () => {
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const [viewVisible, setviewVisible] = useState(true);
   const [isCanceled, setisCanceled] = useState(null);
+  const trialDetails = trialDetailsState.use()
 
   const [fontsLoaded] = Font.useFonts({
     "archivo-600": require("assets/fonts/Archivo-SemiBold.ttf"),
@@ -69,6 +73,13 @@ const RouteManager = () => {
                       if (element.data().status === "active") {
                         setisSubscribed(true);
                         setisNewUser(false);
+                        if (doc.data().freeTrial) {
+                          setTrialDetailsState({
+                            endDate: null,
+                            hasEnded: null,
+                          });
+                          updateFreeTrial(null);
+                        }
                       } else if (element.data().status === "canceled") {
                         setisSubscribed(false);
                         setisNewUser(false);
@@ -108,6 +119,38 @@ const RouteManager = () => {
               })
               .catch(() => console.log("Error has occured with db"));
 
+            if (doc.data().freeTrial) {
+              console.log("It is a free trial");
+              setisNewUser(false);
+              let firstDate = new Date(doc.data().freeTrial.seconds * 1000);
+              let today = new Date();
+              if (firstDate <= today) {
+                console.log(
+                  "Trial has ended: ",
+                  "savedDate: ",
+                  firstDate,
+                  " TODAY: ",
+                  today
+                );
+                setTrialDetailsState({
+                  endDate: doc.data().freeTrial,
+                  hasEnded: true,
+                });
+              } else {
+                console.log(
+                  "Trial has not ended: ",
+                  "savedDate: ",
+                  firstDate,
+                  " TODAY: ",
+                  today
+                );
+                setTrialDetailsState({
+                  endDate: doc.data().freeTrial,
+                  hasEnded: false,
+                });
+              }
+            }
+
             setUserStoreState({
               products: doc.data().products ? doc.data().products : [],
               categories: doc.data().categories ? doc.data().categories : [],
@@ -136,7 +179,7 @@ const RouteManager = () => {
   }, []);
 
   useEffect(() => {
-    if (userS && isSubscribed) {
+    if ((userS && isSubscribed) || trialDetails.hasEnded == false) {
       const unsub = db
         .collection("users")
         .doc(userS.uid)
@@ -161,7 +204,7 @@ const RouteManager = () => {
         });
       return () => unsub();
     }
-  }, [userS, isSubscribed]);
+  }, [userS, isSubscribed, trialDetails]);
 
   useEffect(() => {
     if (wooCredentials.useWoocommerce === true && isSubscribed) {
@@ -615,17 +658,34 @@ const RouteManager = () => {
     fadeIn();
   };
 
+  useEffect(() => {
+    console.log("isTrial: ", trialDetails);
+  }, [trialDetails]);
+
+  const NavigationContent = () => {
+    if (trialDetails.endDate) {
+      return (
+        <>
+          <MainAuthed />
+          {trialDetails.hasEnded && <TrialEnded resetLoader={resetLoader} />}
+        </>
+      );
+    } else if (isSubscribed) {
+      return <MainAuthed />;
+    } else if (isNewUser) {
+      return <NewUserPayment resetLoader={resetLoader} />;
+    } else {
+      return (
+        <PlanUpdateTest resetLoader={resetLoader} isCanceled={isCanceled} />
+      );
+    }
+  };
+
   return (
     <NavigationContainer linking={linking}>
       {userS ? (
         <>
-          {isSubscribed ? (
-            <MainAuthed />
-          ) : isNewUser ? (
-            <NewUserPayment resetLoader={resetLoader} />
-          ) : (
-            <PlanUpdateTest resetLoader={resetLoader} isCanceled={isCanceled} />
-          )}
+          <NavigationContent />
           {viewVisible && (
             <Animated.View
               style={{

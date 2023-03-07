@@ -65,6 +65,12 @@ export const updateStoreDetails = (storeDetails) => {
   });
 };
 
+export const updateFreeTrial = (endDate) => {
+  db.collection("users").doc(auth.currentUser?.uid).update({
+    freeTrial: endDate,
+  });
+};
+
 export const logout = () => auth.signOut();
 
 export const addCustomerDetailsToDb = (customer) =>

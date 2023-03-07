@@ -74,7 +74,8 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
             key={index}
           >
             <Text style={{ fontWeight: "700", fontSize: 18 }}>
-              Label: {e.label}
+              {e.isRequired && "* "}
+              {e.label}
             </Text>
             <ProductOptionDropDown
               label={e.label}
@@ -112,7 +113,8 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
             key={index}
           >
             <Text style={{ fontWeight: "700", fontSize: 18 }}>
-              Label: {e.label}
+              {e.isRequired && "* "}
+              {e.label}
             </Text>
             <View style={{ flexWrap: "wrap", flexDirection: "row" }}>
               {e.optionsList.map((selection, listIndex) => {
@@ -222,6 +224,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
 
   const AddToCart = () => {
     const opsArray = [];
+    let stop = false;
 
     myObjProfile.options.forEach((op) => {
       let opWVal = `${op.label}: `;
@@ -242,41 +245,45 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
           }
         });
         opsArray.push(opWVal);
+      } else if (numberOfSelected === 0 && op.isRequired === true) {
+        alert(op.label + " is required. Please fill out to add to cart");
+        stop = true;
       }
     });
-
-    const objWTotal = {
-      ...myObjProfile,
-      total: total,
-      extraDetails: extraInput,
-    };
-
-    if (itemIndex >= 0) {
-      let copyCart = structuredClone(cart);
-      copyCart[itemIndex] = {
-        name: myObjProfile.name,
-        price: total,
-        description: myObj.description,
-        options: opsArray,
+    if (!stop) {
+      const objWTotal = {
+        ...myObjProfile,
+        total: total,
         extraDetails: extraInput,
-        editableObj: objWTotal,
       };
-      setCartState(copyCart);
-    } else {
-      addCartState({
-        name: myObjProfile.name,
-        price: total,
-        description: myObj.description,
-        options: opsArray,
-        extraDetails: extraInput,
-        editableObj: objWTotal,
-      });
-    }
 
-    goBack();
-    setmyObjProfile(myObj);
-    settotal(myObjProfile.price);
-    setextraInput(null);
+      if (itemIndex >= 0) {
+        let copyCart = structuredClone(cart);
+        copyCart[itemIndex] = {
+          name: myObjProfile.name,
+          price: total,
+          description: myObj.description,
+          options: opsArray,
+          extraDetails: extraInput,
+          editableObj: objWTotal,
+        };
+        setCartState(copyCart);
+      } else {
+        addCartState({
+          name: myObjProfile.name,
+          price: total,
+          description: myObj.description,
+          options: opsArray,
+          extraDetails: extraInput,
+          editableObj: objWTotal,
+        });
+      }
+
+      goBack();
+      setmyObjProfile(myObj);
+      settotal(myObjProfile.price);
+      setextraInput(null);
+    }
   };
 
   return (

@@ -92,7 +92,7 @@ const CartItemEditable = ({ cartItem, index, removeAction }) => {
           >
             <View
               style={{
-                height: "90%",
+                height: "92%",
                 width: "70%",
                 borderTopRightRadius: 3,
               }}
@@ -125,7 +125,7 @@ const CartItemEditable = ({ cartItem, index, removeAction }) => {
           />
           <Animated.View
             style={{
-              height: "10%",
+              height: "8%",
               width: "70%",
               padding: 20,
               shadowColor: "rgba(0,0,0,1)",
@@ -962,7 +962,7 @@ const CartScreen = ({ navigation }) => {
           setDeliveryChecked={setDeliveryChecked}
         />
       </Modal>
-      <Modal visible={cashModal}>
+      <Modal visible={cashModal} transparent>
         <CashScreen
           setCashModal={setCashModal}
           GetTrans={() => Print("Cash")}

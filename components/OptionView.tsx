@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Button, TextInput } from "@react-native-material/core";
+import { Button, Switch, TextInput } from "@react-native-material/core";
 import DropDown from "./DropDown";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
@@ -37,19 +37,6 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
 
   return (
     <>
-      <TextInput
-        placeholder="Enter Option Label"
-        onChangeText={(val) => {
-          sete((prevState) => ({ ...prevState, label: val }));
-          newProductOptions.current[index].label = val;
-        }}
-        value={e.label}
-        style={{ marginBottom: 15 }}
-        label="Enter Option Label"
-        variant="outlined"
-        color="black"
-      />
-      {/* optionType */}
       <View
         style={{
           flexDirection: "row",
@@ -60,12 +47,25 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
           paddingBottom: 20,
           borderBottomColor: "grey",
           borderBottomWidth: 1,
+          flexWrap: "wrap",
         }}
       >
+        <TextInput
+          placeholder="Enter Option Label"
+          onChangeText={(val) => {
+            sete((prevState) => ({ ...prevState, label: val }));
+            newProductOptions.current[index].label = val;
+          }}
+          value={e.label}
+          style={{ margin: 10, width: "97.5%", height: 52 }}
+          label="Enter Option Label"
+          variant="outlined"
+          color="black"
+        />
         <View
           style={{
             margin: 10,
-            width: "46%",
+            width: "47%",
             height: 52,
           }}
         >
@@ -131,7 +131,7 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
         </View>
         <TouchableOpacity
           disabled={e.optionType !== "Multi Choice"}
-          style={{ margin: 10, width: "48%", height: 52 }}
+          style={{ margin: 10, width: "47%", height: 52 }}
         >
           <TextInput
             placeholder="Enter selection limit or leave empty"
@@ -151,6 +151,27 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
             color="black"
           />
         </TouchableOpacity>
+        <View
+          style={{
+            margin: 10,
+            width: "47%",
+            height: 52,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ marginBottom: 5, fontSize: 14 }}>
+            Is Option Required?
+          </Text>
+          <Switch
+            value={e.isRequired}
+            onValueChange={(val) => {
+              sete((prevState) => ({ ...prevState, isRequired: val }));
+              newProductOptions.current[index].isRequired = val;
+            }}
+          />
+        </View>
       </View>
       {testMap.map((eInnerListStart, indexInnerList) => {
         const eInnerList = structuredClone(eInnerListStart);

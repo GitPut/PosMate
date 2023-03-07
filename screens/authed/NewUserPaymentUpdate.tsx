@@ -160,10 +160,15 @@ function NewUserPaymentUpdate({
           <View style={styles.group18}>
             <View style={styles.planPrice1Row}>
               <Text style={styles.planPrice1}>Plan Price:</Text>
-              <Text style={styles.wooCommerce1}>
-                $
-                {planType.value === "monthly" ? "50 / Monthly" : "480 / Yearly"}
-              </Text>
+              {planType.value === "monthly" && (
+                <Text style={styles.wooCommerce1}>$50.00 / Monthly</Text>
+              )}
+              {planType.value === "yearly" && (
+                <Text style={styles.wooCommerce1}>$480.00 / Yearly</Text>
+              )}
+              {planType.value === "freeTrial" && (
+                <Text style={styles.wooCommerce1}>1 Day Free Trial</Text>
+              )}
             </View>
           </View>
           <View style={styles.group17}>

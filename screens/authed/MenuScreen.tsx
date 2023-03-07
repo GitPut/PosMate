@@ -17,12 +17,18 @@ const MenuScreen = ({ navigation, catalog }) => {
   const [section, setsection] = useState(null);
 
   const InnerBlock = () => {
+    console.log(catalog.products);
+    console.log(section);
     if (catalog.products) {
       if (catalog.products.length > 0) {
         if (!section) {
-          return catalog.products
-            .filter((e) => e.catagory === catalog.categories[0])
-            .map((product, index) => (
+          const correntProduct = catalog.products.filter(
+            (e) =>
+              e.catagory === catalog.categories[0] ||
+              e.category === catalog.categories[0]
+          );
+          if (correntProduct.length > 0) {
+            return correntProduct.map((product, index) => (
               <ProductDisplayBtn
                 product={product}
                 productIndex={index}
@@ -30,17 +36,65 @@ const MenuScreen = ({ navigation, catalog }) => {
                 navigation={navigation}
               />
             ));
+          } else {
+            return (
+              <View
+                style={{
+                  width: "100%",
+                  height: height * 0.8,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "archivo-500",
+                    color: "rgba(74,74,74,1)",
+                    fontSize: 20,
+                  }}
+                >
+                  This category has no products...
+                </Text>
+              </View>
+            );
+          }
         } else {
-          return catalog.products
-            .filter((e) => e.catagory === section)
-            .map((product, index) => (
-              <ProductDisplayBtn
-                product={product}
-                productIndex={index}
-                key={index}
-                navigation={navigation}
-              />
-            ));
+      const correctProducts = 
+           catalog.products
+            .filter((e) => e.catagory === section || e.category === section)
+          
+          if (correctProducts.length > 0) {
+            return correctProducts
+              .map((product, index) => (
+                <ProductDisplayBtn
+                  product={product}
+                  productIndex={index}
+                  key={index}
+                  navigation={navigation}
+                />
+              ));
+          } else {
+            return (
+              <View
+                style={{
+                  width: "100%",
+                  height: height * 0.8,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "archivo-500",
+                    color: "rgba(74,74,74,1)",
+                    fontSize: 20,
+                  }}
+                >
+                  This category has no products...
+                </Text>
+              </View>
+            );
+          }
         }
       }
     }
@@ -100,9 +154,7 @@ const MenuScreen = ({ navigation, catalog }) => {
         style={styles({ height, width }).scrollview}
         contentContainerStyle={styles({ height, width }).wrapper}
       >
-        {/* <View style={styles.wrapper}> */}
         <InnerBlock />
-        {/* </View> */}
       </ScrollView>
     </View>
   );

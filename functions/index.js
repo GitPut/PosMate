@@ -144,3 +144,55 @@ exports.sendPasswordResetEmail = functions.https.onRequest((req, res) => {
       });
   });
 });
+
+
+//export the cloud function called `sendEmail`
+exports.sendSettingsPass = functions.https.onRequest((req, res) => {
+  //enable CORS using the `cors` express middleware.
+  cors(req, res, () => {
+    //get contact form data from the req and then assigned it to variables
+    const email = req.body.email;
+    const password = req.body.password;
+
+        const mailOptions = {
+          from: "support@divinepos.com",
+          to: email,
+          subject: "Divine Pos Settings Password",
+          html: `<h1>Divine Pos Settings Password</h1>
+                        <p>
+                           <b>Hello! Here is your password for your settings page: </b>${password}<br>
+                        </p>`,
+        };
+        return transporter.sendMail(mailOptions, (error, data) => {
+          if (error) {
+            return res.send(error.toString());
+          }
+          var data = JSON.stringify(data);
+          return res.send(`Sent! ${data}`);
+        });
+  });
+});
+
+exports.sendCustomEmail = functions.https.onRequest((req, res) => {
+  //enable CORS using the `cors` express middleware.
+  cors(req, res, () => {
+    //get contact form data from the req and then assigned it to variables
+    const email = req.body.email;
+    const subject = req.body.subject;
+    const html = req.body.html;
+
+    const mailOptions = {
+      from: "support@divinepos.com",
+      to: email,
+      subject: subject,
+      html: html,
+    };
+    return transporter.sendMail(mailOptions, (error, data) => {
+      if (error) {
+        return res.send(error.toString());
+      }
+      var data = JSON.stringify(data);
+      return res.send(`Sent! ${data}`);
+    });
+  });
+});

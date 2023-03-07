@@ -15,6 +15,7 @@ import {
   setStoreDetailState,
   setWoocommerceState,
   storeDetailState,
+  trialDetailsState,
   woocommerceState,
 } from "state/state";
 import {
@@ -53,6 +54,7 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
   const [useWoocommerce, setuseWoocommerce] = useState(
     wooCredentials.useWoocommerce
   );
+  const trialDetails = trialDetailsState.use();
 
   const handleWooDataUpdate = () => {
     if (apiUrl !== null && ck !== null && cs !== null) {
@@ -134,7 +136,11 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.headerRowContainer}>
         <Text style={styles.headerTxt}>Store Details and POS Settings</Text>
-        <TouchableOpacity style={styles.billingBtn} onPress={Manage}>
+        <TouchableOpacity
+          style={styles.billingBtn}
+          onPress={Manage}
+          disabled={trialDetails.hasEnded}
+        >
           <Foundation name="credit-card" style={styles.billingIcon} />
         </TouchableOpacity>
       </View>
@@ -266,19 +272,22 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                 style={{ margin: 10, width: "48%" }}
                 value={settingsPassword}
               />
-              <Button
-                title={customBtnLbl ? customBtnLbl : "Save"}
-                onPress={handleDataUpdate}
-                style={{
-                  margin: 10,
-                  width: "48%",
-                  height: 55,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "#4050B5",
-                }}
-                titleStyle={{ textAlign: "center" }}
-              />
+              <View style={{ margin: 10, width: "48%", height: 55 }}>
+                <Button
+                  title="Save"
+                  onPress={handleDataUpdate}
+                  pressableContainerStyle={{ width: "100%", height: "100%" }}
+                  contentContainerStyle={{ width: "100%", height: "100%" }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "#4050B5",
+                  }}
+                  titleStyle={{ textAlign: "center" }}
+                />
+              </View>
             </View>
             <View style={styles.helperDownloadContainer}>
               <Text style={styles.helperTxt}>
@@ -350,19 +359,22 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                 color="black"
                 value={cs}
               />
-              <Button
-                title="Save"
-                onPress={handleWooDataUpdate}
-                style={{
-                  margin: 10,
-                  width: "48%",
-                  height: 55,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "#4050B5",
-                }}
-                titleStyle={{ textAlign: "center" }}
-              />
+              <View style={{ margin: 10, width: "48%", height: 55 }}>
+                <Button
+                  title="Save"
+                  onPress={handleWooDataUpdate}
+                  pressableContainerStyle={{ width: "100%", height: "100%" }}
+                  contentContainerStyle={{ width: "100%", height: "100%" }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "#4050B5",
+                  }}
+                  titleStyle={{ textAlign: "center" }}
+                />
+              </View>
             </View>
           </>
         )}

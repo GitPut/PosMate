@@ -1,4 +1,11 @@
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from "react-native";
 import EntypoIcon from "@expo/vector-icons/Entypo";
 import FeatherIcon from "@expo/vector-icons/Feather";
 import IoniconsIcon from "@expo/vector-icons/Ionicons";
@@ -9,7 +16,11 @@ import EditStoreDetails from "components/EditStoreDetails";
 import DropDown from "components/DropDown";
 import { auth, db } from "state/firebaseConfig";
 import { loadStripe } from "@stripe/stripe-js";
-import { logout, updateStoreDetails } from "state/firebaseFunctions";
+import {
+  logout,
+  updateFreeTrial,
+  updateStoreDetails,
+} from "state/firebaseFunctions";
 import NewUserPaymentUpdate from "./NewUserPaymentUpdate";
 import { Switch, TextInput } from "@react-native-material/core";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
@@ -62,17 +73,23 @@ const NewUserPayment = ({ resetLoader }) => {
                         <Text style={styles.plan2}>Plan</Text>
                       </View>
                       <View style={styles.group23}>
-                        <FeatherIcon name="tag" style={styles.icon16} />
+                        <IoniconsIcon
+                          name="pricetags-outline"
+                          style={styles.icon16}
+                        />
                       </View>
                     </View>
                     <Text style={styles.allYearPayment}>All-Year Payment</Text>
                     <View style={styles.group6}>
-                      <Text style={styles.overview1}>
-                        $
-                        {planType.value === "monthly"
-                          ? "50.00 CAD"
-                          : "480.00 CAD"}
-                      </Text>
+                      {planType.value === "monthly" && (
+                        <Text style={styles.overview1}>$50.00 CAD</Text>
+                      )}
+                      {planType.value === "yearly" && (
+                        <Text style={styles.overview1}>$480.00 CAD</Text>
+                      )}
+                      {planType.value === "freeTrial" && (
+                        <Text style={styles.overview1}>1 Day Trial</Text>
+                      )}
                       <Text style={styles.monthly5}>/</Text>
                       <Select
                         className="basic-single"
@@ -81,6 +98,7 @@ const NewUserPayment = ({ resetLoader }) => {
                         options={[
                           { value: "monthly", label: "Monthly" },
                           { value: "yearly", label: "Yearly" },
+                          { value: "freeTrial", label: "Free Trial" },
                           { value: "test", label: "Test" },
                         ]}
                         value={planType}
@@ -174,7 +192,10 @@ const NewUserPayment = ({ resetLoader }) => {
                         <Text style={styles.standard}>Store Details</Text>
                       </View>
                       <View style={styles.group23}>
-                        <FeatherIcon name="tag" style={styles.icon16} />
+                        <MaterialCommunityIconsIcon
+                          name="store"
+                          style={styles.icon16}
+                        />
                       </View>
                     </View>
                     <Text style={styles.allYearPayment}>
@@ -204,10 +225,46 @@ const NewUserPayment = ({ resetLoader }) => {
                       color="black"
                       onChangeText={(val) => setlocalStoreWebsite(val)}
                       value={localStoreWebsite}
-                      style={styles.textInput}
+                      style={[styles.textInput, { marginBottom: 15 }]}
                       label="Enter store website url"
                       leading={(props) => (
                         <MaterialCommunityIconsIcon name="web" {...props} />
+                      )}
+                    />
+                    <GooglePlacesAutocomplete
+                      apiOptions={{
+                        region: "CA",
+                      }}
+                      debounce={800}
+                      apiKey={GOOGLE_API_KEY}
+                      // onSelect={handleAddress}
+                      selectProps={{
+                        localStoreAddress,
+                        onChange: setlocalStoreAddress,
+                        defaultValue: localStoreAddress,
+                        placeholder: "Enter store address",
+                        menuPortalTarget: document.body,
+                        styles: {
+                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                        },
+                      }}
+                      renderSuggestions={(
+                        active,
+                        suggestions,
+                        onSelectSuggestion
+                      ) => (
+                        <div>
+                          {suggestions.map((suggestion) => (
+                            <div
+                              className="suggestion"
+                              onClick={(event) => {
+                                onSelectSuggestion(suggestion, event);
+                              }}
+                            >
+                              {suggestion.description}
+                            </div>
+                          ))}
+                        </div>
                       )}
                     />
                   </View>
@@ -248,50 +305,6 @@ const NewUserPayment = ({ resetLoader }) => {
                     <Text style={styles.monthly6}>Next</Text>
                   </TouchableOpacity>
                 </View>
-                <View
-                  style={{
-                    position: "absolute",
-                    bottom: "25%",
-                    width: 691 * 0.95,
-                  }}
-                >
-                  <GooglePlacesAutocomplete
-                    apiOptions={{
-                      region: "CA",
-                    }}
-                    debounce={800}
-                    apiKey={GOOGLE_API_KEY}
-                    // onSelect={handleAddress}
-                    selectProps={{
-                      localStoreAddress,
-                      onChange: setlocalStoreAddress,
-                      defaultValue: localStoreAddress,
-                      placeholder: "Enter store address",
-                      menuPortalTarget: document.body,
-                      styles: {
-                        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                      },
-                    }}
-                    renderSuggestions={(
-                      active,
-                      suggestions,
-                      onSelectSuggestion
-                    ) => (
-                      <div>
-                        {suggestions.map((suggestion) => (
-                          <div
-                            className="suggestion"
-                            onClick={(event) => {
-                              onSelectSuggestion(suggestion, event);
-                            }}
-                          >
-                            {suggestion.description}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  />
-                </View>
               </>
             );
           }}
@@ -311,44 +324,53 @@ const NewUserPayment = ({ resetLoader }) => {
               settingsPassword: settingsPassword ? settingsPassword : null,
             });
 
-            let priceId;
-            if (planType.value === "monthly") {
-              priceId = "price_1Mb2s4CIw3L7DOwI5PDx3qKx";
-            } else if (planType.value === "yearly") {
-              priceId = "price_1Mb2s4CIw3L7DOwIF00zPa4q";
-            } else if (planType.value === "test") {
-              priceId = "price_1Mb4uSCIw3L7DOwI6exh9JBt";
-            }
-            await db
-              .collection("users")
-              .doc(auth.currentUser.uid)
-              .collection("checkout_sessions")
-              .add({
-                price: priceId, // todo price Id from your products price in the Stripe Dashboard
-                success_url: window.location.origin, // return user to this screen on successful purchase
-                cancel_url: window.location.origin, // return user to this screen on failed purchase
-              })
-              .then((docRef) => {
-                // Wait for the checkoutSession to get attached by the extension
-                docRef.onSnapshot(async (snap) => {
-                  const { error, sessionId } = snap.data();
-                  if (error) {
-                    // Show an error to your customer and inspect
-                    // your Cloud Function logs in the Firebase console.
-                    alert(`An error occurred: ${error.message}`);
-                  }
+            if (planType.value === "freeTrial") {
+              // Get today's date
+              let tomorrow = new Date();
+              // Change the date by adding 1 to it (tomorrow + 1 = tomorrow)
+              tomorrow.setDate(tomorrow.getDate() + 1);
+              // return yyyy-mm-dd format
+              updateFreeTrial(tomorrow);
+            } else {
+              let priceId;
+              if (planType.value === "monthly") {
+                priceId = "price_1Mb2s4CIw3L7DOwI5PDx3qKx";
+              } else if (planType.value === "yearly") {
+                priceId = "price_1Mb2s4CIw3L7DOwIF00zPa4q";
+              } else if (planType.value === "test") {
+                priceId = "price_1Mb4uSCIw3L7DOwI6exh9JBt";
+              }
+              await db
+                .collection("users")
+                .doc(auth.currentUser.uid)
+                .collection("checkout_sessions")
+                .add({
+                  price: priceId, // todo price Id from your products price in the Stripe Dashboard
+                  success_url: window.location.origin, // return user to this screen on successful purchase
+                  cancel_url: window.location.origin, // return user to this screen on failed purchase
+                })
+                .then((docRef) => {
+                  // Wait for the checkoutSession to get attached by the extension
+                  docRef.onSnapshot(async (snap) => {
+                    const { error, sessionId } = snap.data();
+                    if (error) {
+                      // Show an error to your customer and inspect
+                      // your Cloud Function logs in the Firebase console.
+                      alert(`An error occurred: ${error.message}`);
+                    }
 
-                  if (sessionId) {
-                    // We have a session, let's redirect to Checkout
-                    // Init Stripe
-                    const stripe = await loadStripe(
-                      "pk_live_51MHqrvCIw3L7DOwI0ol9CTCSH7mQXTLKpxTWKzmwOY1MdKwaYwhdJq6WTpkWdBeql3sS44JmybynlRnaO2nSa1FK001dHiEOZO" // todo enter your public stripe key here
-                    );
-                    console.log(`redirecting`);
-                    await stripe.redirectToCheckout({ sessionId });
-                  }
+                    if (sessionId) {
+                      // We have a session, let's redirect to Checkout
+                      // Init Stripe
+                      const stripe = await loadStripe(
+                        "pk_live_51MHqrvCIw3L7DOwI0ol9CTCSH7mQXTLKpxTWKzmwOY1MdKwaYwhdJq6WTpkWdBeql3sS44JmybynlRnaO2nSa1FK001dHiEOZO" // todo enter your public stripe key here
+                      );
+                      console.log(`redirecting`);
+                      await stripe.redirectToCheckout({ sessionId });
+                    }
+                  });
                 });
-              });
+            }
           }}
           planType={planType}
           setstageNum={setstageNum}
@@ -358,59 +380,90 @@ const NewUserPayment = ({ resetLoader }) => {
             <>
               <View style={styles.planItemContainer}>
                 <View style={styles.pITopContainer}>
-                  <View style={styles.group4}>
-                    <View style={styles.group24}>
-                      <Text style={styles.standard}>Setup Externals</Text>
+                  <ScrollView>
+                    <View style={styles.group4}>
+                      <View style={styles.group24}>
+                        <Text style={styles.standard}>Setup Externals</Text>
+                      </View>
+                      <View style={styles.group23}>
+                        <MaterialCommunityIconsIcon
+                          name="progress-question"
+                          style={styles.icon16}
+                        />
+                      </View>
                     </View>
-                    <View style={styles.group23}>
-                      <FontAwesome name="question" style={styles.icon16} />
+                    <Text style={styles.allYearPayment}>
+                      Add your woocommerce and set up printer!
+                    </Text>
+                    <TextInput
+                      color="black"
+                      style={styles.textInput}
+                      label="Enter receipt printer name"
+                      leading={(props) => (
+                        <MaterialCommunityIconsIcon name="printer" {...props} />
+                      )}
+                      onChangeText={(val) => setcom(val)}
+                      value={com}
+                    />
+                    <Text style={styles.helperTxt}>
+                      Download helper program that makes your printer work with
+                      our service
+                    </Text>
+                    <View style={styles.helperDownloadContainer}>
+                      <a
+                        href={require("assets/divine-pos-helper.exe")}
+                        download="Divine Pos Helper.exe"
+                      >
+                        <Image
+                          source={require("assets/badge-windows.png")}
+                          resizeMode="contain"
+                          style={styles.badgeWindows}
+                        />
+                      </a>
+                      <a
+                        href={require("assets/divine-pos-helper.pkg")}
+                        download="Divine Pos Helper.pkg"
+                      >
+                        <Image
+                          source={require("assets/badge-mac.png")}
+                          resizeMode="contain"
+                          style={styles.badgeMac}
+                        />
+                      </a>
                     </View>
-                  </View>
-                  <Text style={styles.allYearPayment}>
-                    Add your woocommerce and set up printer!
-                  </Text>
-                  <TextInput
-                    color="black"
-                    style={styles.textInput}
-                    label="Enter receipt printer name"
-                    leading={(props) => (
-                      <MaterialCommunityIconsIcon name="printer" {...props} />
+                    <Text style={{ marginTop: 10, marginBottom: 5 }}>
+                      Optionaly connect your WooCommerce store
+                    </Text>
+                    <Switch
+                      value={useWoocommerce}
+                      onValueChange={(val) => setuseWoocommerce(val)}
+                    />
+                    {useWoocommerce && (
+                      <View style={{ paddingBottom: 25 }}>
+                        <TextInput
+                          color="black"
+                          style={styles.textInput}
+                          label="Enter Woocommerce 'API Url'"
+                          onChangeText={(val) => setapiUrl(val)}
+                          value={apiUrl}
+                        />
+                        <TextInput
+                          color="black"
+                          style={styles.textInput}
+                          label="Enter Woocommerce 'CK'"
+                          onChangeText={(val) => setck(val)}
+                          value={ck}
+                        />
+                        <TextInput
+                          color="black"
+                          style={styles.textInput}
+                          label="Enter Woocommerce 'CS'"
+                          onChangeText={(val) => setcs(val)}
+                          value={cs}
+                        />
+                      </View>
                     )}
-                    onChangeText={(val) => setcom(val)}
-                    value={com}
-                  />
-                  <Text style={{ marginTop: 10, marginBottom: 5 }}>
-                    Optionaly connect your WooCommerce store
-                  </Text>
-                  <Switch
-                    value={useWoocommerce}
-                    onValueChange={(val) => setuseWoocommerce(val)}
-                  />
-                  {useWoocommerce && (
-                    <>
-                      <TextInput
-                        color="black"
-                        style={styles.textInput}
-                        label="Enter Woocommerce 'API Url'"
-                        onChangeText={(val) => setapiUrl(val)}
-                        value={apiUrl}
-                      />
-                      <TextInput
-                        color="black"
-                        style={styles.textInput}
-                        label="Enter Woocommerce 'CK'"
-                        onChangeText={(val) => setck(val)}
-                        value={ck}
-                      />
-                      <TextInput
-                        color="black"
-                        style={styles.textInput}
-                        label="Enter Woocommerce 'CS'"
-                        onChangeText={(val) => setcs(val)}
-                        value={cs}
-                      />
-                    </>
-                  )}
+                  </ScrollView>
                 </View>
                 <View style={styles.pITBottomContainer}>
                   <View style={[styles.rect32, { width: "75%" }]} />
@@ -546,16 +599,16 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   group23: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     backgroundColor: "rgba(51,81,243,1)",
-    borderRadius: 30,
+    borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
   },
   icon16: {
     color: "rgba(255,255,255,1)",
-    fontSize: 36,
+    fontSize: 32,
   },
   allYearPayment: {
     fontFamily: "archivo-500",
@@ -1063,5 +1116,29 @@ const styles = StyleSheet.create({
   },
   textInput: {
     marginTop: 15,
+  },
+  helperDownloadContainer: {
+    width: "100%",
+    height: 79,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginTop: 5,
+    marginBottom: 15,
+  },
+  helperTxt: {
+    fontFamily: "archivo-500",
+    color: "#121212",
+    fontSize: 16,
+    marginTop: 25,
+  },
+  badgeWindows: {
+    width: 150,
+    height: 79,
+    marginRight: 15,
+  },
+  badgeMac: {
+    width: 150,
+    height: 79,
   },
 });

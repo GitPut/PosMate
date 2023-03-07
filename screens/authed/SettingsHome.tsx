@@ -1,4 +1,11 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { Button } from "@react-native-material/core";
 import { logout } from "state/firebaseFunctions";
@@ -13,6 +20,7 @@ import { woocommerceState } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 import PlanUpdateTest from "./PlanUpdateTest";
 import ViewTransactions from "./ViewTransactions";
+import HelpModal from "components/HelpModal";
 const tz = require("moment-timezone");
 
 const SettingsHome = ({ navigation }) => {
@@ -185,48 +193,50 @@ const SettingsHome = ({ navigation }) => {
   }, [transList]);
   ////
 
-  const Header = () =>
-    useMemo(() => {
-      return (
-        <View
-          style={{
-            width: "100%",
-            height: 80,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            backgroundColor: "rgba(31,35,48,1)",
-            paddingLeft: 25,
-            paddingRight: 25,
-          }}
+  const Header = () => {
+    const [showHelpModal, setshowHelpModal] = useState(false);
+    return (
+      <View
+        style={{
+          width: "100%",
+          height: 80,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: "rgba(31,35,48,1)",
+          paddingLeft: 25,
+          paddingRight: 25,
+        }}
+      >
+        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+          <Ionicons name="chevron-back" size={32} color="white" />
+        </TouchableOpacity>
+        <Image
+          source={Logo}
+          style={{ width: 200, height: 160, resizeMode: "contain" }}
+        />
+        <TouchableOpacity
+          onPress={() => setshowHelpModal(true)}
+          style={{ alignItems: "center", flexDirection: "row" }}
         >
-          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-            <Ionicons name="chevron-back" size={32} color="white" />
-          </TouchableOpacity>
-          <Image
-            source={Logo}
-            style={{ width: 200, height: 160, resizeMode: "contain" }}
-          />
-          <TouchableOpacity
-            // onPress={() => navigation.navigate("SettingsHome")}
-            // change to call help number
-            style={{ alignItems: "center", flexDirection: "row" }}
+          <Ionicons name="help-circle-outline" size={32} color="white" />
+          <Text
+            style={{
+              fontSize: 20,
+              color: "white",
+              marginLeft: 10,
+              fontWeight: "600",
+            }}
           >
-            <Ionicons name="help-circle-outline" size={32} color="white" />
-            <Text
-              style={{
-                fontSize: 20,
-                color: "white",
-                marginLeft: 10,
-                fontWeight: "600",
-              }}
-            >
-              Help
-            </Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }, []);
+            Help
+          </Text>
+        </TouchableOpacity>
+        <Modal visible={showHelpModal} transparent>
+          <HelpModal setshowHelpModal={setshowHelpModal} />
+        </Modal>
+      </View>
+    );
+  };
 
   return (
     <View style={{ flex: 1, height: height, width: width }}>

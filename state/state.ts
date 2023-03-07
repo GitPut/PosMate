@@ -52,3 +52,12 @@ export const storeDetailState = entity({
 export const setStoreDetailState = (val) => {
   storeDetailState.set(val);
 };
+
+export const trialDetailsState = entity({
+  endDate: null,
+  hasEnded: null,
+});
+
+export const setTrialDetailsState = (val) => {
+  trialDetailsState.set(val);
+};

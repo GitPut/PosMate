@@ -20,8 +20,11 @@ import useWindowDimensions from "components/useWindowDimensions";
 import CompletePaymentPhoneOrder from "components/CompletePaymentPhoneOrder";
 import SettingsPasswordModal from "components/SettingsPasswordModal";
 import { updateTransList } from "state/firebaseFunctions";
+import { copilot, walkthroughable, CopilotStep } from "react-native-copilot";
 
-const HomeScreen = ({ navigation }) => {
+const CopilotText = walkthroughable(Text);
+
+const HomeScreen = (props) => {
   const { height, width } = useWindowDimensions();
   const catalog = userStoreState.use();
   const storeDetails = storeDetailState.use();
@@ -33,6 +36,13 @@ const HomeScreen = ({ navigation }) => {
   //   console.log("PATH: ", window.location.pathname);
   //   if (window.location.pathname === '/settings') { document.title = "Settings"; navigation }
   // }, []);
+
+  useEffect(() => {
+    //setting a function to handle the step change event
+    // props.copilotEvents.on("stepChange", handleStepChange);
+    //To start the step by step Walk through
+    props.start();
+  }, []);
 
   const Header = () => {
     return (
@@ -80,7 +90,7 @@ const HomeScreen = ({ navigation }) => {
             onPress={() =>
               storeDetails.settingsPassword
                 ? setsettingsPasswordModalVis(true)
-                : navigation.navigate("settings")
+                : props.navigation.navigate("settings")
             }
             style={{
               backgroundColor: "rgba(41,44,56,1)",
@@ -101,12 +111,15 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, height: height, width: width }}>
+      <CopilotStep text="This is a hello world example!" order={1} name="hello">
+        <CopilotText>Hello world!</CopilotText>
+      </CopilotStep>
       <View style={{ flexDirection: "row", height: "100%" }}>
         <View style={{ width: "70%", height: "100%" }}>
           <Header />
-          <MenuScreen catalog={catalog} navigation={navigation} />
+          <MenuScreen catalog={catalog} navigation={props.navigation} />
         </View>
-        <CartScreen navigation={navigation} />
+        <CartScreen navigation={props.navigation} />
       </View>
       <Modal visible={ongoingOrderListModal} transparent={true}>
         <CompletePaymentPhoneOrder
@@ -116,14 +129,14 @@ const HomeScreen = ({ navigation }) => {
       <Modal visible={settingsPasswordModalVis} transparent={true}>
         <SettingsPasswordModal
           setsettingsPasswordModalVis={setsettingsPasswordModalVis}
-          navigation={navigation}
+          navigation={props.navigation}
         />
       </Modal>
     </View>
   );
 };
 
-export default HomeScreen;
+export default copilot()(HomeScreen);
 
 const styles = StyleSheet.create({
   container: {

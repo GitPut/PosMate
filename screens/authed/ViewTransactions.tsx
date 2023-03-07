@@ -98,9 +98,9 @@ const ViewTransactions = ({ transList, todaysDetails }) => {
         (fReceipt) =>
           !(
             search?.length > 0 &&
-            !fReceipt.customer.name?.includes(search) &&
-            !fReceipt.customer.phone?.includes(search) &&
-            !fReceipt.customer.address?.label?.includes(search) &&
+            !fReceipt.customer?.name?.includes(search) &&
+            !fReceipt.customer?.phone?.includes(search) &&
+            !fReceipt.customer?.address?.label?.includes(search) &&
             !fReceipt.cart_hash?.includes(search) &&
             !fReceipt.method?.includes(search) &&
             !fReceipt.transNum?.includes(search) &&
@@ -182,13 +182,13 @@ const ViewTransactions = ({ transList, todaysDetails }) => {
             cells: [
               {
                 type: "text",
-                text: receipt.customer.name,
+                text: receipt.customer?.name ? receipt.customer?.name : "",
                 nonEditable: true,
                 style: { flex: 1 },
               },
               {
                 type: "text",
-                text: receipt.customer.phone ? receipt.customer.phone : "",
+                text: receipt.customer?.phone ? receipt.customer?.phone : "",
                 nonEditable: true,
                 style: { flex: 1 },
               },
