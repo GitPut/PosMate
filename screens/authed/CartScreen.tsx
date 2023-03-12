@@ -32,6 +32,19 @@ import { auth, db } from "state/firebaseConfig";
 import CartItem from "components/CartItem";
 import ProductListing from "components/ProductListing";
 
+const CartButton = (props) => {
+
+  return (
+      <TouchableOpacity
+        style={props.style}
+        onPress={props.onPress}
+        disabled={props.disabled}
+      >
+        <props.icon />
+      </TouchableOpacity>
+  );
+};
+
 const CartItemEditable = ({ cartItem, index, removeAction }) => {
   const [showProductScreen, setshowProductScreen] = useState(false);
   const xPos = useRef(new Animated.Value(-1000)).current;
@@ -188,8 +201,6 @@ const CartScreen = ({ navigation }) => {
   const Print = (method) => {
     if (savedCustomerDetails) {
       if (savedCustomerDetails.orders?.length > 0) {
-        console.log("Greater than 0");
-        console.log("CART: ", cart);
         db.collection("users")
           .doc(auth.currentUser?.uid)
           .collection("customers")
@@ -198,8 +209,6 @@ const CartScreen = ({ navigation }) => {
             orders: [...savedCustomerDetails.orders, { cart }],
           });
       } else {
-        console.log("Not Greater than 0");
-        console.log("CART: ", cart);
         db.collection("users")
           .doc(auth.currentUser?.uid)
           .collection("customers")
@@ -735,26 +744,26 @@ const CartScreen = ({ navigation }) => {
             justifyContent: "space-between",
           }}
         >
-          <TouchableOpacity
+          <CartButton
             style={[
               styles({ height, width }).iconContainer,
               cart.length > 0 && { opacity: 0.5 },
             ]}
             onPress={() => setSaveCustomerModal(true)}
             disabled={cart.length > 0}
-          >
-            <MaterialCommunityIcons name="history" size={26} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity
+            icon={() => (
+              <MaterialCommunityIcons name="history" size={26} color="white" />
+            )}
+          />
+          <CartButton
             style={[
               styles({ height, width }).iconContainer,
               cart.length > 0 && { opacity: 0.5 },
             ]}
             onPress={() => setDeliveryModal(true)}
             disabled={cart.length > 0}
-          >
-            <Feather name="phone-call" size={28} color="white" />
-          </TouchableOpacity>
+            icon={() => <Feather name="phone-call" size={28} color="white" />}
+          />
         </View>
       </View>
       <ScrollView

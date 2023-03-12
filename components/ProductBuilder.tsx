@@ -60,18 +60,15 @@ const AddProduct = ({
 
   function handleDataUpdate(copyProductData) {
     if (copyProductData) {
-      console.log("First if");
       updateData(
         [...catalog.categories],
         [...catalog.products, copyProductData]
       );
       goBack();
     } else if (existingProduct) {
-      console.log("Second if");
       let copy = structuredClone(catalog.products);
 
       if (existingProduct.id) {
-        console.log("if 2 1");
         const newProductUseRef = {
           ...newProduct,
           options: newProductOptions.current,
@@ -79,7 +76,6 @@ const AddProduct = ({
         const findIndex = copy.findIndex((e) => e.id === existingProduct.id);
         copy[findIndex] = newProductUseRef;
       } else {
-        console.log("if 2 2");
         const newProductUseRef = {
           ...newProduct,
           options: newProductOptions.current,
@@ -90,7 +86,6 @@ const AddProduct = ({
       updateData([...catalog.categories], copy);
       goBack();
     } else {
-      console.log("Third if");
       updateData([...catalog.categories], [...catalog.products, newProduct]);
       goBack();
     }

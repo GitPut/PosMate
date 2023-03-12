@@ -12,6 +12,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import Axios from "axios";
 import firebase from "firebase/app";
 import Logo from "assets/dpos-logo-black.png";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { logout } from "state/firebaseFunctions";
 
 const PlanUpdateTest = ({ resetLoader, isCanceled }) => {
   const sendToCheckout = async () => {
@@ -99,7 +101,23 @@ const PlanUpdateTest = ({ resetLoader, isCanceled }) => {
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Image source={Logo} resizeMode="contain" style={styles.logo}></Image>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TouchableOpacity
+              style={{
+                height: 50,
+                width: 50,
+                borderRadius: 25,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#F5F5F5",
+                marginRight: 20,
+              }}
+              onPress={logout}
+            >
+              <Ionicons name="chevron-back" size={32} color="black" />
+            </TouchableOpacity>
+            <Image source={Logo} resizeMode="contain" style={styles.logo} />
+          </View>
           <View style={styles.attentionWrapper}>
             <Text style={styles.attentionNeeded}>ATTENTION NEEDED</Text>
           </View>
@@ -110,14 +128,18 @@ const PlanUpdateTest = ({ resetLoader, isCanceled }) => {
           something you dont like about the software, we can change that.
         </Text>
         <Text style={styles.txt3}>
-          Resubscribe to have access of your store again. At $40/month instead of the normal $50/month
+          Resubscribe to have access of your store again. At $40/month instead
+          of the normal $50/month
         </Text>
-        <TouchableOpacity style={[styles.updateBtn, {width: 450}]} onPress={sendToCheckout}>
+        <TouchableOpacity
+          style={[styles.updateBtn, { width: 450 }]}
+          onPress={sendToCheckout}
+        >
           <Text style={styles.updateBilling}>Resubscribe for $40/month</Text>
         </TouchableOpacity>
         <Text style={styles.txt4}>
-          Please call (226) 600-5925 or email us at contact@mictonwebdesign.com
-          so that we can solve the problem you had
+          Please call (226) 600-5925 or email us at Support@DivinePos.com so
+          that we can solve the problem you had
         </Text>
       </View>
     );
@@ -146,7 +168,7 @@ const PlanUpdateTest = ({ resetLoader, isCanceled }) => {
         </TouchableOpacity>
         <Text style={styles.txt4}>
           If. you have any questions or need help please call (226) 600-5925 or
-          email us at contact@mictonwebdesign.com
+          email us at Support@DivinePos.com
         </Text>
       </View>
     );

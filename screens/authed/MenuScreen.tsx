@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { userStoreState } from "state/state";
 import ProductDisplayBtn from "components/ProductDisplayBtn";
 import useWindowDimensions from "components/useWindowDimensions";
+import { Button } from "@react-native-material/core";
 const wh = Dimensions.get("window").height;
 
 const MenuScreen = ({ navigation, catalog }) => {
@@ -17,8 +18,6 @@ const MenuScreen = ({ navigation, catalog }) => {
   const [section, setsection] = useState(null);
 
   const InnerBlock = () => {
-    console.log(catalog.products);
-    console.log(section);
     if (catalog.products) {
       if (catalog.products.length > 0) {
         if (!section) {
@@ -59,20 +58,19 @@ const MenuScreen = ({ navigation, catalog }) => {
             );
           }
         } else {
-      const correctProducts = 
-           catalog.products
-            .filter((e) => e.catagory === section || e.category === section)
-          
+          const correctProducts = catalog.products.filter(
+            (e) => e.catagory === section || e.category === section
+          );
+
           if (correctProducts.length > 0) {
-            return correctProducts
-              .map((product, index) => (
-                <ProductDisplayBtn
-                  product={product}
-                  productIndex={index}
-                  key={index}
-                  navigation={navigation}
-                />
-              ));
+            return correctProducts.map((product, index) => (
+              <ProductDisplayBtn
+                product={product}
+                productIndex={index}
+                key={index}
+                navigation={navigation}
+              />
+            ));
           } else {
             return (
               <View
@@ -155,6 +153,10 @@ const MenuScreen = ({ navigation, catalog }) => {
         contentContainerStyle={styles({ height, width }).wrapper}
       >
         <InnerBlock />
+        {/* <Button
+          onPress={() => localStorage.removeItem("tutorialComplete")}
+          title="Reset help"
+        /> */}
       </ScrollView>
     </View>
   );

@@ -117,7 +117,7 @@ const Footer = () => {
                       <div>Call Support</div>
                     </a>
                     <a
-                      href="mailTo:Contact@MictonWebDesign.com"
+                      href="mailTo:Support@DivinePos.com"
                       className="footer-link w-inline-block"
                     >
                       <div>Email Support</div>

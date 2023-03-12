@@ -5,11 +5,13 @@ import {
   setStoreDetailState,
   setTransListState,
   setTrialDetailsState,
+  setTutorialDetailsState,
   setUserState,
   setUserStoreState,
   setWoocommerceState,
   storeDetailState,
   trialDetailsState,
+  tutorialDetailsState,
   userState,
   woocommerceState,
 } from "state/state";
@@ -25,9 +27,13 @@ import NewUserPayment from "screens/authed/NewUserPayment";
 import { Animated, Image, Modal, Text, View } from "react-native";
 import * as Font from "expo-font";
 import TrialEnded from "components/TrialEnded";
+import Tutorial from "components/Tutorial";
 
 const RouteManager = () => {
   const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
+   let isTutorialCompleteLocal = JSON.parse(
+     localStorage.getItem("tutorialComplete") || null
+   );
   const userS = userState.use();
   const wooCredentials = woocommerceState.use();
   const storeDetails = storeDetailState.use();
@@ -38,7 +44,8 @@ const RouteManager = () => {
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const [viewVisible, setviewVisible] = useState(true);
   const [isCanceled, setisCanceled] = useState(null);
-  const trialDetails = trialDetailsState.use()
+  const trialDetails = trialDetailsState.use();
+  const tutorialDetails = tutorialDetailsState.use();
 
   const [fontsLoaded] = Font.useFonts({
     "archivo-600": require("assets/fonts/Archivo-SemiBold.ttf"),
@@ -120,30 +127,15 @@ const RouteManager = () => {
               .catch(() => console.log("Error has occured with db"));
 
             if (doc.data().freeTrial) {
-              console.log("It is a free trial");
               setisNewUser(false);
               let firstDate = new Date(doc.data().freeTrial.seconds * 1000);
               let today = new Date();
               if (firstDate <= today) {
-                console.log(
-                  "Trial has ended: ",
-                  "savedDate: ",
-                  firstDate,
-                  " TODAY: ",
-                  today
-                );
                 setTrialDetailsState({
                   endDate: doc.data().freeTrial,
                   hasEnded: true,
                 });
               } else {
-                console.log(
-                  "Trial has not ended: ",
-                  "savedDate: ",
-                  firstDate,
-                  " TODAY: ",
-                  today
-                );
                 setTrialDetailsState({
                   endDate: doc.data().freeTrial,
                   hasEnded: false,
@@ -165,6 +157,16 @@ const RouteManager = () => {
             }
             if (doc.data().storeDetails) {
               setStoreDetailState(doc.data().storeDetails);
+            }
+            if (isTutorialCompleteLocal) {
+              if (isTutorialCompleteLocal.complete !== null) {
+                setTutorialDetailsState({
+                  complete: isTutorialCompleteLocal.complete,
+                  step: isTutorialCompleteLocal.step,
+                });
+              }
+            } else {
+              setTutorialDetailsState({ complete: false, step: 0 });
             }
           })
           .catch(() => console.log("Error has occured with db"));
@@ -573,21 +575,6 @@ const RouteManager = () => {
                       .catch(function (err) {
                         console.error(err);
                       });
-                    // fetch("http://localhost:8080/print", {
-                    //   method: "POST",
-                    //   headers: {
-                    //     "Content-Type": "application/json",
-                    //   },
-                    //   body: JSON.stringify({
-                    //     printData: printData,
-                    //     comSelected: storeDetails.comSelected,
-                    //   }),
-                    // })
-                    //   .then((response) => response.json())
-                    //   .then((respData) => {
-                    //     console.log(respData);
-                    //   })
-                    //   .catch((e) => alert("Error with printer"));
                   }
                 }
               } else {
@@ -658,20 +645,38 @@ const RouteManager = () => {
     fadeIn();
   };
 
-  useEffect(() => {
-    console.log("isTrial: ", trialDetails);
-  }, [trialDetails]);
-
   const NavigationContent = () => {
     if (trialDetails.endDate) {
       return (
         <>
           <MainAuthed />
           {trialDetails.hasEnded && <TrialEnded resetLoader={resetLoader} />}
+          <Modal
+            transparent
+            visible={
+              tutorialDetails.complete !== true &&
+              tutorialDetails.step == 0 &&
+              !trialDetails.hasEnded
+            }
+          >
+            <Tutorial />
+          </Modal>
         </>
       );
     } else if (isSubscribed) {
-      return <MainAuthed />;
+      return (
+        <>
+          <MainAuthed />
+          <Modal
+            transparent
+            visible={
+              tutorialDetails.complete !== true && tutorialDetails.step == 0
+            }
+          >
+            <Tutorial />
+          </Modal>
+        </>
+      );
     } else if (isNewUser) {
       return <NewUserPayment resetLoader={resetLoader} />;
     } else {
@@ -683,7 +688,7 @@ const RouteManager = () => {
 
   return (
     <NavigationContainer linking={linking}>
-      {userS ? (
+      {userS && (
         <>
           <NavigationContent />
           {viewVisible && (
@@ -705,7 +710,10 @@ const RouteManager = () => {
             </Animated.View>
           )}
         </>
-      ) : (
+      )
+      }
+      { !userS && !loading && 
+      (
         <MainNonAuth />
       )}
     </NavigationContainer>

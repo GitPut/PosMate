@@ -1,51 +1,68 @@
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
+import { setTutorialDetailsState } from "state/state";
 
-const Tutorial = ({ setisTutorialComplete }) => {
+const Tutorial = () => {
   return (
-    <Modal transparent>
-      <View
-        style={[
-          {
-            height: "100%",
-            width: " 100%",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            position: "absolute",
-          },
-        ]}
-      >
-        <View style={styles.planItemContainer}>
-          <View style={styles.pITopContainer}>
-            <Text style={styles.standard}>Welcome to Divine Pos</Text>
-            <Text style={styles.allYearPayment}>
-              Would you like a quick tutorial?
-            </Text>
-            <View
-              style={{
-                alignItems: "center",
-                width: "100%",
-                marginTop: 50,
+    <View
+      style={[
+        {
+          height: "100%",
+          width: " 100%",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.5)",
+          position: "absolute",
+        },
+      ]}
+    >
+      <View style={styles.planItemContainer}>
+        <View style={styles.pITopContainer}>
+          <Text style={styles.standard}>Welcome to Divine Pos</Text>
+          <Text style={styles.allYearPayment}>
+            Would you like a quick tutorial?
+          </Text>
+          <View
+            style={{
+              alignItems: "center",
+              width: "100%",
+              marginTop: 50,
+            }}
+          >
+            <TouchableOpacity
+              style={styles.group5}
+              onPress={() => {
+                setTutorialDetailsState({ complete: true, step: 0 });
+                localStorage.setItem(
+                  "tutorialComplete",
+                  JSON.stringify({
+                    complete: true,
+                    step: 0,
+                  })
+                );
               }}
             >
-              <TouchableOpacity
-                style={styles.group5}
-                onPress={() => {
-                  setisTutorialComplete(true);
-                  localStorage.setItem("tutorialComplete", true);
-                }}
-              >
-                <Text style={styles.monthly6}>Skip</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.group5}>
-                <Text style={styles.monthly6}>Continue</Text>
-              </TouchableOpacity>
-            </View>
+              <Text style={styles.monthly6}>Skip</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.group5}
+              onPress={() => {
+                setTutorialDetailsState({ complete: false, step: 1 });
+                localStorage.setItem(
+                  "tutorialComplete",
+                  JSON.stringify({
+                    complete: false,
+                    step: 1,
+                  })
+                );
+              }}
+            >
+              <Text style={styles.monthly6}>Continue</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
-    </Modal>
+    </View>
   );
 };
 

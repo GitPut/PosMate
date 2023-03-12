@@ -14,37 +14,14 @@ import Tutorial from "components/Tutorial";
 const Stack = createStackNavigator();
 
 export default function MainAuthed() {
-  const [isTutorialComplete, setisTutorialComplete] = useState(false);
-
-  useEffect(() => {
-    const isTutorialCompleteLocal = localStorage.getItem("tutorialComplete");
-    if (isTutorialCompleteLocal == "true") {
-      setisTutorialComplete(true);
-    } else {
-      setisTutorialComplete(false);
-    }
-  }, []);
-
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{
-          header: (props) => (
-            <Tutorial setisTutorialComplete={setisTutorialComplete} />
-          ),
-          headerShown: !isTutorialComplete,
-        }}
-      />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={Home} />
       <Stack.Screen
         name="settings"
         component={SettingsHome}
         options={{ title: "Settings" }}
       />
-      <Stack.Screen name="Edit Categories" component={AddCategory} />
-      <Stack.Screen name="Edit ProductList" component={EditProductList} />
-      <Stack.Screen name="AddProduct" component={AddProduct} options={{}} />
     </Stack.Navigator>
   );
 }

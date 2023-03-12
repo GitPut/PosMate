@@ -16,11 +16,17 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import StatsScreen from "./StatsScreen";
 import EditStoreDetails from "components/EditStoreDetails";
 import ProductAndCatManager from "./ProductAndCatManager";
-import { woocommerceState } from "state/state";
+import {
+  setTutorialDetailsState,
+  tutorialDetailsState,
+  woocommerceState,
+} from "state/state";
 import { auth, db } from "state/firebaseConfig";
 import PlanUpdateTest from "./PlanUpdateTest";
 import ViewTransactions from "./ViewTransactions";
 import HelpModal from "components/HelpModal";
+import TutorialStep from "components/tutorial/TutorialStep";
+import SettingsHeader from "components/SettingsHeader";
 const tz = require("moment-timezone");
 
 const SettingsHome = ({ navigation }) => {
@@ -34,6 +40,20 @@ const SettingsHome = ({ navigation }) => {
     todaysReceiptValue: 0,
     todaysReceipts: 0,
   });
+  const tutorialDetails = tutorialDetailsState.use();
+
+  useEffect(() => {
+    if (!tutorialDetails.complete && tutorialDetails.step == 1) {
+      setTutorialDetailsState((prev) => ({ ...prev, step: 2 }));
+      localStorage.setItem(
+        "tutorialComplete",
+        JSON.stringify({
+          complete: false,
+          step: 2,
+        })
+      );
+    }
+  }, []);
 
   useEffect(() => {
     try {
@@ -46,7 +66,6 @@ const SettingsHome = ({ navigation }) => {
             // doc.data() is never undefined for query doc snapshots
             // console.log(doc.id, " => ", doc.data());
             settransList((prevState) => [...prevState, doc.data()]);
-            console.log(doc.data());
           });
         });
     } catch {
@@ -193,53 +212,8 @@ const SettingsHome = ({ navigation }) => {
   }, [transList]);
   ////
 
-  const Header = () => {
-    const [showHelpModal, setshowHelpModal] = useState(false);
-    return (
-      <View
-        style={{
-          width: "100%",
-          height: 80,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          backgroundColor: "rgba(31,35,48,1)",
-          paddingLeft: 25,
-          paddingRight: 25,
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-          <Ionicons name="chevron-back" size={32} color="white" />
-        </TouchableOpacity>
-        <Image
-          source={Logo}
-          style={{ width: 200, height: 160, resizeMode: "contain" }}
-        />
-        <TouchableOpacity
-          onPress={() => setshowHelpModal(true)}
-          style={{ alignItems: "center", flexDirection: "row" }}
-        >
-          <Ionicons name="help-circle-outline" size={32} color="white" />
-          <Text
-            style={{
-              fontSize: 20,
-              color: "white",
-              marginLeft: 10,
-              fontWeight: "600",
-            }}
-          >
-            Help
-          </Text>
-        </TouchableOpacity>
-        <Modal visible={showHelpModal} transparent>
-          <HelpModal setshowHelpModal={setshowHelpModal} />
-        </Modal>
-      </View>
-    );
-  };
-
-  return (
-    <View style={{ flex: 1, height: height, width: width }}>
+  const innerBlock = useMemo(
+    () => (
       <View style={{ flexDirection: "row", height: "100%" }}>
         <View
           style={{
@@ -339,7 +313,7 @@ const SettingsHome = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <View style={{ width: "90%", height: "100%" }}>
-          <Header />
+          <SettingsHeader />
           {/* <MenuScreen catalog={catalog} navigation={navigation} /> */}
           <View
             style={{
@@ -364,7 +338,12 @@ const SettingsHome = ({ navigation }) => {
           </View>
         </View>
       </View>
-    </View>
+    ),
+    [currentSettingPage, todaysDetails, transList]
+  );
+
+  return (
+    <View style={{ flex: 1, height: height, width: width }}>{innerBlock}</View>
   );
 };
 

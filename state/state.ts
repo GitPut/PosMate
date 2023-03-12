@@ -61,3 +61,12 @@ export const trialDetailsState = entity({
 export const setTrialDetailsState = (val) => {
   trialDetailsState.set(val);
 };
+
+export const tutorialDetailsState = entity({
+  complete: null,
+  step: null,
+});
+
+export const setTutorialDetailsState = (val) => {
+  tutorialDetailsState.set(val);
+};
