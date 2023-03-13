@@ -105,7 +105,7 @@ const Taxrates = () => {
         <div className="text-end">
           <a
             className="me-3"
-            href="javascript:void(0);"
+            
             data-bs-toggle="modal"
             data-bs-target="#editpayment"
           >

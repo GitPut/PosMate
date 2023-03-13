@@ -35,7 +35,7 @@ const NewCountry = () => {
                                     </div>
                                 </div>
                                 <div className="col-lg-12">
-                                    <a href="javascript:void(0);" className="btn btn-submit me-2">
+                                    <a  className="btn btn-submit me-2">
                                         Submit
                                     </a>
                                     <Link to="/countrieslist" className="btn btn-cancel">

@@ -62,7 +62,7 @@ const EditCategory = () => {
                                                             <h2>macbookpro.jpg</h2>
                                                             <h3>581kb</h3>
                                                         </div>
-                                                        <a href="javascript:void(0);" className="hideset">
+                                                        <a  className="hideset">
                                                             x
                                                         </a>
                                                     </div>

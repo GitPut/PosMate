@@ -291,7 +291,7 @@ const ComponentsPage = () => {
                                     <nav aria-label="breadcrumb">
                                         <ol className="breadcrumb">
                                             <li className="breadcrumb-item">
-                                                <a href="javascript:void(0);">Home</a>
+                                                <a >Home</a>
                                             </li>
                                             <li className="breadcrumb-item active" aria-current="page">
                                                 Products
@@ -301,10 +301,10 @@ const ComponentsPage = () => {
                                     <nav aria-label="breadcrumb">
                                         <ol className="breadcrumb mb-0">
                                             <li className="breadcrumb-item">
-                                                <a href="javascript:void(0);">Home</a>
+                                                <a >Home</a>
                                             </li>
                                             <li className="breadcrumb-item">
-                                                <a href="javascript:void(0);">Products</a>
+                                                <a >Products</a>
                                             </li>
                                             <li className="breadcrumb-item active" aria-current="page">
                                                 Accessories
@@ -920,10 +920,10 @@ const ComponentsPage = () => {
                                                 Some quick example text to build on the card title and make up
                                                 the bulk of the card's content.
                                             </p>
-                                            <a className="card-link" href="javascript:void(0);">
+                                            <a className="card-link" >
                                                 Card link
                                             </a>
-                                            <a className="card-link" href="javascript:void(0);">
+                                            <a className="card-link" >
                                                 Another link
                                             </a>
                                         </div>
@@ -939,7 +939,7 @@ const ComponentsPage = () => {
                                                 Some quick example text to build on the card title and make up
                                                 the bulk of the card's content.
                                             </p>
-                                            <a className="btn btn-primary" href="javascript:void(0);">
+                                            <a className="btn btn-primary" >
                                                 Go somewhere
                                             </a>
                                         </div>
@@ -1016,7 +1016,7 @@ const ComponentsPage = () => {
                                                         Some quick example text to build on the card title and
                                                         make up the bulk of the card's content.
                                                     </p>
-                                                    <a className="btn btn-primary" href="javascript:void(0);">
+                                                    <a className="btn btn-primary" >
                                                         Go somewhere
                                                     </a>
                                                 </div>
@@ -1030,7 +1030,7 @@ const ComponentsPage = () => {
                                                         Some quick example text to build on the card title and
                                                         make up the bulk of the card's content.
                                                     </p>
-                                                    <a className="btn btn-primary" href="javascript:void(0);">
+                                                    <a className="btn btn-primary" >
                                                         Go somewhere
                                                     </a>
                                                 </div>
@@ -1040,7 +1040,7 @@ const ComponentsPage = () => {
                                                         Some quick example text to build on the card title and
                                                         make up the bulk of the card's content.
                                                     </p>
-                                                    <a className="btn btn-primary" href="javascript:void(0);">
+                                                    <a className="btn btn-primary" >
                                                         Go somewhere
                                                     </a>
                                                 </div>
@@ -1092,7 +1092,7 @@ const ComponentsPage = () => {
                                                         Some quick example text to build on the card title and
                                                         make up the bulk of the card's content.
                                                     </p>
-                                                    <a className="btn btn-primary" href="javascript:void(0);">
+                                                    <a className="btn btn-primary" >
                                                         Go somewhere
                                                     </a>
                                                 </div>
@@ -1106,7 +1106,7 @@ const ComponentsPage = () => {
                                                         Some quick example text to build on the card title and
                                                         make up the bulk of the card's content.
                                                     </p>
-                                                    <a className="btn btn-primary" href="javascript:void(0);">
+                                                    <a className="btn btn-primary" >
                                                         Go somewhere
                                                     </a>
                                                 </div>
@@ -1116,7 +1116,7 @@ const ComponentsPage = () => {
                                                         Some quick example text to build on the card title and
                                                         make up the bulk of the card's content.
                                                     </p>
-                                                    <a className="btn btn-primary" href="javascript:void(0);">
+                                                    <a className="btn btn-primary" >
                                                         Go somewhere
                                                     </a>
                                                 </div>
@@ -1147,10 +1147,10 @@ const ComponentsPage = () => {
                                             Dropdown{" "}
                                         </a>
                                         <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Action
                                             </a>
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Another action
                                             </a>
                                         </div>
@@ -1214,14 +1214,14 @@ const ComponentsPage = () => {
                                             Action
                                         </button>
                                         <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Action
                                             </a>
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Another action
                                             </a>
                                             <div className="dropdown-divider" />
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Separated link
                                             </a>
                                         </div>
@@ -1237,14 +1237,14 @@ const ComponentsPage = () => {
                                             Action
                                         </button>
                                         <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Action
                                             </a>
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Another action
                                             </a>
                                             <div className="dropdown-divider" />
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Separated link
                                             </a>
                                         </div>
@@ -1260,14 +1260,14 @@ const ComponentsPage = () => {
                                             Action
                                         </button>
                                         <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Action
                                             </a>
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Another action
                                             </a>
                                             <div className="dropdown-divider" />
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Separated link
                                             </a>
                                         </div>
@@ -1283,14 +1283,14 @@ const ComponentsPage = () => {
                                             Action
                                         </button>
                                         <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Action
                                             </a>
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Another action
                                             </a>
                                             <div className="dropdown-divider" />
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Separated link
                                             </a>
                                         </div>
@@ -1311,14 +1311,14 @@ const ComponentsPage = () => {
                                             <span className="sr-only">Toggle Dropdown</span>
                                         </button>
                                         <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Action
                                             </a>
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Another action
                                             </a>
                                             <div className="dropdown-divider" />
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Separated link
                                             </a>
                                         </div>
@@ -1337,14 +1337,14 @@ const ComponentsPage = () => {
                                             <span className="sr-only">Toggle Dropdown</span>
                                         </button>
                                         <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Action
                                             </a>
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Another action
                                             </a>
                                             <div className="dropdown-divider" />
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Separated link
                                             </a>
                                         </div>
@@ -1363,14 +1363,14 @@ const ComponentsPage = () => {
                                             <span className="sr-only">Toggle Dropdown</span>
                                         </button>
                                         <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Action
                                             </a>
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Another action
                                             </a>
                                             <div className="dropdown-divider" />
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Separated link
                                             </a>
                                         </div>
@@ -1389,14 +1389,14 @@ const ComponentsPage = () => {
                                             <span className="sr-only">Toggle Dropdown</span>
                                         </button>
                                         <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Action
                                             </a>
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Another action
                                             </a>
                                             <div className="dropdown-divider" />
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Separated link
                                             </a>
                                         </div>
@@ -1415,14 +1415,14 @@ const ComponentsPage = () => {
                                             <span className="sr-only">Toggle Dropdown</span>
                                         </button>
                                         <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Action
                                             </a>
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Another action
                                             </a>
                                             <div className="dropdown-divider" />
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Separated link
                                             </a>
                                         </div>
@@ -1441,14 +1441,14 @@ const ComponentsPage = () => {
                                             <span className="sr-only">Toggle Dropdown</span>
                                         </button>
                                         <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Action
                                             </a>
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Another action
                                             </a>
                                             <div className="dropdown-divider" />
-                                            <a className="dropdown-item" href="javascript:void(0);">
+                                            <a className="dropdown-item" >
                                                 Separated link
                                             </a>
                                         </div>
@@ -1470,29 +1470,29 @@ const ComponentsPage = () => {
                                             <li className="page-item disabled">
                                                 <a
                                                     className="page-link"
-                                                    href="javascript:void(0);"
+                                                    
                                                     tabIndex={-1}
                                                 >
                                                     Previous
                                                 </a>
                                             </li>
                                             <li className="page-item">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     1
                                                 </a>
                                             </li>
                                             <li className="page-item active">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     2 <span className="sr-only">(current)</span>
                                                 </a>
                                             </li>
                                             <li className="page-item">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     3
                                                 </a>
                                             </li>
                                             <li className="page-item">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     Next
                                                 </a>
                                             </li>
@@ -1503,7 +1503,7 @@ const ComponentsPage = () => {
                                             <li className="page-item">
                                                 <a
                                                     className="page-link"
-                                                    href="javascript:void(0);"
+                                                    
                                                     aria-label="Previous"
                                                 >
                                                     <span aria-hidden="true">«</span>
@@ -1511,24 +1511,24 @@ const ComponentsPage = () => {
                                                 </a>
                                             </li>
                                             <li className="page-item">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     1
                                                 </a>
                                             </li>
                                             <li className="page-item">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     2
                                                 </a>
                                             </li>
                                             <li className="page-item">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     3
                                                 </a>
                                             </li>
                                             <li className="page-item">
                                                 <a
                                                     className="page-link"
-                                                    href="javascript:void(0);"
+                                                    
                                                     aria-label="Next"
                                                 >
                                                     <span aria-hidden="true">»</span>
@@ -1542,29 +1542,29 @@ const ComponentsPage = () => {
                                             <li className="page-item disabled">
                                                 <a
                                                     className="page-link"
-                                                    href="javascript:void(0);"
+                                                    
                                                     tabIndex={-1}
                                                 >
                                                     Previous
                                                 </a>
                                             </li>
                                             <li className="page-item">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     1
                                                 </a>
                                             </li>
                                             <li className="page-item active">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     2 <span className="sr-only">(current)</span>
                                                 </a>
                                             </li>
                                             <li className="page-item">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     3
                                                 </a>
                                             </li>
                                             <li className="page-item">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     Next
                                                 </a>
                                             </li>
@@ -1575,29 +1575,29 @@ const ComponentsPage = () => {
                                             <li className="page-item disabled">
                                                 <a
                                                     className="page-link"
-                                                    href="javascript:void(0);"
+                                                    
                                                     tabIndex={-1}
                                                 >
                                                     Previous
                                                 </a>
                                             </li>
                                             <li className="page-item">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     1
                                                 </a>
                                             </li>
                                             <li className="page-item active">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     2 <span className="sr-only">(current)</span>
                                                 </a>
                                             </li>
                                             <li className="page-item">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     3
                                                 </a>
                                             </li>
                                             <li className="page-item">
-                                                <a className="page-link" href="javascript:void(0);">
+                                                <a className="page-link" >
                                                     Next
                                                 </a>
                                             </li>
@@ -2271,7 +2271,7 @@ const ComponentsPage = () => {
                                                 </li>
                                                 <li className="nav-item dropdown">
                                                     <a
-                                                        href="javascript:void(0);"
+                                                        
                                                         className="dropdown-toggle nav-link"
                                                         data-bs-toggle="dropdown"
                                                     >
@@ -2637,53 +2637,53 @@ const ComponentsPage = () => {
                                         </div>
                                         <div className="card-body">
                                             <p>
-                                                <a href="javascript:void(0);" className="text-primary">
+                                                <a  className="text-primary">
                                                     Primary link
                                                 </a>
                                             </p>
                                             <p>
-                                                <a href="javascript:void(0);" className="text-secondary">
+                                                <a  className="text-secondary">
                                                     Secondary link
                                                 </a>
                                             </p>
                                             <p>
-                                                <a href="javascript:void(0);" className="text-success">
+                                                <a  className="text-success">
                                                     Success link
                                                 </a>
                                             </p>
                                             <p>
-                                                <a href="javascript:void(0);" className="text-danger">
+                                                <a  className="text-danger">
                                                     Danger link
                                                 </a>
                                             </p>
                                             <p>
-                                                <a href="javascript:void(0);" className="text-warning">
+                                                <a  className="text-warning">
                                                     Warning link
                                                 </a>
                                             </p>
                                             <p>
-                                                <a href="javascript:void(0);" className="text-info">
+                                                <a  className="text-info">
                                                     Info link
                                                 </a>
                                             </p>
                                             <p>
-                                                <a href="javascript:void(0);" className="text-light bg-dark">
+                                                <a  className="text-light bg-dark">
                                                     Light link
                                                 </a>
                                             </p>
                                             <p>
-                                                <a href="javascript:void(0);" className="text-dark">
+                                                <a  className="text-dark">
                                                     Dark link
                                                 </a>
                                             </p>
                                             <p>
-                                                <a href="javascript:void(0);" className="text-muted">
+                                                <a  className="text-muted">
                                                     Muted link
                                                 </a>
                                             </p>
                                             <p>
                                                 <a
-                                                    href="javascript:void(0);"
+                                                    
                                                     className="text-white bg-dark mb-0"
                                                 >
                                                     White link

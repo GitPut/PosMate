@@ -146,7 +146,7 @@ const Calendar = () => {
               </div>
               <div className="col-lg-2 col-sm-12">
                 <a
-                  href="javascript:void(0);"
+                  
                   className="btn btn-primary"
                   data-bs-toggle="modal"
                   data-bs-target="#add_event"
@@ -178,7 +178,7 @@ const Calendar = () => {
                 <label htmlFor="drop-remove">Remove after drop</label>
               </div>
               <a
-                href="javascript:void(0);"
+                
                 data-bs-toggle="modal"
                 data-bs-target="#add_new_event"
                 className="btn mb-3 btn-primary btn-block w-100"

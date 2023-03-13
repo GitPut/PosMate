@@ -102,10 +102,10 @@ const ImportProduct =()=>{
           </div>
           <div className="col-lg-12">
             <div className="form-group mb-0">
-              <button href="javascript:void(0);" className="btn btn-submit me-2">
+              <button  className="btn btn-submit me-2">
                 Submit
               </button>
-              <button href="javascript:void(0);" className="btn btn-cancel">
+              <button  className="btn btn-cancel">
                 Cancel
               </button>
             </div>

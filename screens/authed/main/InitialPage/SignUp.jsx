@@ -130,13 +130,13 @@ const SignUp = (props) => {
                   <div className="form-sociallink">
                     <ul>
                       <li>
-                        <a href="javascript:void(0);">
+                        <a >
                           <img src={GoogleIcon} className="me-2" alt="google" />
                           Sign Up using Google
                         </a>
                       </li>
                       <li>
-                        <a href="javascript:void(0);">
+                        <a >
                           <img
                             src={FacebookIcon}
                             className="me-2"

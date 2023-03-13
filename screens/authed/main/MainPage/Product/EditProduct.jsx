@@ -195,7 +195,7 @@ const EditProduct = () => {
                               <h2>macbookpro.jpg</h2>
                               <h3>581kb</h3>
                             </div>
-                            <a href="javascript:void(0);" className="hideset">
+                            <a  className="hideset">
                               x
                             </a>
                           </div>
@@ -206,7 +206,7 @@ const EditProduct = () => {
                 </div>
                 <div className="col-lg-12">
                   <button
-                    href="javascript:void(0);"
+                    
                     className="btn btn-submit me-2"
                   >
                     Update

@@ -7,7 +7,12 @@ import {
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Text, TextInput } from "@react-native-material/core";
-import { storeDetailState, transListState, userStoreState } from "state/state";
+import {
+  setIsSignedInSettingsState,
+  storeDetailState,
+  transListState,
+  userStoreState,
+} from "state/state";
 import { updateTransList } from "state/firebaseFunctions";
 import ChangeScreen from "./ChangeScreen";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -17,6 +22,7 @@ import useWindowDimensions from "./useWindowDimensions";
 import { useFonts } from "expo-font";
 import Axios from "axios";
 import { auth } from "state/firebaseConfig";
+import { useHistory } from "react-router-dom";
 
 const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
   const { height, width } = useWindowDimensions();
@@ -24,6 +30,7 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
   const storeDetails = storeDetailState.use();
   const [inccorectPass, setinccorectPass] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const history = useHistory();
 
   useFonts({
     Password: require("/assets/password.ttf"),
@@ -202,7 +209,8 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
           }}
           onPress={() => {
             if (password == storeDetails.settingsPassword) {
-              navigation.navigate("settings");
+              setIsSignedInSettingsState(true);
+              history.push("/authed/dashboard");
               setsettingsPasswordModalVis(false);
               setinccorectPass(false);
             } else {

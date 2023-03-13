@@ -150,7 +150,7 @@ const SubCategoryList = () => {
             <Link className="me-3" to="/authed/product/editsubcategory-product">
               <img src={EditIcon} alt="img" />
             </Link>
-            <Link className="confirm-text" href="javascript:void(0);">
+            <Link className="confirm-text" >
               <img src={DeleteIcon} alt="img" />
             </Link>
           </>

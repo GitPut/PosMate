@@ -70,3 +70,9 @@ export const tutorialDetailsState = entity({
 export const setTutorialDetailsState = (val) => {
   tutorialDetailsState.set(val);
 };
+
+export const isSignedInSettingsState = entity(false);
+
+export const setIsSignedInSettingsState = (val) => {
+  isSignedInSettingsState.set(val);
+};

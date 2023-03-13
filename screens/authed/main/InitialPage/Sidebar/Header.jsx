@@ -19,6 +19,7 @@ import {
   Logout,
 } from "../../EntryFile/imagePath";
 import { Link } from "react-router-dom";
+import { logout } from "state/firebaseFunctions";
 
 const Header = (props) => {
   const [searchBar, SetSearchBar] = useState(false);
@@ -51,7 +52,7 @@ const Header = (props) => {
           onMouseOver={expandMenuOpen}
         >
           <Link to="/authed/dashboard" className="logo">
-            <img src={Logo} alt="" />
+            <img src={Logo} alt="" style={{marginTop: 15}} />
           </Link>
           <Link to="/authed/dashboard" className="logo-small">
             <img src={SmallLogo} alt="" />
@@ -85,7 +86,7 @@ const Header = (props) => {
         {/* Header Menu */}
         <ul className="nav user-menu">
           {/* Search */}
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <div className="top-nav-search">
               <Link to="#" className="responsive-search">
                 <i className="fa fa-search" />
@@ -112,10 +113,10 @@ const Header = (props) => {
                 </Link>
               </form>
             </div>
-          </li>
+          </li> */}
           {/* /Search */}
           {/* Flag */}
-          <li className="nav-item dropdown has-arrow flag-nav">
+          {/* <li className="nav-item dropdown has-arrow flag-nav">
             <Link
               to="#"
               className="nav-link dropdown-toggle"
@@ -138,10 +139,10 @@ const Header = (props) => {
                 <img src={FlagDE} alt="" height={16} /> German
               </Link>
             </div>
-          </li>
+          </li> */}
           {/* /Flag */}
           {/* Notifications */}
-          <li className="nav-item dropdown">
+          {/* <li className="nav-item dropdown">
             <Link
               to="#"
               className="dropdown-toggle nav-link"
@@ -284,7 +285,7 @@ const Header = (props) => {
                 <Link to="/authed/activities">View all Notifications</Link>
               </div>
             </div>
-          </li>
+          </li> */}
           {/* /Notifications */}
           <li className="nav-item dropdown has-arrow main-drop">
             <Link
@@ -310,8 +311,8 @@ const Header = (props) => {
                   </div>
                 </div>
                 <hr className="m-0" />
-                <Link className="dropdown-item" to="/authed/profile/user-profile">
-                  <i className="me-2" data-feather="user" /> My Profile
+                <Link className="dropdown-item" to="/pos">
+                  <i className="me-2" data-feather="user" /> POS
                 </Link>
                 <Link
                   className="dropdown-item"
@@ -321,7 +322,7 @@ const Header = (props) => {
                   Settings
                 </Link>
                 <hr className="m-0" />
-                <Link className="dropdown-item logout pb-0" to="/signIn">
+                <Link className="dropdown-item logout pb-0" onClick={logout}>
                   <img src={Logout} className="me-2" alt="img" />
                   Logout
                 </Link>
@@ -341,13 +342,13 @@ const Header = (props) => {
             <i className="fa fa-ellipsis-v" />
           </Link>
           <div className="dropdown-menu dropdown-menu-right">
-            <Link className="dropdown-item" to="/authed/profile/user-profile">
-              My Profile
+              <Link className="dropdown-item" to="/pos">
+              POS
             </Link>
             <Link className="dropdown-item" to="/authed/settings/generalsettings">
               Settings
             </Link>
-            <Link className="dropdown-item" to="/signIn">
+            <Link className="dropdown-item" onClick={logout}>
               Logout
             </Link>
           </div>

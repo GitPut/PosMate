@@ -98,10 +98,10 @@ const Newuser = () => {
                 </div>
               </div>
               <div className="col-lg-12">
-                <a href="javascript:void(0);" className="btn btn-submit me-2">
+                <a  className="btn btn-submit me-2">
                   Submit
                 </a>
-                <a href="javascript:void(0);" className="btn btn-cancel">
+                <a  className="btn btn-cancel">
                   Cancel
                 </a>
               </div>

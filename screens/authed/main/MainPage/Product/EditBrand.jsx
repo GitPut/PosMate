@@ -59,7 +59,7 @@ const EditBrand = () =>{
                         <h2>samsung</h2>
                         <h3>581kb</h3>
                       </div>
-                      <a href="javascript:void(0);">x</a>
+                      <a >x</a>
                     </div>
                   </div>
                 </li>
@@ -67,7 +67,7 @@ const EditBrand = () =>{
             </div>
           </div>
           <div className="col-lg-12">
-            <button href="javascript:void(0);" className="btn btn-submit me-2">
+            <button  className="btn btn-submit me-2">
               Submit
             </button>
             <Link to="/brandlist" className="btn btn-cancel">

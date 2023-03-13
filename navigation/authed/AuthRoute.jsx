@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import HomeScreen from 'screens/authed/HomeScreen';
 import DefaultLayout from 'screens/authed/main/InitialPage/Sidebar/DefaultLayout';
+import { isSignedInSettingsState } from 'state/state';
 
 // import SignIn from './SignIn'
 // import ForgetPassword from './ForgetPassword';
@@ -12,18 +13,15 @@ import DefaultLayout from 'screens/authed/main/InitialPage/Sidebar/DefaultLayout
 // import Error404 from '../MainPage/ErrorPage/Error404';
 // import Error500 from '../MainPage/ErrorPage/Error500';
 
-export default class AuthRoute extends Component {
-    // componentDidMount() {
-    //     if (location.pathname.includes("signIn") || location.pathname.includes("signUp") || location.pathname.includes("forgetPassword")) {
-    //         $('body').addClass('account-page');
-    //     }    
-    // }
-    render() {
-        const { location } = this.props;
 
-        // if (location.pathname === "/") {
-        //     return (<Redirect to={'/signIn'} />)
-        // }
+
+const AuthRoute = (props) => {
+    const isLoginSettings = isSignedInSettingsState.use()
+   const { location } = props;
+
+        if (location.pathname === "/" || location.pathname.includes("/authed") && isLoginSettings === false) {
+            return (<Redirect to={'/pos'} />)
+        }
 
         return (
             <Switch>
@@ -39,5 +37,6 @@ export default class AuthRoute extends Component {
 
             </Switch>
         )
-    }
 }
+
+export default AuthRoute

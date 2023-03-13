@@ -15,7 +15,7 @@ const Email = () => {
           <div className="col-lg-3 col-md-12">
             <div className="compose-btn">
               <a
-                href="javascript:void(0);"
+                
                 className="btn btn-primary btn-block w-100"
               >
                 Compose
@@ -23,29 +23,29 @@ const Email = () => {
             </div>
             <ul className="inbox-menu">
               <li className="active">
-                <a href="javascript:void(0);">
+                <a >
                   <i className="fas fa-download" /> Inbox{" "}
                   <span className="mail-count">(5)</span>
                 </a>
               </li>
               <li>
-                <a href="javascript:void(0);">
+                <a >
                   <i className="far fa-star" /> Important
                 </a>
               </li>
               <li>
-                <a href="javascript:void(0);">
+                <a >
                   <i className="far fa-paper-plane" /> Sent Mail
                 </a>
               </li>
               <li>
-                <a href="javascript:void(0);">
+                <a >
                   <i className="far fa-file-alt" /> Drafts{" "}
                   <span className="mail-count">(13)</span>
                 </a>
               </li>
               <li>
-                <a href="javascript:void(0);">
+                <a >
                   <i className="far fa-trash-alt" /> Trash
                 </a>
               </li>
@@ -69,26 +69,26 @@ const Email = () => {
                           <div className="dropdown-menu">
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               All
                             </a>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               None
                             </a>
                             <div className="dropdown-divider" />
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Read
                             </a>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Unread
                             </a>
@@ -105,39 +105,39 @@ const Email = () => {
                           <div className="dropdown-menu">
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Reply
                             </a>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Forward
                             </a>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Archive
                             </a>
                             <div className="dropdown-divider" />
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Mark As Read
                             </a>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Mark As Unread
                             </a>
                             <div className="dropdown-divider" />
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Delete
                             </a>
@@ -155,39 +155,39 @@ const Email = () => {
                           <div role="menu" className="dropdown-menu">
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Social
                             </a>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Forums
                             </a>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Updates
                             </a>
                             <div className="dropdown-divider" />
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Spam
                             </a>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Trash
                             </a>
                             <div className="dropdown-divider" />
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               New
                             </a>
@@ -205,38 +205,38 @@ const Email = () => {
                           <div role="menu" className="dropdown-menu">
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Work
                             </a>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Family
                             </a>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Social
                             </a>
                             <div className="dropdown-divider" />
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Primary
                             </a>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Promotions
                             </a>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Forums
                             </a>

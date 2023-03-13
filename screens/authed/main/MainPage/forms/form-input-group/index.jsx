@@ -295,7 +295,7 @@ const FormElements = () => {
                           <li>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Action
                             </a>
@@ -303,7 +303,7 @@ const FormElements = () => {
                           <li>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Another action
                             </a>
@@ -311,7 +311,7 @@ const FormElements = () => {
                           <li>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Something else here
                             </a>
@@ -322,7 +322,7 @@ const FormElements = () => {
                           <li>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Separated link
                             </a>
@@ -359,7 +359,7 @@ const FormElements = () => {
                           <li>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Action
                             </a>
@@ -367,7 +367,7 @@ const FormElements = () => {
                           <li>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Another action
                             </a>
@@ -375,7 +375,7 @@ const FormElements = () => {
                           <li>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Something else here
                             </a>
@@ -386,7 +386,7 @@ const FormElements = () => {
                           <li>
                             <a
                               className="dropdown-item"
-                              href="javascript:void(0);"
+                              
                             >
                               Separated link
                             </a>

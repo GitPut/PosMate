@@ -27,7 +27,7 @@ const EmployeeProfile = () => {
                       <img src={Customer5} alt="img" id="blah" />
                       <div className="profileupload">
                         <input type="file" id="imgInp" />
-                        <a href="javascript:void(0);">
+                        <a >
                           <img src={EditSet} alt="img" />
                         </a>
                       </div>

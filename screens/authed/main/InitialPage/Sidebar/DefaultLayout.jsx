@@ -5,6 +5,14 @@ import routerService from "../../Router";
 import Header from "./Header";
 import Sidebar from "./sidebar";
 
+import "assets/plugins/fontawesome/css/fontawesome.min.css";
+import "assets/plugins/fontawesome/css/all.min.css";
+import "assets/css/bootstrap.min.css";
+import "assets/js/bootstrap.bundle.min.js";
+import "assets/css/font-awesome.min.css";
+import "assets/css/line-awesome.min.css";
+import "assets/css/style.css";
+
 const DefaultLayout =(props)=> {
     const { match } = props;
     
