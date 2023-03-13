@@ -3,7 +3,7 @@ import React from "react";
 
 const LatestUpdates = () => {
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper-non">
       <main className="main-wrapper">
         <div className="section-changelog-hero">
           <div className="padding-global">

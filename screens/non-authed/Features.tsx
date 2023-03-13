@@ -4,7 +4,7 @@ import Footer from "components/Footer";
 
 const Features = () => {
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper-non">
       <main className="main-wrapper">
         <section className="section-features-header">
           <div className="padding-global">

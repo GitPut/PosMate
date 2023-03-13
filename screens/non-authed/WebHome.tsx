@@ -20,7 +20,7 @@ import Footer from "components/Footer";
 
 const WebHome = () => {
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper-non">
       <main className="main-wrapper">
         <div className="section-wrapper">
           <header className="section-home-hero">

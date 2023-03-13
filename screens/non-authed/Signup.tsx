@@ -15,7 +15,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="w-users-userformpagewrap page-wrapper signup">
+    <div className="w-users-userformpagewrap page-wrapper-non signup">
       <div
         data-animation="default"
         data-collapse="medium"

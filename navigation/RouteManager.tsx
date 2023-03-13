@@ -37,7 +37,6 @@ import {
   HashRouter,
 } from "react-router-dom";
 import AuthRoute from "./authed/AuthRoute";
-import ThemeSelector from "./ThemeSelector";
 
 const RouteManager = () => {
   const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
@@ -192,13 +191,13 @@ const RouteManager = () => {
 
   useEffect(() => {
     if ((userS && isSubscribed) || trialDetails.hasEnded == false) {
-      // import("assets/plugins/fontawesome/css/fontawesome.min.css");
-      // import("assets/plugins/fontawesome/css/all.min.css");
-      // import("assets/css/bootstrap.min.css");
-      // import("assets/js/bootstrap.bundle.min.js");
-      // import("assets/css/font-awesome.min.css");
-      // import("assets/css/line-awesome.min.css");
-      // import("assets/css/style.css");
+      import("assets/plugins/fontawesome/css/fontawesome.min.css")
+      import("assets/plugins/fontawesome/css/all.min.css")
+      import("assets/css/bootstrap.min.css")
+      import("assets/js/bootstrap.bundle.min.js")
+      import("assets/css/font-awesome.min.css")
+      import("assets/css/line-awesome.min.css")
+      import("assets/css/style.css")
 
       const unsub = db
         .collection("users")
@@ -707,14 +706,12 @@ const RouteManager = () => {
   return (
     <>
       {userS && (
-        <ThemeSelector>
-          <Router // basename={`${config.publicPath}`}
-          >
-            <Switch>
-              <Route path="/" component={AuthRoute} />
-            </Switch>
-          </Router>
-        </ThemeSelector>
+        <Router // basename={`${config.publicPath}`}
+        >
+          <Switch>
+            <Route path="/" component={AuthRoute} />
+          </Switch>
+        </Router>
       )}
 
       {!userS && !loading && (

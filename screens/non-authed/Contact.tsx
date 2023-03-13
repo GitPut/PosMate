@@ -16,7 +16,7 @@ const Contact = () => {
   const [success, setsuccess] = useState(false);
 
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper-non">
       <main className="main-wrapper">
         <section className="section-contact">
           <div className="padding-global">
