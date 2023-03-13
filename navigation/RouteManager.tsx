@@ -37,6 +37,8 @@ import {
   HashRouter,
 } from "react-router-dom";
 import AuthRoute from "./authed/AuthRoute";
+import WebHome from "screens/non-authed/WebHome";
+import NonAuthRoute from "./non-authed/NonAuthRoute";
 
 const RouteManager = () => {
   const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
@@ -191,13 +193,13 @@ const RouteManager = () => {
 
   useEffect(() => {
     if ((userS && isSubscribed) || trialDetails.hasEnded == false) {
-      import("assets/plugins/fontawesome/css/fontawesome.min.css")
-      import("assets/plugins/fontawesome/css/all.min.css")
-      import("assets/css/bootstrap.min.css")
-      import("assets/js/bootstrap.bundle.min.js")
-      import("assets/css/font-awesome.min.css")
-      import("assets/css/line-awesome.min.css")
-      import("assets/css/style.css")
+      import("assets/plugins/fontawesome/css/fontawesome.min.css");
+      import("assets/plugins/fontawesome/css/all.min.css");
+      import("assets/css/bootstrap.min.css");
+      import("assets/js/bootstrap.bundle.min.js");
+      import("assets/css/font-awesome.min.css");
+      import("assets/css/line-awesome.min.css");
+      import("assets/css/style.css");
 
       const unsub = db
         .collection("users")
@@ -666,7 +668,7 @@ const RouteManager = () => {
     if (trialDetails.endDate) {
       return (
         <>
-          <MainAuthed />
+          <Route path="/" component={AuthRoute} />
           {trialDetails.hasEnded && <TrialEnded resetLoader={resetLoader} />}
           <Modal
             transparent
@@ -683,7 +685,7 @@ const RouteManager = () => {
     } else if (isSubscribed) {
       return (
         <>
-          <MainAuthed />
+          <Route path="/" component={AuthRoute} />
           <Modal
             transparent
             visible={
@@ -704,19 +706,9 @@ const RouteManager = () => {
   };
 
   return (
-    <>
-      {userS && (
-        <Router // basename={`${config.publicPath}`}
-        >
-          <Switch>
-            <Route path="/" component={AuthRoute} />
-          </Switch>
-        </Router>
-      )}
-
-      {!userS && !loading && (
-        <NavigationContainer linking={linking}>
-          {/* {userS && (
+    <Router>
+      <Switch>
+        {userS && (
           <>
             <NavigationContent />
             {viewVisible && (
@@ -737,13 +729,12 @@ const RouteManager = () => {
                 />
               </Animated.View>
             )}
+            {/* {!userS && !loading && <MainNonAuth />} */}
           </>
-        )} */}
-          {/* {!userS && !loading && <MainNonAuth />} */}
-          <MainNonAuth />
-        </NavigationContainer>
-      )}
-    </>
+        )}
+        {!userS && !loading && <Route path="/" component={NonAuthRoute} />}
+      </Switch>
+    </Router>
   );
 };
 

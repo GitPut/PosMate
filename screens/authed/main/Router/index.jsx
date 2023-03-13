@@ -22,7 +22,7 @@ import Users from '../MainPage/users'
 import Settings from '../MainPage/settings'
 import BlankPage from "../MainPage/BlankPage";
 
-export default [
+const index =  [
     {
         path: 'dashboard',
         component: Dashboard
@@ -118,3 +118,5 @@ export default [
    
     
 ]
+
+export default index

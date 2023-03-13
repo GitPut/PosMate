@@ -7,7 +7,7 @@ import Logo from "assets/dpos-logo.png";
 import Icon from "@expo/vector-icons/Entypo";
 import { set } from "react-native-reanimated";
 
-const WebHomeHeader = ({ navigation, route, options, back }) => {
+const WebHomeHeader = ({ location }) => {
   const [hidden, sethidden] = useState(false);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
               <div className="nav-menu-left">
                 <a
                   style={
-                    route.name === "Home"
+                    location.pathname === "/"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
@@ -57,7 +57,7 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                   href="/features"
                   className="nav-link-non w-nav-link-non"
                   style={
-                    route.name === "Features"
+                    location.pathname === "features"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
@@ -68,7 +68,7 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                   href="/about-us"
                   className="nav-link-non w-nav-link-non"
                   style={
-                    route.name === "About Us"
+                    location.pathname === "about-us"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
@@ -79,7 +79,7 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                   href="/pricing"
                   className="nav-link-non w-nav-link-non"
                   style={
-                    route.name === "Pricing"
+                    location.pathname === "pricing"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
@@ -90,7 +90,7 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                   href="/faqs"
                   className="nav-link-non w-nav-link-non"
                   style={
-                    route.name === "Faqs"
+                    location.pathname === "faqs"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
@@ -103,7 +103,7 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                   href="/contact"
                   className="nav-link-non w-nav-link-non"
                   style={
-                    route.name === "Contact"
+                    location.pathname === "contact"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
@@ -113,7 +113,7 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                 <div className="nav-divider-vertical" />
                 <button
                   style={
-                    route.name === "Login"
+                    location.pathname === "log-in"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
