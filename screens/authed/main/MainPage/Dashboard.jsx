@@ -124,11 +124,6 @@ const Dashboard = (props) => {
     },
   ]);
 
-  useEffect(() => {
-    console.log('hello from dash')
-  }, [])
-  
-
   const [recentData] = useState([
     { key: 1, image: EarpodIcon, products: "Apple Earpods", price: "$891.2" },
     { key: 2, image: IphoneIcon, products: "iPhone 11", price: "$91.2" },
