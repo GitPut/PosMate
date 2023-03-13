@@ -4,7 +4,7 @@ import Footer from "components/Footer";
 
 const Pricing = () => {
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper-non">
       <main className="main-wrapper">
         <section className="section-pricing">
           <div className="padding-global">

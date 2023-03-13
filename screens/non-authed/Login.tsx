@@ -15,7 +15,7 @@ const Login = () => {
   };
 
   return (
-    <div className="w-users-userformpagewrap page-wrapper login">
+    <div className="w-users-userformpagewrap page-wrapper-non login">
       <div
         data-animation="default"
         data-collapse="medium"

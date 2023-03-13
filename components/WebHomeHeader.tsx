@@ -7,7 +7,7 @@ import Logo from "assets/dpos-logo.png";
 import Icon from "@expo/vector-icons/Entypo";
 import { set } from "react-native-reanimated";
 
-const WebHomeHeader = ({ navigation, route, options, back }) => {
+const WebHomeHeader = ({ location }) => {
   const [hidden, sethidden] = useState(false);
 
   useEffect(() => {
@@ -43,21 +43,21 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
               <div className="nav-menu-left">
                 <a
                   style={
-                    route.name === "Home"
+                    location.pathname === "/"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
                   href="/"
                   aria-current="page"
-                  className="nav-link w-nav-link w--current"
+                  className="nav-link-non w-nav-link-non w--current"
                 >
                   Home
                 </a>
                 <a
                   href="/features"
-                  className="nav-link w-nav-link"
+                  className="nav-link-non w-nav-link-non"
                   style={
-                    route.name === "Features"
+                    location.pathname === "features"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
@@ -66,9 +66,9 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                 </a>
                 <a
                   href="/about-us"
-                  className="nav-link w-nav-link"
+                  className="nav-link-non w-nav-link-non"
                   style={
-                    route.name === "About Us"
+                    location.pathname === "about-us"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
@@ -77,9 +77,9 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                 </a>
                 <a
                   href="/pricing"
-                  className="nav-link w-nav-link"
+                  className="nav-link-non w-nav-link-non"
                   style={
-                    route.name === "Pricing"
+                    location.pathname === "pricing"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
@@ -88,9 +88,9 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                 </a>
                 <a
                   href="/faqs"
-                  className="nav-link w-nav-link"
+                  className="nav-link-non w-nav-link-non"
                   style={
-                    route.name === "Faqs"
+                    location.pathname === "faqs"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
@@ -101,9 +101,9 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
               <div className="nav-menu-right">
                 <a
                   href="/contact"
-                  className="nav-link w-nav-link"
+                  className="nav-link-non w-nav-link-non"
                   style={
-                    route.name === "Contact"
+                    location.pathname === "contact"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
@@ -113,11 +113,11 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
                 <div className="nav-divider-vertical" />
                 <button
                   style={
-                    route.name === "Login"
+                    location.pathname === "log-in"
                       ? { backgroundColor: "#175cd3" }
                       : { backgroundColor: "transparent" }
                   }
-                  className="nav-link is-login"
+                  className="nav-link-non is-login"
                   type="button"
                   onClick={() => (window.location.href = "log-in")}
                 >
@@ -177,42 +177,45 @@ const WebHomeHeader = ({ navigation, route, options, back }) => {
               <a
                 href="/"
                 aria-current="page"
-                className="nav-link w-nav-link w--current w--nav-link-open"
+                className="nav-link-non w-nav-link-non w--current w--nav-link-non-open"
               >
                 Home
               </a>
               <a
                 href="/features"
-                className="nav-link w-nav-link w--nav-link-open"
+                className="nav-link-non w-nav-link-non w--nav-link-non-open"
               >
                 Features
               </a>
               <a
                 href="/about-us"
-                className="nav-link w-nav-link w--nav-link-open"
+                className="nav-link-non w-nav-link-non w--nav-link-non-open"
               >
                 About us
               </a>
               <a
                 href="/pricing"
-                className="nav-link w-nav-link w--nav-link-open"
+                className="nav-link-non w-nav-link-non w--nav-link-non-open"
               >
                 Pricing
               </a>
-              <a href="/faqs" className="nav-link w-nav-link w--nav-link-open">
+              <a
+                href="/faqs"
+                className="nav-link-non w-nav-link-non w--nav-link-non-open"
+              >
                 FAQs
               </a>
             </div>
             <div className="nav-menu-right">
               <a
                 href="/contact"
-                className="nav-link w-nav-link w--nav-link-open"
+                className="nav-link-non w-nav-link-non w--nav-link-non-open"
               >
                 Contact sales
               </a>
               <div className="nav-divider-vertical" />
               <button
-                className="nav-link is-login"
+                className="nav-link-non is-login"
                 data-wf-user-logout="Log out"
                 data-wf-user-login="Log in"
                 type="button"

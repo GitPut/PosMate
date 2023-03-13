@@ -7,7 +7,7 @@ const ResetPassword = () => {
   const [error, seterror] = useState(false);
 
   return (
-    <div className="w-users-userformpagewrap page-wrapper reset-password">
+    <div className="w-users-userformpagewrap page-wrapper-non reset-password">
       <div
         data-animation="default"
         data-collapse="medium"

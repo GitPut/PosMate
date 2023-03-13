@@ -20,5 +20,16 @@ module.exports = function (api) {
         },
       ],
     ],
+    overrides: [
+      {
+        test: (fileName) => !fileName.includes("node_modules"),
+        plugins: [
+          [
+            require("@babel/plugin-proposal-class-properties"),
+            { loose: false },
+          ],
+        ],
+      },
+    ],
   };
 };

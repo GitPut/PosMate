@@ -1,10 +1,42 @@
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  Animated,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import { setTutorialDetailsState } from "state/state";
 
 const Tutorial = () => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    fadeIn();
+  }, []);
+
+  const fadeIn = () => {
+    // Will change fadeAnim value to 0 in 3 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: false,
+      delay: 500,
+    }).start();
+  };
+
+  const fadeOut = (afterFunc) => {
+    // Will change fadeAnim value to 0 in 3 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start(afterFunc);
+  };
+
   return (
-    <View
+    <Animated.View
       style={[
         {
           height: "100%",
@@ -14,6 +46,7 @@ const Tutorial = () => {
           backgroundColor: "rgba(0,0,0,0.5)",
           position: "absolute",
         },
+        { opacity: fadeAnim },
       ]}
     >
       <View style={styles.planItemContainer}>
@@ -32,14 +65,16 @@ const Tutorial = () => {
             <TouchableOpacity
               style={styles.group5}
               onPress={() => {
-                setTutorialDetailsState({ complete: true, step: 0 });
-                localStorage.setItem(
-                  "tutorialComplete",
-                  JSON.stringify({
-                    complete: true,
-                    step: 0,
-                  })
-                );
+                fadeOut(() => {
+                  setTutorialDetailsState({ complete: true, step: 0 });
+                  localStorage.setItem(
+                    "tutorialComplete",
+                    JSON.stringify({
+                      complete: true,
+                      step: 0,
+                    })
+                  );
+                });
               }}
             >
               <Text style={styles.monthly6}>Skip</Text>
@@ -47,14 +82,16 @@ const Tutorial = () => {
             <TouchableOpacity
               style={styles.group5}
               onPress={() => {
-                setTutorialDetailsState({ complete: false, step: 1 });
-                localStorage.setItem(
-                  "tutorialComplete",
-                  JSON.stringify({
-                    complete: false,
-                    step: 1,
-                  })
-                );
+                fadeOut(() => {
+                  setTutorialDetailsState({ complete: false, step: 1 });
+                  localStorage.setItem(
+                    "tutorialComplete",
+                    JSON.stringify({
+                      complete: false,
+                      step: 1,
+                    })
+                  );
+                });
               }}
             >
               <Text style={styles.monthly6}>Continue</Text>
@@ -62,7 +99,7 @@ const Tutorial = () => {
           </View>
         </View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

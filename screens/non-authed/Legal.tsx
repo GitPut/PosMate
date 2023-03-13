@@ -4,7 +4,7 @@ import Footer from "components/Footer";
 
 const Legal = () => {
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper-non">
       <main className="main-wrapper">
         <section className="section-legal-header">
           <div className="padding-global">

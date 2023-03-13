@@ -1622,7 +1622,7 @@ textarea.w-select {
   text-decoration: none;
   color: #333333;
 }
-.w-nav-link {
+.w-nav-link-non {
   position: relative;
   display: inline-block;
   vertical-align: top;
@@ -1633,7 +1633,7 @@ textarea.w-select {
   margin-left: auto;
   margin-right: auto;
 }
-.w-nav-link.w--current {
+.w-nav-link-non.w--current {
   color: #0082f3;
 }
 .w-nav-menu {
@@ -1651,7 +1651,7 @@ textarea.w-select {
   overflow: visible;
   min-width: 200px;
 }
-.w--nav-link-open {
+.w--nav-link-non-open {
   display: block;
   position: relative;
 }

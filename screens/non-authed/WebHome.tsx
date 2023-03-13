@@ -1,5 +1,5 @@
 // import Main from "./WebHomeFiles/index.html";
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -19,8 +19,14 @@ import img1 from "assets/backend.png";
 import Footer from "components/Footer";
 
 const WebHome = () => {
+
+  useEffect(() => {
+    console.log('hello')
+  }, [])
+  
+
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper-non">
       <main className="main-wrapper">
         <div className="section-wrapper">
           <header className="section-home-hero">

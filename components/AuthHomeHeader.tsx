@@ -18,6 +18,16 @@ import {
 } from "state/state";
 import TutorialStep from "./tutorial/TutorialStep";
 
+const LogoImage = React.memo(
+  () => (
+    <Image
+      source={Logo}
+      style={{ width: 200, height: 160, resizeMode: "contain" }}
+    />
+  ),
+  []
+);
+
 const AuthHomeHeader = (props) => {
   const storeDetails = storeDetailState.use();
   const tutorialDetails = tutorialDetailsState.use();
@@ -43,10 +53,7 @@ const AuthHomeHeader = (props) => {
         shadowRadius: 5,
       }}
     >
-      <Image
-        source={Logo}
-        style={{ width: 200, height: 160, resizeMode: "contain" }}
-      />
+      <LogoImage />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity
           onPress={() => props.setongoingOrderListModal(true)}
