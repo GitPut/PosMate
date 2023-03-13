@@ -28,12 +28,30 @@ import { Animated, Image, Modal, Text, View } from "react-native";
 import * as Font from "expo-font";
 import TrialEnded from "components/TrialEnded";
 import Tutorial from "components/Tutorial";
+// import config from "config";
+
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  HashRouter,
+} from "react-router-dom";
+
+import "assets/plugins/fontawesome/css/fontawesome.min.css";
+import "assets/plugins/fontawesome/css/all.min.css";
+import "assets/css/bootstrap.min.css";
+import "assets/js/bootstrap.bundle.min.js";
+import "assets/css/font-awesome.min.css";
+import "assets/css/line-awesome.min.css";
+import "assets/css/style.css";
+import DefaultLayout from "screens/authed/main/InitialPage/Sidebar/DefaultLayout";
+import AuthRoute from "./authed/AuthRoute";
 
 const RouteManager = () => {
   const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
-   let isTutorialCompleteLocal = JSON.parse(
-     localStorage.getItem("tutorialComplete") || null
-   );
+  let isTutorialCompleteLocal = JSON.parse(
+    localStorage.getItem("tutorialComplete") || null
+  );
   const userS = userState.use();
   const wooCredentials = woocommerceState.use();
   const storeDetails = storeDetailState.use();
@@ -687,36 +705,46 @@ const RouteManager = () => {
   };
 
   return (
-    <NavigationContainer linking={linking}>
+    <>
       {userS && (
-        <>
-          <NavigationContent />
-          {viewVisible && (
-            <Animated.View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "white",
-                position: "absolute",
-                opacity: fadeAnim,
-                height: "100%",
-                width: "100%",
-              }}
-            >
-              <Image
-                source={require("assets/loading.gif")}
-                style={{ width: 450, height: 450, resizeMode: "contain" }}
-              />
-            </Animated.View>
-          )}
-        </>
-      )
-      }
-      { !userS && !loading && 
-      (
-        <MainNonAuth />
+        <Router // basename={`${config.publicPath}`}
+        >
+          <Switch>
+            <Route path="/" component={AuthRoute} />
+          </Switch>
+        </Router>
       )}
-    </NavigationContainer>
+
+      {!userS && !loading && (
+        <NavigationContainer linking={linking}>
+          {/* {userS && (
+          <>
+            <NavigationContent />
+            {viewVisible && (
+              <Animated.View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "white",
+                  position: "absolute",
+                  opacity: fadeAnim,
+                  height: "100%",
+                  width: "100%",
+                }}
+              >
+                <Image
+                  source={require("assets/loading.gif")}
+                  style={{ width: 450, height: 450, resizeMode: "contain" }}
+                />
+              </Animated.View>
+            )}
+          </>
+        )} */}
+          {/* {!userS && !loading && <MainNonAuth />} */}
+          <MainNonAuth />
+        </NavigationContainer>
+      )}
+    </>
   );
 };
 
