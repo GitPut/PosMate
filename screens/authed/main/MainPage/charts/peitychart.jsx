@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "assets/plugins/peity/jquery.peity.min.js"
-import "assets/plugins/peity/chart-data.js"
+// import "assets/plugins/peity/chart-data.js"
 
 const PeityCharts = () => {
   return (

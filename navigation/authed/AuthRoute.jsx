@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import HomeScreen from 'screens/authed/HomeScreen';
 import DefaultLayout from 'screens/authed/main/InitialPage/Sidebar/DefaultLayout';
@@ -13,15 +13,20 @@ import { isSignedInSettingsState } from 'state/state';
 // import Error404 from '../MainPage/ErrorPage/Error404';
 // import Error500 from '../MainPage/ErrorPage/Error500';
 
+import { useHistory } from "react-router-dom";
 
 
 const AuthRoute = (props) => {
     const isLoginSettings = isSignedInSettingsState.use()
-   const { location } = props;
-
-        if (location.pathname === "/" || location.pathname.includes("/authed") && isLoginSettings === false) {
-            return (<Redirect to={'/pos'} />)
-        }
+    const { location } = props;
+      const history = useHistory();
+    
+    useEffect(() => {
+       if (!location.pathname.includes("/authed") || location.pathname.includes("/authed") && isLoginSettings === false) {
+           history.push("/pos");
+    }
+    }, [])
+    
 
         return (
             <Switch>

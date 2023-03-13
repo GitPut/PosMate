@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import "assets/plugins/flot/jquery.flot.js";
 import "assets/plugins/flot/jquery.flot.fillbetween.js";
 import "assets/plugins/flot/jquery.flot.pie.js";
-import "assets/plugins/flot/chart-data.js";
+// import "assets/plugins/flot/chart-data.js";
+
 const FlotCharts = () => {
   return (
     <div className="page-wrapper cardhead">

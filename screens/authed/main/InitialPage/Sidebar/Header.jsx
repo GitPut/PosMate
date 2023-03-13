@@ -322,7 +322,7 @@ const Header = (props) => {
                   Settings
                 </Link>
                 <hr className="m-0" />
-                <Link className="dropdown-item logout pb-0" onClick={logout}>
+                <Link className="dropdown-item logout pb-0" onClick={() => logout()}>
                   <img src={Logout} className="me-2" alt="img" />
                   Logout
                 </Link>
@@ -348,7 +348,7 @@ const Header = (props) => {
             <Link className="dropdown-item" to="/authed/settings/generalsettings">
               Settings
             </Link>
-            <Link className="dropdown-item" onClick={logout}>
+            <Link className="dropdown-item" onClick={() => logout()}>
               Logout
             </Link>
           </div>

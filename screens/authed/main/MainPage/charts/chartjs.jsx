@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "assets/plugins/chartjs/chart.min.js"
-import "assets/plugins/chartjs/chart-data.js"
+// import "assets/plugins/chartjs/chart-data.js"
 
 const ChartJs = () => {
   return (

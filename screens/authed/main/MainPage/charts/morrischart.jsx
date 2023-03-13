@@ -4,7 +4,7 @@ import Chart from "react-apexcharts";
 import "assets/plugins/flot/jquery.flot.js";
 import "assets/plugins/flot/jquery.flot.fillbetween.js";
 import "assets/plugins/flot/jquery.flot.pie.js";
-import "assets/plugins/flot/chart-data.js";
+// import "assets/plugins/flot/chart-data.js";
 
 const MorrisCharts = () => {
   const state1 = {
