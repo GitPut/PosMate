@@ -316,7 +316,7 @@ const Sidebar = (props) => {
                     ""
                   )}
                 </li>
-                <li className="submenu">
+                {/* <li className="submenu">
                   <a
                     href="#"
                     className={
@@ -372,8 +372,8 @@ const Sidebar = (props) => {
                   ) : (
                     ""
                   )}
-                </li>
-                <li className="submenu">
+                </li> */}
+                {/* <li className="submenu">
                   <a
                     href="#"
                     className={
@@ -419,8 +419,8 @@ const Sidebar = (props) => {
                   ) : (
                     ""
                   )}
-                </li>
-                <li className="submenu">
+                </li> */}
+                {/* <li className="submenu">
                   <a
                     href="#"
                     className={
@@ -474,8 +474,8 @@ const Sidebar = (props) => {
                   ) : (
                     ""
                   )}
-                </li>
-                <li className="submenu">
+                </li> */}
+                {/* <li className="submenu">
                   <a
                     href="#"
                     className={
@@ -545,8 +545,8 @@ const Sidebar = (props) => {
                   ) : (
                     ""
                   )}
-                </li>
-                <li className="submenu">
+                </li> */}
+                {/* <li className="submenu">
                   <a
                     href="#"
                     className={
@@ -650,8 +650,8 @@ const Sidebar = (props) => {
                   ) : (
                     ""
                   )}
-                </li>
-                <li className="submenu">
+                </li> */}
+                {/* <li className="submenu">
                   <a
                     href="#"
                     className={
@@ -715,8 +715,8 @@ const Sidebar = (props) => {
                   ) : (
                     ""
                   )}
-                </li>
-                <li className={pathname.includes("components") ? "active" : ""}>
+                </li> */}
+                {/* <li className={pathname.includes("components") ? "active" : ""}>
                   <Link
                     to="/authed/components"
                     onClick={() => toggleSidebar(isSideMenu == "" ? "" : "")}
@@ -735,8 +735,8 @@ const Sidebar = (props) => {
                     <FeatherIcon icon="file" />
                     <span>Blank Page</span>
                   </Link>
-                </li>
-                <li className="submenu">
+                </li> */}
+                {/* <li className="submenu">
                   <a
                     href="#"
                     className={
@@ -1378,7 +1378,7 @@ const Sidebar = (props) => {
                   ) : (
                     ""
                   )}
-                </li>
+                </li> */}
                 <li className="submenu">
                   <Link
                     to="#"
@@ -1475,7 +1475,7 @@ const Sidebar = (props) => {
                     ""
                   )}
                 </li>
-                <li className="submenu">
+                {/* <li className="submenu">
                   <Link
                     to="#"
                     className={
@@ -1518,7 +1518,7 @@ const Sidebar = (props) => {
                   ) : (
                     ""
                   )}
-                </li>
+                </li> */}
                 <li className="submenu">
                   <Link
                     to="#"

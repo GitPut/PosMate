@@ -531,7 +531,7 @@ strong {
 /******* COMPONENTS ******/
 .btn-submit {
   min-width: 120px;
-  background: #FF9F43;
+  background: rgb(25,35,69);
   color: #fff;
   font-size: 14px;
   font-weight: 700;
@@ -541,7 +541,7 @@ strong {
   transition: all 0.2s ease;
 }
 .btn-submit:hover {
-  background: #fe820e;
+  background: rgb(25, 35, 69);
   color: #fff;
 }
 @media (max-width: 991px) {

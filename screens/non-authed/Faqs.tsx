@@ -5,15 +5,8 @@ import Accordian from "components/Accordian";
 
 
 const Faqs = () => {
-<<<<<<< HEAD
-
-
-return (
-    <div className="page-wrapper">
-=======
   return (
     <div className="page-wrapper-non">
->>>>>>> 3841b377448af89ec7aee791c41bb7c586fbd432
       <main className="main-wrapper">
         <section className="section-faq">
           <div className="padding-global">
