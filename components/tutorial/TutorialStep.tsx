@@ -44,21 +44,21 @@ const TutorialStep = (props: Props) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   //make useeffect that logs each usestate that changes
-  useEffect(() => {
-    console.log("x", x);
-  }, [x]);
+  // useEffect(() => {
+  //   console.log("x", x);
+  // }, [x]);
 
-  useEffect(() => {
-    console.log("y", y);
-  }, [y]);
+  // useEffect(() => {
+  //   console.log("y", y);
+  // }, [y]);
 
-  useEffect(() => {
-    console.log("childrenWidth", childrenWidth);
-  }, [childrenWidth]);
+  // useEffect(() => {
+  //   console.log("childrenWidth", childrenWidth);
+  // }, [childrenWidth]);
 
-  useEffect(() => {
-    console.log("descriptionViewWidth", descriptionViewWidth);
-  }, [descriptionViewWidth]);
+  // useEffect(() => {
+  //   console.log("descriptionViewWidth", descriptionViewWidth);
+  // }, [descriptionViewWidth]);
 
   const fadeIn = () => {
     // Will change fadeAnim value to 0 in 3 seconds

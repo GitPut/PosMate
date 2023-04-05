@@ -1134,7 +1134,7 @@ strong {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FF9F43;
+  background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb:hover {

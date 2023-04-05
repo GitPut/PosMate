@@ -1548,7 +1548,7 @@ const Sidebar = (props) => {
                           General Settings
                         </Link>
                       </li>
-                      <li>
+                      {/* <li>
                         <Link
                           to="/authed/settings/emailsettings"
                           className={
@@ -1599,7 +1599,7 @@ const Sidebar = (props) => {
                         >
                           Tax Rates
                         </Link>
-                      </li>
+                      </li> */}
                     </ul>
                   ) : (
                     ""

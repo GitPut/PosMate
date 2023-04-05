@@ -70,6 +70,7 @@ const PosHeader = (props) => {
                   </div>
                 </div>
                 <Link
+                  
                   className="btn"
                   id="searchdiv"
                   onClick={() => SetSearchBar(true)}
