@@ -54,10 +54,10 @@ const AddTransfer = () => {
       dataIndex: "productName",
       render: (text, record) => (
         <div className="productimgname">
-          <Link className="product-img">
+          <Link style={{ textDecoration: 'none' }}  className="product-img">
             <img alt="" src={record.image} />
           </Link>
-          <Link style={{ fontSize: "15px", marginLeft: "10px" }}>
+          <Link style={{ textDecoration: 'none' }}  style={{ fontSize: "15px", marginLeft: "10px" }}>
             {record.productName}
           </Link>
         </div>
@@ -107,7 +107,7 @@ const AddTransfer = () => {
     {
       render: () => (
         <>
-          <Link className="confirm-text" to="#" onClick={deleteRow}>
+          <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="#" onClick={deleteRow}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>

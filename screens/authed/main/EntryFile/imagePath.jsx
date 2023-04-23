@@ -40,7 +40,9 @@ export {default as EyeIcon} from 'assets/img/icons/eye.svg'
 export {default as EditIcon} from 'assets/img/icons/edit.svg'
 export {default as DeleteIcon} from 'assets/img/icons/delete.svg'
 export {default as Dashboard} from 'assets/img/icons/dashboard.svg'
-export {default as Noimage} from 'assets/img/product/noimage.png'
+export { default as Noimage } from 'assets/img/product/noimage.png'
+
+export { default as DuplicateIcon } from 'assets/img/icons/duplicate.png'
 
 
 //header

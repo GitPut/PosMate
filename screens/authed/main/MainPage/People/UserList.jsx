@@ -115,7 +115,7 @@ const UserList = () => {
       dataIndex: "profile",
       render: (text, record) => (
         <div className="productimgname">
-          <Link style={{ width: "70%" }} className="product-img">
+          <Link style={{ textDecoration: 'none' }}  style={{ width: "70%" }} className="product-img">
             <img alt="" src={record.profile} />
           </Link>
         </div>
@@ -170,10 +170,10 @@ const UserList = () => {
       title: "Action",
       render: () => (
         <>
-          <Link className="me-3" to="/authed/people/edituser-people">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/people/edituser-people">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="confirm-text" to="#" onClick={confirmText}>
+          <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="#" onClick={confirmText}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -190,7 +190,7 @@ const UserList = () => {
               <h6>Manage your User</h6>
             </div>
             <div className="page-btn">
-              <Link to="/authed/people/adduser-people" className="btn btn-added">
+              <Link style={{ textDecoration: 'none' }}  to="/authed/people/adduser-people" className="btn btn-added">
                 <img src={PlusIcon} alt="img" className="me-1" />
                 Add User
               </Link>

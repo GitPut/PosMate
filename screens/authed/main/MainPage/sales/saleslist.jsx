@@ -272,7 +272,7 @@ const SalesList = () => {
       render: (text, record) => (
         <>
           <div className="text-center">
-            <Link
+            <Link style={{ textDecoration: 'none' }} 
               className="action-set"
               to="#"
               data-bs-toggle="dropdown"
@@ -282,19 +282,19 @@ const SalesList = () => {
             </Link>
             <ul className="dropdown-menu">
               <li>
-                <Link to="/authed/sales/sales-details" className="dropdown-item">
+                <Link style={{ textDecoration: 'none' }}  to="/authed/sales/sales-details" className="dropdown-item">
                   <img src={Eye1} className="me-2" alt="img" />
                   Sale Detail
                 </Link>
               </li>
               <li>
-                <Link to="/authed/sales/edit-sales" className="dropdown-item">
+                <Link style={{ textDecoration: 'none' }}  to="/authed/sales/edit-sales" className="dropdown-item">
                   <img src={EditIcon} className="me-2" alt="img" />
                   Edit Sale
                 </Link>
               </li>
               <li>
-                <Link
+                <Link style={{ textDecoration: 'none' }} 
                   to="#"
                   className="dropdown-item"
                   data-bs-toggle="modal"
@@ -305,7 +305,7 @@ const SalesList = () => {
                 </Link>
               </li>
               <li>
-                <Link
+                <Link style={{ textDecoration: 'none' }} 
                   to="#"
                   className="dropdown-item"
                   data-bs-toggle="modal"
@@ -316,13 +316,13 @@ const SalesList = () => {
                 </Link>
               </li>
               <li>
-                <Link to="#" className="dropdown-item">
+                <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
                   <img src={Download} className="me-2" alt="img" />
                   Download pdf
                 </Link>
               </li>
               <li>
-                <Link
+                <Link style={{ textDecoration: 'none' }} 
                   to="#"
                   className="dropdown-item confirm-text"
                   onClick={confirmText}
@@ -347,7 +347,7 @@ const SalesList = () => {
               <h6>Manage your Sales</h6>
             </div>
             <div className="page-btn">
-              <Link to="/authed/sales/add-sales" className="btn btn-added">
+              <Link style={{ textDecoration: 'none' }}  to="/authed/sales/add-sales" className="btn btn-added">
                 <img src={PlusIcon} alt="img" className="me-1" />
                 Add Sales
               </Link>
@@ -388,7 +388,7 @@ const SalesList = () => {
                     </div>
                     <div className="col-lg-3 col-sm-6 col-12">
                       <div className="form-group">
-                        <Link className="btn btn-filters ms-auto">
+                        <Link style={{ textDecoration: 'none' }}  className="btn btn-filters ms-auto">
                           <img src={search_whites} alt="img" />
                         </Link>
                       </div>
@@ -445,10 +445,10 @@ const SalesList = () => {
                         <td>$ 0.00 </td>
                         <td>Cash</td>
                         <td>
-                          <Link className="me-2" to="#">
+                          <Link style={{ textDecoration: 'none' }}  className="me-2" to="#">
                             <img src={Printer} alt="img" />
                           </Link>
-                          <Link
+                          <Link style={{ textDecoration: 'none' }} 
                             className="me-2"
                             to="#"
                             data-bs-target="#editpayment"
@@ -457,7 +457,7 @@ const SalesList = () => {
                           >
                             <img src={EditIcon} alt="img" />
                           </Link>
-                          <Link className="me-2 confirm-text" to="#">
+                          <Link style={{ textDecoration: 'none' }}  className="me-2 confirm-text" to="#">
                             <img src={DeleteIcon} alt="img" />
                           </Link>
                         </td>

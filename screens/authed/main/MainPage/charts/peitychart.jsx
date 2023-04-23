@@ -14,7 +14,7 @@ const PeityCharts = () => {
               <h3 className="page-title">Peity Chart</h3>
               <ul className="breadcrumb">
                 <li className="breadcrumb-item">
-                  <Link to="/authed/dashboard">Dashboard</Link>
+                  <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard">Dashboard</Link>
                 </li>
                 <li className="breadcrumb-item active">Peity Charts</li>
               </ul>

@@ -78,7 +78,7 @@ const BrandList = () => {
       dataIndex: "image",
       className: "text-center",
       render: (text, record) => (
-        <Link className="product-img text-center">
+        <Link style={{ textDecoration: 'none' }}  className="product-img text-center">
           <img
             alt=""
             src={record.image}
@@ -104,10 +104,10 @@ const BrandList = () => {
       render: () => (
         <>
           <>
-            <Link className="me-3" to="/authed/product/editbrand-product">
+            <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/product/editbrand-product">
               <img src={EditIcon} alt="img" />
             </Link>
-            <Link className="confirm-text" to="#" onClick={confirmText}>
+            <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="#" onClick={confirmText}>
               <img src={DeleteIcon} alt="img" />
             </Link>
           </>
@@ -126,7 +126,7 @@ const BrandList = () => {
               <h6>Manage your Brand</h6>
             </div>
             <div className="page-btn">
-              <Link
+              <Link style={{ textDecoration: 'none' }} 
                 to="/authed/product/addbrand-product"
                 className="btn btn-added"
               >

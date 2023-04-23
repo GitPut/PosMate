@@ -106,7 +106,7 @@ const Pos = () => {
                   <div className="actionproducts">
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="#"
                           className="deletebg confirm-text"
                           onClick={confirmText}
@@ -115,7 +115,7 @@ const Pos = () => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="#"
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
@@ -129,17 +129,17 @@ const Pos = () => {
                           data-popper-placement="bottom-end"
                         >
                           <li>
-                            <Link to="#" className="dropdown-item">
+                            <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
                               Action
                             </Link>
                           </li>
                           <li>
-                            <Link to="#" className="dropdown-item">
+                            <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
                               Another Action
                             </Link>
                           </li>
                           <li>
-                            <Link to="#" className="dropdown-item">
+                            <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
                               Something Elses
                             </Link>
                           </li>
@@ -152,7 +152,7 @@ const Pos = () => {
                   <div className="card-body">
                     <div className="row">
                       <div className="col-12">
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="#"
                           className="btn btn-adds"
                           data-bs-toggle="modal"
@@ -190,7 +190,7 @@ const Pos = () => {
                       </div>
                       <div className="col-12">
                         <div className="text-end">
-                          <Link to="#" className="btn btn-scanner-set">
+                          <Link style={{ textDecoration: 'none' }}  to="#" className="btn btn-scanner-set">
                             <img src={scanner1} alt="img" className="me-2" />
                             Scan bardcode
                           </Link>
@@ -202,7 +202,7 @@ const Pos = () => {
                   <div className="card-body pt-0">
                     <div className="totalitem">
                       <h4>Total items : 4</h4>
-                      <Link to="#">Clear all</Link>
+                      <Link style={{ textDecoration: 'none' }}  to="#">Clear all</Link>
                     </div>
                     <div className="product-table">
                       <ul className="product-lists">
@@ -243,7 +243,7 @@ const Pos = () => {
                         </li>
                         <li>3000.00 </li>
                         <li>
-                          <Link
+                          <Link style={{ textDecoration: 'none' }} 
                             to="#"
                             className="confirm-text"
                             onClick={confirmText}
@@ -290,7 +290,7 @@ const Pos = () => {
                         </li>
                         <li>3000.00 </li>
                         <li>
-                          <Link
+                          <Link style={{ textDecoration: 'none' }} 
                             to="#"
                             className="confirm-text"
                             onClick={confirmText}
@@ -337,7 +337,7 @@ const Pos = () => {
                         </li>
                         <li>3000.00 </li>
                         <li>
-                          <Link
+                          <Link style={{ textDecoration: 'none' }} 
                             to="#"
                             className="confirm-text"
                             onClick={confirmText}
@@ -385,7 +385,7 @@ const Pos = () => {
                         </li>
                         <li>3000.00 </li>
                         <li>
-                          <Link
+                          <Link style={{ textDecoration: 'none' }} 
                             to="#"
                             className="confirm-text"
                             onClick={confirmText}
@@ -417,19 +417,19 @@ const Pos = () => {
                     <div className="setvaluecash">
                       <ul>
                         <li>
-                          <Link to="#" className="paymentmethod">
+                          <Link style={{ textDecoration: 'none' }}  to="#" className="paymentmethod">
                             <img src={cash} alt="img" className="me-2" />
                             Cash
                           </Link>
                         </li>
                         <li>
-                          <Link to="#" className="paymentmethod">
+                          <Link style={{ textDecoration: 'none' }}  to="#" className="paymentmethod">
                             <img src={debitcard} alt="img" className="me-2" />
                             Debit
                           </Link>
                         </li>
                         <li>
-                          <Link to="#" className="paymentmethod">
+                          <Link style={{ textDecoration: 'none' }}  to="#" className="paymentmethod">
                             <img src={scan} alt="img" className="me-2" />
                             Scan
                           </Link>
@@ -443,31 +443,31 @@ const Pos = () => {
                     <div className="btn-pos">
                       <ul>
                         <li>
-                          <Link to="#" className="btn">
+                          <Link style={{ textDecoration: 'none' }}  to="#" className="btn">
                             <img src={pause1} alt="img" className="me-1" />
                             Hold
                           </Link>
                         </li>
                         <li>
-                          <Link to="#" className="btn">
+                          <Link style={{ textDecoration: 'none' }}  to="#" className="btn">
                             <img src={Edit6} alt="img" className="me-1" />
                             Quotation
                           </Link>
                         </li>
                         <li>
-                          <Link to="#" className="btn">
+                          <Link style={{ textDecoration: 'none' }}  to="#" className="btn">
                             <img src={trash12} alt="img" className="me-1" />
                             Void
                           </Link>
                         </li>
                         <li>
-                          <Link to="#" className="btn">
+                          <Link style={{ textDecoration: 'none' }}  to="#" className="btn">
                             <img src={wallet1} alt="img" className="me-1" />
                             Payment
                           </Link>
                         </li>
                         <li>
-                          <Link
+                          <Link style={{ textDecoration: 'none' }} 
                             to="#"
                             className="btn"
                             data-bs-toggle="modal"
@@ -549,10 +549,10 @@ const Pos = () => {
                 </div>
               </div>
               <div className="col-lg-12">
-                <Link to="#" className="btn btn-submit me-2">
+                <Link style={{ textDecoration: 'none' }}  to="#" className="btn btn-submit me-2">
                   Submit
                 </Link>
-                <Link to="#" className="btn btn-cancel" data-bs-dismiss="modal">
+                <Link style={{ textDecoration: 'none' }}  to="#" className="btn btn-cancel" data-bs-dismiss="modal">
                   Cancel
                 </Link>
               </div>

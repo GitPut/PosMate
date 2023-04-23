@@ -26,7 +26,7 @@ const Chat = () => {
                   </div>
                 </div>
                 <div className="card-body contacts_body chat-users-list chat-scroll">
-                  <Link to="#" className="media d-flex active">
+                  <Link style={{ textDecoration: 'none' }}  to="#" className="media d-flex active">
                     <div className="media-img-wrap flex-shrink-0">
                       <div className="avatar avatar-away">
                         <img
@@ -47,7 +47,7 @@ const Chat = () => {
                       </div>
                     </div>
                   </Link>
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className="media d-flex read-chat"
                   >
@@ -72,7 +72,7 @@ const Chat = () => {
                       </div>
                     </div>
                   </Link>
-                  <Link to="#" className="media d-flex">
+                  <Link style={{ textDecoration: 'none' }}  to="#" className="media d-flex">
                     <div className="media-img-wrap flex-shrink-0">
                       <div className="avatar avatar-away">
                         <img
@@ -95,7 +95,7 @@ const Chat = () => {
                       </div>
                     </div>
                   </Link>
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className="media read-chat d-flex"
                   >
@@ -120,7 +120,7 @@ const Chat = () => {
                       </div>
                     </div>
                   </Link>
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className="media read-chat d-flex"
                   >
@@ -145,7 +145,7 @@ const Chat = () => {
                       </div>
                     </div>
                   </Link>
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className="media read-chat d-flex"
                   >
@@ -170,7 +170,7 @@ const Chat = () => {
                       </div>
                     </div>
                   </Link>
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className="media read-chat d-flex"
                   >
@@ -196,7 +196,7 @@ const Chat = () => {
                       </div>
                     </div>
                   </Link>
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className="media read-chat d-flex"
                   >
@@ -221,7 +221,7 @@ const Chat = () => {
                       </div>
                     </div>
                   </Link>
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className="media read-chat d-flex"
                   >
@@ -246,7 +246,7 @@ const Chat = () => {
                       </div>
                     </div>
                   </Link>
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className="media read-chat d-flex"
                   >
@@ -281,7 +281,7 @@ const Chat = () => {
               <div className="card mb-0">
                 <div className="card-header msg_head">
                   <div className="d-flex bd-highlight">
-                    <Link
+                    <Link style={{ textDecoration: 'none' }} 
                       id="back_user_list"
                       to="javascript:void(0)"
                       className="back-user-list"
@@ -370,7 +370,7 @@ const Chat = () => {
                                   src={Product12}
                                   alt="Attachment"
                                 />
-                                <Link to="" className="chat-attach-download">
+                                <Link style={{ textDecoration: 'none' }}  to="" className="chat-attach-download">
                                   <i className="fas fa-download" />
                                 </Link>
                               </div>
@@ -379,7 +379,7 @@ const Chat = () => {
                                   src={Product13}
                                   alt="Attachment"
                                 />
-                                <Link to="" className="chat-attach-download">
+                                <Link style={{ textDecoration: 'none' }}  to="" className="chat-attach-download">
                                   <i className="fas fa-download" />
                                 </Link>
                               </div>
@@ -439,7 +439,7 @@ const Chat = () => {
                                   src={Product15}
                                   alt="Attachment"
                                 />
-                                <Link to="" className="chat-attach-download">
+                                <Link style={{ textDecoration: 'none' }}  to="" className="chat-attach-download">
                                   <i className="fas fa-download" />
                                 </Link>
                               </div>
@@ -503,7 +503,7 @@ const Chat = () => {
                                 </div>
                               </li>
                               <li>
-                                <Link to="#">Edit</Link>
+                                <Link style={{ textDecoration: 'none' }}  to="#">Edit</Link>
                               </li>
                             </ul>
                           </div>
@@ -523,7 +523,7 @@ const Chat = () => {
                           <div>
                             <p>Lorem ipsum dollar sit</p>
                             <div className="chat-msg-actions dropdown">
-                              <Link
+                              <Link style={{ textDecoration: 'none' }} 
                                 to="#"
                                 data-toggle="dropdown"
                                 aria-haspopup="true"
@@ -532,7 +532,7 @@ const Chat = () => {
                                 <i className="fe fe-elipsis-v" />
                               </Link>
                               <div className="dropdown-menu dropdown-menu-right">
-                                <Link
+                                <Link style={{ textDecoration: 'none' }} 
                                   className="dropdown-item"
                                   to="#"
                                 >
@@ -547,7 +547,7 @@ const Chat = () => {
                                 </div>
                               </li>
                               <li>
-                                <Link to="#">Edit</Link>
+                                <Link style={{ textDecoration: 'none' }}  to="#">Edit</Link>
                               </li>
                             </ul>
                           </div>

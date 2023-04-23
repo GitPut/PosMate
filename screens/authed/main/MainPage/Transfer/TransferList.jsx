@@ -175,10 +175,10 @@ const TransferList = () => {
       title: "Action",
       render: () => (
         <>
-          <Link className="me-3" to="/authed/transfer/edittransfer-transfer">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/transfer/edittransfer-transfer">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="confirm-text" to="#" onClick={confirmText}>
+          <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="#" onClick={confirmText}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -195,7 +195,7 @@ const TransferList = () => {
               <h6>Transfer your stocks to one store another store</h6>
             </div>
             <div className="page-btn">
-              <Link
+              <Link style={{ textDecoration: 'none' }} 
                 to="/authed/transfer/addtransfer-transfer"
                 className="btn btn-added"
               >

@@ -19,7 +19,7 @@ const Error500 = () => {
           <p className="h4 font-weight-normal">
             The page you requested was not found.
           </p>
-          <Link to="/authed/dashboard" className="btn btn-primary" onClick={removeClass}>
+          <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard" className="btn btn-primary" onClick={removeClass}>
             Back to Home
           </Link>
         </div>

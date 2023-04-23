@@ -78,7 +78,7 @@ const Editsales = () => {
                       selected={startDate}
                       onChange={(date) => setStartDate(date)}
                     />
-                    <Link className="addonset">
+                    <Link style={{ textDecoration: 'none' }}  className="addonset">
                       <img src={Calendar} alt="img" />
                     </Link>
                   </div>
@@ -130,10 +130,10 @@ const Editsales = () => {
                     <tr>
                       <td>1</td>
                       <td className="productimgname">
-                        <Link className="product-img">
+                        <Link style={{ textDecoration: 'none' }}  className="product-img">
                           <img src={Product7} alt="product" />
                         </Link>
-                        <Link to="#">Apple Earpods</Link>
+                        <Link style={{ textDecoration: 'none' }}  to="#">Apple Earpods</Link>
                       </td>
                       <td>1.00</td>
                       <td>15000.00</td>
@@ -141,7 +141,7 @@ const Editsales = () => {
                       <td>0.00</td>
                       <td>1500.00</td>
                       <td>
-                        <Link to="#" className="delete-set">
+                        <Link style={{ textDecoration: 'none' }}  to="#" className="delete-set">
                           <img src={DeleteIcon} alt="svg" />
                         </Link>
                       </td>
@@ -149,10 +149,10 @@ const Editsales = () => {
                     <tr>
                       <td>2</td>
                       <td className="productimgname">
-                        <Link className="product-img">
+                        <Link style={{ textDecoration: 'none' }}  className="product-img">
                           <img src={Product8} alt="product" />
                         </Link>
-                        <Link to="#">iPhone 11</Link>
+                        <Link style={{ textDecoration: 'none' }}  to="#">iPhone 11</Link>
                       </td>
                       <td>1.00</td>
                       <td>1500.00</td>
@@ -160,7 +160,7 @@ const Editsales = () => {
                       <td>0.00</td>
                       <td>1500.00</td>
                       <td>
-                        <Link to="#" className="delete-set">
+                        <Link style={{ textDecoration: 'none' }}  to="#" className="delete-set">
                           <img src={DeleteIcon} alt="svg" />
                         </Link>
                       </td>
@@ -168,10 +168,10 @@ const Editsales = () => {
                     <tr>
                       <td>2</td>
                       <td className="productimgname">
-                        <Link className="product-img">
+                        <Link style={{ textDecoration: 'none' }}  className="product-img">
                           <img src={Product1} alt="product" />
                         </Link>
-                        <Link to="#">Macbook pro</Link>
+                        <Link style={{ textDecoration: 'none' }}  to="#">Macbook pro</Link>
                       </td>
                       <td>1.00</td>
                       <td>1500.00</td>
@@ -179,7 +179,7 @@ const Editsales = () => {
                       <td>0.00</td>
                       <td>1500.00</td>
                       <td>
-                        <Link to="#" className="delete-set">
+                        <Link style={{ textDecoration: 'none' }}  to="#" className="delete-set">
                           <img src={DeleteIcon} alt="svg" />
                         </Link>
                       </td>
@@ -250,10 +250,10 @@ const Editsales = () => {
                 </div>
               </div>
               <div className="col-lg-12">
-                <Link to="#" className="btn btn-submit me-2">
+                <Link style={{ textDecoration: 'none' }}  to="#" className="btn btn-submit me-2">
                   Submit
                 </Link>
-                <Link to="#" className="btn btn-cancel">
+                <Link style={{ textDecoration: 'none' }}  to="#" className="btn btn-cancel">
                   Cancel
                 </Link>
               </div>

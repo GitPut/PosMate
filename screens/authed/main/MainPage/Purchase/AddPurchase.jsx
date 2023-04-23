@@ -69,10 +69,10 @@ const AddPurchase = () => {
       dataIndex: "productName",
       render: (text, record) => (
         <div className="productimgname">
-          <Link className="product-img">
+          <Link style={{ textDecoration: 'none' }}  className="product-img">
             <img alt="" src={record.image} />
           </Link>
-          <Link style={{ fontSize: "15px", marginLeft: "10px" }}>
+          <Link style={{ textDecoration: 'none' }}  style={{ fontSize: "15px", marginLeft: "10px" }}>
             {record.productName}
           </Link>
         </div>
@@ -109,7 +109,7 @@ const AddPurchase = () => {
     {
       render: () => (
         <>
-          <Link className="delete-set" to="#" onClick={deleteRow}>
+          <Link style={{ textDecoration: 'none' }}  className="delete-set" to="#" onClick={deleteRow}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -145,7 +145,7 @@ const AddPurchase = () => {
                       </div>
                       <div className="col-lg-2 col-sm-2 col-2 ps-0">
                         <div className="add-icon">
-                          <Link to="#">
+                          <Link style={{ textDecoration: 'none' }}  to="#">
                             <img src={Plus} alt="img" />
                           </Link>
                         </div>

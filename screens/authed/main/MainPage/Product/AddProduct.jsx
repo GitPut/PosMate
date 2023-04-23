@@ -1,40 +1,46 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Upload } from '../../EntryFile/imagePath';
 import Select2 from 'react-select2-wrapper';
 import 'react-select2-wrapper/css/select2.css';
-
-
-const options = [
-    {id: 1, text: 'Choose Category', text: 'Choose Category' },
-    {id: 2, text: 'Computers', text: 'Computers' },
-]
-const options1 = [
-    {id: 1, text: 'Choose Sub Category', text: 'Choose Sub Category' },
-    {id: 2, text: 'Fruits', text: 'Fruits' },
-]
-const options2 = [
-    {id: 1, text: 'Choose Brand', text: 'Choose Brand' },
-    {id: 2, text: 'Brand', text: 'Brand' },
-]
-const options3 = [
-    {id: 1, text: 'Choose Unit', text: 'Choose Unit' },
-    {id: 2, text: 'Unit', text: 'Unit' },
-]
-const options4 = [
-    {id: 1, text: 'Choose Tax', text: 'Choose Tax' },
-    {id: 2, text: '2%', text: '2%' },
-]
-const options5 = [
-    {id: 1, text: 'Percentage', text: 'Percentage' },
-    {id: 2, text: '10%', text: '10%' },
-    {id: 3, text: '20%', text: '20%' },
-]
-const options6 = [
-    {id: 1, text: 'Closed', text: 'Closed' },
-    {id: 2, text: 'Open', text: 'Open' },
-]
+import { userStoreState } from 'state/state';
+import { updateData } from 'state/firebaseFunctions';
+import { FlatList, View } from 'react-native';
+import OptionView from 'components/OptionView';
+import { Button } from 'react-native';
+import { Link, useHistory } from 'react-router-dom';
 
 const AddProduct = () => {
+    const catalog = userStoreState.use();
+    const [newProduct, setnewProduct] = useState(
+        {
+            name: "",
+            price: 0,
+            category: null,
+            options: [],
+            description: "",
+            id: Math.random().toString(36).substr(2, 9),
+        }
+    );
+    const newProductOptions = useRef([]
+    );
+    const [indexOn, setindexOn] = useState(0);
+
+    const [selectValues, setselectValues] = useState([]);
+    const categoryDropRef = useRef()
+    const history = useHistory();
+
+    useEffect(() => {
+        if (catalog.categories) {
+            const local = [];
+            catalog.categories.map((val, index) => local.push({ id: index, text: val, }));
+            setselectValues(local);
+        }
+    }, []);
+
+    function handleDataUpdate() {
+        updateData([...catalog.categories], [...catalog.products, { ...newProduct, category: categoryDropRef.current }]);
+        history.push("/authed/product/productlist-product");
+    }
 
     return (
         <>
@@ -49,141 +55,138 @@ const AddProduct = () => {
                     {/* /add */}
                     <div className="card">
                         <div className="card-body">
+                            <div className="col-lg-12">
+                                <div className="form-group">
+                                    <label> Product Image</label>
+                                    <div className="image-upload">
+                                        <input type="file" />
+                                        <div className="image-uploads">
+                                            <img src={Upload} alt="img" />
+                                            <h4>Drag and drop a file to upload</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="row">
                                 <div className="col-lg-3 col-sm-6 col-12">
                                     <div className="form-group">
                                         <label>Product Name</label>
-                                        <input type="text" />
+                                        <input type="text" placeholder="Product Name" onChange={(event) => setnewProduct((prevState) => ({
+                                            ...prevState,
+                                            name: event.target.value,
+                                        }))} />
                                     </div>
                                 </div>
                                 <div className="col-lg-3 col-sm-6 col-12">
                                     <div className="form-group">
                                         <label>Category</label>
                                         <Select2
-                              className="select"
-                              data={options}
-                              options={{
-                                placeholder: 'Choose Category',
-                              }} />
-
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-sm-6 col-12">
-                                    <div className="form-group">
-                                        <label>Sub Category</label>
-                                        <Select2
-                              className="select"
-                              data={options1}
-                              options={{
-                                placeholder: 'Choose Sub Category',
-                              }} />
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-sm-6 col-12">
-                                    <div className="form-group">
-                                        <label>Brand</label>
-                                        <Select2
-                              className="select"
-                              data={options2}
-                              options={{
-                                placeholder: 'Choose Brand',
-                              }} />
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-sm-6 col-12">
-                                    <div className="form-group">
-                                        <label>Unit</label>
-                                        <Select2
-                              className="select"
-                              data={options3}
-                              options={{
-                                placeholder: 'Choose Unit',
-                              }} />
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-sm-6 col-12">
-                                    <div className="form-group">
-                                        <label>SKU</label>
-                                        <input type="text" />
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-sm-6 col-12">
-                                    <div className="form-group">
-                                        <label>Minimum Qty</label>
-                                        <input type="text" />
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-sm-6 col-12">
-                                    <div className="form-group">
-                                        <label>Quantity</label>
-                                        <input type="text" />
-                                    </div>
-                                </div>
-                                <div className="col-lg-12">
-                                    <div className="form-group">
-                                        <label>Description</label>
-                                        <textarea className="form-control" defaultValue={""} />
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-sm-6 col-12">
-                                    <div className="form-group">
-                                        <label>Tax</label>
-                                        <Select2
-                              className="select"
-                              data={options4}
-                              options={{
-                                placeholder: 'Choose Tax',
-                              }} />
-
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-sm-6 col-12">
-                                    <div className="form-group">
-                                        <label>Discount Type</label>
-                                        <Select2
-                              className="select"
-                              data={options5}
-                              options={{
-                                placeholder: 'Percentage',
-                              }} />
+                                            className="select"
+                                            data={selectValues}
+                                            options={{
+                                                placeholder: "Category",
+                                            }}
+                                            // onChange={(val) => {
+                                            //     console.log('val', categoryDropRef.current)
+                                            // }
+                                            // }
+                                            onSelect={(val) => {
+                                                // console.log('val', val.params.data.text)
+                                                // setnewProduct((prevState) => ({
+                                                //     ...prevState,
+                                                //     category: val.params.data.text,
+                                                // }));
+                                                categoryDropRef.current = val.params.data.text;
+                                            }}
+                                        // value={{ text: newProduct.category, id: 1 }}
+                                        />
                                     </div>
                                 </div>
                                 <div className="col-lg-3 col-sm-6 col-12">
                                     <div className="form-group">
                                         <label>Price</label>
-                                        <input type="text" />
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-sm-6 col-12">
-                                    <div className="form-group">
-                                        <label> Status</label>
-                                        <Select2
-                              className="select"
-                              data={options6}
-                              options={{
-                                placeholder: 'Choose Product',
-                              }} />
+                                        <input type="text" placeholder={parseFloat(newProduct.price)} onChange={(event) => setnewProduct((prevState) => ({
+                                            ...prevState,
+                                            price: event.target.value,
+                                        }))} />
                                     </div>
                                 </div>
                                 <div className="col-lg-12">
                                     <div className="form-group">
-                                        <label> Product Image</label>
-                                        <div className="image-upload">
-                                            <input type="file" />
-                                            <div className="image-uploads">
-                                                <img src={Upload} alt="img" />
-                                                <h4>Drag and drop a file to upload</h4>
-                                            </div>
-                                        </div>
+                                        <label>Description</label>
+                                        <textarea
+                                            className="form-control"
+                                            placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="col-lg-12">
+                                    <div className="form-group">
+                                        <label>Options</label>
+                                        <View>
+                                            <FlatList
+                                                // onLayout={() =>
+                                                //   window.scrollTo({
+                                                //     top: currentY,
+                                                //     behavior: "instant",
+                                                //   })
+                                                // }
+                                                getItemLayout={(data, index) => ({
+                                                    length: index === indexOn ? 400 * data.optionsList?.length : 100,
+                                                    offset: 400 * index,
+                                                    index,
+                                                })}
+                                                data={newProduct.options}
+                                                keyExtractor={(item) => item.id?.toString()}
+                                                renderItem={({ item, index }) => (
+                                                    <OptionView
+                                                        item={item}
+                                                        index={index}
+                                                        newProduct={newProduct}
+                                                        setnewProduct={setnewProduct}
+                                                        newProductOptions={newProductOptions}
+                                                        indexOn={indexOn}
+                                                        setindexOn={setindexOn}
+                                                    />
+                                                )}
+                                            />
+                                            {newProduct.options.length === 0 && (
+                                                <Button
+                                                    title="Add Option"
+                                                    onPress={() => {
+                                                        newProductOptions.current.push({
+                                                            label: null,
+                                                            optionsList: [],
+                                                            selectedCaseKey: null,
+                                                            selectedCaseValue: null,
+                                                            numOfSelectable: null,
+                                                            id: Math.random().toString(36).substr(2, 9),
+                                                            optionType: null,
+                                                        });
+                                                        setnewProduct((prevState) => ({
+                                                            ...prevState,
+                                                            options: newProductOptions.current,
+                                                        }));
+                                                        setindexOn(newProductOptions.current.length - 1);
+                                                    }}
+                                                    style={{ marginBottom: 25, backgroundColor: "#4050B5" }}
+                                                    disabled={
+                                                        newProduct.options.length > 0 &&
+                                                        newProduct.options[newProduct.options.length - 1].label === null
+                                                    }
+                                                />
+                                            )}
+                                        </View>
                                     </div>
                                 </div>
                                 <div className="col-lg-12">
-                                    <button className="btn btn-submit me-2">
+                                    <button className="btn btn-submit me-2" onClick={handleDataUpdate}>
                                         Submit
                                     </button>
-                                    <button className="btn btn-cancel">
+                                    <Link style={{ textDecoration: 'none' }} to="/authed/product/productlist-product" className="btn btn-cancel">
                                         Cancel
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

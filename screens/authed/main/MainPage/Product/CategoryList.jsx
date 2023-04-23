@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "../../EntryFile/datatable";
 import { Link } from "react-router-dom";
 import Tabletop from "../../EntryFile/tabletop";
@@ -23,6 +23,8 @@ import {
 import Select2 from "react-select2-wrapper";
 import "react-select2-wrapper/css/select2.css";
 import Swal from "sweetalert2";
+import { userStoreState } from "state/state";
+import { updateData } from "state/firebaseFunctions";
 
 const options = [
   { id: 1, text: "Choose Category", text: "Choose Category" },
@@ -36,85 +38,75 @@ const options2 = [
   { id: 1, text: "Choose Sub Brand", text: "Choose Sub Brand" },
   { id: 2, text: "Brand", text: "Brand" },
 ];
-const confirmText = () => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    type: "warning",
-    showCancelButton: !0,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!",
-    confirmButtonClass: "btn btn-primary",
-    cancelButtonClass: "btn btn-danger ml-1",
-    buttonsStyling: !1,
-  }).then(function (t) {
-    t.value &&
-      Swal.fire({
-        type: "success",
-        title: "Deleted!",
-        text: "Your file has been deleted.",
-        confirmButtonClass: "btn btn-success",
-      });
-  });
-};
+
 const CategoryList = () => {
   const [inputfilter, setInputfilter] = useState(false);
+  const catalog = userStoreState.use();
 
   const togglefilter = (value) => {
     setInputfilter(value);
   };
 
-  const [data] = useState([
-    {
-      id: 1,
-      image: MacbookIcon,
-      categoryName: "Macbook pro",
-      categoryCode: "PT001",
-      description: "Computer Description",
-      createdBy: "Admin",
-    },
-    {
-      id: 2,
-      image: OrangeImage,
-      categoryName: "Orange",
-      categoryCode: "CTO02",
-      description: "Fruit Description",
-      createdBy: "Admin",
-    },
-    {
-      id: 3,
-      image: PineappleImage,
-      categoryName: "Pinapple",
-      categoryCode: "CTO03",
-      description: "Fruit Description",
-      createdBy: "Admin",
-    },
-    {
-      id: 4,
-      image: StawberryImage,
-      categoryName: "Strawberry",
-      categoryCode: "CTO04",
-      description: "Fruit Description",
-      createdBy: "Admin",
-    },
-    {
-      id: 5,
-      image: AvocatImage,
-      categoryName: "Avocat",
-      categoryCode: "CTO05",
-      description: "Computer Description",
-      createdBy: "Admin",
-    },
-    {
-      id: 6,
-      image: MacbookIcon,
-      categoryName: "Macbook pro",
-      categoryCode: "CTO06",
-      description: "Computer Description",
-      createdBy: "Admin",
-    },
+  const [data, setData] = useState([
   ]);
+
+  const confirmText = (props) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      type: "warning",
+      showCancelButton: !0,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      confirmButtonClass: "btn btn-primary",
+      cancelButtonClass: "btn btn-danger ml-1",
+      buttonsStyling: !1,
+    }).then(function (t) {
+      if (t.value) {
+        Swal.fire({
+          type: "success",
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          confirmButtonClass: "btn btn-success",
+        });
+        const localCatalog = structuredClone(catalog);
+        if (localCatalog.categories.length > 1) {
+          localCatalog.categories.splice(props.id - 1, 1);
+        } else {
+          localCatalog.categories = [];
+        }
+
+        updateData(localCatalog.categories, localCatalog.products);
+      }
+    });
+  };
+
+  // {
+  //   id: 1,
+  //     image: MacbookIcon,
+  //       categoryName: "Macbook pro",
+  //         categoryCode: "PT001",
+  //           description: "Computer Description",
+  //             createdBy: "Admin",
+  //   },
+
+  useEffect(() => {
+    if (catalog.categories.length > 0) {
+      catalog.categories.map((category, index) => {
+        setData((prev) => [
+          ...prev,
+          {
+            id: index + 1,
+            image: AvocatImage,
+            categoryName: category,
+            categoryCode: `C00${index + 1}`,
+            createdBy: "Admin",
+          },
+        ]);
+      });
+    }
+  }, []);
 
   const columns = [
     {
@@ -122,10 +114,10 @@ const CategoryList = () => {
       dataIndex: "categoryName",
       render: (text, record) => (
         <div className="productimgname">
-          <Link className="product-img">
+          <Link style={{ textDecoration: 'none' }} className="product-img">
             <img alt="" src={record.image} />
           </Link>
-          <Link style={{ fontSize: "15px", marginLeft: "10px" }}>
+          <Link style={{ textDecoration: 'none' }} style={{ fontSize: "15px", marginLeft: "10px" }}>
             {record.categoryName}
           </Link>
         </div>
@@ -138,11 +130,6 @@ const CategoryList = () => {
       sorter: (a, b) => a.categoryCode.length - b.categoryCode.length,
     },
     {
-      title: " Description",
-      dataIndex: "description",
-      sorter: (a, b) => a.description.length - b.description.length,
-    },
-    {
       title: "Created By",
       dataIndex: "createdBy",
       sorter: (a, b) => a.createdBy.length - b.createdBy.length,
@@ -152,10 +139,10 @@ const CategoryList = () => {
       render: () => (
         <>
           <>
-            <Link className="me-3" to="/authed/product/editcategory-product">
+            {/* <Link style={{ textDecoration: 'none' }} className="me-3" to="/authed/product/editcategory-product">
               <img src={EditIcon} alt="img" />
-            </Link>
-            <Link className="confirm-text" to="#" onClick={confirmText}>
+            </Link> */}
+            <Link style={{ textDecoration: 'none' }} className="confirm-text" to="#" onClick={confirmText}>
               <img src={DeleteIcon} alt="img" />
             </Link>
           </>
@@ -174,7 +161,7 @@ const CategoryList = () => {
               <h6>View/Search product Category</h6>
             </div>
             <div className="page-btn">
-              <Link
+              <Link style={{ textDecoration: 'none' }}
                 to="/authed/product/addcategory-product"
                 className="btn btn-added"
               >

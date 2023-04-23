@@ -71,31 +71,31 @@ const Posleft = () => {
             </div>
           </li>
           <li id="Shoes" className="item">
-            <Link to="#" className="product-details">
+            <Link style={{ textDecoration: 'none' }}  to="#" className="product-details">
               <img src={Product65} alt="img" />
               <h6>Shoes</h6>
             </Link>
           </li>
           <li id="computer" className="item">
-            <Link to="#" className="product-details">
+            <Link style={{ textDecoration: 'none' }}  to="#" className="product-details">
               <img src={Product66} alt="img" />
               <h6>Computer</h6>
             </Link>
           </li>
           <li id="Snacks" className="item">
-            <Link to="#" className="product-details">
+            <Link style={{ textDecoration: 'none' }}  to="#" className="product-details">
               <img src={Product67} alt="img" />
               <h6>Snacks</h6>
             </Link>
           </li>
           <li id="watch" className="item">
-            <Link to="#" className="product-details">
+            <Link style={{ textDecoration: 'none' }}  to="#" className="product-details">
               <img src={Product68} alt="img" />
               <h6>Watches</h6>
             </Link>
           </li>
           <li id="cycle" className="item">
-            <Link to="#" className="product-details">
+            <Link style={{ textDecoration: 'none' }}  to="#" className="product-details">
               <img src={Product61} alt="img" />
               <h6>Cycles</h6>
             </Link>

@@ -60,7 +60,7 @@ const Sidebar = (props) => {
             >
               <ul>
                 <li className={pathname.includes("dashboard") ? "active" : ""}>
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="/authed/dashboard"
                     onClick={() => toggleSidebar(isSideMenu == "" ? "" : "")}
                   >
@@ -70,7 +70,7 @@ const Sidebar = (props) => {
                 </li>
                 <li className="submenu">
                   <a
-                    href="#"
+                  style={{ textDecoration: 'none' }} 
                     className={
                       pathname.includes("/authed/product")
                         ? "active subdrop"
@@ -88,7 +88,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "product" ? (
                     <ul className="sidebar-ul">
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("productlist-") ? "active" : ""
                           }
@@ -98,7 +98,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addproduct-") ? "active" : ""
                           }
@@ -108,7 +108,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("categorylist-") ? "active" : ""
                           }
@@ -118,7 +118,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addcategory-") ? "active" : ""
                           }
@@ -127,8 +127,8 @@ const Sidebar = (props) => {
                           Add Category{" "}
                         </Link>
                       </li>
-                      <li>
-                        <Link
+                      {/* <li>
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("subcategorytable-")
                               ? "active"
@@ -140,7 +140,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addsubcategory-") ? "active" : ""
                           }
@@ -150,7 +150,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("brandlist-") ? "active" : ""
                           }
@@ -160,7 +160,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addbrand-") ? "active" : ""
                           }
@@ -170,7 +170,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("importproduct-") ? "active" : ""
                           }
@@ -180,7 +180,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("printbarcode-") ? "active" : ""
                           }
@@ -188,15 +188,15 @@ const Sidebar = (props) => {
                         >
                           Print Barcode
                         </Link>
-                      </li>
+                      </li> */}
                     </ul>
                   ) : (
                     ""
                   )}
                 </li>
-                <li className="submenu">
+                {/* <li className="submenu">
                   <a
-                    href="#"
+                    style={{ textDecoration: 'none' }} 
                     className={
                       pathname.includes("/authed/sales")
                         ? "active subdrop"
@@ -214,7 +214,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "sales" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("saleslist") ? "active" : ""
                           }
@@ -224,10 +224,10 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link to="/pos">POS</Link>
+                        <Link style={{ textDecoration: 'none' }}  to="/pos">POS</Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/sales/add-sales"
                           className={
                             pathname.includes("add-sales") ? "active" : ""
@@ -237,7 +237,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("salesreturnlist") ? "active" : ""
                           }
@@ -247,7 +247,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addsalesreturn") ? "active" : ""
                           }
@@ -260,10 +260,10 @@ const Sidebar = (props) => {
                   ) : (
                     ""
                   )}
-                </li>
-                <li className="submenu">
+                </li> */}
+                {/* <li className="submenu">
                   <a
-                    href="#"
+                    style={{ textDecoration: 'none' }} 
                     className={
                       pathname.includes("/authed/purchase")
                         ? "subdrop active"
@@ -282,7 +282,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "purchase" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("purchaselist-") ? "active" : ""
                           }
@@ -292,7 +292,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addpurchase-") ? "active" : ""
                           }
@@ -302,7 +302,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("importpurchase-") ? "active" : ""
                           }
@@ -315,10 +315,10 @@ const Sidebar = (props) => {
                   ) : (
                     ""
                   )}
-                </li>
+                </li> */}
                 {/* <li className="submenu">
                   <a
-                    href="#"
+                    style={{ textDecoration: 'none' }} 
                     className={
                       pathname.includes("/authed/expense")
                         ? "subdrop active"
@@ -337,7 +337,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "expense" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("expenselist-") ? "active" : ""
                           }
@@ -347,7 +347,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addexpense-") ? "active" : ""
                           }
@@ -357,7 +357,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("expensecategory-")
                               ? "active"
@@ -375,7 +375,7 @@ const Sidebar = (props) => {
                 </li> */}
                 {/* <li className="submenu">
                   <a
-                    href="#"
+                    
                     className={
                       pathname.includes("/authed/quotation")
                         ? "subdrop active"
@@ -396,7 +396,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "quotation" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("quotationlist-") ? "active" : ""
                           }
@@ -406,7 +406,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addquotation-") ? "active" : ""
                           }
@@ -422,7 +422,7 @@ const Sidebar = (props) => {
                 </li> */}
                 {/* <li className="submenu">
                   <a
-                    href="#"
+                    style={{ textDecoration: 'none' }} 
                     className={
                       pathname.includes("/authed/transfer")
                         ? "subdrop active"
@@ -441,7 +441,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "transfer" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("transferlist-") ? "active" : ""
                           }
@@ -451,7 +451,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addtransfer-") ? "active" : ""
                           }
@@ -461,7 +461,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("importtransfer-") ? "active" : ""
                           }
@@ -477,7 +477,7 @@ const Sidebar = (props) => {
                 </li> */}
                 {/* <li className="submenu">
                   <a
-                    href="#"
+                    
                     className={
                       pathname.includes("/authed/return")
                         ? "subdrop active"
@@ -496,7 +496,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "return" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("salesreturnlist-")
                               ? "active"
@@ -508,7 +508,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addsalesreturn-") ? "active" : ""
                           }
@@ -518,7 +518,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("purchasereturnlist-")
                               ? "active"
@@ -530,7 +530,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addpurchasereturn-")
                               ? "active"
@@ -547,8 +547,8 @@ const Sidebar = (props) => {
                   )}
                 </li> */}
                 {/* <li className="submenu">
-                  <a
-                    href="#"
+                  <a style={{ textDecoration: 'none' }} 
+                    
                     className={
                       pathname.includes("/authed/people")
                         ? "subdrop active"
@@ -567,7 +567,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "people" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("customerlist-") ? "active" : ""
                           }
@@ -577,7 +577,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addcustomer-") ? "active" : ""
                           }
@@ -587,7 +587,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("supplierlist-") ? "active" : ""
                           }
@@ -597,7 +597,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addsupplier-") ? "active" : ""
                           }
@@ -607,7 +607,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("userlist-") ? "active" : ""
                           }
@@ -617,7 +617,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("adduser-") ? "active" : ""
                           }
@@ -627,7 +627,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("storelist-") ? "active" : ""
                           }
@@ -637,7 +637,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("addstore-") ? "active" : ""
                           }
@@ -653,7 +653,7 @@ const Sidebar = (props) => {
                 </li> */}
                 {/* <li className="submenu">
                   <a
-                    href="#"
+                    
                     className={
                       pathname.includes("/authed/places")
                         ? "subdrop active"
@@ -672,7 +672,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "places" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("newcountry-") ? "active" : ""
                           }
@@ -682,7 +682,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("countrylist-") ? "active" : ""
                           }
@@ -692,7 +692,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("newstate-") ? "active" : ""
                           }
@@ -702,7 +702,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("statelist-") ? "active" : ""
                           }
@@ -717,7 +717,7 @@ const Sidebar = (props) => {
                   )}
                 </li> */}
                 {/* <li className={pathname.includes("components") ? "active" : ""}>
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="/authed/components"
                     onClick={() => toggleSidebar(isSideMenu == "" ? "" : "")}
                   >
@@ -727,7 +727,7 @@ const Sidebar = (props) => {
                   </Link>
                 </li>
                 <li className={pathname.includes("blankpage") ? "active" : ""}>
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="/authed/blankpage"
                     onClick={() => toggleSidebar(isSideMenu == "" ? "" : "")}
                   >
@@ -738,7 +738,7 @@ const Sidebar = (props) => {
                 </li> */}
                 {/* <li className="submenu">
                   <a
-                    href="#"
+                    
                     className={
                       isSideMenu == "error pages" ? "subdrop active" : ""
                     }
@@ -755,10 +755,10 @@ const Sidebar = (props) => {
                   {isSideMenu == "error pages" ? (
                     <ul>
                       <li>
-                        <Link to="/error-404">404 Error </Link>
+                        <Link style={{ textDecoration: 'none' }}  to="/error-404">404 Error </Link>
                       </li>
                       <li>
-                        <Link to="/error-500">500 Error </Link>
+                        <Link style={{ textDecoration: 'none' }}  to="/error-500">500 Error </Link>
                       </li>
                     </ul>
                   ) : (
@@ -766,7 +766,7 @@ const Sidebar = (props) => {
                   )}
                 </li>
                 <li className="submenu">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className={
                       pathname.includes("/authed/elements")
@@ -785,7 +785,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "elements" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/sweetalerts"
                           className={
                             pathname.includes("sweetalerts") ? "active" : ""
@@ -795,7 +795,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/tooltip"
                           className={
                             pathname.includes("tooltip") ? "active" : ""
@@ -805,7 +805,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("popover") ? "active" : ""
                           }
@@ -815,7 +815,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/ribbon"
                           className={
                             pathname.includes("ribbon") ? "active" : ""
@@ -825,7 +825,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/clipboard"
                           className={
                             pathname.includes("clipboard") ? "active" : ""
@@ -835,7 +835,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/drag-drop"
                           className={
                             pathname.includes("drag-drop") ? "active" : ""
@@ -845,7 +845,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/rangeslider"
                           className={
                             pathname.includes("rangeslider") ? "active" : ""
@@ -858,7 +858,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/rating"
                           className={
                             pathname.includes("rating") ? "active" : ""
@@ -868,7 +868,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/toastr"
                           className={
                             pathname.includes("toastr") ? "active" : ""
@@ -878,7 +878,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/text-editor"
                           className={
                             pathname.includes("text-editor") ? "active" : ""
@@ -888,7 +888,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/counter"
                           className={
                             pathname.includes("counter") ? "active" : ""
@@ -898,7 +898,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/scrollbar"
                           className={
                             pathname.includes("scrollbar") ? "active" : ""
@@ -908,7 +908,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/spinner"
                           className={
                             pathname.includes("spinner") ? "active" : ""
@@ -918,7 +918,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/notification"
                           className={
                             pathname.includes("notification") ? "active" : ""
@@ -928,7 +928,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/lightbox"
                           className={
                             pathname.includes("lightbox") ? "active" : ""
@@ -938,7 +938,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/stickynote"
                           className={
                             pathname.includes("stickynote") ? "active" : ""
@@ -948,7 +948,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/timeline"
                           className={
                             pathname.includes("timeline") ? "active" : ""
@@ -958,7 +958,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/elements/form-wizard"
                           className={
                             pathname.includes("form-wizard") ? "active" : ""
@@ -976,7 +976,7 @@ const Sidebar = (props) => {
                   )}
                 </li>
                 <li className="submenu">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className={
                       pathname.includes("/authed/charts")
@@ -995,7 +995,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "Charts" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/charts/chart-apex"
                           className={
                             pathname.includes("chart-apex") ? "active" : ""
@@ -1005,7 +1005,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/charts/chart-js"
                           className={
                             pathname.includes("chart-js") ? "active" : ""
@@ -1016,7 +1016,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/charts/chart-morris"
                           className={
                             pathname.includes("chart-morris") ? "active" : ""
@@ -1026,7 +1026,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/charts/chart-flot"
                           className={
                             pathname.includes("chart-flot") ? "active" : ""
@@ -1037,7 +1037,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/charts/chart-peity"
                           className={
                             pathname.includes("chart-peity") ? "active" : ""
@@ -1053,7 +1053,7 @@ const Sidebar = (props) => {
                   )}
                 </li>
                 <li className="submenu">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className={
                       pathname.includes("/authed/icons")
@@ -1072,7 +1072,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "Icons" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/icons/icon-fontawesome"
                           className={
                             pathname.includes("fontawesome") ? "active" : ""
@@ -1082,7 +1082,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/icons/icon-feather"
                           className={
                             pathname.includes("feather") ? "active" : ""
@@ -1092,7 +1092,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/icons/icon-ionic"
                           className={pathname.includes("ionic") ? "active" : ""}
                         >
@@ -1100,7 +1100,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/icons/icon-material"
                           className={
                             pathname.includes("material") ? "active" : ""
@@ -1110,7 +1110,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/icons/icon-pe7"
                           className={
                             pathname.includes("icon-pe7") ? "active" : ""
@@ -1120,7 +1120,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/icons/icon-simpleline"
                           className={
                             pathname.includes("simpleline") ? "active" : ""
@@ -1130,7 +1130,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/icons/icon-themify"
                           className={
                             pathname.includes("themify") ? "active" : ""
@@ -1140,7 +1140,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/icons/icon-weather"
                           className={
                             pathname.includes("weather") ? "active" : ""
@@ -1150,7 +1150,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/icons/icon-typicon"
                           className={
                             pathname.includes("typicon") ? "active" : ""
@@ -1160,7 +1160,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/icons/icon-flag"
                           className={
                             pathname.includes("icon-flag") ? "active" : ""
@@ -1175,7 +1175,7 @@ const Sidebar = (props) => {
                   )}
                 </li>
                 <li className="submenu">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className={
                       pathname.includes("/authed/forms")
@@ -1194,7 +1194,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "Forms" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/forms/form-basic-inputs"
                           className={
                             pathname.includes("form-basic-inputs")
@@ -1206,7 +1206,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/forms/form-input-groups"
                           className={
                             pathname.includes("form-input-groups")
@@ -1218,7 +1218,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/forms/form-horizontal"
                           className={
                             pathname.includes("horizontal") ? "active" : ""
@@ -1228,7 +1228,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/forms/form-vertical"
                           className={
                             pathname.includes("form-vertical") ? "active" : ""
@@ -1239,7 +1239,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/forms/form-mask"
                           className={
                             pathname.includes("form-mask") ? "active" : ""
@@ -1249,7 +1249,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/forms/form-validation"
                           className={
                             pathname.includes("validation") ? "active" : ""
@@ -1259,7 +1259,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/forms/form-select2"
                           className={
                             pathname.includes("form-select2") ? "active" : ""
@@ -1269,7 +1269,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/forms/form-fileupload"
                           className={
                             pathname.includes("fileupload") ? "active" : ""
@@ -1284,7 +1284,7 @@ const Sidebar = (props) => {
                   )}
                 </li>
                 <li className="submenu">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className={
                       pathname.includes("/authed/table")
@@ -1303,7 +1303,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "Table" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/table/tables-basic"
                           className={
                             pathname.includes("tables-basic") ? "active" : ""
@@ -1313,7 +1313,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/table/data-tables"
                           className={
                             pathname.includes("data-tables") ? "active" : ""
@@ -1328,7 +1328,7 @@ const Sidebar = (props) => {
                   )}
                 </li>
                 <li className="submenu">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className={
                       pathname.includes("/authed/application")
@@ -1349,7 +1349,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "Application" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/application/chat"
                           className={pathname.includes("chat") ? "active" : ""}
                         >
@@ -1357,7 +1357,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/application/calendar"
                           className={
                             pathname.includes("calendar") ? "active" : ""
@@ -1367,7 +1367,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/application/email"
                           className={pathname.includes("email") ? "active" : ""}
                         >
@@ -1380,7 +1380,7 @@ const Sidebar = (props) => {
                   )}
                 </li> */}
                 <li className="submenu">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className={
                       pathname.includes("/authed/report")
@@ -1399,7 +1399,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "Report" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/report/purchaseorderreport"
                           className={
                             pathname.includes("purchaseorderreport")
@@ -1411,7 +1411,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/report/inventoryreport"
                           className={
                             pathname.includes("inventoryreport") ? "active" : ""
@@ -1421,7 +1421,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/report/salesreport"
                           className={
                             pathname.includes("salesreport") ? "active" : ""
@@ -1431,7 +1431,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/report/invoicereport"
                           className={
                             pathname.includes("invoicereport") ? "active" : ""
@@ -1441,7 +1441,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/report/purchasereport"
                           className={
                             pathname.includes("purchasereport") ? "active" : ""
@@ -1451,7 +1451,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/report/supplierreport"
                           className={
                             pathname.includes("supplierreport") ? "active" : ""
@@ -1461,7 +1461,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/report/customerreport"
                           className={
                             pathname.includes("customerreport") ? "active" : ""
@@ -1476,7 +1476,7 @@ const Sidebar = (props) => {
                   )}
                 </li>
                 {/* <li className="submenu">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className={
                       pathname.includes("/authed/users")
@@ -1495,7 +1495,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "Users" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/users/newuser"
                           className={
                             pathname.includes("newuser") ? "active" : ""
@@ -1505,7 +1505,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/users/userlists"
                           className={
                             pathname.includes("userlists") ? "active" : ""
@@ -1520,7 +1520,7 @@ const Sidebar = (props) => {
                   )}
                 </li> */}
                 <li className="submenu">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className={
                       pathname.includes("/authed/settings")
@@ -1539,7 +1539,7 @@ const Sidebar = (props) => {
                   {isSideMenu == "Settings" ? (
                     <ul>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/settings/generalsettings"
                           className={
                             pathname.includes("generalsettings") ? "active" : ""
@@ -1549,7 +1549,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       {/* <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/settings/emailsettings"
                           className={
                             pathname.includes("emailsettings") ? "active" : ""
@@ -1559,7 +1559,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/settings/paymentsettings"
                           className={
                             pathname.includes("paymentsettings") ? "active" : ""
@@ -1569,7 +1569,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/settings/currencysettings"
                           className={
                             pathname.includes("currencysettings")
@@ -1581,7 +1581,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/settings/grouppermissions"
                           className={
                             pathname.includes("permission") ? "active" : ""
@@ -1591,7 +1591,7 @@ const Sidebar = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/settings/taxrates"
                           className={
                             pathname.includes("taxrates") ? "active" : ""

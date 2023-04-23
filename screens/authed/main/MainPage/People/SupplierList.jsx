@@ -95,10 +95,10 @@ const SupplierList = () => {
       dataIndex: "supplierName",
       render: (text, record) => (
         <div className="productimgname">
-          <Link to="#" className="product-img">
+          <Link style={{ textDecoration: 'none' }}  to="#" className="product-img">
             <img src={Noimage} alt="product" />
           </Link>
-          <Link to="#">{text}</Link>
+          <Link style={{ textDecoration: 'none' }}  to="#">{text}</Link>
         </div>
       ),
       sorter: (a, b) => a.supplierName.length - b.supplierName.length,
@@ -128,10 +128,10 @@ const SupplierList = () => {
       title: "Action",
       render: () => (
         <>
-          <Link className="me-3" to="/authed/people/editsupplier-people">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/people/editsupplier-people">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="confirm-text" to="#" onClick={confirmText}>
+          <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="#" onClick={confirmText}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -148,7 +148,7 @@ const SupplierList = () => {
               <h6>Manage your Supplier</h6>
             </div>
             <div className="page-btn">
-              <Link
+              <Link style={{ textDecoration: 'none' }} 
                 to="/authed/people/addsupplier-people"
                 className="btn btn-added"
               >

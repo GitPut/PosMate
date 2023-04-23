@@ -15,7 +15,7 @@ const PE7Icons = () => {
                 <h3 className="page-title">PE7 Icon</h3>
                 <ul className="breadcrumb">
                   <li className="breadcrumb-item">
-                    <Link to="/authed/dashboard">Dashboard</Link>
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard">Dashboard</Link>
                   </li>
                   <li className="breadcrumb-item active">PE7 Icon</li>
                 </ul>

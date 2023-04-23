@@ -42,7 +42,7 @@ const ImportPurchase = () => {
                       </div>
                       <div className="col-lg-2 col-sm-2 col-2 ps-0">
                         <div className="add-icon">
-                          <Link to="">
+                          <Link style={{ textDecoration: 'none' }}  to="">
                             <img src={Plus} alt="img" />
                           </Link>
                         </div>

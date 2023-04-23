@@ -141,7 +141,7 @@ const Dashboard = (props) => {
       title: "Product Code",
       dataIndex: "code",
       render: (text, record) => (
-        <Link to="#" style={{ fontSize: "14px" }}>
+        <Link style={{ textDecoration: 'none' }}  to="#" style={{ fontSize: "14px" }}>
           {text}
         </Link>
       ),
@@ -152,10 +152,10 @@ const Dashboard = (props) => {
       dataIndex: "productName",
       render: (text, record) => (
         <div className="productimgname">
-          <Link to="#" className="product-img">
+          <Link style={{ textDecoration: 'none' }}  to="#" className="product-img">
             <img alt="" src={record.image} />
           </Link>
-          <Link to="#" style={{ fontSize: "14px" }}>
+          <Link style={{ textDecoration: 'none' }}  to="#" style={{ fontSize: "14px" }}>
             {record.productName}
           </Link>
         </div>
@@ -193,10 +193,10 @@ const Dashboard = (props) => {
       dataIndex: "products",
       render: (text, record) => (
         <div className="productimgname">
-          <Link to="#" className="product-img">
+          <Link style={{ textDecoration: 'none' }}  to="#" className="product-img">
             <img alt="" src={record.image} />
           </Link>
-          <Link to="#" style={{ fontSize: "14px" }}>
+          <Link style={{ textDecoration: 'none' }}  to="#" style={{ fontSize: "14px" }}>
             {record.products}
           </Link>
         </div>
@@ -361,17 +361,17 @@ const Dashboard = (props) => {
                         aria-labelledby="dropdownMenuButton"
                       >
                         <li>
-                          <Link to="#" className="dropdown-item">
+                          <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
                             2022
                           </Link>
                         </li>
                         <li>
-                          <Link to="#" className="dropdown-item">
+                          <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
                             2021
                           </Link>
                         </li>
                         <li>
-                          <Link to="#" className="dropdown-item">
+                          <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
                             2020
                           </Link>
                         </li>
@@ -394,7 +394,7 @@ const Dashboard = (props) => {
                 <div className="card-header pb-0 d-flex justify-content-between align-items-center">
                   <h4 className="card-title mb-0">Recently Added Products</h4>
                   <div className="dropdown dropdown-action profile-action">
-                    <Link
+                    <Link style={{ textDecoration: 'none' }} 
                       to="#"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
@@ -407,7 +407,7 @@ const Dashboard = (props) => {
                       aria-labelledby="dropdownMenuButton"
                     >
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/product/productlist-product"
                           className="dropdown-item"
                         >
@@ -415,7 +415,7 @@ const Dashboard = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
+                        <Link style={{ textDecoration: 'none' }} 
                           to="/authed/product/addproduct-product"
                           className="dropdown-item"
                         >

@@ -1,35 +1,60 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Macbook, Upload } from "../../EntryFile/imagePath";
-import {Link} from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
 import Select2 from "react-select2-wrapper";
 import "react-select2-wrapper/css/select2.css";
-const options1 = [
-  { id: 1, text: "Computers", text: "Computers" },
-  { id: 2, text: "Mac", text: "Mac" },
-];
-const options2 = [
-  { id: 1, text: "None", text: "None" },
-  { id: 2, text: "Option1", text: "Option1" },
-];
-const options4 = [
-  { id: 1, text: "Piece", text: "Piece" },
-  { id: 2, text: "Kg", text: "Kg" },
-];
-const options5 = [
-  { id: 1, text: "Choose Tax", text: "Choose Tax" },
-  { id: 2, text: "2%", text: "2%" },
-];
-const options6 = [
-  { id: 1, text: "Percentage", text: "Percentage" },
-  { id: 2, text: "10%", text: "10%" },
-  { id: 2, text: "20%", text: "20%" },
-];
-const options7 = [
-  { id: 1, text: "Active", text: "Active" },
-  { id: 2, text: "Open", text: "Open" },
-];
+import { selectedProductState, userStoreState } from "state/state";
+import { FlatList, Text, View, useWindowDimensions } from "react-native";
+import { Button } from "react-native";
+import OptionView from "components/OptionView";
+import { updateData } from "state/firebaseFunctions";
 
-const EditProduct = () => {
+const EditProduct = (props) => {
+  const product = selectedProductState.use()
+
+  const { existingProduct, existingProductIndex } = product
+
+  const catalog = userStoreState.use();
+  const [newProduct, setnewProduct] = useState(
+    existingProduct
+  );
+  const newProductOptions = useRef(
+    existingProduct ? existingProduct.options : []
+  );
+  const [indexOn, setindexOn] = useState(0);
+  const { width, height } = useWindowDimensions();
+  const [selectValues, setselectValues] = useState([]);
+  const history = useHistory();
+
+  useEffect(() => {
+    if (catalog.categories) {
+      const local = [];
+      catalog.categories.map((val, index) => local.push({ id: index, text: val, }));
+      setselectValues(local);
+    }
+  }, []);
+
+  function handleDataUpdate() {
+    let copy = structuredClone(catalog.products);
+
+    if (existingProduct.id) {
+      const newProductUseRef = {
+        ...newProduct,
+        options: newProductOptions.current,
+      };
+      const findIndex = copy.findIndex((e) => e.id === existingProduct.id);
+      copy[findIndex] = newProductUseRef;
+    } else {
+      const newProductUseRef = {
+        ...newProduct,
+        options: newProductOptions.current,
+        id: Math.random().toString(36).substr(2, 9),
+      };
+      copy[existingProductIndex] = newProductUseRef;
+    }
+    updateData([...catalog.categories], copy);
+    history.push("/authed/product/productlist-product");
+  }
 
   return (
     <>
@@ -44,11 +69,26 @@ const EditProduct = () => {
           {/* /add */}
           <div className="card">
             <div className="card-body">
+              <div className="col-lg-12">
+                <div className="form-group">
+                  <label> Product Image</label>
+                  <div className="image-upload">
+                    <input type="file" />
+                    <div className="image-uploads">
+                      <img src={Upload} alt="img" />
+                      <h4>Drag and drop a file to upload</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="row">
                 <div className="col-lg-3 col-sm-6 col-12">
                   <div className="form-group">
                     <label>Product Name</label>
-                    <input type="text" defaultValue="Macbook pro" />
+                    <input type="text" defaultValue={newProduct.name} onChange={(event) => setnewProduct((prevState) => ({
+                      ...prevState,
+                      name: event.target.value,
+                    }))} />
                   </div>
                 </div>
                 <div className="col-lg-3 col-sm-6 col-12">
@@ -56,65 +96,27 @@ const EditProduct = () => {
                     <label>Category</label>
                     <Select2
                       className="select"
-                      data={options1}
+                      data={selectValues}
                       options={{
-                        placeholder: "Category",
+                        placeholder: newProduct.catagory ? newProduct.catagory : newProduct.category,
+                      }}
+                      onSelect={(val) => {
+                        console.log('val', val.params.data.text)
+                        setnewProduct((prevState) => ({
+                          ...prevState,
+                          category: val.params.data.text,
+                        }));
                       }}
                     />
                   </div>
                 </div>
                 <div className="col-lg-3 col-sm-6 col-12">
                   <div className="form-group">
-                    <label>Sub Category</label>
-                    <Select2
-                      className="select"
-                      data={options2}
-                      options={{
-                        placeholder: "Sub Category",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="col-lg-3 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label>Brand</label>
-                    <Select2
-                      className="select"
-                      data={options2}
-                      options={{
-                        placeholder: "Brand",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="col-lg-3 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label>Unit</label>
-                    <Select2
-                      className="select"
-                      data={options4}
-                      options={{
-                        placeholder: "Unit",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="col-lg-3 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label>SKU</label>
-                    <input type="text" defaultValue="PT0002" />
-                  </div>
-                </div>
-                <div className="col-lg-3 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label>Minimum Qty</label>
-                    <input type="text" defaultValue={5} />
-                  </div>
-                </div>
-                <div className="col-lg-3 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label>Quantity</label>
-                    <input type="text" defaultValue={50} />
+                    <label>Price</label>
+                    <input type="text" defaultValue={parseFloat(newProduct.price)} onChange={(event) => setnewProduct((prevState) => ({
+                      ...prevState,
+                      price: event.target.value,
+                    }))} />
                   </div>
                 </div>
                 <div className="col-lg-12">
@@ -123,95 +125,83 @@ const EditProduct = () => {
                     <textarea
                       className="form-control"
                       defaultValue={
-                        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,"
+                        newProduct.description
                       }
+                      onChange={(event) => setnewProduct((prevState) => ({
+                        ...prevState,
+                        description: event.target.value,
+                      }))}
                     />
                   </div>
                 </div>
-                <div className="col-lg-3 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label>Tax</label>
-                    <Select2
-                      className="select"
-                      data={options5}
-                      options={{
-                        placeholder: "Tax",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="col-lg-3 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label>Discount Type</label>
-                    <Select2
-                      className="select"
-                      data={options6}
-                      options={{
-                        placeholder: "Discount Type",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="col-lg-3 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label>Price</label>
-                    <input type="text" defaultValue={1500.0} />
-                  </div>
-                </div>
-                <div className="col-lg-3 col-sm-6 col-12">
-                  <div className="form-group">
-                    <label> Status</label>
-                    <Select2
-                      className="select"
-                      data={options7}
-                      options={{
-                        placeholder: "Status",
-                      }}
-                    />
-                  </div>
-                </div>
+
                 <div className="col-lg-12">
                   <div className="form-group">
-                    <label> Product Image</label>
-                    <div className="image-upload">
-                      <input type="file" />
-                      <div className="image-uploads">
-                        <img src={Upload} alt="img" />
-                        <h4>Drag and drop a file to upload</h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className="product-list">
-                    <ul className="row">
-                      <li>
-                        <div className="productviews">
-                          <div className="productviewsimg">
-                            <img src={Macbook} alt="img" />
-                          </div>
-                          <div className="productviewscontent">
-                            <div className="productviewsname">
-                              <h2>macbookpro.jpg</h2>
-                              <h3>581kb</h3>
-                            </div>
-                            <a  className="hideset">
-                              x
-                            </a>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
+                    <label>Options</label>
+                    <View>
+                      <FlatList
+                        // onLayout={() =>
+                        //   window.scrollTo({
+                        //     top: currentY,
+                        //     behavior: "instant",
+                        //   })
+                        // }
+                        getItemLayout={(data, index) => ({
+                          length: index === indexOn ? 400 * data.optionsList?.length : 100,
+                          offset: 400 * index,
+                          index,
+                        })}
+                        data={newProduct.options}
+                        keyExtractor={(item) => item.id?.toString()}
+                        renderItem={({ item, index }) => (
+                          <OptionView
+                            item={item}
+                            index={index}
+                            newProduct={newProduct}
+                            setnewProduct={setnewProduct}
+                            newProductOptions={newProductOptions}
+                            indexOn={indexOn}
+                            setindexOn={setindexOn}
+                          />
+                        )}
+                      />
+                      {newProduct.options.length === 0 && (
+                        <Button
+                          title="Add Option"
+                          onPress={() => {
+                            newProductOptions.current.push({
+                              label: null,
+                              optionsList: [],
+                              selectedCaseKey: null,
+                              selectedCaseValue: null,
+                              numOfSelectable: null,
+                              id: Math.random().toString(36).substr(2, 9),
+                              optionType: null,
+                            });
+                            setnewProduct((prevState) => ({
+                              ...prevState,
+                              options: newProductOptions.current,
+                            }));
+                            setindexOn(newProductOptions.current.length - 1);
+                          }}
+                          style={{ marginBottom: 25, backgroundColor: "#4050B5" }}
+                          disabled={
+                            newProduct.options.length > 0 &&
+                            newProduct.options[newProduct.options.length - 1].label === null
+                          }
+                        />
+                      )}
+                    </View>
                   </div>
                 </div>
                 <div className="col-lg-12">
                   <button
-                    
+                    onClick={handleDataUpdate}
                     className="btn btn-submit me-2"
                   >
                     Update
                   </button>
-                  <Link to="/productlist" className="btn btn-cancel">
+                  <Link style={{ textDecoration: 'none' }} to="/authed/product/productlist-product" className="btn btn-cancel">
                     Cancel
                   </Link>
                 </div>

@@ -42,7 +42,7 @@ const PrintBarcode = () => {
     {
       render: () => (
         <div className="text-end">
-          <Link className="delete-set" to="#" onClick={deleteRow}>
+          <Link style={{ textDecoration: 'none' }}  className="delete-set" to="#" onClick={deleteRow}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </div>

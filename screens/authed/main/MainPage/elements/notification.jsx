@@ -58,7 +58,7 @@ const Notification = () => {
               <h3 className="page-title">Notification</h3>
               <ul className="breadcrumb">
                 <li className="breadcrumb-item">
-                  <Link to="/authed/dashboard">Dashboard</Link>
+                  <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard">Dashboard</Link>
                 </li>
                 <li className="breadcrumb-item active">Notification</li>
               </ul>
@@ -74,7 +74,7 @@ const Notification = () => {
                 <div className="card-title">Alert</div>
               </div>
               <div className="card-body">
-                <Link
+                <Link style={{ textDecoration: 'none' }} 
                   to="#"
                   id="alert"
                   className="btn btn-primary waves-effect waves-light"
@@ -93,7 +93,7 @@ const Notification = () => {
                 <div className="card-title">Confirm</div>
               </div>
               <div className="card-body">
-                <Link
+                <Link style={{ textDecoration: 'none' }} 
                   to="#"
                   id="alert-confirm"
                   className="btn btn-primary waves-effect waves-light"
@@ -112,7 +112,7 @@ const Notification = () => {
                 <div className="card-title">Prompt</div>
               </div>
               <div className="card-body">
-                <Link
+                <Link style={{ textDecoration: 'none' }} 
                   to="#"
                   id="alert-prompt"
                   className="btn btn-primary waves-effect waves-light"
@@ -131,7 +131,7 @@ const Notification = () => {
                 <div className="card-title">Success Alert</div>
               </div>
               <div className="card-body">
-                <Link
+                <Link style={{ textDecoration: 'none' }} 
                   to="#"
                   id="alert-success"
                   className="btn btn-primary btn-sm waves-effect waves-light"
@@ -150,7 +150,7 @@ const Notification = () => {
                 <div className="card-title">Error Alert</div>
               </div>
               <div className="card-body">
-                <Link
+                <Link style={{ textDecoration: 'none' }} 
                   to="#"
                   id="alert-error"
                   className="btn btn-primary btn-sm waves-effect waves-light"
@@ -169,7 +169,7 @@ const Notification = () => {
                 <div className="card-title">Warnng Alert</div>
               </div>
               <div className="card-body">
-                <Link
+                <Link style={{ textDecoration: 'none' }} 
                   to="#"
                   id="alert-warning"
                   className="btn btn-primary btn-sm waves-effect waves-light"

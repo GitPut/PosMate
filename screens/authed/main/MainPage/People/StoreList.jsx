@@ -136,10 +136,10 @@ const StoreList = () => {
       title: "Action",
       render: () => (
         <>
-          <Link className="me-3" to="/authed/people/editstore-people">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/people/editstore-people">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="confirm-text" to="#" onClick={confirmText}>
+          <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="#" onClick={confirmText}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -156,7 +156,7 @@ const StoreList = () => {
               <h6>Manage your Store</h6>
             </div>
             <div className="page-btn">
-              <Link to="/authed/people/addstore-people" className="btn btn-added">
+              <Link style={{ textDecoration: 'none' }}  to="/authed/people/addstore-people" className="btn btn-added">
                 <img src={PlusIcon} alt="img" className="me-1" />
                 Add Store
               </Link>

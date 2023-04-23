@@ -104,10 +104,10 @@ const CountryList = () => {
       title: "Action",
       render: () => (
         <>
-          <Link className="me-3" to="/authed/places/editcountry-places">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/places/editcountry-places">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="confirm-text" to="#" onClick={confirmText}>
+          <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="#" onClick={confirmText}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -124,7 +124,7 @@ const CountryList = () => {
               <h6>Manage your Countries</h6>
             </div>
             <div className="page-btn">
-              <Link
+              <Link style={{ textDecoration: 'none' }} 
                 to="/authed/places/newcountry-places"
                 className="btn btn-added"
               >

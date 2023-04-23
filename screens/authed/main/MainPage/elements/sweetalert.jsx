@@ -233,7 +233,7 @@ export default class Sweetalert extends Component {
                 <h3 className="page-title">Sweetalerts</h3>
                 <ul className="breadcrumb">
                   <li className="breadcrumb-item">
-                    <Link to="/authed/dashboard">Dashboard</Link>
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard">Dashboard</Link>
                   </li>
                   <li className="breadcrumb-item active">Sweetalerts</li>
                 </ul>

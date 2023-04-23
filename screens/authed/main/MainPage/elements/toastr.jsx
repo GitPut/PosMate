@@ -141,7 +141,7 @@ const Toastr = () => {
               <h3 className="page-title">Toastr</h3>
               <ul className="breadcrumb">
                 <li className="breadcrumb-item">
-                  <Link to="/authed/dashboard">Dashboard</Link>
+                  <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard">Dashboard</Link>
                 </li>
                 <li className="breadcrumb-item active">Toastr</li>
               </ul>

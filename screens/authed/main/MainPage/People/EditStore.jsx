@@ -93,7 +93,7 @@ const EditStore = () => {
                               <h2>macbookpro.jpg</h2>
                               <h3>581kb</h3>
                             </div>
-                            <Link className="hideset" onClick={deleteImage}>x</Link>
+                            <Link style={{ textDecoration: 'none' }}  className="hideset" onClick={deleteImage}>x</Link>
                           </div>
                         </div>
                       </li>

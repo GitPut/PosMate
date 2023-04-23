@@ -1,7 +1,10 @@
 import React from 'react'
 import { Upload } from '../../EntryFile/imagePath';
+import { userStoreState } from 'state/state';
 
 const AddCategory = () => {
+    const catalog = userStoreState.use();
+
     return (
         <>
             <div className="page-wrapper">
@@ -25,18 +28,12 @@ const AddCategory = () => {
                                 <div className="col-lg-6 col-sm-6 col-12">
                                     <div className="form-group">
                                         <label>Category Code</label>
-                                        <input type="text" />
+                                        <input type="text" value={`${catalog.categories.length}`} />
                                     </div>
                                 </div>
                                 <div className="col-lg-12">
                                     <div className="form-group">
-                                        <label>Description</label>
-                                        <textarea className="form-control" defaultValue={""} />
-                                    </div>
-                                </div>
-                                <div className="col-lg-12">
-                                    <div className="form-group">
-                                        <label> Product Image</label>
+                                        <label> Category Image</label>
                                         <div className="image-upload">
                                             <input type="file" />
                                             <div className="image-uploads">

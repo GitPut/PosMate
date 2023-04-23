@@ -167,10 +167,10 @@ const PurchaseList = () => {
       title: "Action",
       render: () => (
         <>
-          <Link className="me-3" to="/authed/purchase/editpurchase-purchase">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/purchase/editpurchase-purchase">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="confirm-text" to="">
+          <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="">
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -188,7 +188,7 @@ const PurchaseList = () => {
               <h6>Manage your Purchase</h6>
             </div>
             <div className="page-btn">
-              <Link
+              <Link style={{ textDecoration: 'none' }} 
                 to="/authed/purchase/addpurchase-purchase"
                 className="btn btn-added"
               >

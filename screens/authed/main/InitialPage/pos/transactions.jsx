@@ -101,13 +101,13 @@ const Transactions = () => {
       className: "text-end",
       render: (text, record) => (
         <div className="text-end">
-          <Link className="me-3" to="#">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="#">
             <img src={EyeIcon} alt="img" />
           </Link>
-          <Link className="me-3" to="#">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="#">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="me-3" onClick={confirmText} to="#">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" onClick={confirmText} to="#">
             <img src={DeleteIcon} alt="img" />
           </Link>
         </div>

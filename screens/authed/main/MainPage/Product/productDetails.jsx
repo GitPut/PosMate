@@ -22,7 +22,7 @@ const ProductDetails = () => {
               <div className="card-body">
                 <div className="bar-code-view">
                   <img src={barcode1} alt="barcode" />
-                  <Link to="#" className="printimg">
+                  <Link style={{ textDecoration: 'none' }}  to="#" className="printimg">
                     <img src={Printer} alt="print" />
                   </Link>
                 </div>

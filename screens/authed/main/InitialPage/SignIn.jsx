@@ -93,7 +93,7 @@ const SignInPage = (props) => {
                                     <div className="form-login">
                                         <div className="alreadyuser">
                                             <h4>
-                                                <Link to="/forgetPassword" className="hover-a">
+                                                <Link style={{ textDecoration: 'none' }}  to="/forgetPassword" className="hover-a">
                                                     Forgot Password?
                                                 </Link>
                                             </h4>
@@ -108,7 +108,7 @@ const SignInPage = (props) => {
                                 <div className="signinform text-center">
                                     <h4>
                                         Don’t have an account?{" "}
-                                        <Link to="/signUp" className="hover-a">
+                                        <Link style={{ textDecoration: 'none' }}  to="/signUp" className="hover-a">
                                             Sign Up
                                         </Link>
                                     </h4>
@@ -119,7 +119,7 @@ const SignInPage = (props) => {
                                 <div className="form-sociallink">
                                     <ul>
                                         <li>
-                                            <Link to="/signin">
+                                            <Link style={{ textDecoration: 'none' }}  to="/signin">
                                                 <img
                                                     src={GoogleIcon}
                                                     className="me-2"
@@ -129,7 +129,7 @@ const SignInPage = (props) => {
                                             </Link>
                                         </li>
                                         <li>
-                                            <Link to="/signin">
+                                            <Link style={{ textDecoration: 'none' }}  to="/signin">
                                                 <img
                                                     src={FacebookIcon}
                                                     className="me-2"

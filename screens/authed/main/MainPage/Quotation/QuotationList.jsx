@@ -143,10 +143,10 @@ const QuotationList = () => {
       dataIndex: "productName",
       render: (text, record) => (
         <div className="productimgname">
-          <Link className="product-img">
+          <Link style={{ textDecoration: 'none' }}  className="product-img">
             <img alt="" src={record.image} />
           </Link>
-          <Link style={{ fontSize: "15px", marginLeft: "10px" }}>
+          <Link style={{ textDecoration: 'none' }}  style={{ fontSize: "15px", marginLeft: "10px" }}>
             {record.productName}
           </Link>
         </div>
@@ -190,10 +190,10 @@ const QuotationList = () => {
       title: "Action",
       render: () => (
         <>
-          <Link className="me-3" to="/authed/quotation/editquotation-quotation">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/quotation/editquotation-quotation">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="confirm-text" to="#" onClick={confirmText}>
+          <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="#" onClick={confirmText}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -210,7 +210,7 @@ const QuotationList = () => {
               <h6>Manage your Quotations</h6>
             </div>
             <div className="page-btn">
-              <Link
+              <Link style={{ textDecoration: 'none' }} 
                 to="/authed/quotation/addquotation-quotation"
                 className="btn btn-added"
               >

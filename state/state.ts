@@ -76,3 +76,9 @@ export const isSignedInSettingsState = entity(false);
 export const setIsSignedInSettingsState = (val) => {
   isSignedInSettingsState.set(val);
 };
+
+export const selectedProductState = entity({});
+
+export const setSelectedProductState = (val) => {
+  selectedProductState.set(val);
+};

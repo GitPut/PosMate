@@ -34,22 +34,22 @@ const SalesDetail = () => {
               <h2>Sale Detail : SL0101</h2>
               <ul>
                 <li>
-                  <Link to="#">
+                  <Link style={{ textDecoration: 'none' }}  to="#">
                     <img src={EditIcon} alt="img" />
                   </Link>
                 </li>
                 <li>
-                  <Link to="#">
+                  <Link style={{ textDecoration: 'none' }}  to="#">
                     <img src={Pdf} alt="img" />
                   </Link>
                 </li>
                 <li>
-                  <Link to="#">
+                  <Link style={{ textDecoration: 'none' }}  to="#">
                     <img src={Excel} alt="img" />
                   </Link>
                 </li>
                 <li>
-                  <Link to="#">
+                  <Link style={{ textDecoration: 'none' }}  to="#">
                     <img src={Printer} alt="img" />
                   </Link>
                 </li>
@@ -626,10 +626,10 @@ const SalesDetail = () => {
                 </div>
               </div>
               <div className="col-lg-12">
-                <Link to="#" className="btn btn-submit me-2">
+                <Link style={{ textDecoration: 'none' }}  to="#" className="btn btn-submit me-2">
                   Update
                 </Link>
-                <Link to="#" className="btn btn-cancel">
+                <Link style={{ textDecoration: 'none' }}  to="#" className="btn btn-cancel">
                   Cancel
                 </Link>
               </div>

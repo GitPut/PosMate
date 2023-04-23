@@ -109,10 +109,10 @@ const CustomerList = () => {
       dataIndex: "productName",
       render: (text, record) => (
         <div className="productimgname">
-          <Link style={{ width: "30%" }} className="product-img">
+          <Link style={{ textDecoration: 'none' }}  style={{ width: "30%" }} className="product-img">
             <img alt="" src={record.image} />
           </Link>
-          <Link style={{ fontSize: "15px", marginLeft: "10px" }}>
+          <Link style={{ textDecoration: 'none' }}  style={{ fontSize: "15px", marginLeft: "10px" }}>
             {record.customerName}
           </Link>
         </div>
@@ -149,10 +149,10 @@ const CustomerList = () => {
       title: "Action",
       render: () => (
         <>
-          <Link className="me-3" to="/authed/people/editcustomer-people">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/people/editcustomer-people">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="confirm-text" to="#" onClick={confirmText}>
+          <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="#" onClick={confirmText}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -169,7 +169,7 @@ const CustomerList = () => {
               <h6>Manage your Customers</h6>
             </div>
             <div className="page-btn">
-              <Link
+              <Link style={{ textDecoration: 'none' }} 
                 to="/authed/people/addcustomer-people"
                 className="btn btn-added"
               >

@@ -14,7 +14,7 @@ const TypiconIcons = () => {
                 <h3 className="page-title">Typicon Icon</h3>
                 <ul className="breadcrumb">
                   <li className="breadcrumb-item">
-                    <Link to="/authed/dashboard">Dashboard</Link>
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard">Dashboard</Link>
                   </li>
                   <li className="breadcrumb-item active">Typicon Icon</li>
                 </ul>
@@ -153,7 +153,7 @@ const TypiconIcons = () => {
                         <GitlabFilled />
                       </li>
                       <li>
-                        <LinkedinFilled />
+                        <Link style={{ textDecoration: 'none' }} edinFilled />
                       </li>
                       <li>
                         <FacebookFilled />

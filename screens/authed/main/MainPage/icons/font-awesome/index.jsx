@@ -13,7 +13,7 @@ const FontawesomeIcons = () => {
                 <h3 className="page-title">Fontawesome Icon</h3>
                 <ul className="breadcrumb">
                   <li className="breadcrumb-item">
-                    <Link to="/authed/dashboard">Dashboard</Link>
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard">Dashboard</Link>
                   </li>
                   <li className="breadcrumb-item active">Fontawesome</li>
                 </ul>

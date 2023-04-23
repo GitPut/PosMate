@@ -12,7 +12,7 @@ const BasicTable = () => {
               <h3 className="page-title">Basic Tables</h3>
               <ul className="breadcrumb">
                 <li className="breadcrumb-item">
-                  <Link to="/authed/dashboard">Dashboard</Link>
+                  <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard">Dashboard</Link>
                 </li>
                 <li className="breadcrumb-item active">Basic Tables</li>
               </ul>

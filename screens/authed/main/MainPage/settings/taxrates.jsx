@@ -111,7 +111,7 @@ const Taxrates = () => {
           >
             <img src={EditIcon} alt="img" />
           </a>
-          <Link className="me-3 confirm-text" to="#" onClick={confirmText}>
+          <Link style={{ textDecoration: 'none' }}  className="me-3 confirm-text" to="#" onClick={confirmText}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </div>

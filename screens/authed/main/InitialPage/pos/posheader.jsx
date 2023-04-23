@@ -34,15 +34,15 @@ const PosHeader = (props) => {
       <div className="header">
         {/* Logo */}
         <div className="header-left border-0">
-          <Link to="/authed/dashboard" className="logo">
+          <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard" className="logo">
             <img src={Logo} alt="" />
           </Link>
-          <Link to="/authed/dashboard" className="logo-small">
+          <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard" className="logo-small">
             <img src={SmallLogo} alt="" />
           </Link>
         </div>
         {/* /Logo */}
-        <Link id="mobile_btn" className="mobile_btn" to="#sidebar">
+        <Link style={{ textDecoration: 'none' }}  id="mobile_btn" className="mobile_btn" to="#sidebar">
           <span className="bar-icon">
             <span />
             <span />
@@ -54,7 +54,7 @@ const PosHeader = (props) => {
           {/* Search */}
           <li className="nav-item">
             <div className="top-nav-search">
-              <Link to="#" className="responsive-search">
+              <Link style={{ textDecoration: 'none' }}  to="#" className="responsive-search">
                 <i className="fa fa-search" />
               </Link>
               <form action="#">
@@ -69,8 +69,8 @@ const PosHeader = (props) => {
                     </span>
                   </div>
                 </div>
-                <Link
-                  
+                <Link style={{ textDecoration: 'none' }} 
+                  to="#"
                   className="btn"
                   id="searchdiv"
                   onClick={() => SetSearchBar(true)}
@@ -83,7 +83,7 @@ const PosHeader = (props) => {
           {/* /Search */}
           {/* Flag */}
           <li className="nav-item dropdown has-arrow flag-nav">
-            <Link
+            <Link style={{ textDecoration: 'none' }} 
               className="nav-link dropdown-toggle"
               data-bs-toggle="dropdown"
               to="#"
@@ -92,16 +92,16 @@ const PosHeader = (props) => {
               <img src={Flag} alt="" height={20} />
             </Link>
             <div className="dropdown-menu dropdown-menu-right">
-              <Link to="#" className="dropdown-item">
+              <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
                 <img src={FlagUS} alt="" height={16} /> English
               </Link>
-              <Link to="#" className="dropdown-item">
+              <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
                 <img src={FlagFR} alt="" height={16} /> French
               </Link>
-              <Link to="#" className="dropdown-item">
+              <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
                 <img src={FlagES} alt="" height={16} /> Spanish
               </Link>
-              <Link to="#" className="dropdown-item">
+              <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
                 <img src={FlagDE} alt="" height={16} /> German
               </Link>
             </div>
@@ -109,7 +109,7 @@ const PosHeader = (props) => {
           {/* /Flag */}
           {/* Notifications */}
           <li className="nav-item dropdown">
-            <Link
+            <Link style={{ textDecoration: 'none' }} 
               to="#"
               className="dropdown-toggle nav-link"
               data-bs-toggle="dropdown"
@@ -120,7 +120,7 @@ const PosHeader = (props) => {
             <div className="dropdown-menu notifications">
               <div className="topnav-dropdown-header">
                 <span className="notification-title">Notifications</span>
-                <Link to="#" className="clear-noti">
+                <Link style={{ textDecoration: 'none' }}  to="#" className="clear-noti">
                   {" "}
                   Clear All{" "}
                 </Link>
@@ -128,7 +128,7 @@ const PosHeader = (props) => {
               <div className="noti-content">
                 <ul className="notification-list">
                   <li className="notification-message">
-                    <Link to="/authed/activities">
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/activities">
                       <div className="media d-flex">
                         <span className="avatar flex-shrink-0">
                           <img alt="" src={Avatar2} />
@@ -151,7 +151,7 @@ const PosHeader = (props) => {
                     </Link>
                   </li>
                   <li className="notification-message">
-                    <Link to="/authed/activities">
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/activities">
                       <div className="media d-flex">
                         <span className="avatar flex-shrink-0">
                           <img alt="" src={Avatar3} />
@@ -174,7 +174,7 @@ const PosHeader = (props) => {
                     </Link>
                   </li>
                   <li className="notification-message">
-                    <Link to="/authed/activities">
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/activities">
                       <div className="media d-flex">
                         <span className="avatar flex-shrink-0">
                           <img alt="" src={Avatar6} />
@@ -200,7 +200,7 @@ const PosHeader = (props) => {
                     </Link>
                   </li>
                   <li className="notification-message">
-                    <Link to="/authed/activities">
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/activities">
                       <div className="media d-flex">
                         <span className="avatar flex-shrink-0">
                           <img alt="" src={Avatar17} />
@@ -223,7 +223,7 @@ const PosHeader = (props) => {
                     </Link>
                   </li>
                   <li className="notification-message">
-                    <Link to="/authed/activities">
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/activities">
                       <div className="media d-flex">
                         <span className="avatar flex-shrink-0">
                           <img alt="" src={Avatar13} />
@@ -248,13 +248,13 @@ const PosHeader = (props) => {
                 </ul>
               </div>
               <div className="topnav-dropdown-footer">
-                <Link to="/authed/activities">View all Notifications</Link>
+                <Link style={{ textDecoration: 'none' }}  to="/authed/activities">View all Notifications</Link>
               </div>
             </div>
           </li>
           {/* /Notifications */}
           <li className="nav-item dropdown has-arrow main-drop">
-            <Link
+            <Link style={{ textDecoration: 'none' }} 
               to="#"
               className="dropdown-toggle nav-link userset"
               data-bs-toggle="dropdown"
@@ -277,15 +277,15 @@ const PosHeader = (props) => {
                   </div>
                 </div>
                 <hr className="m-0" />
-                <Link className="dropdown-item" to="/authed/profile/user-profile">
+                <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="/authed/profile/user-profile">
                   <i className="me-2" data-feather="user" /> My Profile
                 </Link>
-                <Link className="dropdown-item" to="/authed/settings/generalsettings">
+                <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="/authed/settings/generalsettings">
                   <i className="me-2" data-feather="settings" />
                   Settings
                 </Link>
                 <hr className="m-0" />
-                <Link className="dropdown-item logout pb-0" to="/signIn">
+                <Link style={{ textDecoration: 'none' }}  className="dropdown-item logout pb-0" to="/signIn">
                   <img src={Logout} className="me-2" alt="img" />
                   Logout
                 </Link>
@@ -296,7 +296,7 @@ const PosHeader = (props) => {
         {/* /Header Menu */}
         {/* Mobile Menu */}
         <div className="dropdown mobile-user-menu">
-          <Link
+          <Link style={{ textDecoration: 'none' }} 
             to="#"
             className="nav-link dropdown-toggle"
             data-bs-toggle="dropdown"
@@ -305,13 +305,13 @@ const PosHeader = (props) => {
             <i className="fa fa-ellipsis-v" />
           </Link>
           <div className="dropdown-menu dropdown-menu-right">
-            <Link className="dropdown-item" to="/authed/profile/user-profile">
+            <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="/authed/profile/user-profile">
               My Profile
             </Link>
-            <Link className="dropdown-item" to="/authed/settings/generalsettings">
+            <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="/authed/settings/generalsettings">
               Settings
             </Link>
-            <Link className="dropdown-item" to="/signIn">
+            <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="/signIn">
               Logout
             </Link>
           </div>

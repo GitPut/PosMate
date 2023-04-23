@@ -70,7 +70,7 @@ const EditBrand = () =>{
             <button  className="btn btn-submit me-2">
               Submit
             </button>
-            <Link to="/brandlist" className="btn btn-cancel">
+            <Link style={{ textDecoration: 'none' }}  to="/brandlist" className="btn btn-cancel">
               Cancel
             </Link>
           </div>

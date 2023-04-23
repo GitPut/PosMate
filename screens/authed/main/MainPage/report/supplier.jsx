@@ -176,10 +176,10 @@ const supplier = () => {
       dataIndex: "Name",
       render: (text, record) => (
         <div className="productimgname">
-          <Link to="#" className="product-img">
+          <Link style={{ textDecoration: 'none' }}  to="#" className="product-img">
             <img src={record.image} alt="product" />
           </Link>
-          <Link to="#">{text}</Link>
+          <Link style={{ textDecoration: 'none' }}  to="#">{text}</Link>
         </div>
       ),
       sorter: (a, b) => a.Name.length - b.Name.length,

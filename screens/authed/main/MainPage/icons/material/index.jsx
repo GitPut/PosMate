@@ -12,7 +12,7 @@ const MaterialIcons = () => {
               <h3 className="page-title">Material Icon</h3>
               <ul className="breadcrumb">
                 <li className="breadcrumb-item">
-                  <Link to="/authed/dashboard">Dashboard</Link>
+                  <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard">Dashboard</Link>
                 </li>
                 <li className="breadcrumb-item active">Material Icon</li>
               </ul>
@@ -151,7 +151,7 @@ const MaterialIcons = () => {
                       <GitlabFilled />
                     </li>
                     <li>
-                      <LinkedinFilled />
+                      <Link style={{ textDecoration: 'none' }} edinFilled />
                     </li>
                     <li>
                       <FacebookFilled />

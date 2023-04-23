@@ -92,10 +92,10 @@ const EmailSettings = () => {
               </div>
               <div className="row">
                 <div className="col-lg-12">
-                  <Link to="#" className="btn btn-submit me-2">
+                  <Link style={{ textDecoration: 'none' }}  to="#" className="btn btn-submit me-2">
                     Submit
                   </Link>
-                  <Link to="#" className="btn btn-cancel">
+                  <Link style={{ textDecoration: 'none' }}  to="#" className="btn btn-cancel">
                     Cancel
                   </Link>
                 </div>

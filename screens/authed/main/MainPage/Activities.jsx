@@ -18,7 +18,7 @@ const Activities = () => {
             <ul className="activity-list">
               <li>
                 <div className="activity-user">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="/authed/profile/user-profile"
                     title=""
                     data-toggle="tooltip"
@@ -33,18 +33,18 @@ const Activities = () => {
                 </div>
                 <div className="activity-content">
                   <div className="timeline-content">
-                    <Link to="/authed/profile/user-profile" className="name">
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/profile/user-profile" className="name">
                       Elwis Mathew{" "}
                     </Link>{" "}
                     added a new product{" "}
-                    <Link to="#">Redmi Pro 7 Mobile</Link>
+                    <Link style={{ textDecoration: 'none' }}  to="#">Redmi Pro 7 Mobile</Link>
                     <span className="time">4 mins ago</span>
                   </div>
                 </div>
               </li>
               <li>
                 <div className="activity-user">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="/authed/profile/user-profile"
                     title=""
                     data-toggle="tooltip"
@@ -59,18 +59,18 @@ const Activities = () => {
                 </div>
                 <div className="activity-content">
                   <div className="timeline-content">
-                    <Link to="/authed/profile/user-profile" className="name">
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/profile/user-profile" className="name">
                       Elizabeth Olsen
                     </Link>{" "}
                     added a new product category{" "}
-                    <Link to="#">Desktop Computers</Link>
+                    <Link style={{ textDecoration: 'none' }}  to="#">Desktop Computers</Link>
                     <span className="time">6 mins ago</span>
                   </div>
                 </div>
               </li>
               <li>
                 <div className="activity-user">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="/authed/profile/user-profile"
                     title=""
                     data-toggle="tooltip"
@@ -86,11 +86,11 @@ const Activities = () => {
                 <div className="activity-content">
                   <div className="timeline-content">
                     <div className="timeline-content">
-                      <Link to="/authed/profile/user-profile" className="name">
+                      <Link style={{ textDecoration: 'none' }}  to="/authed/profile/user-profile" className="name">
                         William Smith
                       </Link>{" "}
                       added a new sales list for
-                      <Link to="#">January Month</Link>
+                      <Link style={{ textDecoration: 'none' }}  to="#">January Month</Link>
                       <span className="time">12 mins ago</span>
                     </div>
                   </div>
@@ -98,7 +98,7 @@ const Activities = () => {
               </li>
               <li>
                 <div className="activity-user">
-                  <Link
+                  <Link style={{ textDecoration: 'none' }} 
                     to="/authed/profile/user-profile"
                     title=""
                     data-toggle="tooltip"
@@ -113,11 +113,11 @@ const Activities = () => {
                 </div>
                 <div className="activity-content">
                   <div className="timeline-content">
-                    <Link to="/authed/profile/user-profile" className="name">
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/profile/user-profile" className="name">
                       Lesley Grauer
                     </Link>{" "}
                     has updated invoice{" "}
-                    <Link to="#">#987654</Link>
+                    <Link style={{ textDecoration: 'none' }}  to="#">#987654</Link>
                     <span className="time">4 mins ago</span>
                   </div>
                 </div>

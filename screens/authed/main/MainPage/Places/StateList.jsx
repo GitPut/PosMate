@@ -101,10 +101,10 @@ const StateList = () => {
       title: "Action",
       render: () => (
         <>
-          <Link className="me-3" to="/authed/places/editstate-places">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/places/editstate-places">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="confirm-text" to="#" onClick={confirmText}>
+          <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="#" onClick={confirmText}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -121,7 +121,7 @@ const StateList = () => {
               <h6>Manage your State</h6>
             </div>
             <div className="page-btn">
-              <Link to="/authed/places/newstate-places" className="btn btn-added">
+              <Link style={{ textDecoration: 'none' }}  to="/authed/places/newstate-places" className="btn btn-added">
                 <img src={PlusIcon} alt="img" className="me-1" />
                 Add State
               </Link>

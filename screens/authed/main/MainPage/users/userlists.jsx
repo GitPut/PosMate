@@ -189,10 +189,10 @@ const UserLists = () => {
       title: "Action",
       render: (text, record) => (
         <>
-          <Link className="me-3" to="newuseredit">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="newuseredit">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="me-3 confirm-text" to="#">
+          <Link style={{ textDecoration: 'none' }}  className="me-3 confirm-text" to="#">
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -209,7 +209,7 @@ const UserLists = () => {
             <h6>Manage your User</h6>
           </div>
           <div className="page-btn">
-            <Link to="/authed/people/adduser-people" className="btn btn-added">
+            <Link style={{ textDecoration: 'none' }}  to="/authed/people/adduser-people" className="btn btn-added">
               <img src={PlusIcon} alt="img" className="me-2" />
               Add User
             </Link>

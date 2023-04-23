@@ -119,7 +119,7 @@ const SignUp = (props) => {
                   <div className="signinform text-center">
                     <h4>
                       Already a user?{" "}
-                      <Link to="/signIn" className="hover-a">
+                      <Link style={{ textDecoration: 'none' }}  to="/signIn" className="hover-a">
                         Sign In
                       </Link>
                     </h4>

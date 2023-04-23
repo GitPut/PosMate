@@ -183,10 +183,10 @@ const ExpenseCategory = () => {
       title: "Action",
       render: () => (
         <>
-          <Link className="me-3" to="/authed/expense/editexpense-expense">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/expense/editexpense-expense">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="confirm-text" to="#" onClick={confirmText}>
+          <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="#" onClick={confirmText}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -204,7 +204,7 @@ const ExpenseCategory = () => {
               <h6>Manage your Purchases</h6>
             </div>
             <div className="page-btn">
-              <Link
+              <Link style={{ textDecoration: 'none' }} 
                 to="/authed/expense/addexpense-expense"
                 className="btn btn-added"
               >

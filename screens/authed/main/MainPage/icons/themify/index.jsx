@@ -82,7 +82,7 @@ const ThemifyIcons = () => {
                 <h3 className="page-title">Themify Icon</h3>
                 <ul className="breadcrumb">
                   <li className="breadcrumb-item">
-                    <Link to="/authed/dashboard">Dashboard</Link>
+                    <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard">Dashboard</Link>
                   </li>
                   <li className="breadcrumb-item active">Themify Icon</li>
                 </ul>
@@ -568,7 +568,7 @@ const ThemifyIcons = () => {
                         <MediumOutlined />
                       </li>
                       <li>
-                        <LinkedinOutlined />
+                        <Link style={{ textDecoration: 'none' }} edinOutlined />
                       </li>
                       <li>
                         <GooglePlusOutlined />

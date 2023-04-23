@@ -38,7 +38,7 @@ const NewCountry = () => {
                                     <a  className="btn btn-submit me-2">
                                         Submit
                                     </a>
-                                    <Link to="/countrieslist" className="btn btn-cancel">
+                                    <Link style={{ textDecoration: 'none' }}  to="/countrieslist" className="btn btn-cancel">
                                         Cancel
                                     </Link>
                                 </div>

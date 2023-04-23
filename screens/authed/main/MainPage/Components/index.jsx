@@ -861,10 +861,10 @@ const ComponentsPage = () => {
                                                 Some quick example text to build on the card title and make up
                                                 the bulk of the card's content.
                                             </p>
-                                            <Link className="card-link" to="">
+                                            <Link style={{ textDecoration: 'none' }}  className="card-link" to="">
                                                 Card link
                                             </Link>
-                                            <Link className="card-link" to="">
+                                            <Link style={{ textDecoration: 'none' }}  className="card-link" to="">
                                                 Another link
                                             </Link>
                                         </div>
@@ -885,7 +885,7 @@ const ComponentsPage = () => {
                                                 Some quick example text to build on the card title and make up
                                                 the bulk of the card's content.
                                             </p>
-                                            <Link className="btn btn-primary" to="">
+                                            <Link style={{ textDecoration: 'none' }}  className="btn btn-primary" to="">
                                                 Go somewhere
                                             </Link>
                                         </div>
@@ -1168,14 +1168,14 @@ const ComponentsPage = () => {
                                             Action
                                         </button>
                                         <div className="dropdown-menu">
-                                            <Link className="dropdown-item" to="">
+                                            <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="">
                                                 Action
                                             </Link>
-                                            <Link className="dropdown-item" to="">
+                                            <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="">
                                                 Another action
                                             </Link>
                                             <div className="dropdown-divider" />
-                                            <Link className="dropdown-item" to="">
+                                            <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="">
                                                 Separated link
                                             </Link>
                                         </div>
@@ -1191,14 +1191,14 @@ const ComponentsPage = () => {
                                             Action
                                         </button>
                                         <div className="dropdown-menu">
-                                            <Link className="dropdown-item" to="">
+                                            <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="">
                                                 Action
                                             </Link>
-                                            <Link className="dropdown-item" to="">
+                                            <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="">
                                                 Another action
                                             </Link>
                                             <div className="dropdown-divider" />
-                                            <Link className="dropdown-item" to="">
+                                            <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="">
                                                 Separated link
                                             </Link>
                                         </div>

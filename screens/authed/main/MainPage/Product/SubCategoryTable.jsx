@@ -109,7 +109,7 @@ const SubCategoryList = () => {
       dataIndex: "image",
       render: (text, record) => (
         <div className="productimgname">
-          <Link className="product-img">
+          <Link style={{ textDecoration: 'none' }}  className="product-img">
             <img alt="" src={record.image} />
           </Link>
         </div>
@@ -147,10 +147,10 @@ const SubCategoryList = () => {
       render: () => (
         <>
           <>
-            <Link className="me-3" to="/authed/product/editsubcategory-product">
+            <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/product/editsubcategory-product">
               <img src={EditIcon} alt="img" />
             </Link>
-            <Link className="confirm-text" >
+            <Link style={{ textDecoration: 'none' }}  className="confirm-text" >
               <img src={DeleteIcon} alt="img" />
             </Link>
           </>
@@ -169,7 +169,7 @@ const SubCategoryList = () => {
               <h6>View/Search product Category</h6>
             </div>
             <div className="page-btn">
-              <Link
+              <Link style={{ textDecoration: 'none' }} 
                 to="/authed/product/addsubcategory-product"
                 className="btn btn-added"
               >

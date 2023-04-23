@@ -113,7 +113,7 @@ const EditUser = () => {
                             <img src={Profile2} alt="img" />
                           </div>
                           <div className="productviewscontent">
-                            <Link className="hideset" onClick={deleteImage}>
+                            <Link style={{ textDecoration: 'none' }}  className="hideset" onClick={deleteImage}>
                               <i className="fa fa-trash-alt" />                
                             </Link>
                           </div>

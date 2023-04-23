@@ -172,10 +172,10 @@ const SalesReturnList = () => {
       dataIndex: "productName",
       render: (text, record) => (
         <div className="productimgname">
-          <Link className="product-img">
+          <Link style={{ textDecoration: 'none' }}  className="product-img">
             <img alt="" src={record.image} />
           </Link>
-          <Link style={{ fontSize: "15px", marginLeft: "10px" }}>
+          <Link style={{ textDecoration: 'none' }}  style={{ fontSize: "15px", marginLeft: "10px" }}>
             {record.productName}
           </Link>
         </div>
@@ -247,10 +247,10 @@ const SalesReturnList = () => {
       title: "Action",
       render: () => (
         <>
-          <Link className="me-3" to="/authed/return/editsalesreturn-return">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/return/editsalesreturn-return">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="confirm-text" to="#" onClick={confirmText}>
+          <Link style={{ textDecoration: 'none' }}  className="confirm-text" to="#" onClick={confirmText}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -267,7 +267,7 @@ const SalesReturnList = () => {
               <h6>Manage your Returns</h6>
             </div>
             <div className="page-btn">
-              <Link
+              <Link style={{ textDecoration: 'none' }} 
                 to="/authed/return/addsalesreturn-return"
                 className="btn btn-added"
               >

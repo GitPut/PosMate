@@ -34,7 +34,7 @@ const Tabletop = ({inputfilter,togglefilter}) => {
             type="text"
             placeholder="Search..."
           />
-          <Link to="#" className="btn btn-searchset">
+          <Link style={{ textDecoration: 'none' }}  to="#" className="btn btn-searchset">
             <img src={Search} alt="img" />
           </Link>
         </div>

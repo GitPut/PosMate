@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import Table from "../../EntryFile/datatable"
-import Tabletop from "../../EntryFile/tabletop"
+import Table from "../../EntryFile/datatable";
+import Tabletop from "../../EntryFile/tabletop";
 import {
   PlusIcon,
   MacbookIcon,
@@ -17,12 +17,17 @@ import {
   EditIcon,
   DeleteIcon,
   search_whites,
+  DuplicateIcon,
 } from "../../EntryFile/imagePath";
 import Select2 from "react-select2-wrapper";
 import "react-select2-wrapper/css/select2.css";
+import { setSelectedProductState, userStoreState } from "state/state";
+import { Button } from "react-native";
+import { updateData } from "state/firebaseFunctions";
 
 const ProductList = () => {
-  const [inputfilter, setInputfilter] = useState(false);  
+  const catalog = userStoreState.use();
+  const [inputfilter, setInputfilter] = useState(false);
 
   //select2
   const options = [
@@ -47,12 +52,12 @@ const ProductList = () => {
     { id: 1, text: "Price", text: "Price" },
     { id: 2, text: "150.00", text: "150.00" },
   ];
-  
 
-  const togglefilter = (value) => {    
-    setInputfilter(value);  
+  const togglefilter = (value) => {
+    setInputfilter(value);
   };
-  const confirmText = () => {
+  const confirmText = (props) => {
+    console.log("COnfirm Text: ", props);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -65,162 +70,48 @@ const ProductList = () => {
       cancelButtonClass: "btn btn-danger ml-1",
       buttonsStyling: !1,
     }).then(function (t) {
-      t.value &&
+      if (t.value) {
         Swal.fire({
           type: "success",
           title: "Deleted!",
           text: "Your file has been deleted.",
           confirmButtonClass: "btn btn-success",
         });
+        const localCatalog = structuredClone(catalog);
+        if (localCatalog.products.length > 1) {
+          localCatalog.products.splice(props.id - 1, 1);
+        } else {
+          localCatalog.products = [];
+        }
+
+        updateData(localCatalog.categories, localCatalog.products);
+      }
     });
   };
 
-  const [data] = useState([
-    {
-      id: 1,
-      image: MacbookIcon,
-      productName: "Macbook pro",
-      sku: "PT001",
-      category: "Computer",
-      brand: "N/D",
-      price: "1500.00",
-      unit: "pc",
-      qty: "100.00",
-      createdBy: "Admin",
-    },
-    {
-      id: 2,
-      image: OrangeImage,
-      productName: "Orange",
-      sku: "PT002",
-      category: "Fruits",
-      brand: "N/D",
-      price: "20.00",
-      unit: "pc",
-      qty: "100.00",
-      createdBy: "Admin",
-    },
-    {
-      id: 3,
-      image: PineappleImage,
-      productName: "Pinapple",
-      sku: "PT003",
-      category: "Fruits",
-      brand: "N/D",
-      price: "10.00",
-      unit: "pc",
-      qty: "100.00",
-      createdBy: "Admin",
-    },
-    {
-      id: 4,
-      image: StawberryImage,
-      productName: "Strawberry",
-      sku: "PT004",
-      category: "Fruits",
-      brand: "N/D",
-      price: "150.00",
-      unit: "pc",
-      qty: "100.00",
-      createdBy: "Admin",
-    },
-    {
-      id: 5,
-      image: AvocatImage,
-      productName: "Avocat",
-      sku: "PT005",
-      category: "Fruits",
-      brand: "N/D",
-      price: "1 500.00",
-      unit: "pc",
-      qty: "100.00",
-      createdBy: "Admin",
-    },
-    {
-      id: 6,
-      image: MacbookIcon,
-      productName: "Macbook pro",
-      sku: "PT006",
-      category: "Computer",
-      brand: "N/D",
-      price: "1500.00",
-      unit: "pc",
-      qty: "100.00",
-      createdBy: "Admin",
-    },
-    {
-      id: 7,
-      image: EarpodIcon,
-      productName: "Apple Earpods",
-      sku: "PT007",
-      category: "Computer",
-      brand: "N/D",
-      price: "1500.00",
-      unit: "pc",
-      qty: "100.00",
-      createdBy: "Admin",
-    },
-    {
-      id: 8,
-      image: IphoneIcon,
-      productName: "iPhone 11",
-      sku: "PT008",
-      category: "Computer",
-      brand: "N/D",
-      price: "1500.00",
-      unit: "pc",
-      qty: "100.00",
-      createdBy: "Admin",
-    },
-    {
-      id: 9,
-      image: SamsungIcon,
-      productName: "Samsung",
-      sku: "PT009",
-      category: "Computer",
-      brand: "N/D",
-      price: "120.00",
-      unit: "pc",
-      qty: "100.00",
-      createdBy: "Admin",
-    },
-    {
-      id: 10,
-      image: EarpodIcon,
-      productName: "Banana",
-      sku: "PT0010",
-      category: "Computer",
-      brand: "N/D",
-      price: "4500.00",
-      unit: "pc",
-      qty: "100.00",
-      createdBy: "Admin",
-    },
-    {
-      id: 11,
-      image: MacbookIcon,
-      productName: "Macbook pro",
-      sku: "PT0011",
-      category: "Computer",
-      brand: "N/D",
-      price: "1550.00",
-      unit: "pc",
-      qty: "100.00",
-      createdBy: "Admin",
-    },
-    {
-      id: 12,
-      image: AvocatImage,
-      productName: "Avocat",
-      sku: "PT0012",
-      category: "Computer",
-      brand: "N/D",
-      price: "1505.00",
-      unit: "pc",
-      qty: "100.00",
-      createdBy: "Admin",
-    },
-  ]);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    if (catalog.products.length > 0) {
+      catalog.products.map((product, index) => {
+        setData((prev) => [
+          ...prev,
+          {
+            id: index + 1,
+            image: AvocatImage,
+            productName: product.name,
+            // sku: "PT0012",
+            category: product.catagory ? product.catagory : product.category,
+            // brand: "N/D",
+            price: product.price,
+            // unit: "N/D",
+            // qty: "N/D",
+            createdBy: "Admin",
+          },
+        ]);
+      });
+    }
+  }, []);
 
   const columns = [
     {
@@ -228,46 +119,66 @@ const ProductList = () => {
       dataIndex: "productName",
       render: (text, record) => (
         <div className="productimgname">
-          <Link className="product-img">
+          <Link
+            style={{ textDecoration: "none" }}
+            className="product-img"
+            to="/authed/product/editproduct-product"
+            onClick={() =>
+              setSelectedProductState({
+                existingProduct: catalog.products[record.id - 1],
+                existingProductIndex: record.id - 1,
+              })
+            }
+          >
             <img alt="" src={record.image} />
           </Link>
-          <Link style={{ fontSize: "15px", marginLeft: "10px" }}>
+          <Link
+            style={{ textDecoration: "none" }}
+            style={{ fontSize: "15px", marginLeft: "10px" }}
+            to="/authed/product/editproduct-product"
+            onClick={() =>
+              setSelectedProductState({
+                existingProduct: catalog.products[record.id - 1],
+                existingProductIndex: record.id - 1,
+              })
+            }
+          >
             {record.productName}
           </Link>
         </div>
       ),
       sorter: (a, b) => a.productName.length - b.productName.length,
     },
-    {
-      title: "SKU",
-      dataIndex: "sku",
-      sorter: (a, b) => a.sku.length - b.sku.length,
-    },
+    // {
+    //   title: "SKU",
+    //   dataIndex: "sku",
+    //   sorter: (a, b) => a.sku.length - b.sku.length,
+    // },
     {
       title: "Category",
       dataIndex: "category",
       sorter: (a, b) => a.category.length - b.category.length,
     },
-    {
-      title: "Brand",
-      dataIndex: "brand",
-      sorter: (a, b) => a.brand.length - b.brand.length,
-    },
+    // {
+    //   title: "Brand",
+    //   dataIndex: "brand",
+    //   sorter: (a, b) => a.brand.length - b.brand.length,
+    // },
     {
       title: "Price",
       dataIndex: "price",
       sorter: (a, b) => a.price.length - b.price.length,
     },
-    {
-      title: "Unit",
-      dataIndex: "unit",
-      sorter: (a, b) => a.unit.length - b.unit.length,
-    },
-    {
-      title: "Qty",
-      dataIndex: "qty",
-      sorter: (a, b) => a.qty.length - b.qty.length,
-    },
+    // {
+    //   title: "Unit",
+    //   dataIndex: "unit",
+    //   sorter: (a, b) => a.unit.length - b.unit.length,
+    // },
+    // {
+    //   title: "Qty",
+    //   dataIndex: "qty",
+    //   sorter: (a, b) => a.qty.length - b.qty.length,
+    // },
     {
       title: "Created By",
       dataIndex: "createdBy",
@@ -275,16 +186,44 @@ const ProductList = () => {
     },
     {
       title: "Action",
-      render: () => (
+      render: (props) => (
         <>
           <>
-            <Link className="me-3" to="/authed/product/product-details">
-              <img src={EyeIcon} alt="img" />
+            <Link
+              style={{ textDecoration: "none" }}
+              className="me-3"
+              // to="/authed/product/product-details"
+              onClick={() => {
+                let copy = structuredClone(catalog.products[props.id - 1]);
+                copy.name = copy.name + " Copy";
+                copy.id = Math.random().toString(36).substr(2, 9);
+                updateData(
+                  [...catalog.categories],
+                  [...catalog.products, copy]
+                );
+              }}
+            >
+              <img src={DuplicateIcon} alt="img" />
             </Link>
-            <Link className="me-3" to="/authed/product/editproduct-product">
+            <Link
+              style={{ textDecoration: "none" }}
+              className="me-3"
+              to="/authed/product/editproduct-product"
+              onClick={() =>
+                setSelectedProductState({
+                  existingProduct: catalog.products[props.id - 1],
+                  existingProductIndex: props.id - 1,
+                })
+              }
+            >
               <img src={EditIcon} alt="img" />
             </Link>
-            <Link className="confirm-text" to="#" onClick={confirmText}>
+            <Link
+              style={{ textDecoration: "none" }}
+              className="confirm-text"
+              to="#"
+              onClick={() => confirmText(props)}
+            >
               <img src={DeleteIcon} alt="img" />
             </Link>
           </>
@@ -304,6 +243,7 @@ const ProductList = () => {
             </div>
             <div className="page-btn">
               <Link
+                style={{ textDecoration: "none" }}
                 to="/authed/product/addproduct-product"
                 className="btn btn-added"
               >
@@ -315,15 +255,12 @@ const ProductList = () => {
           {/* /product list */}
           <div className="card">
             <div className="card-body">
-            <Tabletop 
-              inputfilter={inputfilter}
-              togglefilter={togglefilter}
-            />
+              <Tabletop inputfilter={inputfilter} togglefilter={togglefilter} />
               {/* /Filter */}
               <div
-                className={`card mb-0 ${ inputfilter ? "toggleCls" : ""}`}
+                className={`card mb-0 ${inputfilter ? "toggleCls" : ""}`}
                 id="filter_inputs"
-                style={{ display: inputfilter ? "block" :"none"}}
+                style={{ display: inputfilter ? "block" : "none" }}
               >
                 <div className="card-body pb-0">
                   <div className="row">
@@ -398,10 +335,7 @@ const ProductList = () => {
               </div>
               {/* /Filter */}
               <div className="table-responsive">
-                <Table                                    
-                  columns={columns}
-                  dataSource={data}                 
-                />
+                <Table columns={columns} dataSource={data} />
               </div>
             </div>
           </div>

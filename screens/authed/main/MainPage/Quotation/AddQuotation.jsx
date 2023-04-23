@@ -64,10 +64,10 @@ const AddQuotation = () => {
       dataIndex: "product",
       render: (text, record) => (
         <div className="productimgname">
-          <Link className="product-img">
+          <Link style={{ textDecoration: 'none' }}  className="product-img">
             <img alt="" src={record.image} />
           </Link>
-          <Link style={{ fontSize: "15px", marginLeft: "10px" }}>
+          <Link style={{ textDecoration: 'none' }}  style={{ fontSize: "15px", marginLeft: "10px" }}>
             {record.product}
           </Link>
         </div>
@@ -100,7 +100,7 @@ const AddQuotation = () => {
     {
       render: () => (
         <>
-          <Link className="delete-set" href="#" onClick={deleteRow}>
+          <Link style={{ textDecoration: 'none' }}  className="delete-set" href="#" onClick={deleteRow}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </>
@@ -136,7 +136,7 @@ const AddQuotation = () => {
                       </div>
                       <div className="col-lg-2 col-sm-2 col-2 ps-0">
                         <div className="add-icon">
-                          <Link to="#">
+                          <Link style={{ textDecoration: 'none' }}  to="#">
                             <img src={Plus} alt="img" />
                           </Link>
                         </div>

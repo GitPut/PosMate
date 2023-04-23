@@ -83,10 +83,10 @@ const GroupPermission = () => {
       className: "text-end",
       render: (text, record) => (
         <div className="text-end">
-          <Link className="me-3" to="/authed/settings/editpermission">
+          <Link style={{ textDecoration: 'none' }}  className="me-3" to="/authed/settings/editpermission">
             <img src={EditIcon} alt="img" />
           </Link>
-          <Link className="me-3 confirm-text" to="#" onClick={confirmText}>
+          <Link style={{ textDecoration: 'none' }}  className="me-3 confirm-text" to="#" onClick={confirmText}>
             <img src={DeleteIcon} alt="img" />
           </Link>
         </div>
@@ -104,7 +104,7 @@ const GroupPermission = () => {
               <h6>Manage Group Permissions</h6>
             </div>
             <div className="page-btn">
-              <Link
+              <Link style={{ textDecoration: 'none' }} 
                 to="/authed/settings/createpermission"
                 className="btn btn-added"
               >
