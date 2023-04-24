@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "../../EntryFile/datatable";
 import { Link } from "react-router-dom";
 import DatePicker from "react-datepicker";
@@ -22,149 +22,121 @@ import {
   Product8,
   Product9,
 } from "../../EntryFile/imagePath";
+import { storeDetailState, woocommerceState } from "state/state";
+import { auth, db } from "state/firebaseConfig";
+const tz = require("moment-timezone");
 
 const Sales = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [startDate1, setStartDate1] = useState(new Date());
   const [inputfilter, setInputfilter] = useState(false);
+  const storeDetails = storeDetailState.use();
 
   const togglefilter = (value) => {
     setInputfilter(value);
   };
-  const [data] = useState([
-    {
-      number: "INV001",
-      name: "Thomas21",
-      date: "29-03-2022",
-      Amount: 1500,
-      Paid: 1500,
-      due: 1500,
-      Status: "Paid",
-    },
-    {
-      number: "INV002",
-      name: "504Benjamin",
-      date: "29-03-2022",
-      Amount: 10,
-      Paid: 10,
-      due: 10,
-      Status: "Overdue",
-    },
-    {
-      number: "INV003",
-      name: "James 524",
-      date: "29-03-2022",
-      Amount: 10,
-      Paid: 10,
-      due: 10,
-      Status: "Overdue",
-    },
-    {
-      number: "INV004",
-      name: "Bruklin2022",
-      date: "29-03-2022",
-      Amount: 10,
-      Paid: 10,
-      due: 10,
-      Status: "Paid",
-    },
-    {
-      number: "INV005",
-      name: "BeverlyWIN25",
-      date: "29-03-2022",
-      Amount: 150,
-      Paid: 150,
-      due: 150,
-      Status: "Overdue",
-    },
-    {
-      number: "INV006",
-      name: "BHR256",
-      date: "29-03-2022",
-      Amount: 150,
-      Paid: 150,
-      due: 150,
-      Status: "Paid",
-    },
-    {
-      number: "INV007",
-      name: "BHR256",
-      date: "29-03-2022",
-      Amount: 150,
-      Paid: 150,
-      due: 150,
-      Status: "Paid",
-    },
-    {
-      number: "INV008",
-      name: "BHR256",
-      date: "29-03-2022",
-      Amount: 150,
-      Paid: 150,
-      due: 150,
-      Status: "Unpaid",
-    },
-    {
-      number: "INV009",
-      name: "BHR256",
-      date: "29-03-2022",
-      Amount: 150,
-      Paid: 150,
-      due: 150,
-      Status: "Unpaid",
-    },
-    {
-      number: "INV0010",
-      name: "BHR256",
-      date: "29-03-2022",
-      Amount: 150,
-      Paid: 150,
-      due: 150,
-      Status: "Unpaid",
-    },
-    {
-      number: "INV007",
-      name: "BHR256",
-      date: "29-03-2022",
-      Amount: 150,
-      Paid: 150,
-      due: 150,
-      Status: "Paid",
-    },
-    {
-      number: "INV008",
-      name: "BHR256",
-      date: "29-03-2022",
-      Amount: 150,
-      Paid: 150,
-      due: 150,
-      Status: "Unpaid",
-    },
-    {
-      number: "INV009",
-      name: "BHR256",
-      date: "29-03-2022",
-      Amount: 150,
-      Paid: 150,
-      due: 150,
-      Status: "Unpaid",
-    },
-    {
-      number: "INV0010",
-      name: "BHR256",
-      date: "29-03-2022",
-      Amount: 150,
-      Paid: 150,
-      due: 150,
-      Status: "Unpaid",
-    },
-  ]);
+
+  const [transList, settransList] = useState([]);
+  const wooCredentials = woocommerceState.use()
+
+  const getDate = (receipt) => {
+    if (receipt.date_created) {
+      const dateString = receipt.date_created;
+
+      const newDate = new Date(dateString + "Z");
+
+      const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      const result = tz(newDate)
+        .tz(targetTimezone, true)
+        .format("YYYY-MM-DD HH:mm a");
+
+      return result;
+    } else if (receipt.date) {
+      const newDate = new Date(receipt.date.seconds * 1000);
+      const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      const result = tz(newDate)
+        .tz(targetTimezone, true)
+        .format("YYYY-MM-DD HH:mm a");
+
+      return result;
+    }
+  };
+
+  useEffect(() => {
+    try {
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .collection("transList")
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            // console.log(doc.id, " => ", doc.data());
+            settransList((prevState) => [...prevState,
+            {
+              number: doc.data().transNum,
+              name: doc.data().customer?.name ? doc.data().customer?.name : "N/A",
+              date: getDate(doc.data()),
+              Amount: doc.data().total,
+              System: 'POS',
+              Status: doc.data().method === "deliveryOrder" ? "Delivery" : "Pickup",
+            }
+            ]);
+          });
+        });
+    } catch {
+      console.log("Error occured retrieving tranasctions");
+    }
+
+    if (wooCredentials.useWoocommerce === true) {
+      try {
+        const WooCommerceAPI = require("woocommerce-api");
+
+        const WooCommerce = new WooCommerceAPI({
+          url: wooCredentials.apiUrl,
+          consumerKey: wooCredentials.ck,
+          consumerSecret: wooCredentials.cs,
+          wpAPI: true,
+          version: "wc/v1",
+        });
+
+        let page = 1;
+        let orders = [];
+
+        const getOrders = async () => {
+          const response = await WooCommerce.getAsync(
+            `orders?page=${page}&per_page=100`
+          );
+          const data = JSON.parse(response.body);
+          orders = [...orders, ...data];
+          if (data.length === 100) {
+            page++;
+            getOrders();
+          } else {
+            // console.log(orders);
+          }
+        };
+
+        getOrders()
+          .then(() => settransList((prevState) => [...prevState, ...orders]))
+          .catch((e) => console.log("error has occured"));
+      } catch {
+        console.log("Something occured with woo");
+      }
+    }
+  }, []);
+
+
 
   const columns = [
     {
       title: "Invoice number",
       dataIndex: "number",
-      sorter: (a, b) => a.Sku.length - b.Sku.length,
+      sorter: (a, b) => a.number.length - b.number.length,
+      //make text uppercase
+      render: (text, record) => (<>{text?.toUpperCase()}</>)
     },
     {
       title: "Customer name",
@@ -182,28 +154,20 @@ const Sales = () => {
       sorter: (a, b) => a.Price.length - b.Price.length,
     },
     {
-      title: "Paid",
-      dataIndex: "Paid",
-      sorter: (a, b) => a.Unit.length - b.Unit.length,
-    },
-    {
-      title: "Amount due",
-      dataIndex: "due",
-      sorter: (a, b) => a.Instock.length - b.Instock.length,
+      title: "System Type",
+      dataIndex: "System",
+      sorter: (a, b) => a.System.length - b.System.length,
     },
     {
       title: "Status",
       dataIndex: "Status",
       render: (text, record) => (
         <>
-          {text === "Paid" && (
+          {text === "Delivery" && (
             <span className="badges bg-lightgreen">{text}</span>
           )}
-          {text === "Unpaid" && (
+          {text === "Pickup" && (
             <span className="badges bg-lightgrey">{text}</span>
-          )}
-          {text === "Overdue" && (
-            <span className="badges bg-lightred">{text}</span>
           )}
         </>
       ),
@@ -227,9 +191,8 @@ const Sales = () => {
               <div className="search-set">
                 <div className="search-path">
                   <a
-                    className={` btn ${
-                      inputfilter ? "btn-filter setclose" : "btn-filter"
-                    } `}
+                    className={` btn ${inputfilter ? "btn-filter setclose" : "btn-filter"
+                      } `}
                     id="filter_search"
                     onClick={() => togglefilter(!inputfilter)}
                   >
@@ -328,7 +291,7 @@ const Sales = () => {
             </div>
             {/* /Filter */}
             <div className="table-responsive">
-              <Table columns={columns} dataSource={data} />
+              <Table columns={columns} dataSource={transList} />
             </div>
           </div>
         </div>

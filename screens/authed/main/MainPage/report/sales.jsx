@@ -13,7 +13,7 @@ import {
   search_whites,
   Search,
   MacbookIcon,
-  OrangeImage,
+  OrangeImage, 
   PineappleImage,
   StawberryImage,
   AvocatImage,

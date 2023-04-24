@@ -49,85 +49,88 @@ const Sidebar = (props) => {
   }, [pathname]);
 
   return (
-    <div className="sidebar" id="sidebar">      
-        <Scrollbars>
-          <div className="sidebar-inner slimscroll">
-            <div
-              id="sidebar-menu"
-              className="sidebar-menu"
-              onMouseLeave={expandMenu}
-              onMouseOver={expandMenuOpen}
-            >
-              <ul>
-                <li className={pathname.includes("dashboard") ? "active" : ""}>
-                  <Link style={{ textDecoration: 'none' }} 
-                    to="/authed/dashboard"
-                    onClick={() => toggleSidebar(isSideMenu == "" ? "" : "")}
-                  >
-                    <img src={Dashboard} alt="img" />
-                    <span>Dashboard</span>
-                  </Link>
-                </li>
-                <li className="submenu">
-                  <a
-                  style={{ textDecoration: 'none' }} 
-                    className={
-                      pathname.includes("/authed/product")
-                        ? "active subdrop"
-                        : "" || isSideMenu == "product"
+    <div className="sidebar" id="sidebar">
+      <Scrollbars>
+        <div className="sidebar-inner slimscroll"
+          style={{ height: '100%' }}
+        >
+          <div
+            id="sidebar-menu"
+            className="sidebar-menu"
+            onMouseLeave={expandMenu}
+            onMouseOver={expandMenuOpen}
+            style={{ height: '100%' }}
+          >
+            <ul>
+              <li className={pathname.includes("dashboard") ? "active" : ""}>
+                <Link style={{ textDecoration: 'none' }}
+                  to="/authed/dashboard"
+                  onClick={() => toggleSidebar(isSideMenu == "" ? "" : "")}
+                >
+                  <img src={Dashboard} alt="img" />
+                  <span>Dashboard</span>
+                </Link>
+              </li>
+              <li className="submenu">
+                <a
+                  style={{ textDecoration: 'none' }}
+                  className={
+                    pathname.includes("/authed/product")
+                      ? "active subdrop"
+                      : "" || isSideMenu == "product"
                         ? "subdrop active"
                         : ""
-                    }
-                    onClick={() =>
-                      toggleSidebar(isSideMenu == "product" ? "" : "product")
-                    }
-                  >
-                    <img src={Product} alt="img" />
-                    <span> Product </span> <span className="menu-arrow" />
-                  </a>
-                  {isSideMenu == "product" ? (
-                    <ul className="sidebar-ul">
-                      <li>
-                        <Link style={{ textDecoration: 'none' }} 
-                          className={
-                            pathname.includes("productlist-") ? "active" : ""
-                          }
-                          to="/authed/product/productlist-product"
-                        >
-                          Product List
-                        </Link>
-                      </li>
-                      <li>
-                        <Link style={{ textDecoration: 'none' }} 
-                          className={
-                            pathname.includes("addproduct-") ? "active" : ""
-                          }
-                          to="/authed/product/addproduct-product"
-                        >
-                          Add Product
-                        </Link>
-                      </li>
-                      <li>
-                        <Link style={{ textDecoration: 'none' }} 
-                          className={
-                            pathname.includes("categorylist-") ? "active" : ""
-                          }
-                          to="/authed/product/categorylist-product"
-                        >
-                          Category List
-                        </Link>
-                      </li>
-                      <li>
-                        <Link style={{ textDecoration: 'none' }} 
-                          className={
-                            pathname.includes("addcategory-") ? "active" : ""
-                          }
-                          to="/authed/product/addcategory-product"
-                        >
-                          Add Category{" "}
-                        </Link>
-                      </li>
-                      {/* <li>
+                  }
+                  onClick={() =>
+                    toggleSidebar(isSideMenu == "product" ? "" : "product")
+                  }
+                >
+                  <img src={Product} alt="img" />
+                  <span> Product </span> <span className="menu-arrow" />
+                </a>
+                {isSideMenu == "product" ? (
+                  <ul className="sidebar-ul">
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        className={
+                          pathname.includes("productlist-") ? "active" : ""
+                        }
+                        to="/authed/product/productlist-product"
+                      >
+                        Product List
+                      </Link>
+                    </li>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        className={
+                          pathname.includes("addproduct-") ? "active" : ""
+                        }
+                        to="/authed/product/addproduct-product"
+                      >
+                        Add Product
+                      </Link>
+                    </li>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        className={
+                          pathname.includes("categorylist-") ? "active" : ""
+                        }
+                        to="/authed/product/categorylist-product"
+                      >
+                        Category List
+                      </Link>
+                    </li>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        className={
+                          pathname.includes("addcategory-") ? "active" : ""
+                        }
+                        to="/authed/product/addcategory-product"
+                      >
+                        Add Category{" "}
+                      </Link>
+                    </li>
+                    {/* <li>
                         <Link style={{ textDecoration: 'none' }} 
                           className={
                             pathname.includes("subcategorytable-")
@@ -189,12 +192,12 @@ const Sidebar = (props) => {
                           Print Barcode
                         </Link>
                       </li> */}
-                    </ul>
-                  ) : (
-                    ""
-                  )}
-                </li>
-                {/* <li className="submenu">
+                  </ul>
+                ) : (
+                  ""
+                )}
+              </li>
+              {/* <li className="submenu">
                   <a
                     style={{ textDecoration: 'none' }} 
                     className={
@@ -261,7 +264,7 @@ const Sidebar = (props) => {
                     ""
                   )}
                 </li> */}
-                {/* <li className="submenu">
+              {/* <li className="submenu">
                   <a
                     style={{ textDecoration: 'none' }} 
                     className={
@@ -316,7 +319,7 @@ const Sidebar = (props) => {
                     ""
                   )}
                 </li> */}
-                {/* <li className="submenu">
+              {/* <li className="submenu">
                   <a
                     style={{ textDecoration: 'none' }} 
                     className={
@@ -373,7 +376,7 @@ const Sidebar = (props) => {
                     ""
                   )}
                 </li> */}
-                {/* <li className="submenu">
+              {/* <li className="submenu">
                   <a
                     
                     className={
@@ -420,7 +423,7 @@ const Sidebar = (props) => {
                     ""
                   )}
                 </li> */}
-                {/* <li className="submenu">
+              {/* <li className="submenu">
                   <a
                     style={{ textDecoration: 'none' }} 
                     className={
@@ -475,7 +478,7 @@ const Sidebar = (props) => {
                     ""
                   )}
                 </li> */}
-                {/* <li className="submenu">
+              {/* <li className="submenu">
                   <a
                     
                     className={
@@ -546,7 +549,7 @@ const Sidebar = (props) => {
                     ""
                   )}
                 </li> */}
-                {/* <li className="submenu">
+              {/* <li className="submenu">
                   <a style={{ textDecoration: 'none' }} 
                     
                     className={
@@ -651,7 +654,7 @@ const Sidebar = (props) => {
                     ""
                   )}
                 </li> */}
-                {/* <li className="submenu">
+              {/* <li className="submenu">
                   <a
                     
                     className={
@@ -716,7 +719,7 @@ const Sidebar = (props) => {
                     ""
                   )}
                 </li> */}
-                {/* <li className={pathname.includes("components") ? "active" : ""}>
+              {/* <li className={pathname.includes("components") ? "active" : ""}>
                   <Link style={{ textDecoration: 'none' }} 
                     to="/authed/components"
                     onClick={() => toggleSidebar(isSideMenu == "" ? "" : "")}
@@ -736,7 +739,7 @@ const Sidebar = (props) => {
                     <span>Blank Page</span>
                   </Link>
                 </li> */}
-                {/* <li className="submenu">
+              {/* <li className="submenu">
                   <a
                     
                     className={
@@ -1379,103 +1382,103 @@ const Sidebar = (props) => {
                     ""
                   )}
                 </li> */}
-                <li className="submenu">
-                  <Link style={{ textDecoration: 'none' }} 
-                    to="#"
-                    className={
-                      pathname.includes("/authed/report")
-                        ? "subdrop active"
-                        : "" || isSideMenu == "Report"
+              <li className="submenu">
+                <Link style={{ textDecoration: 'none' }}
+                  to="#"
+                  className={
+                    pathname.includes("/authed/report")
+                      ? "subdrop active"
+                      : "" || isSideMenu == "Report"
                         ? "subdrop active"
                         : ""
-                    }
-                    onClick={() =>
-                      toggleSidebar(isSideMenu == "Report" ? "" : "Report")
-                    }
-                  >
-                    <img src={Time} alt="img" />
-                    <span> Report</span> <span className="menu-arrow" />
-                  </Link>
-                  {isSideMenu == "Report" ? (
-                    <ul>
-                      <li>
-                        <Link style={{ textDecoration: 'none' }} 
-                          to="/authed/report/purchaseorderreport"
-                          className={
-                            pathname.includes("purchaseorderreport")
-                              ? "active"
-                              : ""
-                          }
-                        >
-                          Purchase order report
-                        </Link>
-                      </li>
-                      <li>
-                        <Link style={{ textDecoration: 'none' }} 
-                          to="/authed/report/inventoryreport"
-                          className={
-                            pathname.includes("inventoryreport") ? "active" : ""
-                          }
-                        >
-                          Inventory Report
-                        </Link>
-                      </li>
-                      <li>
-                        <Link style={{ textDecoration: 'none' }} 
-                          to="/authed/report/salesreport"
-                          className={
-                            pathname.includes("salesreport") ? "active" : ""
-                          }
-                        >
-                          Sales Report
-                        </Link>
-                      </li>
-                      <li>
-                        <Link style={{ textDecoration: 'none' }} 
-                          to="/authed/report/invoicereport"
-                          className={
-                            pathname.includes("invoicereport") ? "active" : ""
-                          }
-                        >
-                          Invoice Report
-                        </Link>
-                      </li>
-                      <li>
-                        <Link style={{ textDecoration: 'none' }} 
-                          to="/authed/report/purchasereport"
-                          className={
-                            pathname.includes("purchasereport") ? "active" : ""
-                          }
-                        >
-                          Purchase Report
-                        </Link>
-                      </li>
-                      <li>
-                        <Link style={{ textDecoration: 'none' }} 
-                          to="/authed/report/supplierreport"
-                          className={
-                            pathname.includes("supplierreport") ? "active" : ""
-                          }
-                        >
-                          Supplier Report
-                        </Link>
-                      </li>
-                      <li>
-                        <Link style={{ textDecoration: 'none' }} 
-                          to="/authed/report/customerreport"
-                          className={
-                            pathname.includes("customerreport") ? "active" : ""
-                          }
-                        >
-                          Customer Report
-                        </Link>
-                      </li>
-                    </ul>
-                  ) : (
-                    ""
-                  )}
-                </li>
-                {/* <li className="submenu">
+                  }
+                  onClick={() =>
+                    toggleSidebar(isSideMenu == "Report" ? "" : "Report")
+                  }
+                >
+                  <img src={Time} alt="img" />
+                  <span> Report</span> <span className="menu-arrow" />
+                </Link>
+                {isSideMenu == "Report" ? (
+                  <ul>
+                    {/* <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/report/purchaseorderreport"
+                        className={
+                          pathname.includes("purchaseorderreport")
+                            ? "active"
+                            : ""
+                        }
+                      >
+                        Purchase order report
+                      </Link>
+                    </li>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/report/inventoryreport"
+                        className={
+                          pathname.includes("inventoryreport") ? "active" : ""
+                        }
+                      >
+                        Inventory Report
+                      </Link>
+                    </li>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/report/salesreport"
+                        className={
+                          pathname.includes("salesreport") ? "active" : ""
+                        }
+                      >
+                        Sales Report
+                      </Link>
+                    </li> */}
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/report/invoicereport"
+                        className={
+                          pathname.includes("invoicereport") ? "active" : ""
+                        }
+                      >
+                        Invoice Report
+                      </Link>
+                    </li>
+                    {/* <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/report/purchasereport"
+                        className={
+                          pathname.includes("purchasereport") ? "active" : ""
+                        }
+                      >
+                        Purchase Report
+                      </Link>
+                    </li>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/report/supplierreport"
+                        className={
+                          pathname.includes("supplierreport") ? "active" : ""
+                        }
+                      >
+                        Supplier Report
+                      </Link>
+                    </li>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/report/customerreport"
+                        className={
+                          pathname.includes("customerreport") ? "active" : ""
+                        }
+                      >
+                        Customer Report
+                      </Link>
+                    </li> */}
+                  </ul>
+                ) : (
+                  ""
+                )}
+              </li>
+              {/* <li className="submenu">
                   <Link style={{ textDecoration: 'none' }} 
                     to="#"
                     className={
@@ -1519,36 +1522,36 @@ const Sidebar = (props) => {
                     ""
                   )}
                 </li> */}
-                <li className="submenu">
-                  <Link style={{ textDecoration: 'none' }} 
-                    to="#"
-                    className={
-                      pathname.includes("/authed/settings")
-                        ? "subdrop active"
-                        : "" || isSideMenu == "Settings"
+              <li className="submenu">
+                <Link style={{ textDecoration: 'none' }}
+                  to="#"
+                  className={
+                    pathname.includes("/authed/settings")
+                      ? "subdrop active"
+                      : "" || isSideMenu == "Settings"
                         ? "subdrop active"
                         : ""
-                    }
-                    onClick={() =>
-                      toggleSidebar(isSideMenu == "Settings" ? "" : "Settings")
-                    }
-                  >
-                    <img src={settings} alt="img" />
-                    <span> Settings</span> <span className="menu-arrow" />
-                  </Link>
-                  {isSideMenu == "Settings" ? (
-                    <ul>
-                      <li>
-                        <Link style={{ textDecoration: 'none' }} 
-                          to="/authed/settings/generalsettings"
-                          className={
-                            pathname.includes("generalsettings") ? "active" : ""
-                          }
-                        >
-                          General Settings
-                        </Link>
-                      </li>
-                      {/* <li>
+                  }
+                  onClick={() =>
+                    toggleSidebar(isSideMenu == "Settings" ? "" : "Settings")
+                  }
+                >
+                  <img src={settings} alt="img" />
+                  <span> Settings</span> <span className="menu-arrow" />
+                </Link>
+                {isSideMenu == "Settings" ? (
+                  <ul>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/settings/generalsettings"
+                        className={
+                          pathname.includes("generalsettings") ? "active" : ""
+                        }
+                      >
+                        General Settings
+                      </Link>
+                    </li>
+                    {/* <li>
                         <Link style={{ textDecoration: 'none' }} 
                           to="/authed/settings/emailsettings"
                           className={
@@ -1600,16 +1603,50 @@ const Sidebar = (props) => {
                           Tax Rates
                         </Link>
                       </li> */}
-                    </ul>
-                  ) : (
-                    ""
-                  )}
-                </li>
-              </ul>
-            </div>
+                  </ul>
+                ) : (
+                  ""
+                )}
+              </li>
+              <li className="submenu">
+                <Link style={{ textDecoration: 'none' }}
+                  to="#"
+                  className={
+                    pathname.includes("/authed/help")
+                      ? "subdrop active"
+                      : "" || isSideMenu == "Help"
+                        ? "subdrop active"
+                        : ""
+                  }
+                  onClick={() =>
+                    toggleSidebar(isSideMenu == "Help" ? "" : "Help")
+                  }
+                >
+                  <img src={settings} alt="img" />
+                  <span> Help</span> <span className="menu-arrow" />
+                </Link>
+                {isSideMenu == "Help" ? (
+                  <ul>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/settings/generalsettings"
+                        className={
+                          pathname.includes("generalsettings") ? "active" : ""
+                        }
+                      >
+                        General Settings
+                      </Link>
+                    </li>
+                  </ul>
+                ) : (
+                  ""
+                )}
+              </li>
+            </ul>
           </div>
-        </Scrollbars>
-      </div>    
+        </div>
+      </Scrollbars>
+    </div>
   );
 };
 
