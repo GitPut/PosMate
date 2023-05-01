@@ -19,30 +19,30 @@ import { useHistory } from "react-router-dom";
 const AuthRoute = (props) => {
     const isLoginSettings = isSignedInSettingsState.use()
     const { location } = props;
-      const history = useHistory();
-    
+    const history = useHistory();
+
     useEffect(() => {
-    //    if (!location.pathname.includes("/authed") || location.pathname.includes("/authed") && isLoginSettings === false) {
-    //        history.push("/pos");
-    // }
+        if (!location.pathname.includes("/authed") || location.pathname.includes("/authed") && isLoginSettings === false) {
+            history.push("/pos");
+        }
         //CHANGE BACK ONCE PUBLISHING
     }, [])
-    
 
-        return (
-            <Switch>
-                {/* <Route path="/signIn" component={SignIn} />
+
+    return (
+        <Switch>
+            {/* <Route path="/signIn" component={SignIn} />
                 <Route path="/forgetPassword" component={ForgetPassword} />
                 <Route path="/signUp" component={SignUp} /> */}
-                <Route path="/pos" component={HomeScreen} />
-                <Route path="/authed" component={DefaultLayout} />
-                
-                {/* <Route path="/error-404" component={Error404} />
+            <Route path="/pos" component={HomeScreen} />
+            <Route path="/authed" component={DefaultLayout} />
+
+            {/* <Route path="/error-404" component={Error404} />
                 <Route path="/error-500" component={Error500} />
                 <Route path="/pos" component={Pos} /> */}
 
-            </Switch>
-        )
+        </Switch>
+    )
 }
 
 export default AuthRoute

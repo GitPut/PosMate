@@ -12,11 +12,13 @@ import Logo from "assets/dpos-logo.png";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
 import {
+  setIsSignedInSettingsState,
   setTutorialDetailsState,
   storeDetailState,
   tutorialDetailsState,
 } from "state/state";
 import TutorialStep from "./tutorial/TutorialStep";
+import { useHistory } from "react-router-dom";
 
 const LogoImage = React.memo(
   () => (
@@ -31,6 +33,7 @@ const LogoImage = React.memo(
 const AuthHomeHeader = (props) => {
   const storeDetails = storeDetailState.use();
   const tutorialDetails = tutorialDetailsState.use();
+  const history = useHistory();
 
   return (
     <View
@@ -75,18 +78,24 @@ const AuthHomeHeader = (props) => {
           setStepDetails={setTutorialDetailsState}
           stepDetails={tutorialDetails}
           changeNextBtnFunc={() => {
-            storeDetails.settingsPassword
-              ? props.setsettingsPasswordModalVis(true)
-              : props.navigation.navigate("settings");
+            if (storeDetails.settingsPassword) {
+              props.setsettingsPasswordModalVis(true);
+            } else {
+              setIsSignedInSettingsState(true);
+              history.push("/authed/dashboard");
+            }
           }}
         >
           <TouchableOpacity
             // onPress={() => navigation.navigate("SettingsHome")}
-            onPress={() =>
-              storeDetails.settingsPassword
-                ? props.setsettingsPasswordModalVis(true)
-                : props.navigation.navigate("settings")
-            }
+            onPress={() => {
+              if (storeDetails.settingsPassword) {
+                props.setsettingsPasswordModalVis(true);
+              } else {
+                setIsSignedInSettingsState(true);
+                history.push("/authed/dashboard");
+              }
+            }}
             style={{
               backgroundColor: "rgba(41,44,56,1)",
               borderRadius: 100,

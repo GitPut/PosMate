@@ -1,9 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Upload } from '../../EntryFile/imagePath';
 import { userStoreState } from 'state/state';
+import { auth, db } from 'state/firebaseConfig';
+import { Link, useHistory } from 'react-router-dom';
+import firebase from "firebase/app";
 
 const AddCategory = () => {
     const catalog = userStoreState.use();
+
+    const [name, setname] = useState("");
+    const history = useHistory();
+
+    function AddToDb() {
+        db.collection("users")
+            .doc(auth.currentUser.uid)
+            .update({
+                categories: firebase.firestore.FieldValue.arrayUnion(name),
+            })
+        history.push("/authed/product/categorylist-product");
+    }
 
     return (
         <>
@@ -22,7 +37,7 @@ const AddCategory = () => {
                                 <div className="col-lg-6 col-sm-6 col-12">
                                     <div className="form-group">
                                         <label>Category Name</label>
-                                        <input type="text" />
+                                        <input type="text" onChange={(event) => setname(event.target.value)} />
                                     </div>
                                 </div>
                                 <div className="col-lg-6 col-sm-6 col-12">
@@ -44,12 +59,12 @@ const AddCategory = () => {
                                     </div>
                                 </div>
                                 <div className="col-lg-12">
-                                    <button className="btn btn-submit me-2">
+                                    <button className="btn btn-submit me-2" onClick={AddToDb}>
                                         Submit
                                     </button>
-                                    <button  className="btn btn-cancel">
+                                    <Link style={{ textDecoration: 'none' }} to="/authed/product/categorylist-product" className="btn btn-cancel">
                                         Cancel
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
