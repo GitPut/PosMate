@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "divine-pos",
-    "slug": "divine-pos",
+    "name": "Divine POS",
+    "slug": "Divine POS",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

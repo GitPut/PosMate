@@ -2,8 +2,8 @@
   "background_color": "#ffffff",
   "display": "standalone",
   "lang": "en",
-  "name": "divine-pos",
-  "short_name": "divine-pos",
+  "name": "Divine POS",
+  "short_name": "Divine POS",
   "start_url": "/?utm_source=web_app_manifest",
   "orientation": "portrait",
   "icons": [

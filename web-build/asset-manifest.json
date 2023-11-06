@@ -4,8 +4,8 @@
     "app.js.map": "/static/js/app.ac937635.chunk.js.map",
     "runtime~app.js": "/static/js/runtime~app.6f1af4c9.js",
     "runtime~app.js.map": "/static/js/runtime~app.6f1af4c9.js.map",
-    "static/js/2.b6f2cc52.chunk.js": "/static/js/2.b6f2cc52.chunk.js",
-    "static/js/2.b6f2cc52.chunk.js.map": "/static/js/2.b6f2cc52.chunk.js.map",
+    "static/js/2.eabcc649.chunk.js": "/static/js/2.eabcc649.chunk.js",
+    "static/js/2.eabcc649.chunk.js.map": "/static/js/2.eabcc649.chunk.js.map",
     "static/js/3.594ed33e.chunk.js": "/static/js/3.594ed33e.chunk.js",
     "static/js/3.594ed33e.chunk.js.map": "/static/js/3.594ed33e.chunk.js.map",
     "static/js/4.571f8092.chunk.js": "/static/js/4.571f8092.chunk.js",
@@ -55,7 +55,7 @@
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
     "serve.json": "/serve.json",
-    "static/js/2.b6f2cc52.chunk.js.LICENSE.txt": "/static/js/2.b6f2cc52.chunk.js.LICENSE.txt",
+    "static/js/2.eabcc649.chunk.js.LICENSE.txt": "/static/js/2.eabcc649.chunk.js.LICENSE.txt",
     "static/js/9.7a559f5d.chunk.js.LICENSE.txt": "/static/js/9.7a559f5d.chunk.js.LICENSE.txt",
     "static/media/adidas.png": "/static/media/adidas.838658b0.png",
     "static/media/alarm.mp3": "/static/media/alarm.2e7250d2.mp3",
@@ -182,7 +182,7 @@
   },
   "entrypoints": [
     "static/js/runtime~app.6f1af4c9.js",
-    "static/js/2.b6f2cc52.chunk.js",
+    "static/js/2.eabcc649.chunk.js",
     "static/js/app.ac937635.chunk.js"
   ]
 }
