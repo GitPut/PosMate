@@ -4,37 +4,34 @@ export const signIn = (email, password) =>
   auth.signInWithEmailAndPassword(email, password);
 
 export const signUp = (email, password, name, phoneNumber) =>
-  auth
-    .createUserWithEmailAndPassword(email, password)
-    .then((userAuth) => {
-      if (userAuth.user) {
-        db.collection("users")
-          .doc(userAuth.user.uid)
-          .set({
-            products: [],
-            categories: [],
-            wooCredentials: { ck: null, cs: null, useWoocommerce: false },
-            storeDetails: {
-              name: null,
-              address: null,
-              phoneNumber: null,
-              website: null,
-              comSelected: null,
-              deliveryPrice: null,
-            },
-            ownerDetails: {
-              name: name,
-              address: null,
-              phoneNumber: phoneNumber,
-              email: email,
-            },
-            //company name
-            //adddress
-            //etc
-          });
-      }
-    })
-    .catch((e) => console.log(e));
+  auth.createUserWithEmailAndPassword(email, password).then((userAuth) => {
+    if (userAuth.user) {
+      db.collection("users")
+        .doc(userAuth.user.uid)
+        .set({
+          products: [],
+          categories: [],
+          wooCredentials: { ck: null, cs: null, useWoocommerce: false },
+          storeDetails: {
+            name: null,
+            address: null,
+            phoneNumber: null,
+            website: null,
+            comSelected: null,
+            deliveryPrice: null,
+          },
+          ownerDetails: {
+            name: name,
+            address: null,
+            phoneNumber: phoneNumber,
+            email: email,
+          },
+          //company name
+          //adddress
+          //etc
+        });
+    }
+  });
 
 export const updateData = (categories, products) => {
   db.collection("users")

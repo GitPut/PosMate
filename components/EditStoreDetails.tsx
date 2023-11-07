@@ -56,6 +56,10 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
   );
   const trialDetails = trialDetailsState.use();
 
+  useEffect(() => {
+    console.log("Store Details: ", storeDetails);
+  }, [storeDetails]);
+
   const handleWooDataUpdate = () => {
     if (apiUrl !== null && ck !== null && cs !== null) {
       setWoocommerceState({
@@ -136,13 +140,6 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.headerRowContainer}>
         <Text style={styles.headerTxt}>Store Details and POS Settings</Text>
-        <TouchableOpacity
-          style={styles.billingBtn}
-          onPress={Manage}
-          disabled={trialDetails.hasEnded}
-        >
-          <Foundation name="credit-card" style={styles.billingIcon} />
-        </TouchableOpacity>
       </View>
       <View style={styles.detailInputContainer}>
         <View
@@ -176,6 +173,19 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
             }}
           >
             <Text>WooCommerce</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={Manage}
+            disabled={trialDetails.hasEnded}
+            style={{
+              width: 120,
+              height: 30,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#F5F3F3",
+            }}
+          >
+            <Text>Billing</Text>
           </TouchableOpacity>
         </View>
         {screen === "general" ? (

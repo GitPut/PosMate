@@ -24,7 +24,8 @@ const CleanupOps = (metaList) => {
 };
 
 const ReceiptPrint = (element, storeDetails) => {
-  const data = [];
+  console.log("ELEMENT DETAILS FROM RECEIPT PRINT: ", element);
+  let data = [];
 
   let date;
 
@@ -186,7 +187,6 @@ const ReceiptPrint = (element, storeDetails) => {
       "\x1D" + "\x56" + "\x30"
     );
   } else if (element.cart_hash) {
-    const data = [];
     data.push(
       "\x1B" + "\x40", // init
       "\x1B" + "\x61" + "\x31", // center align
@@ -278,7 +278,7 @@ const ReceiptPrint = (element, storeDetails) => {
 
     data.push("\x1D" + "\x56" + "\x00");
   } else {
-    let data = [
+    data = [
       "\x1B" + "\x40", // init
       "\x1B" + "\x61" + "\x31", // center align
       storeDetails.name,
@@ -327,7 +327,7 @@ const ReceiptPrint = (element, storeDetails) => {
         "\x0A",
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
         "\x0A" + "\x0A",
-        "Payment element.method: " + element.method + "\x0A" + "\x0A",
+        "Payment method: " + element.method + "\x0A" + "\x0A",
         "Total Including (13% Tax): " + "$" + element.total + "\x0A" + "\x0A",
         "------------------------------------------" + "\x0A",
         "\x0A", // line break
@@ -344,7 +344,7 @@ const ReceiptPrint = (element, storeDetails) => {
         "\x0A",
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
         "\x0A" + "\x0A",
-        "Payment element.method: " + element.element.method + "\x0A" + "\x0A",
+        "Payment method: " + element.method + "\x0A" + "\x0A",
         "Total Including (13% Tax): " + "$" + element.total + "\x0A" + "\x0A",
         "------------------------------------------" + "\x0A",
         "\x0A", // line break
@@ -358,6 +358,7 @@ const ReceiptPrint = (element, storeDetails) => {
       );
     }
   }
+  console.log("DATA TO RETURN TO PRINTER: ", data);
   return data;
 };
 

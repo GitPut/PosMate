@@ -1,14 +1,20 @@
-import React,{useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import "./antd.css";
 import { itemRender, onShowSizeChange } from "../components/pagination";
+import { Excel } from "antd-table-saveas-excel";
+import { Button } from "react-native";
 
-const Datatable = ({ props, columns, dataSource }) => {
+const Datatable = ({ props, columns, dataSource, updateBaseSelectedRows, setbaseSelectedRows }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const onSelectChange = (newSelectedRowKeys) => {
     console.log("selectedRowKeys changed: ", selectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
+
+  useEffect(() => {
+    setbaseSelectedRows(selectedRowKeys)
+  }, [updateBaseSelectedRows])
 
   const rowSelection = {
     selectedRowKeys,

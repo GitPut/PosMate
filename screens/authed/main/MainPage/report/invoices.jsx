@@ -25,19 +25,28 @@ import {
 import { storeDetailState, woocommerceState } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 const tz = require("moment-timezone");
+import ReceiptPrint from "components/ReceiptPrint";
+import { Excel as ExcelDownload } from "antd-table-saveas-excel";
 
 const Sales = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [startDate1, setStartDate1] = useState(new Date());
   const [inputfilter, setInputfilter] = useState(false);
   const storeDetails = storeDetailState.use();
+  const [baseSelectedRows, setbaseSelectedRows] = useState(null)
+  const [updateBaseSelectedRows, setupdateBaseSelectedRows] = useState(false)
+  const [filteredTranLlist, setfilteredTransList] = useState([])
+  const [search, setsearch] = useState(null)
+
+  const [transList, settransList] = useState([]);
+  const [transListTableOrg, settransListTableOrg] = useState([]);
+  const wooCredentials = woocommerceState.use()
 
   const togglefilter = (value) => {
     setInputfilter(value);
   };
 
-  const [transList, settransList] = useState([]);
-  const wooCredentials = woocommerceState.use()
+
 
   const getDate = (receipt) => {
     if (receipt.date_created) {
@@ -74,14 +83,17 @@ const Sales = () => {
           querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             // console.log(doc.id, " => ", doc.data());
-            settransList((prevState) => [...prevState,
+            settransList((prevState) => [...prevState, doc.data()]);
+            settransListTableOrg((prevState) => [...prevState,
             {
+              id: doc.data().transNum.toUpperCase(),
               number: doc.data().transNum,
               name: doc.data().customer?.name ? doc.data().customer?.name : "N/A",
               date: getDate(doc.data()),
-              Amount: doc.data().total,
-              System: 'POS',
-              Status: doc.data().method === "deliveryOrder" ? "Delivery" : "Pickup",
+              originalData: doc.data(),
+              amount: doc.data().total,
+              system: 'POS',
+              status: doc.data().method === "deliveryOrder" ? "Delivery" : "Pickup",
             }
             ]);
           });
@@ -132,48 +144,235 @@ const Sales = () => {
 
   const columns = [
     {
-      title: "Invoice number",
-      dataIndex: "number",
-      sorter: (a, b) => a.number.length - b.number.length,
-      //make text uppercase
-      render: (text, record) => (<>{text?.toUpperCase()}</>)
+      title: "Order ID",
+      dataIndex: "id",
+      key: "id",
+      // sorter: (a, b) => a.number.length - b.number.length,
+      // //make text uppercase
+      // render: (text, record) => (<>{text?.toUpperCase()}</>)
     },
     {
       title: "Customer name",
       dataIndex: "name",
-      sorter: (a, b) => a.Category.length - b.Category.length,
+      key: "name",
+      // sorter: (a, b) => a.Category.length - b.Category.length,
     },
     {
-      title: "Due date",
+      title: "Date",
       dataIndex: "date",
-      sorter: (a, b) => a.Brand.length - b.Brand.length,
+      key: "date",
+      // sorter: (a, b) => a.Brand.length - b.Brand.length,
     },
     {
       title: "Amount",
-      dataIndex: "Amount",
-      sorter: (a, b) => a.Price.length - b.Price.length,
+      dataIndex: "amount",
+      key: "amount",
+      // sorter: (a, b) => a.Price.length - b.Price.length,
     },
     {
       title: "System Type",
-      dataIndex: "System",
-      sorter: (a, b) => a.System.length - b.System.length,
+      dataIndex: "system",
+      key: "system",
+      // sorter: (a, b) => a.System.length - b.System.length,
     },
     {
       title: "Status",
-      dataIndex: "Status",
-      render: (text, record) => (
-        <>
-          {text === "Delivery" && (
-            <span className="badges bg-lightgreen">{text}</span>
-          )}
-          {text === "Pickup" && (
-            <span className="badges bg-lightgrey">{text}</span>
-          )}
-        </>
-      ),
-      sorter: (a, b) => a.Name.length - b.Name.length,
+      dataIndex: "status",
+      key: "status",
+      // render: (text, record) => (
+      //   <>
+      //     {text === "Delivery" && (
+      //       <span className="badges bg-lightgreen">{text}</span>
+      //     )}
+      //     {text === "Pickup" && (
+      //       <span className="badges bg-lightgrey">{text}</span>
+      //     )}
+      //   </>
+      // ),
+      // sorter: (a, b) => a.Name.length - b.Name.length,
     },
   ];
+
+  useEffect(() => {
+    console.log('Selected rows from base: ', baseSelectedRows)
+    if (updateBaseSelectedRows === true) {
+      if (baseSelectedRows.length > 1) {
+        let data = [];
+        baseSelectedRows.forEach((idx) => {
+          //find index of item in transList that matches id of selected row
+          const orderIndex = transListTableOrg.findIndex((item) => item.id === idx)
+
+          const element =
+            transList[
+            orderIndex
+            ];
+          console.log('THIS IS ELEMENT: ', element, ' This is Index: ', orderIndex)
+          const formatedData = ReceiptPrint(element, storeDetails);
+          data = data.concat(formatedData);
+        });
+        const qz = require("qz-tray");
+        qz.websocket
+          .connect()
+          .then(function () {
+            let config = qz.configs.create(storeDetails.comSelected);
+            return qz.print(config, data);
+          })
+          .then(qz.websocket.disconnect)
+          .catch(function (err) {
+            console.error(err);
+          });
+      } else if (baseSelectedRows.length === 1) {
+
+        //find index of item in transList that matches id of selected row
+        const orderIndex = transListTableOrg.findIndex((item) => item.id === baseSelectedRows[0])
+
+        const element =
+          transList[
+          orderIndex
+          ];
+        console.log('THIS IS ELEMENT: ', element, ' This is Index: ', orderIndex)
+
+        const formatedData = ReceiptPrint(element, storeDetails);
+
+        const qz = require("qz-tray");
+        qz.websocket
+          .connect()
+          .then(function () {
+            let config = qz.configs.create(storeDetails.comSelected);
+            return qz.print(config, formatedData);
+          })
+          .then(qz.websocket.disconnect)
+          .catch(function (err) {
+            console.error(err);
+          });
+      } else {
+        alert(
+          "Higlight one or multiple receipt then click to print them"
+        );
+      }
+      setupdateBaseSelectedRows(false)
+    }
+  }, [baseSelectedRows])
+
+  useEffect(() => {
+    if (search) {
+      const filtered = transListTableOrg.filter((item) => {
+        return item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())
+      })
+      setfilteredTransList(filtered)
+    } else {
+      setfilteredTransList([])
+    }
+  }
+    , [search])
+
+  const SearchDate = () => {
+    console.log('Searching date')
+    if (search) {
+      const filtered = filteredTranLlist.filter((item) => {
+        const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        let itemDateFormatted;
+
+        if (item.originalData.date_created) {
+          const dateString = item.originalData.date_created;
+
+          const newDate = new Date(dateString + "Z");
+
+          const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+          const result = tz(newDate)
+            .tz(targetTimezone, true)
+
+          itemDateFormatted = result;
+        } else if (item.originalData.date) {
+          const newDate = new Date(item.originalData.date.seconds * 1000);
+          const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+          const result = tz(newDate)
+            .tz(targetTimezone, true)
+
+          itemDateFormatted = result;
+        }
+
+        const startFormatted = tz(startDate)
+          .tz(targetTimezone, true)
+
+        const endFormatted = tz(startDate1)
+          .tz(targetTimezone, true)
+
+        startFormatted.hour(0)
+        startFormatted.minute(0)
+
+        endFormatted.hour(23)
+        endFormatted.minute(59)
+
+        let bool1 = itemDateFormatted.isBetween(startFormatted, endFormatted)
+
+        console.log('Date: ', itemDateFormatted, ' Start Date: ', startFormatted, ' End Date: ', endFormatted, ' Bool: ', bool1)
+        return bool1
+      })
+      setfilteredTransList(filtered)
+    } else {
+      const filtered = transListTableOrg.filter((item) => {
+        const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        let itemDateFormatted;
+
+        if (item.originalData.date_created) {
+          const dateString = item.originalData.date_created;
+
+          const newDate = new Date(dateString + "Z");
+
+          const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+          const result = tz(newDate)
+            .tz(targetTimezone, true)
+
+          itemDateFormatted = result;
+        } else if (item.originalData.date) {
+          const newDate = new Date(item.originalData.date.seconds * 1000);
+          const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+          const result = tz(newDate)
+            .tz(targetTimezone, true)
+
+          itemDateFormatted = result;
+        }
+
+        const startFormatted = tz(startDate)
+          .tz(targetTimezone, true)
+
+        const endFormatted = tz(startDate1)
+          .tz(targetTimezone, true)
+
+        startFormatted.hour(0)
+        startFormatted.minute(0)
+
+        endFormatted.hour(23)
+        endFormatted.minute(59)
+
+        let bool1 = itemDateFormatted.isBetween(startFormatted, endFormatted)
+
+        console.log('Date: ', itemDateFormatted, ' Start Date: ', startFormatted, ' End Date: ', endFormatted, ' Bool: ', bool1)
+        return bool1
+      })
+      setfilteredTransList(filtered)
+    }
+  }
+
+  //Printing function
+  const DownloadExcel = () => {
+    const excelDownload = new ExcelDownload();
+    excelDownload
+      .addSheet("history")
+      .addColumns(columns)
+      .addDataSource(filteredTranLlist.length > 0 ? filteredTranLlist : transListTableOrg, {
+        str2Percent: true
+      })
+      .saveAs("StoreReceipts.xlsx");
+  };
+
 
   return (
     <div className="page-wrapper">
@@ -207,6 +406,7 @@ const Sales = () => {
                     className="form-control form-control-sm search-icon"
                     type="text"
                     placeholder="Search..."
+                    onChange={(e) => setsearch(e.target.value)}
                   />
                   <a className="btn btn-searchset">
                     <img src={Search} alt="img" />
@@ -219,16 +419,8 @@ const Sales = () => {
                     <a
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title="pdf"
-                    >
-                      <img src={Pdf} alt="img" />
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
                       title="excel"
+                      onClick={DownloadExcel}
                     >
                       <img src={Excel} alt="img" />
                     </a>
@@ -238,6 +430,9 @@ const Sales = () => {
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
                       title="print"
+                      onClick={() => {
+                        setupdateBaseSelectedRows(!updateBaseSelectedRows)
+                      }}
                     >
                       <img src={Printer} alt="img" />
                     </a>
@@ -281,7 +476,7 @@ const Sales = () => {
                   </div>
                   <div className="col-lg-1 col-sm-6 col-12 ms-auto">
                     <div className="form-group">
-                      <a className="btn btn-filters ms-auto">
+                      <a className="btn btn-filters ms-auto" onClick={SearchDate}>
                         <img src={search_whites} alt="img" />
                       </a>
                     </div>
@@ -291,7 +486,7 @@ const Sales = () => {
             </div>
             {/* /Filter */}
             <div className="table-responsive">
-              <Table columns={columns} dataSource={transList} />
+              <Table columns={columns} dataSource={filteredTranLlist.length > 0 ? filteredTranLlist : transListTableOrg} updateBaseSelectedRows={updateBaseSelectedRows} setbaseSelectedRows={setbaseSelectedRows} />
             </div>
           </div>
         </div>

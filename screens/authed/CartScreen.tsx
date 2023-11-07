@@ -33,15 +33,14 @@ import CartItem from "components/CartItem";
 import ProductListing from "components/ProductListing";
 
 const CartButton = (props) => {
-
   return (
-      <TouchableOpacity
-        style={props.style}
-        onPress={props.onPress}
-        disabled={props.disabled}
-      >
-        <props.icon />
-      </TouchableOpacity>
+    <TouchableOpacity
+      style={props.style}
+      onPress={props.onPress}
+      disabled={props.disabled}
+    >
+      <props.icon />
+    </TouchableOpacity>
   );
 };
 
@@ -181,7 +180,7 @@ const CartScreen = ({ navigation }) => {
   useEffect(() => {
     if (cart.length > 0) {
       let newVal = 0;
-      for (var i = 0; i < cart.length; i++) {
+      for (let i = 0; i < cart.length; i++) {
         newVal += parseFloat(cart[i].price);
       }
       if (deliveryChecked) {
@@ -224,7 +223,7 @@ const CartScreen = ({ navigation }) => {
       let total = cartSub;
       const today = new Date();
 
-      let data = [
+      const data = [
         "\x1B" + "\x40", // init
         "\x1B" + "\x61" + "\x31", // center align
         storeDetails.name,
@@ -315,7 +314,7 @@ const CartScreen = ({ navigation }) => {
       qz.websocket
         .connect()
         .then(function () {
-          let config = qz.configs.create(storeDetails.comSelected);
+          const config = qz.configs.create(storeDetails.comSelected);
           return qz.print(config, data);
         })
         .then(qz.websocket.disconnect)
@@ -338,7 +337,7 @@ const CartScreen = ({ navigation }) => {
         },
       });
 
-      let ongoingList = JSON.parse(localStorage.getItem("ongoingList"));
+      const ongoingList = JSON.parse(localStorage.getItem("ongoingList"));
       if (ongoingList) {
         ongoingList.push({
           id: Math.random().toString(36).substr(2, 9) + "-l",
@@ -381,7 +380,7 @@ const CartScreen = ({ navigation }) => {
       let total = 0;
       const today = new Date();
 
-      let data = [
+      const data = [
         "\x1B" + "\x40", // init
         "\x1B" + "\x61" + "\x31", // center align
         storeDetails.name,
@@ -468,7 +467,7 @@ const CartScreen = ({ navigation }) => {
       qz.websocket
         .connect()
         .then(function () {
-          let config = qz.configs.create(storeDetails.comSelected);
+          const config = qz.configs.create(storeDetails.comSelected);
           return qz.print(config, data);
         })
         .then(qz.websocket.disconnect)
@@ -490,7 +489,7 @@ const CartScreen = ({ navigation }) => {
         },
       });
 
-      let ongoingList = JSON.parse(localStorage.getItem("ongoingList"));
+      const ongoingList = JSON.parse(localStorage.getItem("ongoingList"));
       if (ongoingList) {
         ongoingList.push({
           id: Math.random().toString(36).substr(2, 9) + "-l",
@@ -533,7 +532,7 @@ const CartScreen = ({ navigation }) => {
       let total = 0;
       const today = new Date();
 
-      let data = [
+      const data = [
         "\x1B" + "\x40", // init
         "\x1B" + "\x61" + "\x31", // center align
         storeDetails.name,
@@ -597,8 +596,7 @@ const CartScreen = ({ navigation }) => {
           "\x0A", // line break
           "\x0A", // line break
           //"\x1D" + "\x56" + "\x00",
-          "\x1D" + "\x56" + "\x30",
-          "\x10" + "\x14" + "\x01" + "\x00" + "\x05"
+          "\x1D" + "\x56" + "\x30" + "\x10" + "\x14" + "\x01" + "\x00" + "\x05"
         );
       } else {
         data.push(
@@ -638,7 +636,7 @@ const CartScreen = ({ navigation }) => {
       qz.websocket
         .connect()
         .then(function () {
-          let config = qz.configs.create(storeDetails.comSelected);
+          const config = qz.configs.create(storeDetails.comSelected);
           return qz.print(config, data);
         })
         .then(qz.websocket.disconnect)

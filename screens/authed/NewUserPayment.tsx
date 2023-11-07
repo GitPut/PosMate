@@ -281,8 +281,11 @@ const NewUserPayment = ({ resetLoader }) => {
                     width: "65%",
                   }}
                 >
-                  <TouchableOpacity style={styles.group5} onPress={logout}>
-                    <Text style={styles.monthly6}>Cancel</Text>
+                  <TouchableOpacity
+                    style={styles.group5}
+                    onPress={() => setstageNum((prev) => prev - 1)}
+                  >
+                    <Text style={styles.monthly6}>Back</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.group5}
@@ -326,7 +329,7 @@ const NewUserPayment = ({ resetLoader }) => {
 
             if (planType.value === "freeTrial") {
               // Get today's date
-              let tomorrow = new Date();
+              const tomorrow = new Date();
               // Change the date by adding 1 to it (tomorrow + 1 = tomorrow)
               tomorrow.setDate(tomorrow.getDate() + 1);
               // return yyyy-mm-dd format
@@ -376,120 +379,131 @@ const NewUserPayment = ({ resetLoader }) => {
           setstageNum={setstageNum}
           currentStageNum={3}
           currentStageLbl="Connect Shop"
-          StageContent={() => (
-            <>
-              <View style={styles.planItemContainer}>
-                <View style={styles.pITopContainer}>
-                  <ScrollView>
-                    <View style={styles.group4}>
-                      <View style={styles.group24}>
-                        <Text style={styles.standard}>Setup Externals</Text>
+          StageContent={() => {
+            const [comLocal, setcomLocal] = useState(com);
+
+            return (
+              <>
+                <View style={styles.planItemContainer}>
+                  <View style={styles.pITopContainer}>
+                    <ScrollView>
+                      <View style={styles.group4}>
+                        <View style={styles.group24}>
+                          <Text style={styles.standard}>Setup Externals</Text>
+                        </View>
+                        <View style={styles.group23}>
+                          <MaterialCommunityIconsIcon
+                            name="progress-question"
+                            style={styles.icon16}
+                          />
+                        </View>
                       </View>
-                      <View style={styles.group23}>
-                        <MaterialCommunityIconsIcon
-                          name="progress-question"
-                          style={styles.icon16}
-                        />
+                      <Text style={styles.allYearPayment}>
+                        Add your woocommerce and set up printer!
+                      </Text>
+                      <TextInput
+                        color="black"
+                        style={styles.textInput}
+                        label="Enter receipt printer name"
+                        leading={(props) => (
+                          <MaterialCommunityIconsIcon
+                            name="printer"
+                            {...props}
+                          />
+                        )}
+                        onChangeText={(val) => setcomLocal(val)}
+                        value={comLocal}
+                        onBlur={() => setcom(comLocal)}
+                      />
+                      <Text style={styles.helperTxt}>
+                        Download helper program that makes your printer work
+                        with our service
+                      </Text>
+                      <View style={styles.helperDownloadContainer}>
+                        <a
+                          href={require("assets/divine-pos-helper.exe")}
+                          download="Divine Pos Helper.exe"
+                        >
+                          <Image
+                            source={require("assets/badge-windows.png")}
+                            resizeMode="contain"
+                            style={styles.badgeWindows}
+                          />
+                        </a>
+                        <a
+                          href={require("assets/divine-pos-helper.pkg")}
+                          download="Divine Pos Helper.pkg"
+                        >
+                          <Image
+                            source={require("assets/badge-mac.png")}
+                            resizeMode="contain"
+                            style={styles.badgeMac}
+                          />
+                        </a>
                       </View>
-                    </View>
-                    <Text style={styles.allYearPayment}>
-                      Add your woocommerce and set up printer!
-                    </Text>
-                    <TextInput
-                      color="black"
-                      style={styles.textInput}
-                      label="Enter receipt printer name"
-                      leading={(props) => (
-                        <MaterialCommunityIconsIcon name="printer" {...props} />
+                      <Text style={{ marginTop: 10, marginBottom: 5 }}>
+                        Optionaly connect your WooCommerce store
+                      </Text>
+                      <Switch
+                        value={useWoocommerce}
+                        onValueChange={(val) => setuseWoocommerce(val)}
+                      />
+                      {useWoocommerce && (
+                        <View style={{ paddingBottom: 25 }}>
+                          <TextInput
+                            color="black"
+                            style={styles.textInput}
+                            label="Enter Woocommerce 'API Url'"
+                            onChangeText={(val) => setapiUrl(val)}
+                            value={apiUrl}
+                          />
+                          <TextInput
+                            color="black"
+                            style={styles.textInput}
+                            label="Enter Woocommerce 'CK'"
+                            onChangeText={(val) => setck(val)}
+                            value={ck}
+                          />
+                          <TextInput
+                            color="black"
+                            style={styles.textInput}
+                            label="Enter Woocommerce 'CS'"
+                            onChangeText={(val) => setcs(val)}
+                            value={cs}
+                          />
+                        </View>
                       )}
-                      onChangeText={(val) => setcom(val)}
-                      value={com}
-                    />
-                    <Text style={styles.helperTxt}>
-                      Download helper program that makes your printer work with
-                      our service
-                    </Text>
-                    <View style={styles.helperDownloadContainer}>
-                      <a
-                        href={require("assets/divine-pos-helper.exe")}
-                        download="Divine Pos Helper.exe"
-                      >
-                        <Image
-                          source={require("assets/badge-windows.png")}
-                          resizeMode="contain"
-                          style={styles.badgeWindows}
-                        />
-                      </a>
-                      <a
-                        href={require("assets/divine-pos-helper.pkg")}
-                        download="Divine Pos Helper.pkg"
-                      >
-                        <Image
-                          source={require("assets/badge-mac.png")}
-                          resizeMode="contain"
-                          style={styles.badgeMac}
-                        />
-                      </a>
-                    </View>
-                    <Text style={{ marginTop: 10, marginBottom: 5 }}>
-                      Optionaly connect your WooCommerce store
-                    </Text>
-                    <Switch
-                      value={useWoocommerce}
-                      onValueChange={(val) => setuseWoocommerce(val)}
-                    />
-                    {useWoocommerce && (
-                      <View style={{ paddingBottom: 25 }}>
-                        <TextInput
-                          color="black"
-                          style={styles.textInput}
-                          label="Enter Woocommerce 'API Url'"
-                          onChangeText={(val) => setapiUrl(val)}
-                          value={apiUrl}
-                        />
-                        <TextInput
-                          color="black"
-                          style={styles.textInput}
-                          label="Enter Woocommerce 'CK'"
-                          onChangeText={(val) => setck(val)}
-                          value={ck}
-                        />
-                        <TextInput
-                          color="black"
-                          style={styles.textInput}
-                          label="Enter Woocommerce 'CS'"
-                          onChangeText={(val) => setcs(val)}
-                          value={cs}
-                        />
-                      </View>
-                    )}
-                  </ScrollView>
+                    </ScrollView>
+                  </View>
+                  <View style={styles.pITBottomContainer}>
+                    <View style={[styles.rect32, { width: "75%" }]} />
+                    <View style={[styles.rect33, { width: "25%" }]} />
+                  </View>
                 </View>
-                <View style={styles.pITBottomContainer}>
-                  <View style={[styles.rect32, { width: "75%" }]} />
-                  <View style={[styles.rect33, { width: "25%" }]} />
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "65%",
-                }}
-              >
-                <TouchableOpacity style={styles.group5} onPress={logout}>
-                  <Text style={styles.monthly6}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.group5, { opacity: 0.5 }]}
-                  disabled={true}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "65%",
+                  }}
                 >
-                  <Text style={styles.monthly6}>Next</Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          )}
+                  <TouchableOpacity
+                    style={styles.group5}
+                    onPress={() => setstageNum((prev) => prev - 1)}
+                  >
+                    <Text style={styles.monthly6}>Back</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.group5, { opacity: 0.5 }]}
+                    disabled={true}
+                  >
+                    <Text style={styles.monthly6}>Next</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            );
+          }}
         />
       )}
     </>

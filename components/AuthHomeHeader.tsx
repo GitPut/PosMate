@@ -72,7 +72,7 @@ const AuthHomeHeader = (props) => {
         >
           <Ionicons name="chevron-down" size={28} color="white" />
         </TouchableOpacity>
-        <TutorialStep
+        {/* <TutorialStep
           step={1}
           helpDescription="Click here to go to the settings page"
           setStepDetails={setTutorialDetailsState}
@@ -85,30 +85,30 @@ const AuthHomeHeader = (props) => {
               history.push("/authed/dashboard");
             }
           }}
+        > */}
+        <TouchableOpacity
+          // onPress={() => navigation.navigate("SettingsHome")}
+          onPress={() => {
+            if (storeDetails.settingsPassword) {
+              props.setsettingsPasswordModalVis(true);
+            } else {
+              setIsSignedInSettingsState(true);
+              history.push("/authed/dashboard");
+            }
+          }}
+          style={{
+            backgroundColor: "rgba(41,44,56,1)",
+            borderRadius: 100,
+            width: 55,
+            height: 55,
+            justifyContent: "center",
+            alignItems: "center",
+            marginRight: 10,
+          }}
         >
-          <TouchableOpacity
-            // onPress={() => navigation.navigate("SettingsHome")}
-            onPress={() => {
-              if (storeDetails.settingsPassword) {
-                props.setsettingsPasswordModalVis(true);
-              } else {
-                setIsSignedInSettingsState(true);
-                history.push("/authed/dashboard");
-              }
-            }}
-            style={{
-              backgroundColor: "rgba(41,44,56,1)",
-              borderRadius: 100,
-              width: 55,
-              height: 55,
-              justifyContent: "center",
-              alignItems: "center",
-              marginRight: 10,
-            }}
-          >
-            <Entypo name="cog" size={28} color="white" />
-          </TouchableOpacity>
-        </TutorialStep>
+          <Entypo name="cog" size={28} color="white" />
+        </TouchableOpacity>
+        {/* </TutorialStep> */}
       </View>
     </View>
   );

@@ -1,4 +1,4 @@
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, Modal, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { signUp } from "state/firebaseFunctions";
 
@@ -7,10 +7,14 @@ const Signup = () => {
   const [password, setPassword] = useState();
   const [name, setname] = useState();
   const [phoneNumber, setphoneNumber] = useState();
+  const [error, seterror] = useState(false);
 
   const attemptSignUp = () => {
     if (email && password) {
-      signUp(email, password, name, phoneNumber);
+      signUp(email, password, name, phoneNumber).catch((error) => {
+        console.log(error);
+        seterror(error.message);
+      });
     }
   };
 
@@ -126,7 +130,7 @@ const Signup = () => {
                   <div className="padding-bottom padding-large" />
                   <div className="signup-item-wrapper">
                     <label htmlFor="wf-sign-up-name" className="form-label">
-                      Name
+                      Full Name
                     </label>
                     <input
                       type="text"
@@ -231,26 +235,29 @@ const Signup = () => {
                     </div>
                   </div>
                 </form>
-                <div
-                  style={{ display: "none" }}
-                  data-wf-user-form-error="true"
-                  className="w-users-userformerrorstate error-message w-form-fail"
-                >
-                  <div
-                    className="user-form-error-msg"
-                    wf-signup-form-general-error-error="There was an error signing you up. Please try again, or contact us if you continue to have problems."
-                    wf-signup-form-not-allowed-error="You're not allowed to access this site, please contact the admin for support."
-                    wf-signup-form-invalid-email-error="Make sure your email exists and is properly formatted (e.g., user@domain.com)."
-                    wf-signup-form-email-already_exist-error="An account with this email address already exists. Log in or reset your password."
-                    wf-signup-form-use-invite_email-error="Use the same email address your invitation was sent to."
-                    wf-signup-form-invalid-password-error="Your password must be at least 8 characters."
-                    wf-signup-form-not-verified-error="We couldn't verify your account. Please try again, or contact us if you continue to have problems."
-                    wf-signup-form-expired-token-error="This verification link has expired. A new verification link has been sent to your email. Please try again, or contact us if you continue to have problems."
+                <Modal visible={error} transparent={true}>
+                  <TouchableOpacity
+                    onPress={() => seterror(false)}
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      padding: "20%",
+                      backgroundColor: "rgba(0,0,0,0.5)",
+                    }}
                   >
-                    There was an error signing you up. Please try again, or
-                    contact us if you continue to have problems.
-                  </div>
-                </div>
+                    <div
+                      data-wf-user-form-error="true"
+                      className=" error-message "
+                    >
+                      <div className="user-form-error-msg">
+                        There was an error signing you up. Please try again, or
+                        contact us if you continue to have problems. ({error})
+                      </div>
+                    </div>
+                  </TouchableOpacity>
+                </Modal>
                 <div
                   tabIndex={-1}
                   className="w-users-usersignupverificationmessage signup-verification-wrapper w-form-verification"
