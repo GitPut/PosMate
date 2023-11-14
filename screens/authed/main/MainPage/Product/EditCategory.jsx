@@ -73,7 +73,7 @@ const EditCategory = () => {
                                 </div>
                                 <div className="col-lg-12">
                                     <button className="btn btn-submit me-2">
-                                        Submit
+                                        Update
                                     </button>
                                     <button className="btn btn-cancel">
                                         Cancel

@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 import FeatherIcon from "feather-icons-react";
 import CountUp from "react-countup";
 import { Helmet } from "react-helmet";
+import { auth, db } from "state/firebaseConfig";
 
 const state = {
   series: [
@@ -85,44 +86,9 @@ const state = {
 };
 
 const Dashboard = (props) => {
-  const [expiredData] = useState([
-    {
-      key: 1,
-      code: "IT001",
-      image: OrangeImage,
-      productName: "Orange",
-      brandName: "N/D",
-      categoryName: "Fruits",
-      expiryDate: "12-12-2022",
-    },
-    {
-      key: 2,
-      code: "IT002",
-      image: PineappleImage,
-      productName: "Pineapple",
-      brandName: "N/D",
-      categoryName: "Fruits",
-      expiryDate: "10-12-2022",
-    },
-    {
-      key: 3,
-      code: "IT003",
-      image: StawberryImage,
-      productName: "Stawberry",
-      brandName: "N/D",
-      categoryName: "Fruits",
-      expiryDate: "27-06-2022",
-    },
-    {
-      key: 4,
-      code: "IT004",
-      image: AvocatImage,
-      productName: "Avocat",
-      brandName: "N/D",
-      categoryName: "Fruits",
-      expiryDate: "20-05-2022",
-    },
-  ]);
+  const [inStoreOrders, setinStoreOrders] = useState({ numberOfOrders: 0, total: 0 });
+  const [deliveryOrders, setdeliveryOrders] = useState({ numberOfOrders: 0, total: 0 });
+  const [pickupOrders, setpickupOrders] = useState({ numberOfOrders: 0, total: 0 });
 
   const [recentData] = useState([
     { key: 1, image: EarpodIcon, products: "Apple Earpods", price: "$891.2" },
@@ -130,57 +96,6 @@ const Dashboard = (props) => {
     { key: 3, image: SamsungIcon, products: "Samsung", price: "$561.2" },
     { key: 4, image: MacbookIcon, products: "Macbook Pro", price: "$1009.2" },
   ]);
-
-  const expiredProductColumns = [
-    {
-      title: "SNo",
-      dataIndex: "key",
-      sorter: (a, b) => a.key.length - b.key.length,
-    },
-    {
-      title: "Product Code",
-      dataIndex: "code",
-      render: (text, record) => (
-        <Link style={{ textDecoration: 'none' }}  to="#" style={{ fontSize: "14px" }}>
-          {text}
-        </Link>
-      ),
-      sorter: (a, b) => a.code.length - b.code.length,
-    },
-    {
-      title: "Product Name",
-      dataIndex: "productName",
-      render: (text, record) => (
-        <div className="productimgname">
-          <Link style={{ textDecoration: 'none' }}  to="#" className="product-img">
-            <img alt="" src={record.image} />
-          </Link>
-          <Link style={{ textDecoration: 'none' }}  to="#" style={{ fontSize: "14px" }}>
-            {record.productName}
-          </Link>
-        </div>
-      ),
-      sorter: (a, b) => a.productName.length - b.productName.length,
-    },
-    {
-      title: "Brand Name",
-      dataIndex: "brandName",
-      render: (text, record) => <div style={{ fontSize: "14px" }}>{text}</div>,
-      sorter: (a, b) => a.brandName.length - b.brandName.length,
-    },
-    {
-      title: "Category Name",
-      dataIndex: "categoryName",
-      render: (text, record) => <div style={{ fontSize: "14px" }}>{text}</div>,
-      sorter: (a, b) => a.categoryName.length - b.categoryName.length,
-    },
-    {
-      title: "Expiry Date",
-      dataIndex: "expiryDate",
-      render: (text, record) => <div style={{ fontSize: "14px" }}>{text}</div>,
-      sorter: (a, b) => a.expiryDate.length - b.expiryDate.length,
-    },
-  ];
 
   const recentDataColumns = [
     {
@@ -193,10 +108,10 @@ const Dashboard = (props) => {
       dataIndex: "products",
       render: (text, record) => (
         <div className="productimgname">
-          <Link style={{ textDecoration: 'none' }}  to="#" className="product-img">
+          <Link style={{ textDecoration: 'none' }} to="#" className="product-img">
             <img alt="" src={record.image} />
           </Link>
-          <Link style={{ textDecoration: 'none' }}  to="#" style={{ fontSize: "14px" }}>
+          <Link style={{ textDecoration: 'none' }} to="#" style={{ fontSize: "14px" }}>
             {record.products}
           </Link>
         </div>
@@ -212,30 +127,87 @@ const Dashboard = (props) => {
     },
   ];
 
+  useEffect(() => {
+    try {
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .collection("transList")
+        .get()
+        .then((querySnapshot) => {
+
+          let inStoreOrders = { numberOfOrders: 0, total: 0 };
+          let deliveryOrders = { numberOfOrders: 0, total: 0 };
+          let pickupOrders = { numberOfOrders: 0, total: 0 };
+
+          querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            // console.log(doc.id, " => ", doc.data());
+            // settransList((prevState) => [...prevState, doc.data()]);
+            // settransListTableOrg((prevState) => [...prevState,
+            // {
+            //   id: doc.data().transNum.toUpperCase(),
+            //   number: doc.data().transNum,
+            //   name: doc.data().customer?.name ? doc.data().customer?.name : "N/A",
+            //   // date: getDate(doc.data()),
+            //   originalData: doc.data(),
+            //   amount: doc.data().total,
+            //   system: 'POS',
+            //   status: doc.data().method === "deliveryOrder" ? "Delivery" : "Pickup",
+            // }
+            // ]);
+
+            if (doc.data().customer?.name) {
+              if (doc.data().method === "deliveryOrder") {
+                deliveryOrders.numberOfOrders += 1;
+                deliveryOrders.total += parseFloat(doc.data().total);
+                console.log('Delivery order: ', doc.data().total)
+              } else {
+                pickupOrders.numberOfOrders += 1;
+                pickupOrders.total += parseFloat(doc.data().total);
+                console.log('Pickup order: ', doc.data().total)
+              }
+            } else {
+              inStoreOrders.numberOfOrders += 1;
+              inStoreOrders.total += parseFloat(doc.data().total);
+              console.log('Instore order: ', doc.data().total)
+            }
+
+          });
+
+          setinStoreOrders(inStoreOrders);
+          setdeliveryOrders(deliveryOrders);
+          setpickupOrders(pickupOrders);
+
+        });
+    } catch {
+      console.log("Error occured retrieving tranasctions");
+    }
+  }, []);
+
   return (
     <>
       <div className="page-wrapper">
         <Helmet>
-          <title>Dreams Pos admin template</title>
+          <title>Divine Pos - Manager</title>
           <meta name="description" content="Dashboard page" />
         </Helmet>
         <div className="content">
           <div className="row">
             <div className="col-lg-3 col-sm-6 col-12">
-              <div className="dash-widget">
+              <div className="dash-widget  dash1">
                 <div className="dash-widgetimg">
                   <span>
-                    <img src={Dash1} alt="img" />
+                    <img src={Dash2} alt="img" />
                   </span>
                 </div>
                 <div className="dash-widgetcontent">
                   <h5>
                     $
                     <span className="counters">
-                      <CountUp end={307144} />
+                      <CountUp end={inStoreOrders.total + pickupOrders.total + deliveryOrders.total} />
                     </span>
                   </h5>
-                  <h6>Total Purchase Due</h6>
+                  <h6>Total Revenue</h6>
                 </div>
               </div>
             </div>
@@ -250,54 +222,65 @@ const Dashboard = (props) => {
                   <h5>
                     $
                     <span className="counters">
-                      <CountUp end={4385} />
+                      <CountUp end={pickupOrders.total} />
                     </span>
                   </h5>
-                  <h6>Total Sales Due</h6>
+                  <h6>Pickup Order Revenue</h6>
                 </div>
               </div>
             </div>
             <div className="col-lg-3 col-sm-6 col-12">
-              <div className="dash-widget dash2">
+              <div className="dash-widget dash1">
                 <div className="dash-widgetimg">
                   <span>
-                    <img src={Dash3} alt="img" />
+                    <img src={Dash2} alt="img" />
                   </span>
                 </div>
                 <div className="dash-widgetcontent">
                   <h5>
                     $
                     <span className="counters">
-                      <CountUp end={385656.5} />
+                      <CountUp end={deliveryOrders.total} />
                     </span>
                   </h5>
-                  <h6>Total Sale Amount</h6>
+                  <h6>Delivery Order Revenue</h6>
                 </div>
               </div>
             </div>
             <div className="col-lg-3 col-sm-6 col-12">
-              <div className="dash-widget dash3">
+              <div className="dash-widget dash1">
                 <div className="dash-widgetimg">
                   <span>
-                    <img src={Dash4} alt="img" />
+                    <img src={Dash2} alt="img" />
                   </span>
                 </div>
                 <div className="dash-widgetcontent">
                   <h5>
                     $
                     <span className="counters">
-                      <CountUp end={40000} />
+                      <CountUp end={inStoreOrders.total} />
                     </span>
                   </h5>
-                  <h6>Total Sale Amount</h6>
+                  <h6>In Store Order Revenue</h6>
                 </div>
               </div>
             </div>
             <div className="col-lg-3 col-sm-6 col-12 d-flex">
               <div className="dash-count">
                 <div className="dash-counts">
-                  <h4>100</h4>
-                  <h5>Customers</h5>
+                  <h4>{pickupOrders.numberOfOrders + deliveryOrders.numberOfOrders + inStoreOrders.numberOfOrders}</h4>
+                  <h5>Total Orders</h5>
+                </div>
+                <div className="dash-imgs">
+                  <FeatherIcon icon="book-open" />
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-3 col-sm-6 col-12 d-flex">
+              <div className="dash-count das1">
+                <div className="dash-counts">
+                  <h4>{pickupOrders.numberOfOrders}</h4>
+                  <h5>Pickup Orders</h5>
                 </div>
                 <div className="dash-imgs">
                   <FeatherIcon icon="user" />
@@ -305,41 +288,30 @@ const Dashboard = (props) => {
               </div>
             </div>
             <div className="col-lg-3 col-sm-6 col-12 d-flex">
-              <div className="dash-count das1">
-                <div className="dash-counts">
-                  <h4>100</h4>
-                  <h5>Suppliers</h5>
-                </div>
-                <div className="dash-imgs">
-                  <FeatherIcon icon="user-check" />
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-sm-6 col-12 d-flex">
               <div className="dash-count das2">
                 <div className="dash-counts">
-                  <h4>100</h4>
-                  <h5>Purchase Invoice</h5>
+                  <h4>{deliveryOrders.numberOfOrders}</h4>
+                  <h5>Delivery Orders</h5>
                 </div>
                 <div className="dash-imgs">
-                  <FeatherIcon icon="file-text" />
+                  <FeatherIcon icon="truck" />
                 </div>
               </div>
             </div>
             <div className="col-lg-3 col-sm-6 col-12 d-flex">
               <div className="dash-count das3">
                 <div className="dash-counts">
-                  <h4>105</h4>
-                  <h5>Sales Invoice</h5>
+                  <h4>{inStoreOrders.numberOfOrders}</h4>
+                  <h5>In Store Orders</h5>
                 </div>
                 <div className="dash-imgs">
-                  <FeatherIcon icon="file" />
+                  <FeatherIcon icon="shopping-bag" />
                 </div>
               </div>
             </div>
           </div>
           {/* Button trigger modal */}
-          <div className="row">
+          {/* <div className="row">
             <div className="col-lg-7 col-sm-12 col-12 d-flex">
               <div className="card flex-fill">
                 <div className="card-header pb-0 d-flex justify-content-between align-items-center">
@@ -361,17 +333,17 @@ const Dashboard = (props) => {
                         aria-labelledby="dropdownMenuButton"
                       >
                         <li>
-                          <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
+                          <Link style={{ textDecoration: 'none' }} to="#" className="dropdown-item">
                             2022
                           </Link>
                         </li>
                         <li>
-                          <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
+                          <Link style={{ textDecoration: 'none' }} to="#" className="dropdown-item">
                             2021
                           </Link>
                         </li>
                         <li>
-                          <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item">
+                          <Link style={{ textDecoration: 'none' }} to="#" className="dropdown-item">
                             2020
                           </Link>
                         </li>
@@ -394,7 +366,7 @@ const Dashboard = (props) => {
                 <div className="card-header pb-0 d-flex justify-content-between align-items-center">
                   <h4 className="card-title mb-0">Recently Added Products</h4>
                   <div className="dropdown dropdown-action profile-action">
-                    <Link style={{ textDecoration: 'none' }} 
+                    <Link style={{ textDecoration: 'none' }}
                       to="#"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
@@ -407,7 +379,7 @@ const Dashboard = (props) => {
                       aria-labelledby="dropdownMenuButton"
                     >
                       <li>
-                        <Link style={{ textDecoration: 'none' }} 
+                        <Link style={{ textDecoration: 'none' }}
                           to="/authed/product/productlist-product"
                           className="dropdown-item"
                         >
@@ -415,7 +387,7 @@ const Dashboard = (props) => {
                         </Link>
                       </li>
                       <li>
-                        <Link style={{ textDecoration: 'none' }} 
+                        <Link style={{ textDecoration: 'none' }}
                           to="/authed/product/addproduct-product"
                           className="dropdown-item"
                         >
@@ -438,22 +410,7 @@ const Dashboard = (props) => {
                 </div>
               </div>
             </div>
-          </div>
-          <div className="card mb-0">
-            <div className="card-body">
-              <h4 className="card-title">Expired Products</h4>
-              <div className="table-responsive dataview">
-                <Table
-                  className="table datatable"
-                  key={props}
-                  columns={expiredProductColumns}
-                  dataSource={expiredData}
-                  rowKey={(record) => record.id}
-                  pagination={false}
-                />
-              </div>
-            </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

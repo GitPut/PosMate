@@ -60,7 +60,7 @@ const AddCategory = () => {
                                 </div>
                                 <div className="col-lg-12">
                                     <button className="btn btn-submit me-2" onClick={AddToDb}>
-                                        Submit
+                                        Add
                                     </button>
                                     <Link style={{ textDecoration: 'none' }} to="/authed/product/categorylist-product" className="btn btn-cancel">
                                         Cancel

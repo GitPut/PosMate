@@ -6,14 +6,14 @@ import EditProduct from './EditProduct'
 import CategoryList from './CategoryList';
 import AddCategory from './AddCategory';
 import EditCategory from './EditCategory';
-import SubCategoryTable from './SubCategoryTable';
-import AddSubCategory from './AddSubCategory';
-import EditSubCategory from './EditSubCategory';
-import BrandList from './BrandList';
-import AddBrand from './AddBrand';
-import EditBrand from './EditBrand';
-import ImportProduct from './ImportProduct';
-import PrintBarcode from './PrintBarcode';
+import SubCategoryTable from './Unused/SubCategoryTable';
+import AddSubCategory from './Unused/AddSubCategory';
+import EditSubCategory from './Unused/EditSubCategory';
+import BrandList from './Unused/BrandList';
+import AddBrand from './Unused/AddBrand';
+import EditBrand from './Unused/EditBrand';
+import ImportProduct from './Unused/ImportProduct';
+import PrintBarcode from './Unused/PrintBarcode';
 import ProductDetails from './productDetails';
 
 const ProductRoute = ({ match }) => (

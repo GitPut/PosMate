@@ -85,7 +85,7 @@ const EditProduct = (props) => {
                 <div className="col-lg-3 col-sm-6 col-12">
                   <div className="form-group">
                     <label>Product Name</label>
-                    <input type="text" defaultValue={newProduct.name} onChange={(event) => setnewProduct((prevState) => ({
+                    <input type="text" defaultValue={newProduct?.name} onChange={(event) => setnewProduct((prevState) => ({
                       ...prevState,
                       name: event.target.value,
                     }))} />
@@ -98,7 +98,7 @@ const EditProduct = (props) => {
                       className="select"
                       data={selectValues}
                       options={{
-                        placeholder: newProduct.catagory ? newProduct.catagory : newProduct.category,
+                        placeholder: newProduct?.catagory ? newProduct?.catagory : newProduct?.category,
                       }}
                       onSelect={(val) => {
                         console.log('val', val.params.data.text)
@@ -113,7 +113,7 @@ const EditProduct = (props) => {
                 <div className="col-lg-3 col-sm-6 col-12">
                   <div className="form-group">
                     <label>Price</label>
-                    <input type="text" defaultValue={parseFloat(newProduct.price)} onChange={(event) => setnewProduct((prevState) => ({
+                    <input type="text" defaultValue={parseFloat(newProduct?.price)} onChange={(event) => setnewProduct((prevState) => ({
                       ...prevState,
                       price: event.target.value,
                     }))} />
@@ -125,7 +125,7 @@ const EditProduct = (props) => {
                     <textarea
                       className="form-control"
                       defaultValue={
-                        newProduct.description
+                        newProduct?.description
                       }
                       onChange={(event) => setnewProduct((prevState) => ({
                         ...prevState,
@@ -151,7 +151,7 @@ const EditProduct = (props) => {
                           offset: 400 * index,
                           index,
                         })}
-                        data={newProduct.options}
+                        data={newProduct?.options}
                         keyExtractor={(item) => item.id?.toString()}
                         renderItem={({ item, index }) => (
                           <OptionView
@@ -165,7 +165,7 @@ const EditProduct = (props) => {
                           />
                         )}
                       />
-                      {newProduct.options.length === 0 && (
+                      {newProduct?.options.length === 0 && (
                         <Button
                           title="Add Option"
                           onPress={() => {
@@ -186,8 +186,8 @@ const EditProduct = (props) => {
                           }}
                           style={{ marginBottom: 25, backgroundColor: "#4050B5" }}
                           disabled={
-                            newProduct.options.length > 0 &&
-                            newProduct.options[newProduct.options.length - 1].label === null
+                            newProduct?.options.length > 0 &&
+                            newProduct?.options[newProduct?.options.length - 1].label === null
                           }
                         />
                       )}

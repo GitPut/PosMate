@@ -7,7 +7,7 @@ const Signup = () => {
   const [password, setPassword] = useState();
   const [name, setname] = useState();
   const [phoneNumber, setphoneNumber] = useState();
-  const [error, seterror] = useState(false);
+  const [error, seterror] = useState(false); 
 
   const attemptSignUp = () => {
     if (email && password) {

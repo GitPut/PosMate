@@ -26,19 +26,6 @@ import Swal from "sweetalert2";
 import { userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
 
-const options = [
-  { id: 1, text: "Choose Category", text: "Choose Category" },
-  { id: 2, text: "Computers", text: "Computers" },
-];
-const options1 = [
-  { id: 1, text: "Choose Sub Category", text: "Choose Sub Category" },
-  { id: 2, text: "Fruits", text: "Fruits" },
-];
-const options2 = [
-  { id: 1, text: "Choose Sub Brand", text: "Choose Sub Brand" },
-  { id: 2, text: "Brand", text: "Brand" },
-];
-
 const CategoryList = () => {
   const [inputfilter, setInputfilter] = useState(false);
   const catalog = userStoreState.use();
@@ -100,7 +87,12 @@ const CategoryList = () => {
             id: index + 1,
             image: AvocatImage,
             categoryName: category,
-            categoryCode: `C00${index + 1}`,
+            numOfProducts: catalog.products.filter(
+              (e) =>
+                e.catagory === category ||
+                e.category === category
+            ).length,
+            // categoryCode: `C00${index + 1}`,
             createdBy: "Admin",
           },
         ]);
@@ -114,25 +106,24 @@ const CategoryList = () => {
       dataIndex: "categoryName",
       render: (text, record) => (
         <div className="productimgname">
-          <Link style={{ textDecoration: 'none' }} className="product-img">
-            <img alt="" src={record.image} />
-          </Link>
-          <Link style={{ textDecoration: 'none' }} style={{ fontSize: "15px", marginLeft: "10px" }}>
+          <img alt="" src={record.image} />
+          <p style={{ textDecoration: 'none' }} style={{ fontSize: "15px", marginLeft: "10px" }}>
             {record.categoryName}
-          </Link>
+          </p>
         </div>
       ),
-      sorter: (a, b) => a.categoryName.length - b.categoryName.length,
     },
+    // {
+    //   title: "Category Code",
+    //   dataIndex: "categoryCode",
+    // },
     {
-      title: "Category Code",
-      dataIndex: "categoryCode",
-      sorter: (a, b) => a.categoryCode.length - b.categoryCode.length,
+      title: "Number Of Products",
+      dataIndex: "numOfProducts",
     },
     {
       title: "Created By",
       dataIndex: "createdBy",
-      sorter: (a, b) => a.createdBy.length - b.createdBy.length,
     },
     {
       title: "Action",
@@ -173,59 +164,6 @@ const CategoryList = () => {
           {/* /product list */}
           <div className="card">
             <div className="card-body">
-              <Tabletop inputfilter={inputfilter} togglefilter={togglefilter} />
-              {/* /Filter */}
-              <div
-                className={`card mb-0 ${inputfilter ? "toggleCls" : ""}`}
-                id="filter_inputs"
-                style={{ display: inputfilter ? "block" : "none" }}
-              >
-                <div className="card-body pb-0">
-                  <div className="row">
-                    <div className="col-lg-2 col-sm-6 col-12">
-                      <div className="form-group">
-                        <Select2
-                          className="select"
-                          data={options}
-                          options={{
-                            placeholder: "Choose Category",
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-2 col-sm-6 col-12 me-2">
-                      <div className="form-group">
-                        <Select2
-                          className="select"
-                          data={options1}
-                          options={{
-                            placeholder: "Choose Sub Category",
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-2 col-sm-6 col-12">
-                      <div className="form-group">
-                        <Select2
-                          className="select"
-                          data={options2}
-                          options={{
-                            placeholder: "Choose Sub Brand",
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-1 col-sm-6 col-12 ms-auto">
-                      <div className="form-group">
-                        <a className="btn btn-filters ms-auto">
-                          <img src={search_whites} alt="img" />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* /Filter */}
               <div className="table-responsive">
                 <Table columns={columns} dataSource={data} />
               </div>

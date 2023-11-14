@@ -42,7 +42,7 @@ import NonAuthRoute from "./non-authed/NonAuthRoute";
 
 const RouteManager = () => {
   const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
-  let isTutorialCompleteLocal = JSON.parse(
+  const isTutorialCompleteLocal = JSON.parse(
     localStorage.getItem("tutorialComplete") || null
   );
   const userS = userState.use();
@@ -139,8 +139,8 @@ const RouteManager = () => {
 
             if (doc.data().freeTrial) {
               setisNewUser(false);
-              let firstDate = new Date(doc.data().freeTrial.seconds * 1000);
-              let today = new Date();
+              const firstDate = new Date(doc.data().freeTrial.seconds * 1000);
+              const today = new Date();
               if (firstDate <= today) {
                 setTrialDetailsState({
                   endDate: doc.data().freeTrial,
@@ -203,7 +203,7 @@ const RouteManager = () => {
 
       const unsub = db
         .collection("users")
-        .doc(userS.uid)
+        .doc(userS?.uid)
         .onSnapshot((doc) => {
           // setloading(true);
           setUserStoreState({
@@ -269,7 +269,7 @@ const RouteManager = () => {
 
                 const newArray = [];
 
-                let acc = [];
+                const acc = [];
 
                 const CleanupOps = (metaList) => {
                   const opsArray = [];
@@ -443,7 +443,7 @@ const RouteManager = () => {
                       qz.websocket
                         .connect()
                         .then(function () {
-                          let config = qz.configs.create(
+                          const config = qz.configs.create(
                             storeDetails.comSelected
                           );
                           return qz.print(config, printData);
@@ -585,7 +585,7 @@ const RouteManager = () => {
                     qz.websocket
                       .connect()
                       .then(function () {
-                        let config = qz.configs.create(
+                        const config = qz.configs.create(
                           storeDetails.comSelected
                         );
                         return qz.print(config, printData);
@@ -670,7 +670,7 @@ const RouteManager = () => {
         <>
           <Route path="/" component={AuthRoute} />
           {trialDetails.hasEnded && <TrialEnded resetLoader={resetLoader} />}
-          <Modal
+          {/* <Modal
             transparent
             visible={
               tutorialDetails.complete !== true &&
@@ -679,21 +679,21 @@ const RouteManager = () => {
             }
           >
             <Tutorial />
-          </Modal>
+          </Modal> */}
         </>
       );
     } else if (isSubscribed) {
       return (
         <>
           <Route path="/" component={AuthRoute} />
-          <Modal
+          {/* <Modal
             transparent
             visible={
               tutorialDetails.complete !== true && tutorialDetails.step == 0
             }
           >
             <Tutorial />
-          </Modal>
+          </Modal> */}
         </>
       );
     } else if (isNewUser) {

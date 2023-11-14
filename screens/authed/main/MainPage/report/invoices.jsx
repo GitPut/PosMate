@@ -408,9 +408,9 @@ const Sales = () => {
                     placeholder="Search..."
                     onChange={(e) => setsearch(e.target.value)}
                   />
-                  <a className="btn btn-searchset">
+                  {/* <a className="btn btn-searchset">
                     <img src={Search} alt="img" />
-                  </a>
+                  </a> */}
                 </div>
               </div>
               <div className="wordset">

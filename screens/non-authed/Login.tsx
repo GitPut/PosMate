@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Modal, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { signIn } from "state/firebaseFunctions";
 import { Button } from "@react-native-material/core";
@@ -7,10 +7,14 @@ const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, seterror] = useState(false);
 
   const attemptSignIn = () => {
     if (email && password) {
-      signIn(email, password);
+      signIn(email, password).catch((error) => {
+        console.log(error);
+        seterror(error.message);
+      });
     }
   };
 
@@ -150,20 +154,29 @@ const Login = () => {
                     </a>
                   </div>
                 </form>
-                <div
-                  style={{ display: "none" }}
-                  data-wf-user-form-error="true"
-                  className="w-users-userformerrorstate error-message w-form-fail"
-                >
-                  <div
-                    className="user-form-error-msg"
-                    wf-login-form-general-error-error="We're having trouble logging you in. Please try again, or contact us if you continue to have problems."
-                    wf-login-form-invalid-email_or_password-error="Invalid email or password. Please try again."
+                <Modal visible={error} transparent={true}>
+                  <TouchableOpacity
+                    onPress={() => seterror(false)}
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      padding: "20%",
+                      backgroundColor: "rgba(0,0,0,0.5)",
+                    }}
                   >
-                    We're having trouble logging you in. Please try again, or
-                    contact us if you continue to have problems.
-                  </div>
-                </div>
+                    <div
+                      data-wf-user-form-error="true"
+                      className=" error-message "
+                    >
+                      <div className="user-form-error-msg">
+                        There was an error signing you up. Please try again, or
+                        contact us if you continue to have problems. ({error})
+                      </div>
+                    </div>
+                  </TouchableOpacity>
+                </Modal>
               </div>
             </div>
           </div>

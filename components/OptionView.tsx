@@ -9,7 +9,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
   const [testMap, settestMap] = useState(structuredClone(item.optionsList));
-  var optionLbls = newProduct.options.map(function (el) {
+  const optionLbls = newProduct.options.map(function (el) {
     if (el.label !== e.label && el.label !== null) {
       return el.label;
     }
@@ -136,9 +136,15 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
           <TextInput
             placeholder="Enter selection limit or leave empty"
             onChangeText={(val) => {
-              if (e.optionType === "Multi Choice") {
-                sete((prevState) => ({ ...prevState, numOfSelectable: val }));
-                newProductOptions.current[index].numOfSelectable = val;
+              const re = /^[0-9\b]+$/;
+
+              // if value is not blank, then test the regex
+
+              if (val === "" || re.test(val)) {
+                if (e.optionType === "Multi Choice") {
+                  sete((prevState) => ({ ...prevState, numOfSelectable: val }));
+                  newProductOptions.current[index].numOfSelectable = val;
+                }
               }
             }}
             value={e.numOfSelectable}
@@ -177,6 +183,7 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
         const eInnerList = structuredClone(eInnerListStart);
         return (
           <View
+            key={indexInnerList}
             style={{
               flexDirection: "row",
               paddingTop: 20,
@@ -202,10 +209,16 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
             <TextInput
               placeholder="Enter price increase"
               onChangeText={(val) => {
-                const clone = structuredClone(testMap);
-                clone[indexInnerList].priceIncrease = val;
-                newProductOptions.current[index].optionsList = clone;
-                settestMap(clone);
+                const re = /^[0-9\b]+$/;
+
+                // if value is not blank, then test the regex
+
+                if (val === "" || re.test(val)) {
+                  const clone = structuredClone(testMap);
+                  clone[indexInnerList].priceIncrease = val;
+                  newProductOptions.current[index].optionsList = clone;
+                  settestMap(clone);
+                }
               }}
               value={eInnerList.priceIncrease}
               style={{ width: "45%" }}
@@ -283,6 +296,7 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
 
         return (
           <View
+            key={indexOfIf}
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
@@ -557,7 +571,7 @@ const OptionView = ({
             onPress={() => {
               function moveItem(from, to) {
                 // remove `from` item and store it
-                var f = newProductOptions.current.splice(from, 1)[0];
+                const f = newProductOptions.current.splice(from, 1)[0];
                 // insert stored item into position `to`
                 newProductOptions.current.splice(to, 0, f);
               }
@@ -589,7 +603,7 @@ const OptionView = ({
             onPress={() => {
               function moveItem(from, to) {
                 // remove `from` item and store it
-                var f = newProductOptions.current.splice(from, 1)[0];
+                const f = newProductOptions.current.splice(from, 1)[0];
                 // insert stored item into position `to`
                 newProductOptions.current.splice(to, 0, f);
               }
@@ -619,11 +633,19 @@ const OptionView = ({
                 ...item,
                 label: item.label + " Copy",
               });
+              // setnewProduct((prevState) => ({
+              //   ...prevState,
+              //   options: newProductOptions.current,
+              // }));
+              // setindexOn(null);
+
+              //
               setnewProduct((prevState) => ({
                 ...prevState,
                 options: newProductOptions.current,
               }));
-              setindexOn(null);
+              setindexOn(newProductOptions.current.length - 1);
+              //
             }}
           >
             <Feather name="copy" size={32} color="white" />

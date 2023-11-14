@@ -182,7 +182,7 @@ const AddProduct = () => {
                                 </div>
                                 <div className="col-lg-12">
                                     <button className="btn btn-submit me-2" onClick={handleDataUpdate}>
-                                        Submit
+                                        Add
                                     </button>
                                     <Link style={{ textDecoration: 'none' }} to="/authed/product/productlist-product" className="btn btn-cancel">
                                         Cancel

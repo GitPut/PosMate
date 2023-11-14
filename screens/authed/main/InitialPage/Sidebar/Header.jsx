@@ -51,27 +51,27 @@ const Header = (props) => {
           onMouseLeave={expandMenu}
           onMouseOver={expandMenuOpen}
         >
-          <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard" className="logo">
-            <img src={Logo} alt="" style={{marginTop: 15}} />
+          <Link style={{ textDecoration: 'none' }} to="/authed/dashboard" className="logo">
+            <img src={Logo} alt="" style={{ marginTop: 15 }} />
           </Link>
-          <Link style={{ textDecoration: 'none' }}  to="/authed/dashboard" className="logo-small">
+          <Link style={{ textDecoration: 'none' }} to="/authed/dashboard" className="logo-small">
             <img src={SmallLogo} alt="" />
           </Link>
-          <Link style={{ textDecoration: 'none' }} 
+          {/* <Link style={{ textDecoration: 'none' }}
             id="toggle_btn"
             to="#"
             style={{
               display: pathname.includes("tasks")
                 ? "none"
                 : pathname.includes("compose")
-                ? "none"
-                : "",
+                  ? "none"
+                  : "",
             }}
             onClick={handlesidebar}
-          ></Link>{" "}
+          ></Link>{" "} */}
         </div>
         {/* /Logo */}
-        <Link style={{ textDecoration: 'none' }} 
+        <Link style={{ textDecoration: 'none' }}
           id="mobile_btn"
           className="mobile_btn"
           to="#"
@@ -288,7 +288,7 @@ const Header = (props) => {
           </li> */}
           {/* /Notifications */}
           <li className="nav-item dropdown has-arrow main-drop">
-            <Link style={{ textDecoration: 'none' }} 
+            <Link style={{ textDecoration: 'none' }}
               to="#"
               className="dropdown-toggle nav-link userset"
               data-bs-toggle="dropdown"
@@ -300,7 +300,7 @@ const Header = (props) => {
             </Link>
             <div className="dropdown-menu menu-drop-user">
               <div className="profilename">
-                <div className="profileset">
+                {/* <div className="profileset">
                   <span className="user-img">
                     <img src={Avatar} alt="" />
                     <span className="status online" />
@@ -309,12 +309,12 @@ const Header = (props) => {
                     <h6>John Doe</h6>
                     <h5>Admin</h5>
                   </div>
-                </div>
+                </div> */}
                 <hr className="m-0" />
-                <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="/pos">
+                <Link style={{ textDecoration: 'none' }} className="dropdown-item" to="/pos">
                   <i className="me-2" data-feather="user" /> POS
                 </Link>
-                <Link style={{ textDecoration: 'none' }} 
+                <Link style={{ textDecoration: 'none' }}
                   className="dropdown-item"
                   to="/authed/settings/generalsettings"
                 >
@@ -322,7 +322,7 @@ const Header = (props) => {
                   Settings
                 </Link>
                 <hr className="m-0" />
-                <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item logout pb-0" onClick={() => logout()}>
+                <Link style={{ textDecoration: 'none' }} to="#" className="dropdown-item logout pb-0" onClick={() => logout()}>
                   <img src={Logout} className="me-2" alt="img" />
                   Logout
                 </Link>
@@ -333,7 +333,7 @@ const Header = (props) => {
         {/* /Header Menu */}
         {/* Mobile Menu */}
         <div className="dropdown mobile-user-menu">
-          <Link style={{ textDecoration: 'none' }} 
+          <Link style={{ textDecoration: 'none' }}
             to="#"
             className="nav-link dropdown-toggle"
             data-bs-toggle="dropdown"
@@ -342,13 +342,13 @@ const Header = (props) => {
             <i className="fa fa-ellipsis-v" />
           </Link>
           <div className="dropdown-menu dropdown-menu-right">
-              <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="/pos">
+            <Link style={{ textDecoration: 'none' }} className="dropdown-item" to="/pos">
               POS
             </Link>
-            <Link style={{ textDecoration: 'none' }}  className="dropdown-item" to="/authed/settings/generalsettings">
+            <Link style={{ textDecoration: 'none' }} className="dropdown-item" to="/authed/settings/generalsettings">
               Settings
             </Link>
-            <Link style={{ textDecoration: 'none' }}  to="#" className="dropdown-item" onClick={() => logout()}>
+            <Link style={{ textDecoration: 'none' }} to="#" className="dropdown-item" onClick={() => logout()}>
               Logout
             </Link>
           </div>

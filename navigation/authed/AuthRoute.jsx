@@ -25,7 +25,10 @@ const AuthRoute = (props) => {
         if (!location.pathname.includes("/authed") || location.pathname.includes("/authed") && isLoginSettings === false) {
             history.push("/pos");
         }
-        //CHANGE BACK ONCE PUBLISHING
+        // else {
+        //     history.push("/authed");
+        // }
+        // //CHANGE BACK ONCE PUBLISHING
     }, [])
 
 

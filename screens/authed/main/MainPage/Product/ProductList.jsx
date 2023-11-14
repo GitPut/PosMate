@@ -28,30 +28,9 @@ import { updateData } from "state/firebaseFunctions";
 const ProductList = () => {
   const catalog = userStoreState.use();
   const [inputfilter, setInputfilter] = useState(false);
-
-  //select2
-  const options = [
-    { id: 1, text: "Choose Product", text: "Choose Product" },
-    { id: 2, text: "Macbook pro", text: "Macbook pro" },
-    { id: 3, text: "Orange", text: "Orange" },
-  ];
-  const options2 = [
-    { id: 1, text: "Choose Category", text: "Choose Category" },
-    { id: 2, text: "Computers", text: "Computers" },
-    { id: 3, text: "Fruits", text: "Fruits" },
-  ];
-  const options3 = [
-    { id: 1, text: "Choose Sub Category", text: "Choose Sub Category" },
-    { id: 2, text: "Computers", text: "Computers" },
-  ];
-  const options4 = [
-    { id: 1, text: "Brand", text: "Brand" },
-    { id: 2, text: "N/D", text: "N/D" },
-  ];
-  const options5 = [
-    { id: 1, text: "Price", text: "Price" },
-    { id: 2, text: "150.00", text: "150.00" },
-  ];
+  const [searchFilterValue, setsearchFilterValue] = useState('')
+  const [data, setData] = useState([]);
+  const [filteredData, setfilteredData] = useState([]);
 
   const togglefilter = (value) => {
     setInputfilter(value);
@@ -89,8 +68,6 @@ const ProductList = () => {
     });
   };
 
-  const [data, setData] = useState([]);
-
   useEffect(() => {
     if (catalog.products.length > 0) {
       catalog.products.map((product, index) => {
@@ -112,6 +89,21 @@ const ProductList = () => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (searchFilterValue.length > 0) {
+
+      const filtered = data.filter((item) => {
+        return item.productName.toLowerCase().includes(searchFilterValue.toLowerCase()) || item.category.toLowerCase().includes(searchFilterValue.toLowerCase())
+      })
+
+      setfilteredData(filtered)
+    } else {
+      setfilteredData([])
+    }
+
+  }, [searchFilterValue])
+
 
   const columns = [
     {
@@ -147,42 +139,34 @@ const ProductList = () => {
           </Link>
         </div>
       ),
-      sorter: (a, b) => a.productName.length - b.productName.length,
     },
     // {
     //   title: "SKU",
     //   dataIndex: "sku",
-    //   sorter: (a, b) => a.sku.length - b.sku.length,
     // },
     {
       title: "Category",
       dataIndex: "category",
-      sorter: (a, b) => a.category.length - b.category.length,
     },
     // {
     //   title: "Brand",
     //   dataIndex: "brand",
-    //   sorter: (a, b) => a.brand.length - b.brand.length,
     // },
     {
       title: "Price",
       dataIndex: "price",
-      sorter: (a, b) => a.price.length - b.price.length,
     },
     // {
     //   title: "Unit",
     //   dataIndex: "unit",
-    //   sorter: (a, b) => a.unit.length - b.unit.length,
     // },
     // {
     //   title: "Qty",
     //   dataIndex: "qty",
-    //   sorter: (a, b) => a.qty.length - b.qty.length,
     // },
     {
       title: "Created By",
       dataIndex: "createdBy",
-      sorter: (a, b) => a.createdBy.length - b.createdBy.length,
     },
     {
       title: "Action",
@@ -255,87 +239,12 @@ const ProductList = () => {
           {/* /product list */}
           <div className="card">
             <div className="card-body">
-              <Tabletop inputfilter={inputfilter} togglefilter={togglefilter} />
+              <Tabletop inputfilter={inputfilter} togglefilter={togglefilter} removePrintAndFilter={true} searchFilterValue={searchFilterValue} setsearchFilterValue={setsearchFilterValue} />
               {/* /Filter */}
-              <div
-                className={`card mb-0 ${inputfilter ? "toggleCls" : ""}`}
-                id="filter_inputs"
-                style={{ display: inputfilter ? "block" : "none" }}
-              >
-                <div className="card-body pb-0">
-                  <div className="row">
-                    <div className="col-lg-12 col-sm-12">
-                      <div className="row">
-                        <div className="col-lg col-sm-6 col-12">
-                          <div className="form-group">
-                            <Select2
-                              className="select"
-                              data={options}
-                              options={{
-                                placeholder: "Choose Product",
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-lg col-sm-6 col-12">
-                          <div className="form-group">
-                            <Select2
-                              className="select"
-                              data={options2}
-                              options={{
-                                placeholder: "Choose Category",
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-lg col-sm-6 col-12">
-                          <div className="form-group">
-                            <Select2
-                              className="select"
-                              data={options3}
-                              options={{
-                                placeholder: "Choose Sub Category",
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-lg col-sm-6 col-12">
-                          <div className="form-group">
-                            <Select2
-                              className="select"
-                              data={options4}
-                              options={{
-                                placeholder: "Brand",
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-lg col-sm-6 col-12 ">
-                          <div className="form-group">
-                            <Select2
-                              className="select"
-                              data={options5}
-                              options={{
-                                placeholder: "Price",
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-lg-1 col-sm-6 col-12">
-                          <div className="form-group">
-                            <a className="btn btn-filters ms-auto">
-                              <img src={search_whites} alt="img" />
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
               {/* /Filter */}
               <div className="table-responsive">
-                <Table columns={columns} dataSource={data} />
+                <Table columns={columns} dataSource={filteredData.length > 0 ? filteredData : data} />
               </div>
             </div>
           </div>

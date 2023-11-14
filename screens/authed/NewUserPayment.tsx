@@ -88,9 +88,9 @@ const NewUserPayment = ({ resetLoader }) => {
                         <Text style={styles.overview1}>$480.00 CAD</Text>
                       )}
                       {planType.value === "freeTrial" && (
-                        <Text style={styles.overview1}>1 Day Trial</Text>
+                        <Text style={styles.overview1}>2 Week Trial</Text>
                       )}
-                      <Text style={styles.monthly5}>/</Text>
+                      {/* <Text style={styles.monthly5}>/</Text> */}
                       <Select
                         className="basic-single"
                         classNamePrefix="select"
@@ -99,7 +99,7 @@ const NewUserPayment = ({ resetLoader }) => {
                           { value: "monthly", label: "Monthly" },
                           { value: "yearly", label: "Yearly" },
                           { value: "freeTrial", label: "Free Trial" },
-                          { value: "test", label: "Test" },
+                          // { value: "test", label: "Test" },
                         ]}
                         value={planType}
                         onChange={(e) => setplanType(e)}
@@ -178,10 +178,10 @@ const NewUserPayment = ({ resetLoader }) => {
           currentStageNum={2}
           currentStageLbl="Store Setup"
           StageContent={() => {
-            const [localStoreName, setlocalStoreName] = useState(null);
-            const [localStorePhone, setlocalStorePhone] = useState(null);
-            const [localStoreWebsite, setlocalStoreWebsite] = useState(null);
-            const [localStoreAddress, setlocalStoreAddress] = useState(null);
+            const [localStoreName, setlocalStoreName] = useState(storeName);
+            const [localStorePhone, setlocalStorePhone] = useState(phoneNumber);
+            const [localStoreWebsite, setlocalStoreWebsite] = useState(website);
+            const [localStoreAddress, setlocalStoreAddress] = useState(address);
 
             return (
               <>
@@ -331,7 +331,7 @@ const NewUserPayment = ({ resetLoader }) => {
               // Get today's date
               const tomorrow = new Date();
               // Change the date by adding 1 to it (tomorrow + 1 = tomorrow)
-              tomorrow.setDate(tomorrow.getDate() + 1);
+              tomorrow.setDate(tomorrow.getDate() + 14);
               // return yyyy-mm-dd format
               updateFreeTrial(tomorrow);
             } else {
@@ -476,8 +476,8 @@ const NewUserPayment = ({ resetLoader }) => {
                     </ScrollView>
                   </View>
                   <View style={styles.pITBottomContainer}>
-                    <View style={[styles.rect32, { width: "75%" }]} />
-                    <View style={[styles.rect33, { width: "25%" }]} />
+                    <View style={[styles.rect32, { width: "100" }]} />
+                    {/* <View style={[styles.rect33, { width: "25%" }]} /> */}
                   </View>
                 </View>
                 <View
@@ -494,12 +494,12 @@ const NewUserPayment = ({ resetLoader }) => {
                   >
                     <Text style={styles.monthly6}>Back</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={[styles.group5, { opacity: 0.5 }]}
                     disabled={true}
                   >
                     <Text style={styles.monthly6}>Next</Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
               </>
             );

@@ -13,7 +13,9 @@ const Datatable = ({ props, columns, dataSource, updateBaseSelectedRows, setbase
   };
 
   useEffect(() => {
-    setbaseSelectedRows(selectedRowKeys)
+    if (updateBaseSelectedRows) {
+      setbaseSelectedRows(selectedRowKeys)
+    }
   }, [updateBaseSelectedRows])
 
   const rowSelection = {

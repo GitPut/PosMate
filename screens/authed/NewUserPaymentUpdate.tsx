@@ -167,7 +167,7 @@ function NewUserPaymentUpdate({
                 <Text style={styles.wooCommerce1}>$480.00 / Yearly</Text>
               )}
               {planType.value === "freeTrial" && (
-                <Text style={styles.wooCommerce1}>1 Day Free Trial</Text>
+                <Text style={styles.wooCommerce1}>2 Week Free Trial</Text>
               )}
             </View>
           </View>

@@ -26,39 +26,41 @@ import ResetPassword from "screens/non-authed/ResetPassword";
 import LatestUpdates from "screens/non-authed/LatestUpdates";
 import Legal from "screens/non-authed/Legal";
 import WebHomeHeader from 'components/WebHomeHeader';
+import OrderPage from 'screens/non-authed/OrderPage';
 
 
 const NonAuthRoute = (props) => {
     const isLoginSettings = isSignedInSettingsState.use()
     const { location } = props;
-      const history = useHistory();
-    
+    const history = useHistory();
+
     useEffect(() => {
-       if (location.pathname.includes("/authed")) {
-           history.push("/");
-    }
+        if (location.pathname.includes("/authed")) {
+            history.push("/");
+        }
     }, [])
-    
+
 
     return (
-            <>
-                {location.pathname !== '/log-in' && location.pathname !== '/sign-up' && location.pathname !== '/reset-password' && <WebHomeHeader location={location} />}
+        <>
+            {location.pathname !== '/log-in' && location.pathname !== '/sign-up' && location.pathname !== '/reset-password' && !location.pathname.includes('/order/') && <WebHomeHeader location={location} />}
             <Switch>
-                 <Route exact path="/" component={WebHome}/>
-<Route path="/features" component={Features} />
-<Route path="/about-us" component={AboutUs} />
-<Route path="/pricing" component={Pricing} />
-<Route path="/faqs" component={Faqs} />
-<Route path="/contact" component={Contact} />
-<Route path="/log-in" component={Login} />
-<Route path="/sign-up" component={Signup} />
-<Route path="/legal" component={Legal}/>
-<Route path="/reset-password" component={ResetPassword} />
-<Route path="/latest-updates" component={LatestUpdates}/>
-<Route path="*" component={NotFound} />
+                <Route exact path="/" component={WebHome} />
+                <Route path="/features" component={Features} />
+                <Route path="/about-us" component={AboutUs} />
+                <Route path="/pricing" component={Pricing} />
+                <Route path="/faqs" component={Faqs} />
+                <Route path="/contact" component={Contact} />
+                <Route path="/log-in" component={Login} />
+                <Route path="/sign-up" component={Signup} />
+                <Route path="/legal" component={Legal} />
+                <Route path="/reset-password" component={ResetPassword} />
+                <Route path="/latest-updates" component={LatestUpdates} />
+                <Route path="/order/:store" component={OrderPage} />
+                <Route path="*" component={NotFound} />
             </Switch>
-            </>
-        )
+        </>
+    )
 }
 
 export default NonAuthRoute
