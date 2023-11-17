@@ -209,7 +209,7 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
             <TextInput
               placeholder="Enter price increase"
               onChangeText={(val) => {
-                const re = /^[0-9\b]+$/;
+                const re = /^[0-9.]+$/;
 
                 // if value is not blank, then test the regex
 
@@ -660,11 +660,14 @@ const OptionView = ({
               alignItems: "center",
             }}
             onPress={() => {
+              const newProductOptionsUpdated = newProduct.options.filter(
+                (e, filterIndex) => filterIndex !== index
+              );
               newProductOptions.current.splice(index, 1);
 
               setnewProduct((prevState) => ({
                 ...prevState,
-                options: newProductOptions.current,
+                options: newProductOptionsUpdated,
               }));
               setindexOn(null);
             }}

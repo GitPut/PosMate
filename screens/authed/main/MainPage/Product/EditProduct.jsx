@@ -8,13 +8,20 @@ import { FlatList, Text, View, useWindowDimensions } from "react-native";
 import { Button } from "react-native";
 import OptionView from "components/OptionView";
 import { updateData } from "state/firebaseFunctions";
+import { useParams } from "react-router-dom";
 
 const EditProduct = (props) => {
-  const product = selectedProductState.use()
+  const catalog = userStoreState.use();
+  const history = useHistory();
+  const { productId } = useParams();
+
+  const product = {
+    existingProduct: catalog.products[productId],
+    existingProductIndex: productId,
+  }
 
   const { existingProduct, existingProductIndex } = product
 
-  const catalog = userStoreState.use();
   const [newProduct, setnewProduct] = useState(
     existingProduct
   );
@@ -22,9 +29,17 @@ const EditProduct = (props) => {
     existingProduct ? existingProduct.options : []
   );
   const [indexOn, setindexOn] = useState(0);
-  const { width, height } = useWindowDimensions();
   const [selectValues, setselectValues] = useState([]);
-  const history = useHistory();
+
+  // const resetProduct = () => {
+  //   setnewProduct(
+  //     existingProduct
+  //   );
+  //   newProductOptions.current = existingProduct ? existingProduct.options : []
+  //   setindexOn(0);
+  //   setselectValues([]);
+  //   console.log('Canceled Edit Product')
+  // }
 
   useEffect(() => {
     if (catalog.categories) {

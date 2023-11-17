@@ -25,6 +25,7 @@ import "react-select2-wrapper/css/select2.css";
 import Swal from "sweetalert2";
 import { userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
+import FeatherIcon from "feather-icons-react";
 
 const CategoryList = () => {
   const [inputfilter, setInputfilter] = useState(false);
@@ -59,7 +60,11 @@ const CategoryList = () => {
         });
         const localCatalog = structuredClone(catalog);
         if (localCatalog.categories.length > 1) {
-          localCatalog.categories.splice(props.id - 1, 1);
+          // localCatalog.categories.splice(props.id - 2, 1);
+          console.log('Delete category', props.categoryName, ' Props: ', props)
+          localCatalog.categories = catalog.categories.filter(
+            (e) => e !== props.categoryName
+          );
         } else {
           localCatalog.categories = [];
         }
@@ -127,13 +132,19 @@ const CategoryList = () => {
     },
     {
       title: "Action",
-      render: () => (
+      render: (props) => (
         <>
           <>
             {/* <Link style={{ textDecoration: 'none' }} className="me-3" to="/authed/product/editcategory-product">
               <img src={EditIcon} alt="img" />
             </Link> */}
-            <Link style={{ textDecoration: 'none' }} className="confirm-text" to="#" onClick={confirmText}>
+            <Link style={{ textDecoration: 'none' }} className="confirm-text" to="#" onClick={() => moveCategory(props, 'up')}>
+              <FeatherIcon icon="arrow-up" />
+            </Link>
+            <Link style={{ textDecoration: 'none' }} className="confirm-text" to="#" onClick={() => moveCategory(props, 'down')}>
+              <FeatherIcon icon="arrow-down" />
+            </Link>
+            <Link style={{ textDecoration: 'none' }} className="confirm-text" to="#" onClick={() => confirmText(props)}>
               <img src={DeleteIcon} alt="img" />
             </Link>
           </>
@@ -141,6 +152,28 @@ const CategoryList = () => {
       ),
     },
   ];
+
+  const moveCategory = (props, direction) => {
+    const localCatalog = structuredClone(catalog);
+    if (localCatalog.categories.length > 1) {
+      const index = localCatalog.categories.indexOf(props.categoryName);
+      if (direction === 'up') {
+        if (index > 0) {
+          const temp = localCatalog.categories[index];
+          localCatalog.categories[index] = localCatalog.categories[index - 1];
+          localCatalog.categories[index - 1] = temp;
+        }
+      } else {
+        if (index < localCatalog.categories.length - 1) {
+          const temp = localCatalog.categories[index];
+          localCatalog.categories[index] = localCatalog.categories[index + 1];
+          localCatalog.categories[index + 1] = temp;
+        }
+      }
+    }
+
+    updateData(localCatalog.categories, localCatalog.products);
+  }
 
   return (
     <>

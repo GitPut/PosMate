@@ -5,24 +5,13 @@ import Table from "../../EntryFile/datatable";
 import Tabletop from "../../EntryFile/tabletop";
 import {
   PlusIcon,
-  MacbookIcon,
-  IphoneIcon,
-  SamsungIcon,
-  EarpodIcon,
-  OrangeImage,
-  PineappleImage,
-  StawberryImage,
   AvocatImage,
-  EyeIcon,
   EditIcon,
   DeleteIcon,
-  search_whites,
   DuplicateIcon,
 } from "../../EntryFile/imagePath";
-import Select2 from "react-select2-wrapper";
 import "react-select2-wrapper/css/select2.css";
 import { setSelectedProductState, userStoreState } from "state/state";
-import { Button } from "react-native";
 import { updateData } from "state/firebaseFunctions";
 
 const ProductList = () => {
@@ -114,26 +103,26 @@ const ProductList = () => {
           <Link
             style={{ textDecoration: "none" }}
             className="product-img"
-            to="/authed/product/editproduct-product"
-            onClick={() =>
-              setSelectedProductState({
-                existingProduct: catalog.products[record.id - 1],
-                existingProductIndex: record.id - 1,
-              })
-            }
+            to={`/authed/product/editproduct-product/${record.id - 1}`}
+            // onClick={() =>
+            //   setSelectedProductState({
+            //     existingProduct: catalog.products[record.id - 1],
+            //     existingProductIndex: record.id - 1,
+            //   })
+            // }
           >
             <img alt="" src={record.image} />
           </Link>
           <Link
             style={{ textDecoration: "none" }}
             style={{ fontSize: "15px", marginLeft: "10px" }}
-            to="/authed/product/editproduct-product"
-            onClick={() =>
-              setSelectedProductState({
-                existingProduct: catalog.products[record.id - 1],
-                existingProductIndex: record.id - 1,
-              })
-            }
+            to={`/authed/product/editproduct-product/${record.id - 1}`}
+            // onClick={() =>
+            //   setSelectedProductState({
+            //     existingProduct: catalog.products[record.id - 1],
+            //     existingProductIndex: record.id - 1,
+            //   })
+            // }
           >
             {record.productName}
           </Link>
@@ -192,13 +181,13 @@ const ProductList = () => {
             <Link
               style={{ textDecoration: "none" }}
               className="me-3"
-              to="/authed/product/editproduct-product"
-              onClick={() =>
-                setSelectedProductState({
-                  existingProduct: catalog.products[props.id - 1],
-                  existingProductIndex: props.id - 1,
-                })
-              }
+              to={`/authed/product/editproduct-product/${props.id - 1}`}
+              // onClick={() =>
+              //   setSelectedProductState({
+              //     existingProduct: catalog.products[props.id - 1],
+              //     existingProductIndex: props.id - 1,
+              //   })
+              // }
             >
               <img src={EditIcon} alt="img" />
             </Link>
