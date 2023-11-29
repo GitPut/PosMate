@@ -40,6 +40,9 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
   const [deliveryPrice, setdeliveryPrice] = useState(
     storeDetails.deliveryPrice
   );
+  const [taxRate, settaxRate] = useState(
+    storeDetails.taxRate ? storeDetails.taxRate : "13"
+  );
   const [com, setcom] = useState(storeDetails.comSelected);
   const [settingsPassword, setsettingsPassword] = useState(
     storeDetails.settingsPassword
@@ -118,6 +121,7 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
         deliveryPrice: deliveryPrice,
         comSelected: com,
         settingsPassword: settingsPassword,
+        taxRate: parseFloat(taxRate),
       });
       updateStoreDetails({
         name: name,
@@ -127,6 +131,7 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
         deliveryPrice: deliveryPrice,
         comSelected: com,
         settingsPassword: settingsPassword,
+        taxRate: parseFloat(taxRate),
       });
       if (customBtnExtraFunction) {
         customBtnExtraFunction();
@@ -281,6 +286,15 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                 onChangeText={(val) => setsettingsPassword(val)}
                 style={{ margin: 10, width: "48%" }}
                 value={settingsPassword}
+              />
+              <TextInput
+                color="black"
+                variant="outlined"
+                placeholder="Enter Tax Rate Percentage"
+                label="Enter Tax Rate Percentage"
+                onChangeText={(val) => settaxRate(val)}
+                style={{ margin: 10, width: "48%" }}
+                value={taxRate}
               />
               <View style={{ margin: 10, width: "48%", height: 55 }}>
                 <Button

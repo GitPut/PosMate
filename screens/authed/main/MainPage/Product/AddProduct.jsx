@@ -4,10 +4,11 @@ import Select2 from 'react-select2-wrapper';
 import 'react-select2-wrapper/css/select2.css';
 import { userStoreState } from 'state/state';
 import { updateData } from 'state/firebaseFunctions';
-import { FlatList, View } from 'react-native';
+import { FlatList, Image, Modal, TouchableOpacity, View } from 'react-native';
 import OptionView from 'components/OptionView';
 import { Button } from 'react-native';
 import { Link, useHistory } from 'react-router-dom';
+import { auth, storage } from 'state/firebaseConfig';
 
 const AddProduct = () => {
     const catalog = userStoreState.use();
@@ -21,13 +22,18 @@ const AddProduct = () => {
             id: Math.random().toString(36).substr(2, 9),
         }
     );
-    const newProductOptions = useRef([]
-    );
+
+    const [newProductOptions, setnewProductOptions] = useState([])
+
     const [indexOn, setindexOn] = useState(0);
 
     const [selectValues, setselectValues] = useState([]);
     const categoryDropRef = useRef()
     const history = useHistory();
+
+    const [error, seterror] = useState(false)
+
+    const [selectedFile, setSelectedFile] = useState()
 
     useEffect(() => {
         if (catalog.categories) {
@@ -38,9 +44,38 @@ const AddProduct = () => {
     }, []);
 
     function handleDataUpdate() {
+        if (!newProduct.name) {
+            seterror('Please enter a product name')
+            return
+        }
+        if (!newProduct.category) {
+            seterror('Please select a category')
+            return
+        }
+        if (!newProduct.price) {
+            seterror('Please enter a price')
+            return
+        }
+
+        if (selectedFile) {
+            storage
+                .ref(auth.currentUser.uid + '/images/' + newProduct.id)
+                .put(selectedFile);
+
+            newProduct.hasImage = true
+        }
+
         updateData([...catalog.categories], [...catalog.products, { ...newProduct, category: categoryDropRef.current }]);
         history.push("/authed/product/productlist-product");
     }
+
+    const changeHandler = (event) => {
+        if (event.target.files[0].size < 5368709120) {
+            setSelectedFile(event.target.files[0]);
+        } else {
+            alert("Sorry 5gb files are the max!");
+        }
+    };
 
     return (
         <>
@@ -58,11 +93,20 @@ const AddProduct = () => {
                             <div className="col-lg-12">
                                 <div className="form-group">
                                     <label> Product Image</label>
-                                    <div className="image-upload">
-                                        <input type="file" />
-                                        <div className="image-uploads">
-                                            <img src={Upload} alt="img" />
+                                    <div className="image-upload" style={selectedFile ? { height: '180px' } : { height: '100px' }}>
+                                        <input type="file"
+                                            name="file"
+                                            id="html_btn"
+                                            onChange={changeHandler}
+                                        />
+                                        <div className="image-uploads" >
+                                            {selectedFile ? <Image style={{ height: 100, width: '100%', resizeMode: 'contain' }} source={URL.createObjectURL(selectedFile)} alt="img" /> :  <img src={Upload} alt="img" />}
+                                            {/* <img src={Upload} alt="img" /> */}
                                             <h4>Drag and drop a file to upload</h4>
+                                            {selectedFile?.name ? <Button title="Remove" onPress={() => {
+                                                setSelectedFile(null)
+                                            }
+                                            } /> : null}
                                         </div>
                                     </div>
                                 </div>
@@ -146,6 +190,7 @@ const AddProduct = () => {
                                                         newProduct={newProduct}
                                                         setnewProduct={setnewProduct}
                                                         newProductOptions={newProductOptions}
+                                                        setnewProductOptions={setnewProductOptions}
                                                         indexOn={indexOn}
                                                         setindexOn={setindexOn}
                                                     />
@@ -155,25 +200,37 @@ const AddProduct = () => {
                                                 <Button
                                                     title="Add Option"
                                                     onPress={() => {
-                                                        newProductOptions.current.push({
-                                                            label: null,
-                                                            optionsList: [],
-                                                            selectedCaseKey: null,
-                                                            selectedCaseValue: null,
-                                                            numOfSelectable: null,
-                                                            id: Math.random().toString(36).substr(2, 9),
-                                                            optionType: null,
-                                                        });
-                                                        setnewProduct((prevState) => ({
-                                                            ...prevState,
-                                                            options: newProductOptions.current,
-                                                        }));
-                                                        setindexOn(newProductOptions.current.length - 1);
+                                                        setnewProductOptions([
+                                                            {
+                                                                label: null,
+                                                                optionsList: [],
+                                                                selectedCaseKey: null,
+                                                                selectedCaseValue: null,
+                                                                numOfSelectable: null,
+                                                                id: Math.random().toString(36).substr(2, 9),
+                                                                optionType: null,
+                                                            },
+                                                        ],
+                                                        );
+                                                        // newProductOptions.current.push({
+                                                        //   label: null,
+                                                        //   optionsList: [],
+                                                        //   selectedCaseKey: null,
+                                                        //   selectedCaseValue: null,
+                                                        //   numOfSelectable: null,
+                                                        //   id: Math.random().toString(36).substr(2, 9),
+                                                        //   optionType: null,
+                                                        // });
+                                                        // setnewProduct((prevState) => ({
+                                                        //   ...prevState,
+                                                        //   options: newProductOptions,
+                                                        // }));
+                                                        setindexOn(0);
                                                     }}
                                                     style={{ marginBottom: 25, backgroundColor: "#4050B5" }}
                                                     disabled={
-                                                        newProduct.options.length > 0 &&
-                                                        newProduct.options[newProduct.options.length - 1].label === null
+                                                        newProduct?.options.length > 0 &&
+                                                        newProduct?.options[newProduct?.options.length - 1].label === null
                                                     }
                                                 />
                                             )}
@@ -191,6 +248,28 @@ const AddProduct = () => {
                             </div>
                         </div>
                     </div>
+                    <Modal visible={error} transparent={true}>
+                        <TouchableOpacity
+                            onPress={() => seterror(false)}
+                            style={{
+                                height: "100%",
+                                width: "100%",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                padding: "20%",
+                                backgroundColor: "rgba(0,0,0,0.5)",
+                            }}
+                        >
+                            <div
+                                data-wf-user-form-error="true"
+                                className=" error-message "
+                            >
+                                <div className="user-form-error-msg">
+                                    {error}
+                                </div>
+                            </div>
+                        </TouchableOpacity>
+                    </Modal>
                     {/* /add */}
                 </div>
             </div>

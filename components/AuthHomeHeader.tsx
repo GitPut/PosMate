@@ -72,22 +72,7 @@ const AuthHomeHeader = (props) => {
         >
           <Ionicons name="chevron-down" size={28} color="white" />
         </TouchableOpacity>
-        {/* <TutorialStep
-          step={1}
-          helpDescription="Click here to go to the settings page"
-          setStepDetails={setTutorialDetailsState}
-          stepDetails={tutorialDetails}
-          changeNextBtnFunc={() => {
-            if (storeDetails.settingsPassword) {
-              props.setsettingsPasswordModalVis(true);
-            } else {
-              setIsSignedInSettingsState(true);
-              history.push("/authed/dashboard");
-            }
-          }}
-        > */}
         <TouchableOpacity
-          // onPress={() => navigation.navigate("SettingsHome")}
           onPress={() => {
             if (storeDetails.settingsPassword) {
               props.setsettingsPasswordModalVis(true);
@@ -108,7 +93,6 @@ const AuthHomeHeader = (props) => {
         >
           <Entypo name="cog" size={28} color="white" />
         </TouchableOpacity>
-        {/* </TutorialStep> */}
       </View>
     </View>
   );

@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
 import "firebase/functions";
+import "firebase/storage";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -21,6 +22,8 @@ export const auth = firebase.auth();
 
 export const db = firebase.firestore();
 
+export const storage = firebase.storage();
+
 export const sendEmailFunc = (data) =>
   firebase
     .functions()
@@ -31,4 +34,3 @@ export const sendEmailFunc = (data) =>
     .catch((error) => {
       console.error(error);
     });
-

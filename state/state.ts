@@ -47,6 +47,7 @@ export const storeDetailState = entity({
   comSelected: "",
   deliveryPrice: "",
   settingsPassword: "",
+  taxRate: "",
 });
 
 export const setStoreDetailState = (val) => {

@@ -1,5 +1,6 @@
 import {
   Dimensions,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,6 +13,7 @@ import ProductDisplayBtn from "components/ProductDisplayBtn";
 import useWindowDimensions from "components/useWindowDimensions";
 import { Button } from "@react-native-material/core";
 const wh = Dimensions.get("window").height;
+import Logo from "assets/dpos-logo.png";
 
 const MenuScreen = ({ navigation, catalog }) => {
   const { height, width } = useWindowDimensions();
@@ -21,13 +23,13 @@ const MenuScreen = ({ navigation, catalog }) => {
     if (catalog.products) {
       if (catalog.products.length > 0) {
         if (!section) {
-          const correntProduct = catalog.products.filter(
+          const currentProduct = catalog.products.filter(
             (e) =>
               e.catagory === catalog.categories[0] ||
               e.category === catalog.categories[0]
           );
-          if (correntProduct.length > 0) {
-            return correntProduct.map((product, index) => (
+          if (currentProduct.length > 0) {
+            return currentProduct.map((product, index) => (
               <ProductDisplayBtn
                 product={product}
                 productIndex={index}
@@ -98,49 +100,67 @@ const MenuScreen = ({ navigation, catalog }) => {
     }
   };
 
+  const LogoImage = React.memo(
+    () => (
+      <Image
+        source={Logo}
+        style={{ width: 200, height: 160, resizeMode: "contain" }}
+      />
+    ),
+    []
+  );
+
   const SectionSelector = () => {
     return (
       <View
         style={{
-          backgroundColor: "#E6E6E6",
-          width: "90%",
-          height: 50,
-          flexDirection: "row",
-          marginTop: 20,
-          justifyContent: "space-evenly",
+          backgroundColor: "rgba(31,35,48,1)",
+          width: "23%",
+          height: "100%",
           alignItems: "center",
           alignSelf: "center",
         }}
       >
-        {catalog.categories?.map((category, index) => {
-          return (
-            <TouchableOpacity
-              key={index}
-              onPress={() => {
-                setsection(category);
-              }}
-            >
-              <Text
-                style={[
-                  (section === null &&
-                    index === 0 && {
-                      color: "black",
-                      fontWeight: "600",
-                      borderBottomWidth: 1,
-                    }) ||
-                    (section === category && {
-                      color: "black",
-                      fontWeight: "600",
-                      borderBottomWidth: 1,
-                    }),
-                  { fontSize: 16 },
-                ]}
+        <LogoImage />
+        <ScrollView
+          contentContainerStyle={{
+            height: "90%",
+            alignItems: "center",
+          }}
+        >
+          {catalog.categories?.map((category, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  setsection(category);
+                }}
+                style={{ padding: 10 }}
               >
-                {category}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+                <Text
+                  style={[
+                    (section === null &&
+                      index === 0 && {
+                        color: "white",
+                        fontWeight: "700",
+                        borderBottomWidth: 1,
+                        borderBottomColor: "white",
+                      }) ||
+                      (section === category && {
+                        color: "white",
+                        fontWeight: "700",
+                        borderBottomWidth: 1,
+                        borderBottomColor: "white",
+                      }),
+                    { fontSize: 16, color: "white" },
+                  ]}
+                >
+                  {category}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
       </View>
     );
   };
@@ -169,8 +189,9 @@ const styles = (props) =>
     container: {
       backgroundColor: "white",
       //flex: 2,
-      height: props.height - 80,
+      height: "100%",
       width: props.width * 0.7,
+      flexDirection: "row",
     },
     wrapper: {
       flexDirection: "row",

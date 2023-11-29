@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button, Switch, TextInput } from "@react-native-material/core";
 import DropDown from "./DropDown";
@@ -6,8 +6,17 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import ReactSelect from "react-select";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { set } from "react-native-reanimated";
 
-const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
+const InnerOn = ({
+  item,
+  newProduct,
+  newProductOptions,
+  setnewProductOptions,
+  index,
+  e,
+  sete,
+}) => {
   const [testMap, settestMap] = useState(structuredClone(item.optionsList));
   const optionLbls = newProduct.options.map(function (el) {
     if (el.label !== e.label && el.label !== null) {
@@ -21,19 +30,364 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
   );
 
   if (e.selectedCaseKey || e.selectedCaseValue) {
-    newProductOptions.current[index].selectedCaseList = [
-      {
-        selectedCaseKey: e.selectedCaseKey,
-        selectedCaseValue: e.selectedCaseValue,
-      },
-    ];
-    newProductOptions.current[index].selectedCaseKey = null;
-    newProductOptions.current[index].selectedCaseValue = null;
+    // newProductOptions.current[index].selectedCaseList = [
+    //   {
+    //     selectedCaseKey: e.selectedCaseKey,
+    //     selectedCaseValue: e.selectedCaseValue,
+    //   },
+    // ];
+    // newProductOptions.current[index].selectedCaseKey = null;
+    // newProductOptions.current[index].selectedCaseValue = null;
+
+    //convert to usestate
+    setnewProductOptions((prev) => {
+      const clone = structuredClone(prev);
+      clone[index].selectedCaseList = [
+        {
+          selectedCaseKey: null,
+          selectedCaseValue: null,
+        },
+      ];
+
+      clone[index].selectedCaseKey = null;
+      clone[index].selectedCaseValue = null;
+
+      return clone;
+    });
+
     sete((prev) => ({
       ...prev,
       selectedCaseList: [{ selectedCaseKey: null, selectedCaseValue: null }],
     }));
   }
+
+  const TestMapItem = ({ eInnerListStart, indexInnerList }) => {
+    const eInnerList = structuredClone(eInnerListStart);
+
+    const [countsAsValueBeforeBlur, setcountsAsValueBeforeBlur] = useState(
+      eInnerList.countsAs
+    );
+
+    const [priceIncreaseBeforeBlur, setpriceIncreaseBeforeBlur] = useState(
+      eInnerList.priceIncrease
+    );
+
+    const [labelBeforeBlur, setlabelBeforeBlur] = useState(eInnerList.label);
+
+    return (
+      <View
+        key={"D" + indexInnerList.toString()}
+        style={{
+          flexDirection: "row",
+          paddingTop: 20,
+          alignItems: "center",
+          width: "100%",
+          justifyContent: "space-between",
+        }}
+      >
+        <TextInput
+          placeholder="Enter option selection"
+          onBlur={() => {
+            const cloneOuter = structuredClone(testMap);
+            cloneOuter[indexInnerList].label = labelBeforeBlur;
+            // newProductOptions.current[index].optionsList = clone;
+            setnewProductOptions((prev) => {
+              const clone = structuredClone(prev);
+              clone[index].optionsList = cloneOuter;
+              return clone;
+            });
+            settestMap(cloneOuter);
+          }}
+          onChangeText={(val) => {
+            setlabelBeforeBlur(val);
+          }}
+          value={labelBeforeBlur}
+          label="Enter option selection"
+          variant="outlined"
+          color="black"
+          style={{ width: "45%" }}
+        />
+        <TextInput
+          placeholder="Enter price increase"
+          onBlur={() => {
+            const cloneOuter = structuredClone(testMap);
+            cloneOuter[indexInnerList].priceIncrease = priceIncreaseBeforeBlur;
+            // newProductOptions.current[index].optionsList = cloneOuter;
+            setnewProductOptions((prev) => {
+              const clone = structuredClone(prev);
+              clone[index].optionsList = cloneOuter;
+              return clone;
+            });
+            settestMap(cloneOuter);
+          }}
+          onChangeText={(val) => {
+            const re = /^[0-9.]+$/;
+
+            // if value is not blank, then test the regex
+
+            if (val === "" || re.test(val)) {
+              setpriceIncreaseBeforeBlur(val);
+            }
+          }}
+          value={priceIncreaseBeforeBlur}
+          style={
+            newProductOptions[index].numOfSelectable > 0
+              ? { width: "22.5%" }
+              : { width: "45%" }
+          }
+          label="Enter price increase"
+          variant="outlined"
+          color="black"
+        />
+        {newProductOptions[index].numOfSelectable > 0 && (
+          <TextInput
+            placeholder="How many selections does it count as (leave empty for 1)"
+            onBlur={() => {
+              const cloneOuter = structuredClone(testMap);
+              cloneOuter[indexInnerList].countsAs = countsAsValueBeforeBlur;
+              // newProductOptions.current[index].optionsList = cloneOuter;
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone[index].optionsList = cloneOuter;
+                return clone;
+              });
+              settestMap(cloneOuter);
+            }}
+            onChangeText={(val) => {
+              const re = /^[0-9.]+$/;
+
+              // if value is not blank, then test the regex
+
+              if (val === "" || re.test(val)) {
+                setcountsAsValueBeforeBlur(val);
+              }
+            }}
+            value={countsAsValueBeforeBlur}
+            style={{ width: "22.5%" }}
+            label="# of options counted as"
+            variant="outlined"
+            color="black"
+          />
+        )}
+        <TouchableOpacity
+          style={{
+            height: 40,
+            width: 40,
+            borderRadius: 20,
+            backgroundColor: "grey",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={() => {
+            const cloneOuter = structuredClone(testMap);
+            cloneOuter.splice(indexInnerList, 1);
+            // newProductOptions.current[index].optionsList = clone;
+            setnewProductOptions((prev) => {
+              const clone = structuredClone(prev);
+              clone[index].optionsList = cloneOuter;
+              return clone;
+            });
+            settestMap(cloneOuter);
+          }}
+        >
+          <Feather name="x" size={30} color="white" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const ESelectedCaseListMapItem = ({ ifStatement, indexOfIf }) => {
+    const local = newProduct.options.filter(
+      (localE) => localE.label == ifStatement.selectedCaseKey
+    );
+    const optionLblsValuesLocal =
+      local.length > 0
+        ? local[0].optionsList.map(function (el) {
+            return el.label;
+          })
+        : [];
+
+    const ifOptionVals = [];
+    optionLblsValuesLocal.map((opLbl) =>
+      ifOptionVals.push({ value: opLbl, label: opLbl })
+    );
+
+    return (
+      <View
+        key={"D" + indexOfIf.toString()}
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginBottom: 25,
+          alignItems: "center",
+        }}
+      >
+        <View
+          style={{
+            margin: 10,
+            width: "40%",
+            height: 52,
+          }}
+        >
+          <ReactSelect
+            options={ifOptionOptions}
+            value={
+              ifStatement.selectedCaseKey && {
+                value: ifStatement.selectedCaseKey,
+                label: ifStatement.selectedCaseKey,
+              }
+            }
+            onChange={(val) => {
+              // newProductOptions.current[index].selectedCaseList[
+              //   indexOfIf
+              // ].selectedCaseKey = val.value;
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone[index].selectedCaseList[indexOfIf].selectedCaseKey =
+                  val.value;
+                return clone;
+              });
+              sete((prev) => ({
+                ...prev,
+                selectedCaseList: newProductOptions[index].selectedCaseList,
+              }));
+            }}
+            placeholder={"Show if option"}
+            menuPortalTarget={document.body}
+            styles={{
+              menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+              control: (provided, state) => ({
+                ...provided,
+                background: "#fff",
+                borderColor: "#9e9e9e",
+                minHeight: "52px",
+                height: "52px",
+                boxShadow: state.isFocused ? null : null,
+              }),
+
+              valueContainer: (provided, state) => ({
+                ...provided,
+                height: "52px",
+                padding: "0 6px",
+              }),
+
+              input: (provided, state) => ({
+                ...provided,
+                margin: "0px",
+              }),
+              indicatorSeparator: (state) => ({
+                display: "none",
+              }),
+              indicatorsContainer: (provided, state) => ({
+                ...provided,
+                height: "52px",
+              }),
+            }}
+            menuPlacement="auto"
+            menuPosition="fixed"
+          />
+        </View>
+        <FontAwesome5 name="equals" size={30} color="black" />
+        <View
+          style={{
+            margin: 10,
+            width: "40%",
+            height: 52,
+          }}
+        >
+          <ReactSelect
+            options={ifOptionVals}
+            value={
+              ifStatement.selectedCaseValue && {
+                value: ifStatement.selectedCaseValue,
+                label: ifStatement.selectedCaseValue,
+              }
+            }
+            onChange={(val) => {
+              // newProductOptions.current[index].selectedCaseList[
+              //   indexOfIf
+              // ].selectedCaseValue = val.value;
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone[index].selectedCaseList[indexOfIf].selectedCaseValue =
+                  val.value;
+                return clone;
+              });
+              sete((prev) => ({
+                ...prev,
+                selectedCaseList: newProductOptions[index].selectedCaseList,
+              }));
+            }}
+            placeholder={"Show if value"}
+            menuPortalTarget={document.body}
+            styles={{
+              menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+              control: (provided, state) => ({
+                ...provided,
+                background: "#fff",
+                borderColor: "#9e9e9e",
+                minHeight: "52px",
+                height: "52px",
+                boxShadow: state.isFocused ? null : null,
+              }),
+
+              valueContainer: (provided, state) => ({
+                ...provided,
+                height: "52px",
+                padding: "0 6px",
+              }),
+
+              input: (provided, state) => ({
+                ...provided,
+                margin: "0px",
+              }),
+              indicatorSeparator: (state) => ({
+                display: "none",
+              }),
+              indicatorsContainer: (provided, state) => ({
+                ...provided,
+                height: "52px",
+              }),
+            }}
+            menuPlacement="auto"
+            menuPosition="fixed"
+          />
+        </View>
+        <TouchableOpacity
+          style={{
+            height: 40,
+            width: 40,
+            borderRadius: 20,
+            backgroundColor: "grey",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={() => {
+            // newProductOptions.current[index].selectedCaseList.splice(
+            //   indexOfIf,
+            //   1
+            // );
+            setnewProductOptions((prev) => {
+              const clone = structuredClone(prev);
+              clone[index].selectedCaseList.splice(indexOfIf, 1);
+              return clone;
+            });
+            sete((prev) => ({
+              ...prev,
+              selectedCaseList: newProductOptions[index].selectedCaseList,
+            }));
+          }}
+        >
+          <Feather name="x" size={30} color="white" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const [optionLabelBeforeBlur, setoptionLabelBeforeBlur] = useState(e.label);
+  const [numOfSelectableBeforeBlur, setnumOfSelectableBeforeBlur] = useState(
+    e.numOfSelectable
+  );
 
   return (
     <>
@@ -52,11 +406,22 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
       >
         <TextInput
           placeholder="Enter Option Label"
-          onChangeText={(val) => {
-            sete((prevState) => ({ ...prevState, label: val }));
-            newProductOptions.current[index].label = val;
+          onBlur={() => {
+            sete((prevState) => ({
+              ...prevState,
+              label: optionLabelBeforeBlur,
+            }));
+            // newProductOptions.current[index].label = optionLabelBeforeBlur;
+            setnewProductOptions((prev) => {
+              const clone = structuredClone(prev);
+              clone[index].label = optionLabelBeforeBlur;
+              return clone;
+            });
           }}
-          value={e.label}
+          onChangeText={(val) => {
+            setoptionLabelBeforeBlur(val);
+          }}
+          value={optionLabelBeforeBlur}
           style={{ margin: 10, width: "97.5%", height: 52 }}
           label="Enter Option Label"
           variant="outlined"
@@ -82,12 +447,25 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
             }
             onChange={(val) => {
               if (e.optionType) {
-                newProductOptions.current[index].optionType = val.value;
+                // newProductOptions.current[index].optionType = val.value;
+                setnewProductOptions((prev) => {
+                  const clone = structuredClone(prev);
+                  clone[index].optionType = val.value;
+                  return clone;
+                });
               } else {
-                newProductOptions.current[index] = {
-                  ...e,
-                  optionType: val.value,
-                };
+                // newProductOptions.current[index] = {
+                //   ...e,
+                //   optionType: val.value,
+                // };
+                setnewProductOptions((prev) => {
+                  const clone = structuredClone(prev);
+                  clone[index] = {
+                    ...e,
+                    optionType: val.value,
+                  };
+                  return clone;
+                });
               }
               sete((prevState) => ({
                 ...prevState,
@@ -135,6 +513,18 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
         >
           <TextInput
             placeholder="Enter selection limit or leave empty"
+            onBlur={() => {
+              sete((prevState) => ({
+                ...prevState,
+                numOfSelectable: numOfSelectableBeforeBlur,
+              }));
+              // newProductOptions.current[index].numOfSelectable = numOfSelectableBeforeBlur;
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone[index].numOfSelectable = numOfSelectableBeforeBlur;
+                return clone;
+              });
+            }}
             onChangeText={(val) => {
               const re = /^[0-9\b]+$/;
 
@@ -142,12 +532,11 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
 
               if (val === "" || re.test(val)) {
                 if (e.optionType === "Multi Choice") {
-                  sete((prevState) => ({ ...prevState, numOfSelectable: val }));
-                  newProductOptions.current[index].numOfSelectable = val;
+                  setnumOfSelectableBeforeBlur(val);
                 }
               }
             }}
-            value={e.numOfSelectable}
+            value={numOfSelectableBeforeBlur}
             label="Enter selection limit"
             variant="outlined"
             style={{
@@ -174,89 +563,44 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
             value={e.isRequired}
             onValueChange={(val) => {
               sete((prevState) => ({ ...prevState, isRequired: val }));
-              newProductOptions.current[index].isRequired = val;
+              // newProductOptions.current[index].isRequired = val;
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone[index].isRequired = val;
+                return clone;
+              });
             }}
           />
         </View>
       </View>
-      {testMap.map((eInnerListStart, indexInnerList) => {
-        const eInnerList = structuredClone(eInnerListStart);
-        return (
-          <View
-            key={indexInnerList}
-            style={{
-              flexDirection: "row",
-              paddingTop: 20,
-              alignItems: "center",
-              width: "100%",
-              justifyContent: "space-between",
-            }}
-          >
-            <TextInput
-              placeholder="Enter option selection"
-              onChangeText={(val) => {
-                const clone = structuredClone(testMap);
-                clone[indexInnerList].label = val;
-                newProductOptions.current[index].optionsList = clone;
-                settestMap(clone);
-              }}
-              value={eInnerList.label}
-              label="Enter option selection"
-              variant="outlined"
-              color="black"
-              style={{ width: "45%" }}
-            />
-            <TextInput
-              placeholder="Enter price increase"
-              onChangeText={(val) => {
-                const re = /^[0-9.]+$/;
-
-                // if value is not blank, then test the regex
-
-                if (val === "" || re.test(val)) {
-                  const clone = structuredClone(testMap);
-                  clone[indexInnerList].priceIncrease = val;
-                  newProductOptions.current[index].optionsList = clone;
-                  settestMap(clone);
-                }
-              }}
-              value={eInnerList.priceIncrease}
-              style={{ width: "45%" }}
-              label="Enter price increase"
-              variant="outlined"
-              color="black"
-            />
-            <TouchableOpacity
-              style={{
-                height: 40,
-                width: 40,
-                borderRadius: 20,
-                backgroundColor: "grey",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              onPress={() => {
-                const clone = structuredClone(testMap);
-                clone.splice(indexInnerList, 1);
-                newProductOptions.current[index].optionsList = clone;
-                settestMap(clone);
-              }}
-            >
-              <Feather name="x" size={30} color="white" />
-            </TouchableOpacity>
-          </View>
-        );
-      })}
+      {/* Convert .map to flatlist */}
+      <FlatList
+        data={testMap}
+        renderItem={({ item, index }) => (
+          <TestMapItem
+            key={"D" + index.toString()}
+            eInnerListStart={item}
+            indexInnerList={index}
+          />
+        )}
+        listKey={(item, index) => "D" + index.toString()}
+        keyExtractor={(item, index) => "D" + index.toString()}
+      />
       <Button
         title="Add Option Choice"
         onPress={() => {
-          const clone = structuredClone(testMap);
-          clone.push({
+          const cloneOuter = structuredClone(testMap);
+          cloneOuter.push({
             label: null,
             priceIncrease: null,
           });
-          newProductOptions.current[index].optionsList = clone;
-          settestMap(clone);
+          // newProductOptions.current[index].optionsList = clone;
+          setnewProductOptions((prev) => {
+            const clone = structuredClone(prev);
+            clone[index].optionsList = cloneOuter;
+            return clone;
+          });
+          settestMap(cloneOuter);
         }}
         style={{
           marginBottom: 25,
@@ -278,190 +622,34 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
           }}
         />
       )}
-      {e.selectedCaseList?.map((ifStatement, indexOfIf) => {
-        const local = newProduct.options.filter(
-          (localE) => localE.label == ifStatement.selectedCaseKey
-        );
-        const optionLblsValuesLocal =
-          local.length > 0
-            ? local[0].optionsList.map(function (el) {
-                return el.label;
-              })
-            : [];
-
-        const ifOptionVals = [];
-        optionLblsValuesLocal.map((opLbl) =>
-          ifOptionVals.push({ value: opLbl, label: opLbl })
-        );
-
-        return (
-          <View
-            key={indexOfIf}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginBottom: 25,
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={{
-                margin: 10,
-                width: "40%",
-                height: 52,
-              }}
-            >
-              <ReactSelect
-                options={ifOptionOptions}
-                value={
-                  ifStatement.selectedCaseKey && {
-                    value: ifStatement.selectedCaseKey,
-                    label: ifStatement.selectedCaseKey,
-                  }
-                }
-                onChange={(val) => {
-                  newProductOptions.current[index].selectedCaseList[
-                    indexOfIf
-                  ].selectedCaseKey = val.value;
-                  sete((prev) => ({
-                    ...prev,
-                    selectedCaseList:
-                      newProductOptions.current[index].selectedCaseList,
-                  }));
-                }}
-                placeholder={"Show if option"}
-                menuPortalTarget={document.body}
-                styles={{
-                  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                  control: (provided, state) => ({
-                    ...provided,
-                    background: "#fff",
-                    borderColor: "#9e9e9e",
-                    minHeight: "52px",
-                    height: "52px",
-                    boxShadow: state.isFocused ? null : null,
-                  }),
-
-                  valueContainer: (provided, state) => ({
-                    ...provided,
-                    height: "52px",
-                    padding: "0 6px",
-                  }),
-
-                  input: (provided, state) => ({
-                    ...provided,
-                    margin: "0px",
-                  }),
-                  indicatorSeparator: (state) => ({
-                    display: "none",
-                  }),
-                  indicatorsContainer: (provided, state) => ({
-                    ...provided,
-                    height: "52px",
-                  }),
-                }}
-                menuPlacement="auto"
-                menuPosition="fixed"
-              />
-            </View>
-            <FontAwesome5 name="equals" size={30} color="black" />
-            <View
-              style={{
-                margin: 10,
-                width: "40%",
-                height: 52,
-              }}
-            >
-              <ReactSelect
-                options={ifOptionVals}
-                value={
-                  ifStatement.selectedCaseValue && {
-                    value: ifStatement.selectedCaseValue,
-                    label: ifStatement.selectedCaseValue,
-                  }
-                }
-                onChange={(val) => {
-                  newProductOptions.current[index].selectedCaseList[
-                    indexOfIf
-                  ].selectedCaseValue = val.value;
-                  sete((prev) => ({
-                    ...prev,
-                    selectedCaseList:
-                      newProductOptions.current[index].selectedCaseList,
-                  }));
-                }}
-                placeholder={"Show if value"}
-                menuPortalTarget={document.body}
-                styles={{
-                  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                  control: (provided, state) => ({
-                    ...provided,
-                    background: "#fff",
-                    borderColor: "#9e9e9e",
-                    minHeight: "52px",
-                    height: "52px",
-                    boxShadow: state.isFocused ? null : null,
-                  }),
-
-                  valueContainer: (provided, state) => ({
-                    ...provided,
-                    height: "52px",
-                    padding: "0 6px",
-                  }),
-
-                  input: (provided, state) => ({
-                    ...provided,
-                    margin: "0px",
-                  }),
-                  indicatorSeparator: (state) => ({
-                    display: "none",
-                  }),
-                  indicatorsContainer: (provided, state) => ({
-                    ...provided,
-                    height: "52px",
-                  }),
-                }}
-                menuPlacement="auto"
-                menuPosition="fixed"
-              />
-            </View>
-            <TouchableOpacity
-              style={{
-                height: 40,
-                width: 40,
-                borderRadius: 20,
-                backgroundColor: "grey",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              onPress={() => {
-                newProductOptions.current[index].selectedCaseList.splice(
-                  indexOfIf,
-                  1
-                );
-                sete((prev) => ({
-                  ...prev,
-                  selectedCaseList:
-                    newProductOptions.current[index].selectedCaseList,
-                }));
-              }}
-            >
-              <Feather name="x" size={30} color="white" />
-            </TouchableOpacity>
-          </View>
-        );
-      })}
+      <FlatList
+        data={e.selectedCaseList}
+        renderItem={({ item, index }) => (
+          <ESelectedCaseListMapItem ifStatement={item} indexOfIf={index} />
+        )}
+        listKey={(item, index) => "D" + index.toString()}
+      />
       {optionLbls.length > 1 && (
         <Button
           title="Add If Statement"
           onPress={() => {
-            if (!newProductOptions.current[index].selectedCaseList) {
-              newProductOptions.current[index].selectedCaseList = [
-                {
-                  selectedCaseKey: null,
-                  selectedCaseValue: null,
-                },
-              ];
+            if (!newProductOptions[index].selectedCaseList) {
+              // newProductOptions.current[index].selectedCaseList = [
+              //   {
+              //     selectedCaseKey: null,
+              //     selectedCaseValue: null,
+              //   },
+              // ];
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone[index].selectedCaseList = [
+                  {
+                    selectedCaseKey: null,
+                    selectedCaseValue: null,
+                  },
+                ];
+                return clone;
+              });
               sete((prev) => ({
                 ...prev,
                 selectedCaseList: [
@@ -469,14 +657,21 @@ const InnerOn = ({ item, newProduct, newProductOptions, index, e, sete }) => {
                 ],
               }));
             } else {
-              newProductOptions.current[index].selectedCaseList.push({
-                selectedCaseKey: null,
-                selectedCaseValue: null,
+              // newProductOptions.current[index].selectedCaseList.push({
+              //   selectedCaseKey: null,
+              //   selectedCaseValue: null,
+              // });
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone[index].selectedCaseList.push({
+                  selectedCaseKey: null,
+                  selectedCaseValue: null,
+                });
+                return clone;
               });
               sete((prev) => ({
                 ...prev,
-                selectedCaseList:
-                  newProductOptions.current[index].selectedCaseList,
+                selectedCaseList: newProductOptions[index].selectedCaseList,
               }));
             }
           }}
@@ -493,6 +688,7 @@ const OptionView = ({
   setnewProduct,
   newProduct,
   newProductOptions,
+  setnewProductOptions,
   indexOn,
   setindexOn,
 }) => {
@@ -569,20 +765,23 @@ const OptionView = ({
               alignItems: "center",
             }}
             onPress={() => {
-              function moveItem(from, to) {
-                // remove `from` item and store it
-                const f = newProductOptions.current.splice(from, 1)[0];
-                // insert stored item into position `to`
-                newProductOptions.current.splice(to, 0, f);
+              if (
+                newProductOptions.length > 1 &&
+                index !== newProductOptions.length - 1
+              ) {
+                setnewProductOptions((prev) => {
+                  const clone = structuredClone(prev);
+                  const f = clone.splice(index, 1)[0];
+                  clone.splice(index + 1, 0, f);
+                  return clone;
+                });
+
+                setnewProduct((prevState) => ({
+                  ...prevState,
+                  options: newProductOptions,
+                }));
+                setindexOn(null);
               }
-
-              moveItem(index, index + 1);
-
-              setnewProduct((prevState) => ({
-                ...prevState,
-                options: newProductOptions.current,
-              }));
-              setindexOn(null);
             }}
           >
             <MaterialCommunityIcons
@@ -601,20 +800,20 @@ const OptionView = ({
               alignItems: "center",
             }}
             onPress={() => {
-              function moveItem(from, to) {
-                // remove `from` item and store it
-                const f = newProductOptions.current.splice(from, 1)[0];
-                // insert stored item into position `to`
-                newProductOptions.current.splice(to, 0, f);
+              if (newProductOptions.length > 1 && index !== 0) {
+                setnewProductOptions((prev) => {
+                  const clone = structuredClone(prev);
+                  const f = clone.splice(index, 1)[0];
+                  clone.splice(index - 1, 0, f);
+                  return clone;
+                });
+
+                setnewProduct((prevState) => ({
+                  ...prevState,
+                  options: newProductOptions,
+                }));
+                setindexOn(null);
               }
-
-              moveItem(index, index - 1);
-
-              setnewProduct((prevState) => ({
-                ...prevState,
-                options: newProductOptions.current,
-              }));
-              setindexOn(null);
             }}
           >
             <MaterialCommunityIcons name="chevron-up" size={32} color="white" />
@@ -629,10 +828,21 @@ const OptionView = ({
               alignItems: "center",
             }}
             onPress={() => {
-              newProductOptions.current.push({
-                ...item,
-                label: item.label + " Copy",
+              // newProductOptions.current.push({
+              //   ...item,
+              //   label: item.label + " Copy",
+              // });
+
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone.push({
+                  ...item,
+                  label: item.label + " Copy",
+                  id: Math.random().toString(36).substr(2, 9),
+                });
+                return clone;
               });
+
               // setnewProduct((prevState) => ({
               //   ...prevState,
               //   options: newProductOptions.current,
@@ -642,9 +852,9 @@ const OptionView = ({
               //
               setnewProduct((prevState) => ({
                 ...prevState,
-                options: newProductOptions.current,
+                options: newProductOptions,
               }));
-              setindexOn(newProductOptions.current.length - 1);
+              setindexOn(newProductOptions.length);
               //
             }}
           >
@@ -661,9 +871,14 @@ const OptionView = ({
             }}
             onPress={() => {
               const newProductOptionsUpdated = newProduct.options.filter(
-                (e, filterIndex) => filterIndex !== index
+                (e, filterIndex) => filterIndex !== index && e.id !== item.id
               );
-              newProductOptions.current.splice(index, 1);
+              // newProductOptions.current.splice(index, 1);
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone.splice(index, 1);
+                return clone;
+              });
 
               setnewProduct((prevState) => ({
                 ...prevState,
@@ -678,10 +893,12 @@ const OptionView = ({
         {indexOn === index && (
           <View style={{ padding: 20 }}>
             <InnerOn
+              key={"D" + index.toString()}
               item={item}
               index={index}
               newProduct={newProduct}
               newProductOptions={newProductOptions}
+              setnewProductOptions={setnewProductOptions}
               e={e}
               sete={sete}
             />
@@ -692,20 +909,25 @@ const OptionView = ({
         <Button
           title="Add Option"
           onPress={() => {
-            newProductOptions.current.push({
-              label: null,
-              optionsList: [],
-              selectedCaseKey: null,
-              selectedCaseValue: null,
-              numOfSelectable: null,
-              id: Math.random().toString(36).substr(2, 9),
-              optionType: null,
+            setnewProductOptions((prev) => {
+              const clone = structuredClone(prev);
+              clone.push({
+                label: null,
+                optionsList: [],
+                selectedCaseKey: null,
+                selectedCaseValue: null,
+                numOfSelectable: null,
+                id: Math.random().toString(36).substr(2, 9),
+                optionType: null,
+              });
+              return clone;
             });
-            setnewProduct((prevState) => ({
-              ...prevState,
-              options: newProductOptions.current,
-            }));
-            setindexOn(newProductOptions.current.length - 1);
+
+            // setnewProduct((prevState) => ({
+            //   ...prevState,
+            //   options: newProductOptions,
+            // }));
+            setindexOn(newProductOptions.length);
           }}
           style={{ marginBottom: 25, backgroundColor: "#4050B5" }}
           disabled={e.label === null}

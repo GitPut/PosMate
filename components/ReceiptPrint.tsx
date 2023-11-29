@@ -111,7 +111,7 @@ const ReceiptPrint = (element, storeDetails) => {
       "\x0A" + "\x0A",
       "Customer Address #:  " + element.customer.address?.label,
       "\x0A" + "\x0A",
-      "Total Including (13% Tax): " + element.total + "\x0A" + "\x0A",
+      `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + element.total + "\x0A" + "\x0A",
       "------------------------------------------" + "\x0A",
       "\x0A", // line break
       "\x0A", // line break
@@ -176,7 +176,7 @@ const ReceiptPrint = (element, storeDetails) => {
       "\x0A" + "\x0A",
       "Customer Phone #:  " + element.customer.phone,
       "\x0A" + "\x0A",
-      "Total Including (13% Tax): " + element.total + "\x0A" + "\x0A",
+      `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + element.total + "\x0A" + "\x0A",
       "------------------------------------------" + "\x0A",
       "\x0A", // line break
       "\x0A", // line break
@@ -266,7 +266,7 @@ const ReceiptPrint = (element, storeDetails) => {
       "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
       "\x0A" + "\x0A",
       "Payment Method: " + element.payment_method_title + "\x0A" + "\x0A",
-      "Total Including (13% Tax): " + "$" + element.total + "\x0A" + "\x0A",
+      `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + "$" + element.total + "\x0A" + "\x0A",
       "------------------------------------------" + "\x0A",
       "\x0A", // line break
       "\x0A", // line break
@@ -328,7 +328,7 @@ const ReceiptPrint = (element, storeDetails) => {
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
         "\x0A" + "\x0A",
         "Payment method: " + element.method + "\x0A" + "\x0A",
-        "Total Including (13% Tax): " + "$" + element.total + "\x0A" + "\x0A",
+        `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + "$" + element.total + "\x0A" + "\x0A",
         "------------------------------------------" + "\x0A",
         "\x0A", // line break
         "\x0A", // line break
@@ -345,7 +345,7 @@ const ReceiptPrint = (element, storeDetails) => {
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
         "\x0A" + "\x0A",
         "Payment method: " + element.method + "\x0A" + "\x0A",
-        "Total Including (13% Tax): " + "$" + element.total + "\x0A" + "\x0A",
+        `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + "$" + element.total + "\x0A" + "\x0A",
         "------------------------------------------" + "\x0A",
         "\x0A", // line break
         "\x0A", // line break

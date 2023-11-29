@@ -26,33 +26,22 @@ const HomeScreen = (props) => {
   const { height, width } = useWindowDimensions();
   const catalog = userStoreState.use();
   const storeDetails = storeDetailState.use();
-  const [ongoingOrderListModal, setongoingOrderListModal] = useState(false);
-  const [settingsPasswordModalVis, setsettingsPasswordModalVis] =
-    useState(false);
+
 
   return (
     <View style={{ flex: 1, height: height, width: width }}>
       <View style={{ flexDirection: "row", height: "100%" }}>
         <View style={{ width: "70%", height: "100%" }}>
-          <AuthHomeHeader
+          {/* <AuthHomeHeader
             setsettingsPasswordModalVis={setsettingsPasswordModalVis}
             setongoingOrderListModal={setongoingOrderListModal}
-          />
+          /> */}
           <MenuScreen catalog={catalog} navigation={props.navigation} />
         </View>
-        <CartScreen navigation={props.navigation} />
-      </View>
-      <Modal visible={ongoingOrderListModal} transparent={true}>
-        <CompletePaymentPhoneOrder
-          setongoingOrderListModal={setongoingOrderListModal}
-        />
-      </Modal>
-      <Modal visible={settingsPasswordModalVis} transparent={true}>
-        <SettingsPasswordModal
-          setsettingsPasswordModalVis={setsettingsPasswordModalVis}
+        <CartScreen
           navigation={props.navigation}
         />
-      </Modal>
+      </View>
     </View>
   );
 };

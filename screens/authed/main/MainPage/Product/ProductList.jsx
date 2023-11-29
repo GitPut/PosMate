@@ -13,6 +13,8 @@ import {
 import "react-select2-wrapper/css/select2.css";
 import { setSelectedProductState, userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
+import { auth, storage } from "state/firebaseConfig";
+import { Image } from "react-native";
 
 const ProductList = () => {
   const catalog = userStoreState.use();
@@ -60,11 +62,13 @@ const ProductList = () => {
   useEffect(() => {
     if (catalog.products.length > 0) {
       catalog.products.map((product, index) => {
+
         setData((prev) => [
           ...prev,
           {
-            id: index + 1,
-            image: AvocatImage,
+            id: product.id,
+            index: index + 1,
+            image: product.imageUrl ? product.imageUrl : AvocatImage,
             productName: product.name,
             // sku: "PT0012",
             category: product.catagory ? product.catagory : product.category,
@@ -73,11 +77,41 @@ const ProductList = () => {
             // unit: "N/D",
             // qty: "N/D",
             createdBy: "Admin",
+            hasImage: product.hasImage
           },
         ]);
+
       });
     }
   }, []);
+
+  // useEffect(() => {
+  //   if (data.length > 0 && hasDataBeenMapped === false) {
+  //     const newMapData = structuredClone(data)
+  //     data.map((item, index) => {
+  //       if (item.hasImage) {
+  //         (async () => {
+  //           let url = await getProductUrl(item.id)
+  //           console.log('url: ', url)
+  //           newMapData[index].image = url
+  //         }
+  //         )().then(() => {
+  //           setfilteredData(newMapData)
+  //         }
+  //         )
+  //       }
+  //     }
+  //     )
+  //     setData(newMapData)
+  //     sethasDataBeenMapped(true)
+  //   }
+  // }, [data])
+
+
+  // const getProductUrl = async (id) => await storage
+  //   .ref(auth.currentUser.uid + '/images/' + id)
+  //   .getDownloadURL()
+
 
   useEffect(() => {
     if (searchFilterValue.length > 0) {
@@ -93,41 +127,43 @@ const ProductList = () => {
 
   }, [searchFilterValue])
 
-
   const columns = [
     {
       title: "Product Name",
       dataIndex: "productName",
-      render: (text, record) => (
-        <div className="productimgname">
-          <Link
-            style={{ textDecoration: "none" }}
-            className="product-img"
-            to={`/authed/product/editproduct-product/${record.id - 1}`}
+      render: (text, record) => {
+
+        return (
+          <div className="productimgname">
+            <Link
+              style={{ textDecoration: "none" }}
+              className="product-img"
+              to={`/authed/product/editproduct-product/${record.index - 1}`}
             // onClick={() =>
             //   setSelectedProductState({
-            //     existingProduct: catalog.products[record.id - 1],
-            //     existingProductIndex: record.id - 1,
+            //     existingProduct: catalog.products[record.index - 1],
+            //     existingProductIndex: record.index - 1,
             //   })
             // }
-          >
-            <img alt="" src={record.image} />
-          </Link>
-          <Link
-            style={{ textDecoration: "none" }}
-            style={{ fontSize: "15px", marginLeft: "10px" }}
-            to={`/authed/product/editproduct-product/${record.id - 1}`}
+            >
+              < img alt="" src={record.image} />
+            </Link>
+            <Link
+              style={{ textDecoration: "none" }}
+              style={{ fontSize: "15px", marginLeft: "10px" }}
+              to={`/authed/product/editproduct-product/${record.index - 1}`}
             // onClick={() =>
             //   setSelectedProductState({
-            //     existingProduct: catalog.products[record.id - 1],
-            //     existingProductIndex: record.id - 1,
+            //     existingProduct: catalog.products[record.index - 1],
+            //     existingProductIndex: record.index - 1,
             //   })
             // }
-          >
-            {record.productName}
-          </Link>
-        </div>
-      ),
+            >
+              {record.productName}
+            </Link>
+          </div>
+        )
+      },
     },
     // {
     //   title: "SKU",
@@ -182,12 +218,12 @@ const ProductList = () => {
               style={{ textDecoration: "none" }}
               className="me-3"
               to={`/authed/product/editproduct-product/${props.id - 1}`}
-              // onClick={() =>
-              //   setSelectedProductState({
-              //     existingProduct: catalog.products[props.id - 1],
-              //     existingProductIndex: props.id - 1,
-              //   })
-              // }
+            // onClick={() =>
+            //   setSelectedProductState({
+            //     existingProduct: catalog.products[props.id - 1],
+            //     existingProductIndex: props.id - 1,
+            //   })
+            // }
             >
               <img src={EditIcon} alt="img" />
             </Link>

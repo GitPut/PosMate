@@ -115,11 +115,13 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
             <Text style={{ fontWeight: "700", fontSize: 18 }}>
               {e.isRequired && "* "}
               {e.label}
+              {e.numOfSelectable > 0 &&
+                ` - Selections Allowed: ${e.numOfSelectable}`}
             </Text>
             <View style={{ flexWrap: "wrap", flexDirection: "row" }}>
               {e.optionsList.map((selection, listIndex) => {
                 return (
-                  <TouchableOpacity
+                  <View
                     key={listIndex}
                     style={[
                       styles.multiOption,
@@ -135,29 +137,6 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
                             borderColor: "rgba(203,202,202,1)",
                           },
                     ]}
-                    onPress={() => {
-                      const newMyObjProfile = structuredClone(myObjProfile);
-                      if (
-                        !newMyObjProfile.options[index].optionsList[listIndex]
-                          .selected == false
-                      ) {
-                        newMyObjProfile.options[index].optionsList[
-                          listIndex
-                        ].selected = false;
-                      } else {
-                        if (
-                          newMyObjProfile.options[index].optionsList.filter(
-                            (op) => op.selected === true
-                          ).length < parseInt(e.numOfSelectable) ||
-                          !e.numOfSelectable
-                        ) {
-                          newMyObjProfile.options[index].optionsList[
-                            listIndex
-                          ].selected = true;
-                        }
-                      }
-                      setmyObjProfile(newMyObjProfile);
-                    }}
                   >
                     <Text
                       style={[
@@ -170,22 +149,129 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
                     >
                       {selection.label}
                     </Text>
-                    <Text
-                      style={[
-                        styles.optionPriceTxt,
-                        myObjProfile.options[index].optionsList[listIndex]
-                          .selected == true
-                          ? { color: "rgba(41,122,217,1)" }
-                          : { color: "rgba(155, 155, 155, 1) " },
-                      ]}
+                    {selection.priceIncrease !== null && (
+                      <Text
+                        style={[
+                          styles.optionPriceTxt,
+                          myObjProfile.options[index].optionsList[listIndex]
+                            .selected == true
+                            ? { color: "rgba(41,122,217,1)" }
+                            : { color: "rgba(155, 155, 155, 1) " },
+                        ]}
+                      >
+                        ${selection.priceIncrease}
+                      </Text>
+                    )}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        width: "100%",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginTop: 10,
+                      }}
                     >
-                      (+$
-                      {selection.priceIncrease !== null
-                        ? selection.priceIncrease
-                        : 0}
-                      )
-                    </Text>
-                  </TouchableOpacity>
+                      <Button
+                        title="-"
+                        style={{
+                          width: 30,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        onPress={() => {
+                          const newMyObjProfile = structuredClone(myObjProfile);
+                          //filter out all options[index].optionsList that have selectedTimes > 0 then map through and multiply by countsAs
+                          const thisItemCountsAs = selection.countsAs
+                            ? parseInt(selection.countsAs)
+                            : 1;
+
+                          if (
+                            newMyObjProfile.options[index].optionsList[
+                              listIndex
+                            ].selectedTimes > 0
+                          ) {
+                            newMyObjProfile.options[index].optionsList[
+                              listIndex
+                            ].selectedTimes -= 1 * thisItemCountsAs;
+                          }
+
+                          setmyObjProfile(newMyObjProfile);
+                        }}
+                      />
+                      <Text style={{ padding: 5 }}>
+                        {myObjProfile.options[index].optionsList[listIndex]
+                          .selectedTimes > 0
+                          ? myObjProfile.options[index].optionsList[listIndex]
+                              .selectedTimes
+                          : 0}
+                      </Text>
+                      <Button
+                        title="+"
+                        style={{
+                          width: 30,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        onPress={() => {
+                          const newMyObjProfile = structuredClone(myObjProfile);
+                          //filter out all options[index].optionsList that have selectedTimes > 0 then map through and multiply by countsAs
+
+                          const selectedItems = newMyObjProfile.options[
+                            index
+                          ].optionsList.filter((op) => op.selectedTimes > 0);
+
+                          const thisItemSelectedTimes = selection.selectedTimes
+                            ? parseInt(selection.selectedTimes)
+                            : 1;
+                          const thisItemCountsAs = selection.countsAs
+                            ? parseInt(selection.countsAs)
+                            : 1;
+
+                          let selectedTimesTotal = thisItemCountsAs;
+
+                          selectedItems.map((op) => {
+                            selectedTimesTotal += op.countsAs
+                              ? parseInt(op.selectedTimes) *
+                                parseInt(op.countsAs)
+                              : parseInt(op.selectedTimes);
+                          });
+
+                          if (
+                            parseInt(e.numOfSelectable) >= selectedTimesTotal
+                          ) {
+                            console.log(
+                              "selectedTimesTotal: ",
+                              selectedTimesTotal,
+                              " e.numOfSelectable: ",
+                              e.numOfSelectable
+                            );
+                            if (
+                              newMyObjProfile.options[index].optionsList[
+                                listIndex
+                              ].selectedTimes
+                            ) {
+                              newMyObjProfile.options[index].optionsList[
+                                listIndex
+                              ].selectedTimes += 1;
+                            } else {
+                              newMyObjProfile.options[index].optionsList[
+                                listIndex
+                              ].selectedTimes = 1;
+                            }
+                            setmyObjProfile(newMyObjProfile);
+                          } else {
+                            console.log(
+                              "Didnt Work ",
+                              "selectedTimesTotal: ",
+                              selectedTimesTotal,
+                              " e.numOfSelectable: ",
+                              e.numOfSelectable
+                            );
+                          }
+                        }}
+                      />
+                    </View>
+                  </View>
                 );
               })}
             </View>
@@ -208,6 +294,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
 
   useEffect(() => {
     settotal(getPrice());
+    console.log("myObjProfile: ", myObjProfile);
   }, [myObjProfile]);
 
   const getPrice = () => {
@@ -219,6 +306,21 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
           (e) => (total += e.priceIncrease ? parseFloat(e.priceIncrease) : 0)
         );
     });
+    myObjProfile.options.forEach((op) => {
+      op.optionsList
+        .filter((f) => f.selectedTimes > 0)
+        .map((e) => {
+          const thisItemSelectedTimes = e.selectedTimes
+            ? parseInt(e.selectedTimes)
+            : 0;
+          const thisItemCountsAs = e.countsAs ? parseInt(e.countsAs) : 1;
+          total += e.priceIncrease
+            ? parseFloat(e.priceIncrease) *
+              thisItemCountsAs *
+              thisItemSelectedTimes
+            : 0;
+        });
+    });
     return total;
   };
 
@@ -227,27 +329,44 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
     let stop = false;
 
     myObjProfile.options.forEach((op) => {
-      let opWVal = `${op.label}: `;
-      const numberOfSelected = op.optionsList.filter(
-        (f) => f.selected === true
-      ).length;
+      if (op.optionType?.toLowerCase() === "dropdown") {
+        let opWVal = `${op.label}: `;
+        const numberOfSelected = op.optionsList.filter(
+          (f) => f.selected === true
+        ).length;
 
-      if (numberOfSelected > 0) {
-        opWVal = `${op.label}: `;
+        if (numberOfSelected > 0) {
+          opWVal = `${op.label}: `;
 
-        op.optionsList.map((e, index) => {
-          if (e.selected === true) {
-            if (index < op.optionsList.length - 1 && numberOfSelected > 1) {
-              opWVal += e.label + " , ";
-            } else {
-              opWVal += e.label;
+          op.optionsList.map((e, index) => {
+            if (e.selected === true) {
+              if (index < op.optionsList.length - 1 && numberOfSelected > 1) {
+                opWVal += e.label + " , ";
+              } else {
+                opWVal += e.label;
+              }
             }
-          }
-        });
-        opsArray.push(opWVal);
-      } else if (numberOfSelected === 0 && op.isRequired === true) {
-        alert(op.label + " is required. Please fill out to add to cart");
-        stop = true;
+          });
+          opsArray.push(opWVal);
+        } else if (numberOfSelected === 0 && op.isRequired === true) {
+          alert(op.label + " is required. Please fill out to add to cart");
+          stop = true;
+        }
+      } else {
+        const selectedItems = op.optionsList.filter(
+          (op) => op.selectedTimes > 0
+        );
+        if (selectedItems.length > 0) {
+          let opWVal = `${op.label}:\n`;
+          selectedItems.map((e, index) => {
+            if (index < selectedItems.length - 1) {
+              opWVal += e.selectedTimes + " X " + e.label + "\n";
+            } else {
+              opWVal += e.selectedTimes + " X " + e.label;
+            }
+          });
+          opsArray.push(opWVal);
+        }
       }
     });
     if (!stop) {
@@ -258,7 +377,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
       };
 
       if (itemIndex >= 0) {
-        let copyCart = structuredClone(cart);
+        const copyCart = structuredClone(cart);
         copyCart[itemIndex] = {
           name: myObjProfile.name,
           price: total,
@@ -329,7 +448,9 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
       </View>
       <ScrollView style={styles.modalContainer}>
         {myObj.description && (
-          <Text style={styles.h2Black}>Name: {myObj.description}</Text>
+          <Text style={{ fontWeight: "600", fontSize: 16, marginBottom: 15 }}>
+            Description: {myObj.description}
+          </Text>
         )}
         {myObjProfile.options.map((e, index) => (
           <DisplayOption e={e} index={index} key={index} />
@@ -442,8 +563,9 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     alignItems: "center",
     justifyContent: "space-around",
-    padding: 10,
+    padding: 15,
     margin: 5,
+    minWidth: 150,
   },
   optionNameTxt: {
     fontFamily: "archivo-600",
@@ -452,5 +574,6 @@ const styles = StyleSheet.create({
   optionPriceTxt: {
     fontFamily: "archivo-600",
     fontSize: 16,
+    padding: 10,
   },
 });

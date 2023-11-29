@@ -16,6 +16,7 @@ import {
   setTransListState,
   storeDetailState,
   transListState,
+  setIsSignedInSettingsState,
 } from "state/state";
 import { Button } from "@react-native-material/core";
 import DeliveryScreen from "components/DeliveryScreen";
@@ -31,6 +32,10 @@ import SaveCustomer from "./SaveCustomer";
 import { auth, db } from "state/firebaseConfig";
 import CartItem from "components/CartItem";
 import ProductListing from "components/ProductListing";
+import Entypo from "@expo/vector-icons/Entypo";
+import { useHistory } from "react-router-dom";
+import CompletePaymentPhoneOrder from "components/CompletePaymentPhoneOrder";
+import SettingsPasswordModal from "components/SettingsPasswordModal";
 
 const CartButton = (props) => {
   return (
@@ -160,7 +165,9 @@ const CartItemEditable = ({ cartItem, index, removeAction }) => {
   );
 };
 
-const CartScreen = ({ navigation }) => {
+const CartScreen = ({
+  navigation,
+}) => {
   const { height, width } = useWindowDimensions();
   const [deliveryModal, setDeliveryModal] = useState(false);
   const [cashModal, setCashModal] = useState(false);
@@ -176,6 +183,10 @@ const CartScreen = ({ navigation }) => {
   const [cartSub, setCartSub] = useState(0);
   const [saveCustomerModal, setSaveCustomerModal] = useState(false);
   const [savedCustomerDetails, setsavedCustomerDetails] = useState(null);
+   const [ongoingOrderListModal, setongoingOrderListModal] = useState(false);
+   const [settingsPasswordModalVis, setsettingsPasswordModalVis] =
+     useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     if (cart.length > 0) {
@@ -271,7 +282,7 @@ const CartScreen = ({ navigation }) => {
         data.push("\x0A" + "\x0A");
       });
 
-      total = total * 1.13;
+      total = storeDetails.taxRate ? total * (1 + storeDetails.taxRate / 100) : total * 1.13;
       total = total.toFixed(2);
 
       //push ending
@@ -285,7 +296,7 @@ const CartScreen = ({ navigation }) => {
         "\x0A" + "\x0A",
         "Customer Address #:  " + address?.label,
         "\x0A" + "\x0A",
-        "Total Including (13% Tax): " + total + "\x0A" + "\x0A",
+        `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + total + "\x0A" + "\x0A",
         "------------------------------------------" + "\x0A",
         "\x0A", // line break
         "\x0A", // line break
@@ -438,7 +449,7 @@ const CartScreen = ({ navigation }) => {
         "\x0A" + "\x0A",
         "Customer Phone #:  " + phone,
         "\x0A" + "\x0A",
-        "Total Including (13% Tax): " + total + "\x0A" + "\x0A",
+        `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + total + "\x0A" + "\x0A",
         "------------------------------------------" + "\x0A",
         "\x0A", // line break
         "\x0A", // line break
@@ -586,7 +597,7 @@ const CartScreen = ({ navigation }) => {
           "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
           "\x0A" + "\x0A",
           "Payment Method: " + method + "\x0A" + "\x0A",
-          "Total Including (13% Tax): " + "$" + total + "\x0A" + "\x0A",
+          `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + "$" + total + "\x0A" + "\x0A",
           "Change Due: " + "$" + changeDue + "\x0A" + "\x0A",
           "------------------------------------------" + "\x0A",
           "\x0A", // line break
@@ -604,7 +615,7 @@ const CartScreen = ({ navigation }) => {
           "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
           "\x0A" + "\x0A",
           "Payment Method: " + method + "\x0A" + "\x0A",
-          "Total Including (13% Tax): " + "$" + total + "\x0A" + "\x0A",
+          `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + "$" + total + "\x0A" + "\x0A",
           "------------------------------------------" + "\x0A",
           "\x0A", // line break
           "\x0A", // line break
@@ -762,6 +773,32 @@ const CartScreen = ({ navigation }) => {
             disabled={cart.length > 0}
             icon={() => <Feather name="phone-call" size={28} color="white" />}
           />
+
+          <CartButton
+            style={[
+              styles({ height, width }).iconContainer,
+              cart.length > 0 && { opacity: 0.5 },
+            ]}
+            onPress={() => setongoingOrderListModal(true)}
+            icon={() => (
+              <Ionicons name="chevron-down" size={28} color="white" />
+            )}
+          />
+          <CartButton
+            style={[
+              styles({ height, width }).iconContainer,
+              cart.length > 0 && { opacity: 0.5 },
+            ]}
+            onPress={() => {
+              if (storeDetails.settingsPassword) {
+                setsettingsPasswordModalVis(true);
+              } else {
+                setIsSignedInSettingsState(true);
+                history.push("/authed/dashboard");
+              }
+            }}
+            icon={() => <Entypo name="cog" size={28} color="white" />}
+          />
         </View>
       </View>
       <ScrollView
@@ -905,7 +942,11 @@ const CartScreen = ({ navigation }) => {
               cartSub === 0 && { opacity: 0.5 },
             ]}
           >
-            ${(cartSub * 0.13).toFixed(2)}
+            $
+            {(cartSub * storeDetails.taxRate
+              ? storeDetails.taxRate / 100
+              : 0.13
+            ).toFixed(2)}
           </Text>
         </View>
         <View
@@ -979,6 +1020,17 @@ const CartScreen = ({ navigation }) => {
       </Modal>
       <Modal visible={changeModal}>
         <ChangeScreen setChangeModal={setChangeModal} />
+      </Modal>
+      <Modal visible={ongoingOrderListModal} transparent={true}>
+        <CompletePaymentPhoneOrder
+          setongoingOrderListModal={setongoingOrderListModal}
+        />
+      </Modal>
+      <Modal visible={settingsPasswordModalVis} transparent={true}>
+        <SettingsPasswordModal
+          setsettingsPasswordModalVis={setsettingsPasswordModalVis}
+          navigation={navigation}
+        />
       </Modal>
     </View>
   );

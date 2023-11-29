@@ -4,11 +4,12 @@ import { Link, useHistory } from "react-router-dom"
 import Select2 from "react-select2-wrapper";
 import "react-select2-wrapper/css/select2.css";
 import { selectedProductState, userStoreState } from "state/state";
-import { FlatList, Text, View, useWindowDimensions } from "react-native";
+import { FlatList, Image, Modal, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { Button } from "react-native";
 import OptionView from "components/OptionView";
 import { updateData } from "state/firebaseFunctions";
 import { useParams } from "react-router-dom";
+import { auth, storage } from "state/firebaseConfig";
 
 const EditProduct = (props) => {
   const catalog = userStoreState.use();
@@ -25,11 +26,18 @@ const EditProduct = (props) => {
   const [newProduct, setnewProduct] = useState(
     existingProduct
   );
-  const newProductOptions = useRef(
-    existingProduct ? existingProduct.options : []
-  );
-  const [indexOn, setindexOn] = useState(0);
+  const [newProductOptions, setnewProductOptions] = useState(existingProduct ? existingProduct.options : [])
+  // const newProductOptions = useRef(
+  //   existingProduct ? existingProduct.options : []
+  // );
+  const [indexOn, setindexOn] = useState();
   const [selectValues, setselectValues] = useState([]);
+
+  const [error, seterror] = useState(false)
+
+  const [selectedFile, setSelectedFile] = useState()
+
+  const [currentImgUrl, setcurrentImgUrl] = useState()
 
   // const resetProduct = () => {
   //   setnewProduct(
@@ -42,27 +50,82 @@ const EditProduct = (props) => {
   // }
 
   useEffect(() => {
+    setnewProduct(
+      (prev) => {
+        const clone = structuredClone(prev);
+        clone.options = newProductOptions;
+        return clone;
+      }
+    )
+  }, [newProductOptions])
+
+  // const getProductUrl = async (id) => await storage
+  //   .ref(auth.currentUser.uid + '/images/' + id)
+  //   .getDownloadURL()
+
+
+  useEffect(() => {
     if (catalog.categories) {
       const local = [];
       catalog.categories.map((val, index) => local.push({ id: index, text: val, }));
       setselectValues(local);
     }
+
+    if (existingProduct?.hasImage) {
+      // (async () => {
+      //   const url = await getProductUrl(existingProduct.id)
+      //   setcurrentImgUrl(url)
+      // }
+      // )()
+      setcurrentImgUrl(existingProduct.imageUrl)
+    }
   }, []);
 
   function handleDataUpdate() {
+    if (!newProduct.name) {
+      seterror('Please enter a product name')
+      return
+    }
+    if (!newProduct.category) {
+      seterror('Please select a category')
+      return
+    }
+    if (!newProduct.price) {
+      seterror('Please enter a price')
+      return
+    }
+
     let copy = structuredClone(catalog.products);
 
     if (existingProduct.id) {
       const newProductUseRef = {
         ...newProduct,
-        options: newProductOptions.current,
+        options: newProductOptions,
       };
       const findIndex = copy.findIndex((e) => e.id === existingProduct.id);
+
+      // Upload Image
+
+      if (selectedFile) {
+        storage
+          .ref(auth.currentUser.uid + '/images/' + existingProduct.id)
+          .put(selectedFile);
+
+        newProductUseRef.hasImage = true
+      }
+
+      if (newProductUseRef.hasImage && !selectedFile && !currentImgUrl) {
+        storage
+          .ref(auth.currentUser.uid + '/images/' + existingProduct.id).delete()
+        newProductUseRef.hasImage = false
+      }
+
       copy[findIndex] = newProductUseRef;
+
     } else {
       const newProductUseRef = {
         ...newProduct,
-        options: newProductOptions.current,
+        options: newProductOptions,
         id: Math.random().toString(36).substr(2, 9),
       };
       copy[existingProductIndex] = newProductUseRef;
@@ -70,6 +133,15 @@ const EditProduct = (props) => {
     updateData([...catalog.categories], copy);
     history.push("/authed/product/productlist-product");
   }
+
+  const changeHandler = (event) => {
+    if (event.target.files[0]) {
+      setSelectedFile(event.target.files[0]);
+      console.log(event.target.files[0])
+    } else {
+      alert("Sorry 5gb files are the max!");
+    }
+  };
 
   return (
     <>
@@ -87,11 +159,22 @@ const EditProduct = (props) => {
               <div className="col-lg-12">
                 <div className="form-group">
                   <label> Product Image</label>
-                  <div className="image-upload">
-                    <input type="file" />
-                    <div className="image-uploads">
-                      <img src={Upload} alt="img" />
+                  <div className="image-upload" style={selectedFile || currentImgUrl ? { height: '180px' } : { height: '100px' }}>
+                    <input type="file"
+                      name="file"
+                      id="html_btn"
+                      accept="image/*"
+                      onChange={changeHandler}
+                    />
+                    <div className="image-uploads" >
+                      {selectedFile ? <Image style={{ height: 100, width: '100%', resizeMode: 'contain' }} source={URL.createObjectURL(selectedFile)} alt="img" /> : currentImgUrl ? <Image style={{ height: 100, width: '100%', resizeMode: 'contain' }} source={currentImgUrl} alt="img" /> : <img src={Upload} alt="img" />}
+                      {/* <img src={Upload} alt="img" /> */}
                       <h4>Drag and drop a file to upload</h4>
+                      {selectedFile?.name || currentImgUrl ? <Button title="Remove" onPress={() => {
+                        setSelectedFile(null)
+                        setcurrentImgUrl(null)
+                      }
+                      } /> : null}
                     </div>
                   </div>
                 </div>
@@ -175,6 +258,7 @@ const EditProduct = (props) => {
                             newProduct={newProduct}
                             setnewProduct={setnewProduct}
                             newProductOptions={newProductOptions}
+                            setnewProductOptions={setnewProductOptions}
                             indexOn={indexOn}
                             setindexOn={setindexOn}
                           />
@@ -184,20 +268,32 @@ const EditProduct = (props) => {
                         <Button
                           title="Add Option"
                           onPress={() => {
-                            newProductOptions.current.push({
-                              label: null,
-                              optionsList: [],
-                              selectedCaseKey: null,
-                              selectedCaseValue: null,
-                              numOfSelectable: null,
-                              id: Math.random().toString(36).substr(2, 9),
-                              optionType: null,
-                            });
-                            setnewProduct((prevState) => ({
-                              ...prevState,
-                              options: newProductOptions.current,
-                            }));
-                            setindexOn(newProductOptions.current.length - 1);
+                            setnewProductOptions([
+                              {
+                                label: null,
+                                optionsList: [],
+                                selectedCaseKey: null,
+                                selectedCaseValue: null,
+                                numOfSelectable: null,
+                                id: Math.random().toString(36).substr(2, 9),
+                                optionType: null,
+                              },
+                            ],
+                            );
+                            // newProductOptions.current.push({
+                            //   label: null,
+                            //   optionsList: [],
+                            //   selectedCaseKey: null,
+                            //   selectedCaseValue: null,
+                            //   numOfSelectable: null,
+                            //   id: Math.random().toString(36).substr(2, 9),
+                            //   optionType: null,
+                            // });
+                            // setnewProduct((prevState) => ({
+                            //   ...prevState,
+                            //   options: newProductOptions,
+                            // }));
+                            setindexOn(0);
                           }}
                           style={{ marginBottom: 25, backgroundColor: "#4050B5" }}
                           disabled={
@@ -223,6 +319,28 @@ const EditProduct = (props) => {
               </div>
             </div>
           </div>
+          <Modal visible={error} transparent={true}>
+            <TouchableOpacity
+              onPress={() => seterror(false)}
+              style={{
+                height: "100%",
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "20%",
+                backgroundColor: "rgba(0,0,0,0.5)",
+              }}
+            >
+              <div
+                data-wf-user-form-error="true"
+                className=" error-message "
+              >
+                <div className="user-form-error-msg">
+                  {error}
+                </div>
+              </div>
+            </TouchableOpacity>
+          </Modal>
           {/* /add */}
         </div>
       </div>

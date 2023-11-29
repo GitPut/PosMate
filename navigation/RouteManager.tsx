@@ -16,7 +16,7 @@ import {
   woocommerceState,
 } from "state/state";
 import MainNonAuth from "./non-authed/MainNonAuth";
-import { auth, db } from "state/firebaseConfig";
+import { auth, db, storage } from "state/firebaseConfig";
 import Spinner from "components/Spinner";
 import { updateFreeTrial, updateTransList } from "state/firebaseFunctions";
 const tz = require("moment-timezone");
@@ -62,6 +62,23 @@ const RouteManager = () => {
     "archivo-600": require("assets/fonts/Archivo-SemiBold.ttf"),
     "archivo-500": require("assets/fonts/Archivo-Regular.ttf"),
   });
+
+  const UpdateStoreStateDataPictures = async ({ products, categories }) => {
+    const newCatalog = [];
+    for (let i = 0; i < products.length; i++) {
+      const product = products[i];
+      if (product.hasImage) {
+        const url = await getProductUrl(product.id);
+        newCatalog.push({ ...product, imageUrl: url });
+      } else {
+        newCatalog.push(product);
+      }
+    }
+    setUserStoreState({ categories: categories, products: newCatalog });
+  };
+
+  const getProductUrl = async (id) =>
+    await storage.ref(auth.currentUser.uid + "/images/" + id).getDownloadURL();
 
   useEffect(() => {
     setUserState(savedUserState ? savedUserState : null);
@@ -154,7 +171,11 @@ const RouteManager = () => {
               }
             }
 
-            setUserStoreState({
+            // setUserStoreState({
+            //   products: doc.data().products ? doc.data().products : [],
+            //   categories: doc.data().categories ? doc.data().categories : [],
+            // });
+            UpdateStoreStateDataPictures({
               products: doc.data().products ? doc.data().products : [],
               categories: doc.data().categories ? doc.data().categories : [],
             });
@@ -206,7 +227,11 @@ const RouteManager = () => {
         .doc(userS?.uid)
         .onSnapshot((doc) => {
           // setloading(true);
-          setUserStoreState({
+          // setUserStoreState({
+          //   products: doc.data().products ? doc.data().products : [],
+          //   categories: doc.data().categories ? doc.data().categories : [],
+          // });
+          UpdateStoreStateDataPictures({
             products: doc.data().products ? doc.data().products : [],
             categories: doc.data().categories ? doc.data().categories : [],
           });
@@ -423,7 +448,9 @@ const RouteManager = () => {
                           e.payment_method_title +
                           "\x0A" +
                           "\x0A",
-                        "Total Including (13% Tax): " +
+                        `Total Including (${
+                          storeDetails.taxRate ? storeDetails.taxRate : "13"
+                        }% Tax): ` +
                           "$" +
                           e.total +
                           "\x0A" +
@@ -565,7 +592,9 @@ const RouteManager = () => {
                         e.payment_method_title +
                         "\x0A" +
                         "\x0A",
-                      "Total Including (13% Tax): " +
+                      `Total Including (${
+                        storeDetails.taxRate ? storeDetails.taxRate : "13"
+                      }% Tax): ` +
                         "$" +
                         e.total +
                         "\x0A" +
