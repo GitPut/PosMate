@@ -6,7 +6,6 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import ReactSelect from "react-select";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import { set } from "react-native-reanimated";
 
 const InnerOn = ({
   item,
@@ -132,10 +131,10 @@ const InnerOn = ({
           value={priceIncreaseBeforeBlur}
           style={
             newProductOptions[index].numOfSelectable > 0
-              ? { width: "22.5%" }
-              : { width: "45%" }
+              ? { width: "18%" }
+              : { width: "35%" }
           }
-          label="Enter price increase"
+          label="Price increase"
           variant="outlined"
           color="black"
         />
@@ -163,12 +162,74 @@ const InnerOn = ({
               }
             }}
             value={countsAsValueBeforeBlur}
-            style={{ width: "22.5%" }}
-            label="# of options counted as"
+            style={{ width: "16%" }}
+            label="Counts as"
             variant="outlined"
             color="black"
           />
         )}
+        <TouchableOpacity
+          style={{
+            height: 40,
+            width: 40,
+            borderRadius: 25,
+            backgroundColor: "grey",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={() => {
+            //  cloneOuter.splice(indexInnerList, 1);
+            //  setnewProductOptions((prev) => {
+            //    const clone = structuredClone(prev);
+            //    clone[index].optionsList = cloneOuter;
+            //    return clone;
+            //  });
+            // settestMap(cloneOuter);
+
+            if (testMap.length > 1 && indexInnerList !== testMap.length - 1) {
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                const f = clone[index].optionsList.splice(indexInnerList, 1)[0];
+                clone[index].optionsList.splice(indexInnerList + 1, 0, f);
+                settestMap(clone[index].optionsList);
+                return clone;
+              });
+            }
+          }}
+        >
+          <MaterialCommunityIcons name="chevron-down" size={32} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            height: 40,
+            width: 40,
+            borderRadius: 25,
+            backgroundColor: "grey",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={() => {
+            //  cloneOuter.splice(indexInnerList, 1);
+            //  setnewProductOptions((prev) => {
+            //    const clone = structuredClone(prev);
+            //    clone[index].optionsList = cloneOuter;
+            //    return clone;
+            //  });
+            // settestMap(cloneOuter);
+
+            if (testMap.length > 1 && indexInnerList !== 0) {
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                const f = clone[index].optionsList.splice(indexInnerList, 1)[0];
+                clone[index].optionsList.splice(indexInnerList - 1, 0, f);
+                settestMap(clone[index].optionsList);
+                return clone;
+              });
+            }
+          }}
+        >
+          <MaterialCommunityIcons name="chevron-up" size={32} color="white" />
+        </TouchableOpacity>
         <TouchableOpacity
           style={{
             height: 40,
@@ -238,18 +299,16 @@ const InnerOn = ({
               }
             }
             onChange={(val) => {
-              // newProductOptions.current[index].selectedCaseList[
-              //   indexOfIf
-              // ].selectedCaseKey = val.value;
+              let clone;
               setnewProductOptions((prev) => {
-                const clone = structuredClone(prev);
+                clone = structuredClone(prev);
                 clone[index].selectedCaseList[indexOfIf].selectedCaseKey =
                   val.value;
                 return clone;
               });
               sete((prev) => ({
                 ...prev,
-                selectedCaseList: newProductOptions[index].selectedCaseList,
+                selectedCaseList: clone[index].selectedCaseList,
               }));
             }}
             placeholder={"Show if option"}
@@ -304,18 +363,16 @@ const InnerOn = ({
               }
             }
             onChange={(val) => {
-              // newProductOptions.current[index].selectedCaseList[
-              //   indexOfIf
-              // ].selectedCaseValue = val.value;
+              let clone;
               setnewProductOptions((prev) => {
-                const clone = structuredClone(prev);
+                clone = structuredClone(prev);
                 clone[index].selectedCaseList[indexOfIf].selectedCaseValue =
                   val.value;
                 return clone;
               });
               sete((prev) => ({
                 ...prev,
-                selectedCaseList: newProductOptions[index].selectedCaseList,
+                selectedCaseList: clone[index].selectedCaseList,
               }));
             }}
             placeholder={"Show if value"}
@@ -363,18 +420,15 @@ const InnerOn = ({
             alignItems: "center",
           }}
           onPress={() => {
-            // newProductOptions.current[index].selectedCaseList.splice(
-            //   indexOfIf,
-            //   1
-            // );
+            let clone;
             setnewProductOptions((prev) => {
-              const clone = structuredClone(prev);
+              clone = structuredClone(prev);
               clone[index].selectedCaseList.splice(indexOfIf, 1);
               return clone;
             });
             sete((prev) => ({
               ...prev,
-              selectedCaseList: newProductOptions[index].selectedCaseList,
+              selectedCaseList: clone[index].selectedCaseList,
             }));
           }}
         >
@@ -634,12 +688,7 @@ const InnerOn = ({
           title="Add If Statement"
           onPress={() => {
             if (!newProductOptions[index].selectedCaseList) {
-              // newProductOptions.current[index].selectedCaseList = [
-              //   {
-              //     selectedCaseKey: null,
-              //     selectedCaseValue: null,
-              //   },
-              // ];
+              console.log("Added new if statement list");
               setnewProductOptions((prev) => {
                 const clone = structuredClone(prev);
                 clone[index].selectedCaseList = [
@@ -657,12 +706,10 @@ const InnerOn = ({
                 ],
               }));
             } else {
-              // newProductOptions.current[index].selectedCaseList.push({
-              //   selectedCaseKey: null,
-              //   selectedCaseValue: null,
-              // });
+              console.log("Added new if statement");
+              let clone;
               setnewProductOptions((prev) => {
-                const clone = structuredClone(prev);
+                clone = structuredClone(prev);
                 clone[index].selectedCaseList.push({
                   selectedCaseKey: null,
                   selectedCaseValue: null,
@@ -671,7 +718,7 @@ const InnerOn = ({
               });
               sete((prev) => ({
                 ...prev,
-                selectedCaseList: newProductOptions[index].selectedCaseList,
+                selectedCaseList: clone[index].selectedCaseList,
               }));
             }
           }}

@@ -22,7 +22,7 @@ const AuthRoute = (props) => {
     const history = useHistory();
 
     useEffect(() => {
-        if (!location.pathname.includes("/authed") || location.pathname.includes("/authed") && isLoginSettings === false) {
+        if (!location.pathname?.includes("/authed") || location.pathname?.includes("/authed") && isLoginSettings === false) {
             history.push("/pos");
         }
         // else {

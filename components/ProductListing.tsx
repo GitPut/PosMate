@@ -388,14 +388,17 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
         };
         setCartState(copyCart);
       } else {
-        addCartState({
-          name: myObjProfile.name,
-          price: total,
-          description: myObj.description,
-          options: opsArray,
-          extraDetails: extraInput,
-          editableObj: objWTotal,
-        });
+        addCartState(
+          {
+            name: myObjProfile.name,
+            price: total,
+            description: myObj.description,
+            options: opsArray,
+            extraDetails: extraInput,
+            editableObj: objWTotal,
+          },
+          cart
+        );
       }
 
       goBack();

@@ -11,7 +11,15 @@ import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 
-const CartItem = ({ cartItem, index, isPrev, removeAction, editAction }) => {
+const CartItem = ({
+  cartItem,
+  index,
+  isPrev,
+  removeAction,
+  editAction,
+  decreaseAction,
+  increaseAction,
+}) => {
   const [isOpen, setisOpen] = useState(false);
 
   if (isOpen) {
@@ -29,35 +37,29 @@ const CartItem = ({ cartItem, index, isPrev, removeAction, editAction }) => {
           }}
         >
           <View style={styles.closedLeftContainer}>
-            <Entypo
-              name="chevron-small-right"
-              style={[
-                styles.openCloseIcon,
-                {
-                  transform: [{ rotate: isOpen && "90deg" }],
-                },
-              ]}
-            />
-            <Text style={styles.productIndexTxt}>{index + 1}</Text>
             <Text style={styles.productNameTxt}>{cartItem.name}</Text>
-          </View>
-          <View style={styles.closedRightContainer}>
             <Text style={styles.productPriceTxt}>
               ${parseFloat(cartItem.price).toFixed(2)}
             </Text>
-            {!isPrev && (
-              <TouchableOpacity onPress={removeAction}>
-                <Ionicons
-                  name="ios-add-circle"
-                  style={[
-                    styles.productRemoveIcon,
-                    {
-                      transform: [{ rotate: "45deg" }],
-                    },
-                  ]}
-                />
-              </TouchableOpacity>
-            )}
+          </View>
+          <View style={styles.closedRightContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                if (cartItem.quantity < 2 || !cartItem.quantity) {
+                  removeAction();
+                } else {
+                  decreaseAction();
+                }
+              }}
+            >
+              <Entypo name="squared-minus" style={styles.openCloseIcon} />
+            </TouchableOpacity>
+            <Text style={styles.productIndexTxt}>
+              {cartItem.quantity ? cartItem.quantity : 1}
+            </Text>
+            <TouchableOpacity onPress={increaseAction}>
+              <Entypo name="squared-plus" style={styles.openCloseIcon} />
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.bottomContainer}>
@@ -94,27 +96,29 @@ const CartItem = ({ cartItem, index, isPrev, removeAction, editAction }) => {
         activeOpacity={0.8}
       >
         <View style={styles.closedLeftContainer}>
-          <Entypo name="chevron-small-right" style={styles.openCloseIcon} />
-          <Text style={styles.productIndexTxt}>{index + 1}</Text>
           <Text style={styles.productNameTxt}>{cartItem.name}</Text>
-        </View>
-        <View style={styles.closedRightContainer}>
           <Text style={styles.productPriceTxt}>
             ${parseFloat(cartItem.price).toFixed(2)}
           </Text>
-          {!isPrev && (
-            <TouchableOpacity onPress={removeAction}>
-              <Ionicons
-                name="ios-add-circle"
-                style={[
-                  styles.productRemoveIcon,
-                  {
-                    transform: [{ rotate: "45deg" }],
-                  },
-                ]}
-              />
-            </TouchableOpacity>
-          )}
+        </View>
+        <View style={styles.closedRightContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              if (cartItem.quantity < 2 || !cartItem.quantity) {
+                removeAction();
+              } else {
+                decreaseAction();
+              }
+            }}
+          >
+            <Entypo name="squared-minus" style={styles.openCloseIcon} />
+          </TouchableOpacity>
+          <Text style={styles.productIndexTxt}>
+            {cartItem.quantity ? cartItem.quantity : 1}
+          </Text>
+          <TouchableOpacity onPress={increaseAction}>
+            <Entypo name="squared-plus" style={styles.openCloseIcon} />
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     );
@@ -276,6 +280,7 @@ const styles = StyleSheet.create({
     fontFamily: "archivo-600",
     color: "#63646e",
     fontSize: 16,
+    marginRight: 50,
   },
   closedRightContainer: {
     flexDirection: "row",

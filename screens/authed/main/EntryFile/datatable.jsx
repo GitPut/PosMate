@@ -5,7 +5,7 @@ import { itemRender, onShowSizeChange } from "../components/pagination";
 import { Excel } from "antd-table-saveas-excel";
 import { Button } from "react-native";
 
-const Datatable = ({ props, columns, dataSource, updateBaseSelectedRows, setbaseSelectedRows }) => {
+const Datatable = ({ props, columns, dataSource, updateBaseSelectedRows, setbaseSelectedRows, noPagnation }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const onSelectChange = (newSelectedRowKeys) => {
     console.log("selectedRowKeys changed: ", selectedRowKeys);
@@ -29,7 +29,7 @@ const Datatable = ({ props, columns, dataSource, updateBaseSelectedRows, setbase
       rowSelection={rowSelection}
       columns={columns}
       dataSource={dataSource}
-      pagination={{
+      pagination={!noPagnation && {
         total: dataSource.length,
         showTotal: (total, range) =>
           ` ${range[0]} to ${range[1]} of ${total} items`,

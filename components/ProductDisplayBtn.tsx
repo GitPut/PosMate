@@ -9,34 +9,27 @@ import {
   ImageBackground,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { userStoreState } from "state/state";
-import { Button, TextInput } from "@react-native-material/core";
-import { addCartState } from "state/state";
-import ProductOptionDropDown from "./ProductOptionDropDown";
+import { addCartState, cartState } from "state/state";
 import ProductListing from "./ProductListing";
 import { auth, storage } from "state/firebaseConfig";
 
-const ProductDisplayBtn = ({ navigation, product, productIndex }) => {
+const ProductDisplayBtn = ({ product, productIndex }) => {
   const [showProductScreen, setshowProductScreen] = useState(false);
   const xPos = useRef(new Animated.Value(-1000)).current;
   const shadowOpacity = useRef(new Animated.Value(0)).current;
-  // const [productImage, setproductImage] = useState();
+  const [productImage, setproductImage] = useState();
+  const cart = cartState.use();
 
-  // useEffect(() => {
-  //   console.log("product: ", product);
-  //   if (product.hasImage) {
-  //     (async () => {
-  //       const url = await getProductUrl();
-  //       setproductImage(url);
-  //       console.log(url);
-  //     })();
-  //   }
-  // }, []);
-
-  // const getProductUrl = async () =>
-  //   await storage
-  //     .ref(auth.currentUser.uid + "/images/" + product.id)
-  //     .getDownloadURL();
+  useEffect(() => {
+    if (product.hasImage) {
+      storage
+        .ref(auth.currentUser.uid + "/images/" + product.id)
+        .getDownloadURL()
+        .then((url) => {
+          setproductImage(url);
+        });
+    }
+  }, []);
 
   const fadeIn = () => {
     // Will change xPos value to 0 in 3 seconds
@@ -68,51 +61,49 @@ const ProductDisplayBtn = ({ navigation, product, productIndex }) => {
   };
 
   return (
-    <>
-      <TouchableOpacity
-        key={productIndex}
-        onPress={() => {
-          if (product.options.length > 0) {
-            // navigation.navigate("Product Listing", { product: product });
-            // setshowProductScreen(true);
-            fadeIn();
-          } else {
-            addCartState({
-              name: product.name,
-              price: product.price,
-              description: product.description,
-              options: [],
-              extraDetails: null,
-            });
-          }
+    <TouchableOpacity
+      key={productIndex}
+      onPress={() => {
+        if (product.options.length > 0) {
+          // navigation.navigate("Product Listing", { product: product });
+          // setshowProductScreen(true);
+          fadeIn();
+        } else {
+          addCartState({
+            name: product.name,
+            price: product.price,
+            description: product.description,
+            options: [],
+            extraDetails: null,
+          }, cart);
+        }
+      }}
+      style={[styles.touchable]}
+    >
+      <div
+        style={{
+          height: "200px",
+          width: "200px",
+          backgroundColor: "rgba(0,0,0,0.5)",
+          borderRadius: "3px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundImage: `url(${productImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
-        style={[styles.touchable, !product.imageUrl && { padding: 10 }]}
       >
-        {product.imageUrl ? (
-          <ImageBackground
-            source={product.imageUrl}
-            style={{
-              height: "100%",
-              width: "100%",
-              padding: 10,
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 3,
-            }}
-            imageStyle={{ opacity: 0.5 }}
-          >
-            <Text
-              style={{
-                fontFamily: "archivo-500",
-                color: "rgba(255,255,255,1)",
-                fontSize: 15,
-                textAlign: "center",
-              }}
-            >
-              {product.name}
-            </Text>
-          </ImageBackground>
-        ) : (
+        <View
+          style={{
+            height: "100%",
+            width: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 3,
+          }}
+        >
           <Text
             style={{
               fontFamily: "archivo-500",
@@ -123,8 +114,8 @@ const ProductDisplayBtn = ({ navigation, product, productIndex }) => {
           >
             {product.name}
           </Text>
-        )}
-      </TouchableOpacity>
+        </View>
+      </div>
       {showProductScreen && (
         <Modal transparent={true}>
           <Animated.View
@@ -147,7 +138,11 @@ const ProductDisplayBtn = ({ navigation, product, productIndex }) => {
                 borderTopRightRadius: 3,
               }}
             >
-              <ProductListing product={product} goBack={() => fadeOut()} />
+              <ProductListing
+                product={product}
+                // itemIndex={productIndex}
+                goBack={() => fadeOut()}
+              />
             </View>
           </Animated.View>
           <Animated.View
@@ -171,7 +166,7 @@ const ProductDisplayBtn = ({ navigation, product, productIndex }) => {
           />
         </Modal>
       )}
-    </>
+    </TouchableOpacity>
   );
 };
 
@@ -180,8 +175,8 @@ export default ProductDisplayBtn;
 const styles = StyleSheet.create({
   touchable: {
     margin: 15,
-    width: 180,
-    height: 180,
+    width: 200,
+    height: 200,
     backgroundColor: "rgba(125,126,132,1)",
     alignItems: "center",
     justifyContent: "center",

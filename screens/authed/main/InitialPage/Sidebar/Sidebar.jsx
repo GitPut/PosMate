@@ -216,7 +216,7 @@ const Sidebar = (props) => {
                   }
                 >
                   <img src={question_mark} alt="img" />
-                  <span> Help</span> 
+                  <span> Help</span>
                 </Link>
               </li>
             </ul>

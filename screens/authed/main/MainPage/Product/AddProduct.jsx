@@ -65,7 +65,7 @@ const AddProduct = () => {
             newProduct.hasImage = true
         }
 
-        updateData([...catalog.categories], [...catalog.products, { ...newProduct, category: categoryDropRef.current }]);
+        updateData([...catalog.categories], [...catalog.products, newProduct]);
         history.push("/authed/product/productlist-product");
     }
 
@@ -100,7 +100,7 @@ const AddProduct = () => {
                                             onChange={changeHandler}
                                         />
                                         <div className="image-uploads" >
-                                            {selectedFile ? <Image style={{ height: 100, width: '100%', resizeMode: 'contain' }} source={URL.createObjectURL(selectedFile)} alt="img" /> :  <img src={Upload} alt="img" />}
+                                            {selectedFile ? <Image style={{ height: 100, width: '100%', resizeMode: 'contain' }} source={URL.createObjectURL(selectedFile)} alt="img" /> : <img src={Upload} alt="img" />}
                                             {/* <img src={Upload} alt="img" /> */}
                                             <h4>Drag and drop a file to upload</h4>
                                             {selectedFile?.name ? <Button title="Remove" onPress={() => {
@@ -128,21 +128,15 @@ const AddProduct = () => {
                                             className="select"
                                             data={selectValues}
                                             options={{
-                                                placeholder: "Category",
+                                                placeholder: newProduct?.category ? newProduct?.category : 'Category',
                                             }}
-                                            // onChange={(val) => {
-                                            //     console.log('val', categoryDropRef.current)
-                                            // }
-                                            // }
                                             onSelect={(val) => {
-                                                // console.log('val', val.params.data.text)
-                                                // setnewProduct((prevState) => ({
-                                                //     ...prevState,
-                                                //     category: val.params.data.text,
-                                                // }));
-                                                categoryDropRef.current = val.params.data.text;
+                                                console.log('val', val.params.data.text)
+                                                setnewProduct((prevState) => ({
+                                                    ...prevState,
+                                                    category: val.params.data.text,
+                                                }));
                                             }}
-                                        // value={{ text: newProduct.category, id: 1 }}
                                         />
                                     </div>
                                 </div>

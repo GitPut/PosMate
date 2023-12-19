@@ -12,13 +12,42 @@ export const setCartState = (val) => {
   cartState.set(val);
 };
 
-export const addCartState = (val) => {
-  cartState.set((prevState) => [...prevState, val]);
+export const addCartState = (val, currentState) => {
+  const doesExist = currentState.findIndex(
+    (item) =>
+      item.name === val.name &&
+      JSON.stringify(item.options) === JSON.stringify(val.options)
+  );
+  console.log(
+    "Does exist? ",
+    doesExist,
+    " Cart: ",
+    currentState,
+    " Val: ",
+    val
+  );
+
+  if (doesExist !== -1) {
+    const newState = currentState.map((item) => {
+      const copyItem = { ...item };
+      delete copyItem.quantity;
+
+      if (JSON.stringify(copyItem) === JSON.stringify(val)) {
+        return { ...item, quantity: item.quantity ? item.quantity + 1 : 2 };
+      } else {
+        return item;
+      }
+    });
+    cartState.set(newState);
+  } else {
+    cartState.set((prevState) => [...prevState, val]);
+  }
 };
 
 export const userStoreState = entity({ products: [], categories: [] });
 
 export const setUserStoreState = (val) => {
+  console.log("Setting user store state: ", val);
   userStoreState.set(val);
 };
 

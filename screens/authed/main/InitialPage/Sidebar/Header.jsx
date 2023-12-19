@@ -40,8 +40,6 @@ const Header = (props) => {
     document.querySelector("html").classList.toggle("menu-opened");
   };
 
-  let pathname = location.pathname;
-
   return (
     <>
       <div className="header">

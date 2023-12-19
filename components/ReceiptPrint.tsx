@@ -77,7 +77,14 @@ const ReceiptPrint = (element, storeDetails) => {
     element.cart.map((cartItem) => {
       data.push(`Name: ${cartItem.name}`);
       data.push("\x0A");
-      data.push(`Price: $${cartItem.price}`);
+
+      if (cartItem.quantity > 1) {
+        data.push(`Quantity: ${cartItem.quantity}`);
+        data.push("\x0A");
+        data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+      } else {
+        data.push(`Price: $${cartItem.price}`);
+      }
 
       if (cartItem.description) {
         data.push("\x0A");
@@ -142,9 +149,16 @@ const ReceiptPrint = (element, storeDetails) => {
     );
 
     element.cart.map((cartItem) => {
-      data.push(`Name: ${cartItem.name}`);
-      data.push("\x0A");
-      data.push(`Price: $${cartItem.price}`);
+     data.push(`Name: ${cartItem.name}`);
+     data.push("\x0A");
+
+     if (cartItem.quantity > 1) {
+       data.push(`Quantity: ${cartItem.quantity}`);
+       data.push("\x0A");
+       data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+     } else {
+       data.push(`Price: $${cartItem.price}`);
+     }
 
       if (cartItem.description) {
         data.push("\x0A");
@@ -296,9 +310,16 @@ const ReceiptPrint = (element, storeDetails) => {
     ];
 
     element.cart.map((cartItem) => {
-      data.push(`Name: ${cartItem.name}`);
+    data.push(`Name: ${cartItem.name}`);
+    data.push("\x0A");
+
+    if (cartItem.quantity > 1) {
+      data.push(`Quantity: ${cartItem.quantity}`);
       data.push("\x0A");
+      data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+    } else {
       data.push(`Price: $${cartItem.price}`);
+    }
 
       if (cartItem.description) {
         data.push("\x0A");

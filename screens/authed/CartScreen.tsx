@@ -4,28 +4,21 @@ import {
   StyleSheet,
   Text,
   View,
-  Dimensions,
   TouchableOpacity,
   Animated,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
   cartState,
-  cartSubState,
   setCartState,
-  setTransListState,
   storeDetailState,
-  transListState,
   setIsSignedInSettingsState,
 } from "state/state";
-import { Button } from "@react-native-material/core";
 import DeliveryScreen from "components/DeliveryScreen";
 import CashScreen from "components/CashScreen";
 import ChangeScreen from "components/ChangeScreen";
 import { updateTransList } from "state/firebaseFunctions";
-import useWindowDimensions from "components/useWindowDimensions";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import Foundation from "@expo/vector-icons/Foundation";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import SaveCustomer from "./SaveCustomer";
@@ -36,6 +29,8 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useHistory } from "react-router-dom";
 import CompletePaymentPhoneOrder from "components/CompletePaymentPhoneOrder";
 import SettingsPasswordModal from "components/SettingsPasswordModal";
+import CartItemEditable from "components/CartItemEditable";
+import useWindowDimensions from "components/useWindowDimensions";
 
 const CartButton = (props) => {
   return (
@@ -49,126 +44,7 @@ const CartButton = (props) => {
   );
 };
 
-const CartItemEditable = ({ cartItem, index, removeAction }) => {
-  const [showProductScreen, setshowProductScreen] = useState(false);
-  const xPos = useRef(new Animated.Value(-1000)).current;
-  const shadowOpacity = useRef(new Animated.Value(0)).current;
-
-  const fadeIn = () => {
-    // Will change xPos value to 0 in 3 seconds
-    setshowProductScreen(true);
-    Animated.timing(xPos, {
-      toValue: 0,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-    Animated.timing(shadowOpacity, {
-      toValue: 1,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const fadeOut = () => {
-    // Will change xPos value to 0 in 3 seconds
-    Animated.timing(shadowOpacity, {
-      toValue: 0,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-    Animated.timing(xPos, {
-      toValue: -1000,
-      duration: 100,
-      useNativeDriver: false,
-    }).start(() => setshowProductScreen(false));
-  };
-
-  return (
-    <>
-      <CartItem
-        cartItem={cartItem}
-        index={index}
-        isPrev={false}
-        removeAction={removeAction}
-        editAction={() => fadeIn()}
-      />
-      {showProductScreen && (
-        <Modal transparent={true}>
-          <Animated.View
-            style={{
-              flex: 1,
-              justifyContent: "flex-end",
-              alignItems: "flex-start",
-              position: "absolute",
-              height: "100%",
-              width: "100%",
-              bottom: 0,
-              left: xPos,
-              zIndex: 0,
-            }}
-          >
-            <View
-              style={{
-                height: "92%",
-                width: "70%",
-                borderTopRightRadius: 3,
-              }}
-            >
-              <ProductListing
-                product={cartItem.editableObj}
-                itemIndex={index}
-                goBack={() => fadeOut()}
-              />
-            </View>
-          </Animated.View>
-          <Animated.View
-            style={{
-              height: "100%",
-              width: "30%",
-              padding: 20,
-              shadowColor: "rgba(0,0,0,1)",
-              shadowOffset: {
-                width: -3,
-                height: 3,
-              },
-              elevation: 30,
-              shadowOpacity: 0.5,
-              shadowRadius: 5,
-              position: "absolute",
-              opacity: shadowOpacity,
-              right: 0,
-              bottom: 0,
-            }}
-          />
-          <Animated.View
-            style={{
-              height: "8%",
-              width: "70%",
-              padding: 20,
-              shadowColor: "rgba(0,0,0,1)",
-              shadowOffset: {
-                width: -3,
-                height: 3,
-              },
-              elevation: 30,
-              shadowOpacity: 0.5,
-              shadowRadius: 5,
-              position: "absolute",
-              opacity: shadowOpacity,
-              left: 0,
-              top: 0,
-            }}
-          />
-        </Modal>
-      )}
-    </>
-  );
-};
-
-const CartScreen = ({
-  navigation,
-}) => {
-  const { height, width } = useWindowDimensions();
+const CartScreen = ({ navigation }) => {
   const [deliveryModal, setDeliveryModal] = useState(false);
   const [cashModal, setCashModal] = useState(false);
   const [changeModal, setChangeModal] = useState(false);
@@ -183,16 +59,27 @@ const CartScreen = ({
   const [cartSub, setCartSub] = useState(0);
   const [saveCustomerModal, setSaveCustomerModal] = useState(false);
   const [savedCustomerDetails, setsavedCustomerDetails] = useState(null);
-   const [ongoingOrderListModal, setongoingOrderListModal] = useState(false);
-   const [settingsPasswordModalVis, setsettingsPasswordModalVis] =
-     useState(false);
+  const [ongoingOrderListModal, setongoingOrderListModal] = useState(false);
+  const [settingsPasswordModalVis, setsettingsPasswordModalVis] =
+    useState(false);
   const history = useHistory();
+  const height = useWindowDimensions().height;
 
   useEffect(() => {
+    console.log("cart", cart);
     if (cart.length > 0) {
       let newVal = 0;
       for (let i = 0; i < cart.length; i++) {
-        newVal += parseFloat(cart[i].price);
+        try {
+          if (cart[i].quantity > 1) {
+            newVal += parseFloat(cart[i].price) * cart[i].quantity;
+            console.log("Cart item quantity ", cart[i].quantity);
+          } else {
+            newVal += parseFloat(cart[i].price);
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
       if (deliveryChecked) {
         setCartSub(newVal + parseFloat(storeDetails.deliveryPrice));
@@ -256,10 +143,18 @@ const CartScreen = ({
       ];
 
       cart.map((cartItem) => {
-        total += parseFloat(cartItem.price);
         data.push(`Name: ${cartItem.name}`);
         data.push("\x0A");
-        data.push(`Price: $${cartItem.price}`);
+
+        if (cartItem.quantity > 1) {
+          total += parseFloat(cartItem.price) * cartItem.quantity;
+          data.push(`Quantity: ${cartItem.quantity}`);
+          data.push("\x0A");
+          data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+        } else {
+          total += parseFloat(cartItem.price);
+          data.push(`Price: $${cartItem.price}`);
+        }
 
         if (cartItem.description) {
           data.push("\x0A");
@@ -282,7 +177,9 @@ const CartScreen = ({
         data.push("\x0A" + "\x0A");
       });
 
-      total = storeDetails.taxRate ? total * (1 + storeDetails.taxRate / 100) : total * 1.13;
+      total = storeDetails.taxRate
+        ? total * (1 + storeDetails.taxRate / 100)
+        : total * 1.13;
       total = total.toFixed(2);
 
       //push ending
@@ -296,7 +193,12 @@ const CartScreen = ({
         "\x0A" + "\x0A",
         "Customer Address #:  " + address?.label,
         "\x0A" + "\x0A",
-        `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + total + "\x0A" + "\x0A",
+        `Total Including (${
+          storeDetails.taxRate ? storeDetails.taxRate : "13"
+        }% Tax): ` +
+          total +
+          "\x0A" +
+          "\x0A",
         "------------------------------------------" + "\x0A",
         "\x0A", // line break
         "\x0A", // line break
@@ -411,10 +313,18 @@ const CartScreen = ({
       ];
 
       cart.map((cartItem) => {
-        total += parseFloat(cartItem.price);
-        data.push(`Name: ${cartItem.name}`);
-        data.push("\x0A");
-        data.push(`Price: $${cartItem.price}`);
+     data.push(`Name: ${cartItem.name}`);
+     data.push("\x0A");
+
+     if (cartItem.quantity > 1) {
+       total += parseFloat(cartItem.price) * cartItem.quantity;
+       data.push(`Quantity: ${cartItem.quantity}`);
+       data.push("\x0A");
+       data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+     } else {
+       total += parseFloat(cartItem.price);
+       data.push(`Price: $${cartItem.price}`);
+     }
 
         if (cartItem.description) {
           data.push("\x0A");
@@ -449,7 +359,12 @@ const CartScreen = ({
         "\x0A" + "\x0A",
         "Customer Phone #:  " + phone,
         "\x0A" + "\x0A",
-        `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + total + "\x0A" + "\x0A",
+        `Total Including (${
+          storeDetails.taxRate ? storeDetails.taxRate : "13"
+        }% Tax): ` +
+          total +
+          "\x0A" +
+          "\x0A",
         "------------------------------------------" + "\x0A",
         "\x0A", // line break
         "\x0A", // line break
@@ -561,10 +476,18 @@ const CartScreen = ({
       ];
 
       cart.map((cartItem) => {
-        total += parseFloat(cartItem.price);
-        data.push(`Name: ${cartItem.name}`);
-        data.push("\x0A");
-        data.push(`Price: $${cartItem.price}`);
+       data.push(`Name: ${cartItem.name}`);
+       data.push("\x0A");
+
+       if (cartItem.quantity > 1) {
+         total += parseFloat(cartItem.price) * cartItem.quantity;
+         data.push(`Quantity: ${cartItem.quantity}`);
+         data.push("\x0A");
+         data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+       } else {
+         total += parseFloat(cartItem.price);
+         data.push(`Price: $${cartItem.price}`);
+       }
 
         if (cartItem.description) {
           data.push("\x0A");
@@ -597,7 +520,13 @@ const CartScreen = ({
           "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
           "\x0A" + "\x0A",
           "Payment Method: " + method + "\x0A" + "\x0A",
-          `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + "$" + total + "\x0A" + "\x0A",
+          `Total Including (${
+            storeDetails.taxRate ? storeDetails.taxRate : "13"
+          }% Tax): ` +
+            "$" +
+            total +
+            "\x0A" +
+            "\x0A",
           "Change Due: " + "$" + changeDue + "\x0A" + "\x0A",
           "------------------------------------------" + "\x0A",
           "\x0A", // line break
@@ -615,7 +544,13 @@ const CartScreen = ({
           "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
           "\x0A" + "\x0A",
           "Payment Method: " + method + "\x0A" + "\x0A",
-          `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + "$" + total + "\x0A" + "\x0A",
+          `Total Including (${
+            storeDetails.taxRate ? storeDetails.taxRate : "13"
+          }% Tax): ` +
+            "$" +
+            total +
+            "\x0A" +
+            "\x0A",
           "------------------------------------------" + "\x0A",
           "\x0A", // line break
           "\x0A", // line break
@@ -682,24 +617,18 @@ const CartScreen = ({
           }}
         >
           <TouchableOpacity
-            style={[
-              styles({ height, width }).cashButton,
-              cartSub === 0 && { opacity: 0.5 },
-            ]}
+            style={[styles.cashButton, cartSub === 0 && { opacity: 0.5 }]}
             onPress={() => setCashModal(true)}
             disabled={cart.length < 1 || ongoingDelivery}
           >
-            <Text style={styles({ height, width }).btnTxt}>Cash</Text>
+            <Text style={styles.btnTxt}>Cash</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[
-              styles({ height, width }).cardButton,
-              cartSub === 0 && { opacity: 0.5 },
-            ]}
+            style={[styles.cardButton, cartSub === 0 && { opacity: 0.5 }]}
             onPress={() => Print("Card")}
             disabled={cart.length < 1 || ongoingDelivery}
           >
-            <Text style={styles({ height, width }).btnTxt}>Card</Text>
+            <Text style={styles.btnTxt}>Card</Text>
           </TouchableOpacity>
         </View>
       );
@@ -707,7 +636,7 @@ const CartScreen = ({
     if (ongoingDelivery && cart.length > 0) {
       return (
         <TouchableOpacity
-          style={styles({ height, width }).bigButton}
+          style={styles.bigButton}
           onPress={() => {
             Print(deliveryChecked ? "deliveryOrder" : "pickupOrder");
             setOngoingDelivery(null);
@@ -716,27 +645,27 @@ const CartScreen = ({
             setAddress(null);
           }}
         >
-          <Text style={styles({ height, width }).btnTxt}>Complete</Text>
+          <Text style={styles.btnTxt}>Complete</Text>
         </TouchableOpacity>
       );
     } else {
       return (
         <TouchableOpacity
-          style={styles({ height, width }).bigButton}
+          style={styles.bigButton}
           onPress={() => {
             setOngoingDelivery(null);
             setDeliveryChecked(false);
           }}
         >
-          <Text style={styles({ height, width }).btnTxt}>Cancel</Text>
+          <Text style={styles.btnTxt}>Cancel</Text>
         </TouchableOpacity>
       );
     }
   };
 
   return (
-    <View style={styles({ height, width }).container}>
-      <View style={styles({ height, width }).cartHeader}>
+    <View style={styles.container}>
+      <View style={styles.cartHeader}>
         <Text
           style={{
             fontFamily: "archivo-600",
@@ -754,10 +683,7 @@ const CartScreen = ({
           }}
         >
           <CartButton
-            style={[
-              styles({ height, width }).iconContainer,
-              cart.length > 0 && { opacity: 0.5 },
-            ]}
+            style={[styles.iconContainer, cart.length > 0 && { opacity: 0.5 }]}
             onPress={() => setSaveCustomerModal(true)}
             disabled={cart.length > 0}
             icon={() => (
@@ -765,30 +691,21 @@ const CartScreen = ({
             )}
           />
           <CartButton
-            style={[
-              styles({ height, width }).iconContainer,
-              cart.length > 0 && { opacity: 0.5 },
-            ]}
+            style={[styles.iconContainer, cart.length > 0 && { opacity: 0.5 }]}
             onPress={() => setDeliveryModal(true)}
             disabled={cart.length > 0}
             icon={() => <Feather name="phone-call" size={28} color="white" />}
           />
 
           <CartButton
-            style={[
-              styles({ height, width }).iconContainer,
-              cart.length > 0 && { opacity: 0.5 },
-            ]}
+            style={[styles.iconContainer, cart.length > 0 && { opacity: 0.5 }]}
             onPress={() => setongoingOrderListModal(true)}
             icon={() => (
               <Ionicons name="chevron-down" size={28} color="white" />
             )}
           />
           <CartButton
-            style={[
-              styles({ height, width }).iconContainer,
-              cart.length > 0 && { opacity: 0.5 },
-            ]}
+            style={[styles.iconContainer, cart.length > 0 && { opacity: 0.5 }]}
             onPress={() => {
               if (storeDetails.settingsPassword) {
                 setsettingsPasswordModalVis(true);
@@ -802,7 +719,8 @@ const CartScreen = ({
         </View>
       </View>
       <ScrollView
-        contentContainerStyle={styles({ height, width }).contentContainer}
+        contentContainerStyle={styles.contentContainer}
+        style={{ marginBottom: 10 }}
       >
         <View>
           {cart.length > 0 ? (
@@ -812,8 +730,23 @@ const CartScreen = ({
                 cartItem={cartItem}
                 index={index}
                 removeAction={() => {
+                  console.log("Removing");
                   const local = structuredClone(cart);
                   local.splice(index, 1);
+                  setCartState(local);
+                }}
+                decreaseAction={() => {
+                  const local = structuredClone(cart);
+                  local[index].quantity--;
+                  setCartState(local);
+                }}
+                increaseAction={() => {
+                  const local = structuredClone(cart);
+                  if (local[index].quantity) {
+                    local[index].quantity++;
+                  } else {
+                    local[index].quantity = 2;
+                  }
                   setCartState(local);
                 }}
               />
@@ -827,10 +760,8 @@ const CartScreen = ({
                 alignItems: "center",
               }}
             >
-              <Text style={styles({ height, width }).empty}>Empty...</Text>
-              <Text style={styles({ height, width }).fillTheCart}>
-                Fill the Cart!
-              </Text>
+              <Text style={styles.empty}>Empty...</Text>
+              <Text style={styles.fillTheCart}>Fill the Cart!</Text>
             </View>
           )}
         </View>
@@ -943,9 +874,9 @@ const CartScreen = ({
             ]}
           >
             $
-            {(cartSub * storeDetails.taxRate
-              ? storeDetails.taxRate / 100
-              : 0.13
+            {(
+              cartSub *
+              (storeDetails.taxRate ? storeDetails.taxRate / 100 : 0.13)
             ).toFixed(2)}
           </Text>
         </View>
@@ -1038,116 +969,115 @@ const CartScreen = ({
 
 export default CartScreen;
 
-const styles = (props) =>
-  //81838B
-  StyleSheet.create({
-    container: {
-      height: props.height,
-      width: props.width * 0.3,
-      padding: 20,
-      backgroundColor: "rgba(31,35,48,1)",
-      borderTopRightRadius: 0,
-      borderBottomRightRadius: 0,
-      borderTopLeftRadius: 2,
-      borderBottomLeftRadius: 2,
-      shadowColor: "rgba(0,0,0,1)",
-      shadowOffset: {
-        width: -3,
-        height: 3,
-      },
-      elevation: 30,
-      shadowOpacity: 0.92,
-      shadowRadius: 5,
+const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    width: "30%",
+    padding: 20,
+    backgroundColor: "rgba(31,35,48,1)",
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    borderTopLeftRadius: 2,
+    borderBottomLeftRadius: 2,
+    shadowColor: "rgba(0,0,0,1)",
+    shadowOffset: {
+      width: -3,
+      height: 3,
     },
-    contentContainer: {
-      height: "100%",
-      justifyContent: "space-between",
-      width: "100%",
-    },
-    totalContainer: {
-      height: props.height * 0.14,
-      paddingTop: 10,
-    },
-    cartHeader: {
-      height: props.height * 0.06,
-      justifyContent: "space-between",
-      width: "100%",
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: 20,
-    },
-    iconContainer: {
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: "rgba(41,44,56,1)",
-      borderRadius: 15,
-      width: 50,
-      height: 50,
-      margin: 10,
-    },
-    cashButton: {
-      backgroundColor: "rgba(51,81,243,1)",
-      borderRadius: 30,
-      borderTopRightRadius: 0,
-      borderBottomRightRadius: 0,
-      width: "49.5%",
-      height: 55,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    cardButton: {
-      backgroundColor: "rgba(51,81,243,1)",
-      borderRadius: 30,
-      borderTopRightRadius: 30,
-      borderBottomRightRadius: 30,
-      borderTopLeftRadius: 0,
-      borderBottomLeftRadius: 0,
-      width: "49.5%",
-      height: 55,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    btnTxt: {
-      fontSize: 20,
-      color: "white",
-    },
-    totalTxt: {
-      fontSize: 16,
-      marginBottom: 5,
-      color: "rgba(255,255,255,1)",
-      fontWeight: "600",
-    },
-    totalTxtPrice: {
-      fontSize: 16,
-      marginBottom: 5,
-      color: "rgba(255,255,255,1)",
-      fontWeight: "600",
-    },
-    bigButton: {
-      backgroundColor: "rgba(51,81,243,1)",
-      borderRadius: 30,
-      width: "98%",
-      height: 55,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    innerTxt: {
-      fontSize: 13,
-      marginBottom: 10,
-    },
-    headerTxt: {
-      fontSize: 15,
-      fontWeight: "600",
-    },
-    empty: {
-      fontFamily: "archivo-600",
-      color: "rgba(255,255,255,1)",
-      fontSize: 20,
-      opacity: 0.44,
-    },
-    fillTheCart: {
-      fontFamily: "archivo-500",
-      color: "rgba(74,74,74,1)",
-      fontSize: 20,
-    },
-  });
+    elevation: 30,
+    shadowOpacity: 0.92,
+    shadowRadius: 5,
+  },
+  contentContainer: {
+    height: "100%",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  totalContainer: {
+    height: "14%",
+    paddingTop: 10,
+  },
+  cartHeader: {
+    height: "6%",
+    justifyContent: "space-between",
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  iconContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(41,44,56,1)",
+    borderRadius: 15,
+    width: 50,
+    height: 50,
+    margin: 10,
+  },
+  cashButton: {
+    backgroundColor: "rgba(51,81,243,1)",
+    borderRadius: 30,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    width: "49.5%",
+    height: 55,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cardButton: {
+    backgroundColor: "rgba(51,81,243,1)",
+    borderRadius: 30,
+    borderTopRightRadius: 30,
+    borderBottomRightRadius: 30,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    width: "49.5%",
+    height: 55,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  btnTxt: {
+    fontSize: 20,
+    color: "white",
+  },
+  totalTxt: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: "rgba(255,255,255,1)",
+    fontWeight: "600",
+  },
+  totalTxtPrice: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: "rgba(255,255,255,1)",
+    fontWeight: "600",
+  },
+  bigButton: {
+    backgroundColor: "rgba(51,81,243,1)",
+    borderRadius: 30,
+    width: "98%",
+    height: 55,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  innerTxt: {
+    fontSize: 13,
+    marginBottom: 10,
+  },
+  headerTxt: {
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  empty: {
+    fontFamily: "archivo-600",
+    color: "rgba(255,255,255,1)",
+    fontSize: 20,
+    opacity: 0.44,
+    marginTop: 20,
+  },
+  fillTheCart: {
+    fontFamily: "archivo-500",
+    color: "rgba(74,74,74,1)",
+    fontSize: 20,
+  },
+});

@@ -1,5 +1,4 @@
 import {
-  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
@@ -8,110 +7,62 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
-import { userStoreState } from "state/state";
-import ProductDisplayBtn from "components/ProductDisplayBtn";
 import useWindowDimensions from "components/useWindowDimensions";
-import { Button } from "@react-native-material/core";
-const wh = Dimensions.get("window").height;
 import Logo from "assets/dpos-logo.png";
+import MenuScreenInnerBlock from "components/MenuScreenInnerBlock";
+import { userStoreState } from "state/state";
 
-const MenuScreen = ({ navigation, catalog }) => {
+const MenuScreen = () => {
   const { height, width } = useWindowDimensions();
   const [section, setsection] = useState(null);
-
-  const InnerBlock = () => {
-    if (catalog.products) {
-      if (catalog.products.length > 0) {
-        if (!section) {
-          const currentProduct = catalog.products.filter(
-            (e) =>
-              e.catagory === catalog.categories[0] ||
-              e.category === catalog.categories[0]
-          );
-          if (currentProduct.length > 0) {
-            return currentProduct.map((product, index) => (
-              <ProductDisplayBtn
-                product={product}
-                productIndex={index}
-                key={index}
-                navigation={navigation}
-              />
-            ));
-          } else {
-            return (
-              <View
-                style={{
-                  width: "100%",
-                  height: height * 0.8,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "archivo-500",
-                    color: "rgba(74,74,74,1)",
-                    fontSize: 20,
-                  }}
-                >
-                  This category has no products...
-                </Text>
-              </View>
-            );
-          }
-        } else {
-          const correctProducts = catalog.products.filter(
-            (e) => e.catagory === section || e.category === section
-          );
-
-          if (correctProducts.length > 0) {
-            return correctProducts.map((product, index) => (
-              <ProductDisplayBtn
-                product={product}
-                productIndex={index}
-                key={index}
-                navigation={navigation}
-              />
-            ));
-          } else {
-            return (
-              <View
-                style={{
-                  width: "100%",
-                  height: height * 0.8,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "archivo-500",
-                    color: "rgba(74,74,74,1)",
-                    fontSize: 20,
-                  }}
-                >
-                  This category has no products...
-                </Text>
-              </View>
-            );
-          }
-        }
-      }
-    }
-  };
-
-  const LogoImage = React.memo(
-    () => (
-      <Image
-        source={Logo}
-        style={{ width: 200, height: 160, resizeMode: "contain" }}
-      />
-    ),
-    []
-  );
+  const catalog = userStoreState.use();
 
   const SectionSelector = () => {
     return (
+      <ScrollView
+        contentContainerStyle={{
+          height: "90%",
+          alignItems: "center",
+        }}
+      >
+        {catalog.categories?.map((category, index) => {
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => {
+                setsection(category);
+              }}
+              style={{ padding: 10, marginBottom: 20 }}
+            >
+              <Text
+                style={[
+                  (section === null &&
+                    index === 0 && {
+                      color: "white",
+                      fontWeight: "700",
+                      borderBottomWidth: 1,
+                      borderBottomColor: "white",
+                    }) ||
+                    (section === category && {
+                      color: "white",
+                      fontWeight: "700",
+                      borderBottomWidth: 1,
+                      borderBottomColor: "white",
+                    }),
+                  { fontSize: 16, color: "white" },
+                ]}
+              >
+                {category}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+    );
+  };
+
+  return (
+    <View style={styles({ height, width }).container}>
       <View
         style={{
           backgroundColor: "rgba(31,35,48,1)",
@@ -121,74 +72,42 @@ const MenuScreen = ({ navigation, catalog }) => {
           alignSelf: "center",
         }}
       >
-        <LogoImage />
-        <ScrollView
-          contentContainerStyle={{
-            height: "90%",
-            alignItems: "center",
-          }}
-        >
-          {catalog.categories?.map((category, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  setsection(category);
-                }}
-                style={{ padding: 10 }}
-              >
-                <Text
-                  style={[
-                    (section === null &&
-                      index === 0 && {
-                        color: "white",
-                        fontWeight: "700",
-                        borderBottomWidth: 1,
-                        borderBottomColor: "white",
-                      }) ||
-                      (section === category && {
-                        color: "white",
-                        fontWeight: "700",
-                        borderBottomWidth: 1,
-                        borderBottomColor: "white",
-                      }),
-                    { fontSize: 16, color: "white" },
-                  ]}
-                >
-                  {category}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+        <Image
+          source={Logo}
+          style={{ width: 200, height: 160, resizeMode: "contain" }}
+        />
+        <SectionSelector />
       </View>
-    );
-  };
+      {catalog.categories?.map((category, index) => {
+        let visible;
 
-  return (
-    <View style={styles({ height, width }).container}>
-      <SectionSelector />
-      <ScrollView
-        style={styles({ height, width }).scrollview}
-        contentContainerStyle={styles({ height, width }).wrapper}
-      >
-        <InnerBlock />
-        {/* <Button
-          onPress={() => localStorage.removeItem("tutorialComplete")}
-          title="Reset help"
-        /> */}
-      </ScrollView>
+        if (section === null && index === 0) {
+          visible = true;
+        } else if (section === category) {
+          visible = true;
+        } else {
+          visible = false;
+        }
+
+        return (
+          <MenuScreenInnerBlock
+            key={index}
+            category={category}
+            height={height}
+            visible={visible}
+          />
+        );
+      })}
     </View>
   );
 };
 
-export default MenuScreen;
+export default React.memo(MenuScreen);
 
 const styles = (props) =>
   StyleSheet.create({
     container: {
       backgroundColor: "white",
-      //flex: 2,
       height: "100%",
       width: props.width * 0.7,
       flexDirection: "row",

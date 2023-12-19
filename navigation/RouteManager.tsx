@@ -27,8 +27,6 @@ import NewUserPayment from "screens/authed/NewUserPayment";
 import { Animated, Image, Modal, Text, View } from "react-native";
 import * as Font from "expo-font";
 import TrialEnded from "components/TrialEnded";
-import Tutorial from "components/Tutorial";
-// import config from "config";
 
 import {
   BrowserRouter as Router,

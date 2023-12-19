@@ -27,7 +27,6 @@ const PosHeader = (props) => {
     document.body.classList.toggle("mini-sidebar");
   };
 
-  let pathname = location.pathname;
 
   return (
     <>

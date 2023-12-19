@@ -72,12 +72,12 @@ const EditProduct = (props) => {
     }
 
     if (existingProduct?.hasImage) {
-      // (async () => {
-      //   const url = await getProductUrl(existingProduct.id)
-      //   setcurrentImgUrl(url)
-      // }
-      // )()
-      setcurrentImgUrl(existingProduct.imageUrl)
+      storage
+        .ref(auth.currentUser.uid + "/images/" + existingProduct.id)
+        .getDownloadURL()
+        .then((url) => {
+          setcurrentImgUrl(url);
+        });
     }
   }, []);
 

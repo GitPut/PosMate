@@ -11,13 +11,12 @@ import {
   DuplicateIcon,
 } from "../../EntryFile/imagePath";
 import "react-select2-wrapper/css/select2.css";
-import { setSelectedProductState, userStoreState } from "state/state";
+import { userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
 import { auth, storage } from "state/firebaseConfig";
-import { Image } from "react-native";
 
 const ProductList = () => {
-  const catalog = userStoreState.use();
+  const catalog = userStoreState.use()
   const [inputfilter, setInputfilter] = useState(false);
   const [searchFilterValue, setsearchFilterValue] = useState('')
   const [data, setData] = useState([]);
@@ -49,11 +48,10 @@ const ProductList = () => {
         });
         const localCatalog = structuredClone(catalog);
         if (localCatalog.products.length > 1) {
-          localCatalog.products.splice(props.id - 1, 1);
+          localCatalog.products.splice(props.index - 1, 1);
         } else {
           localCatalog.products = [];
         }
-
         updateData(localCatalog.categories, localCatalog.products);
       }
     });
@@ -61,57 +59,45 @@ const ProductList = () => {
 
   useEffect(() => {
     if (catalog.products.length > 0) {
+      setData([]);
       catalog.products.map((product, index) => {
+        setData((prev) => {
 
-        setData((prev) => [
-          ...prev,
-          {
-            id: product.id,
-            index: index + 1,
-            image: product.imageUrl ? product.imageUrl : AvocatImage,
-            productName: product.name,
-            // sku: "PT0012",
-            category: product.catagory ? product.catagory : product.category,
-            // brand: "N/D",
-            price: product.price,
-            // unit: "N/D",
-            // qty: "N/D",
-            createdBy: "Admin",
-            hasImage: product.hasImage
-          },
-        ]);
+          const productsWithCategory = prev.filter((item) => item.category === product.category)
+          if (productsWithCategory.length > 0) {
+            const indexOfLastItem = prev.indexOf(productsWithCategory[productsWithCategory.length - 1])
+            prev.splice(indexOfLastItem + 1, 0, {
+              id: product.id,
+              index: index + 1,
+              image: product.imageUrl ? product.imageUrl : AvocatImage,
+              productName: product.name,
+              category: product.catagory ? product.catagory : product.category,
+              price: product.price,
+              createdBy: "Admin",
+              hasImage: product.hasImage
+            })
+            return prev
+          }
+
+          return [
+            ...prev,
+            {
+              id: product.id,
+              index: index + 1,
+              image: product.imageUrl ? product.imageUrl : AvocatImage,
+              productName: product.name,
+              category: product.catagory ? product.catagory : product.category,
+              price: product.price,
+              createdBy: "Admin",
+              hasImage: product.hasImage
+            },
+          ]
+        }
+        );
 
       });
     }
-  }, []);
-
-  // useEffect(() => {
-  //   if (data.length > 0 && hasDataBeenMapped === false) {
-  //     const newMapData = structuredClone(data)
-  //     data.map((item, index) => {
-  //       if (item.hasImage) {
-  //         (async () => {
-  //           let url = await getProductUrl(item.id)
-  //           console.log('url: ', url)
-  //           newMapData[index].image = url
-  //         }
-  //         )().then(() => {
-  //           setfilteredData(newMapData)
-  //         }
-  //         )
-  //       }
-  //     }
-  //     )
-  //     setData(newMapData)
-  //     sethasDataBeenMapped(true)
-  //   }
-  // }, [data])
-
-
-  // const getProductUrl = async (id) => await storage
-  //   .ref(auth.currentUser.uid + '/images/' + id)
-  //   .getDownloadURL()
-
+  }, [catalog]);
 
   useEffect(() => {
     if (searchFilterValue.length > 0) {
@@ -133,31 +119,32 @@ const ProductList = () => {
       dataIndex: "productName",
       render: (text, record) => {
 
+        if (record.hasImage) {
+          storage
+            .ref(auth.currentUser.uid + "/images/" + record.id)
+            .getDownloadURL()
+            .then((url) => {
+              if (url) {
+                document.getElementById(record.id).src = url;
+              }
+            }).catch((err) => {
+              console.log(err)
+            })
+        }
+
         return (
           <div className="productimgname">
             <Link
               style={{ textDecoration: "none" }}
               className="product-img"
               to={`/authed/product/editproduct-product/${record.index - 1}`}
-            // onClick={() =>
-            //   setSelectedProductState({
-            //     existingProduct: catalog.products[record.index - 1],
-            //     existingProductIndex: record.index - 1,
-            //   })
-            // }
             >
-              < img alt="" src={record.image} />
+              < img id={record.id} alt="" src={record.imageUrl} loading="lazy" />
             </Link>
             <Link
               style={{ textDecoration: "none" }}
               style={{ fontSize: "15px", marginLeft: "10px" }}
               to={`/authed/product/editproduct-product/${record.index - 1}`}
-            // onClick={() =>
-            //   setSelectedProductState({
-            //     existingProduct: catalog.products[record.index - 1],
-            //     existingProductIndex: record.index - 1,
-            //   })
-            // }
             >
               {record.productName}
             </Link>
@@ -165,30 +152,14 @@ const ProductList = () => {
         )
       },
     },
-    // {
-    //   title: "SKU",
-    //   dataIndex: "sku",
-    // },
     {
       title: "Category",
       dataIndex: "category",
     },
-    // {
-    //   title: "Brand",
-    //   dataIndex: "brand",
-    // },
     {
       title: "Price",
       dataIndex: "price",
     },
-    // {
-    //   title: "Unit",
-    //   dataIndex: "unit",
-    // },
-    // {
-    //   title: "Qty",
-    //   dataIndex: "qty",
-    // },
     {
       title: "Created By",
       dataIndex: "createdBy",
@@ -201,9 +172,8 @@ const ProductList = () => {
             <Link
               style={{ textDecoration: "none" }}
               className="me-3"
-              // to="/authed/product/product-details"
               onClick={() => {
-                let copy = structuredClone(catalog.products[props.id - 1]);
+                let copy = structuredClone(catalog.products[props.index - 1]);
                 copy.name = copy.name + " Copy";
                 copy.id = Math.random().toString(36).substr(2, 9);
                 updateData(
@@ -217,13 +187,7 @@ const ProductList = () => {
             <Link
               style={{ textDecoration: "none" }}
               className="me-3"
-              to={`/authed/product/editproduct-product/${props.id - 1}`}
-            // onClick={() =>
-            //   setSelectedProductState({
-            //     existingProduct: catalog.products[props.id - 1],
-            //     existingProductIndex: props.id - 1,
-            //   })
-            // }
+              to={`/authed/product/editproduct-product/${props.index - 1}`}
             >
               <img src={EditIcon} alt="img" />
             </Link>
@@ -269,7 +233,7 @@ const ProductList = () => {
 
               {/* /Filter */}
               <div className="table-responsive">
-                <Table columns={columns} dataSource={filteredData.length > 0 ? filteredData : data} />
+                <Table columns={columns} dataSource={filteredData.length > 0 ? filteredData : data} noPagnation={true} />
               </div>
             </div>
           </div>
