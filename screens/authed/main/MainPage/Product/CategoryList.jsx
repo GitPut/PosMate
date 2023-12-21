@@ -172,7 +172,7 @@ const CategoryList = () => {
       }
     }
 
-    updateData(localCatalog.categories, localCatalog.products);
+    updateData(localCatalog.categories);
   }
 
   return (

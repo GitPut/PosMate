@@ -29,19 +29,21 @@ const ReceiptPrint = (element, storeDetails) => {
 
   let date;
 
-  if (element.date_created) {
-    const dateString = element.date_created;
+  // if (element.date_created) {
+  //   const dateString = element.date_created;
 
-    const newDate = new Date(dateString + "Z");
+  //   const newDate = new Date(dateString + "Z");
 
-    const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  //   const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    const result = tz(newDate)
-      .tz(targetTimezone, true)
-      .format("dddd, MMMM Do YYYY, h:mm:ss a z");
+  //   const result = tz(newDate)
+  //     .tz(targetTimezone, true)
+  //     .format("dddd, MMMM Do YYYY, h:mm:ss a z");
 
-    date = result;
-  } else if (element.date) {
+  //   date = result;
+  // } else
+
+  if (element.date) {
     const newDate = new Date(element.date.seconds * 1000);
     const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -118,7 +120,12 @@ const ReceiptPrint = (element, storeDetails) => {
       "\x0A" + "\x0A",
       "Customer Address #:  " + element.customer.address?.label,
       "\x0A" + "\x0A",
-      `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + element.total + "\x0A" + "\x0A",
+      `Total Including (${
+        storeDetails.taxRate ? storeDetails.taxRate : "13"
+      }% Tax): ` +
+        element.total +
+        "\x0A" +
+        "\x0A",
       "------------------------------------------" + "\x0A",
       "\x0A", // line break
       "\x0A", // line break
@@ -149,16 +156,16 @@ const ReceiptPrint = (element, storeDetails) => {
     );
 
     element.cart.map((cartItem) => {
-     data.push(`Name: ${cartItem.name}`);
-     data.push("\x0A");
+      data.push(`Name: ${cartItem.name}`);
+      data.push("\x0A");
 
-     if (cartItem.quantity > 1) {
-       data.push(`Quantity: ${cartItem.quantity}`);
-       data.push("\x0A");
-       data.push(`Price: $${cartItem.price * cartItem.quantity}`);
-     } else {
-       data.push(`Price: $${cartItem.price}`);
-     }
+      if (cartItem.quantity > 1) {
+        data.push(`Quantity: ${cartItem.quantity}`);
+        data.push("\x0A");
+        data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+      } else {
+        data.push(`Price: $${cartItem.price}`);
+      }
 
       if (cartItem.description) {
         data.push("\x0A");
@@ -190,7 +197,12 @@ const ReceiptPrint = (element, storeDetails) => {
       "\x0A" + "\x0A",
       "Customer Phone #:  " + element.customer.phone,
       "\x0A" + "\x0A",
-      `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + element.total + "\x0A" + "\x0A",
+      `Total Including (${
+        storeDetails.taxRate ? storeDetails.taxRate : "13"
+      }% Tax): ` +
+        element.total +
+        "\x0A" +
+        "\x0A",
       "------------------------------------------" + "\x0A",
       "\x0A", // line break
       "\x0A", // line break
@@ -280,7 +292,13 @@ const ReceiptPrint = (element, storeDetails) => {
       "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
       "\x0A" + "\x0A",
       "Payment Method: " + element.payment_method_title + "\x0A" + "\x0A",
-      `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + "$" + element.total + "\x0A" + "\x0A",
+      `Total Including (${
+        storeDetails.taxRate ? storeDetails.taxRate : "13"
+      }% Tax): ` +
+        "$" +
+        element.total +
+        "\x0A" +
+        "\x0A",
       "------------------------------------------" + "\x0A",
       "\x0A", // line break
       "\x0A", // line break
@@ -310,16 +328,16 @@ const ReceiptPrint = (element, storeDetails) => {
     ];
 
     element.cart.map((cartItem) => {
-    data.push(`Name: ${cartItem.name}`);
-    data.push("\x0A");
-
-    if (cartItem.quantity > 1) {
-      data.push(`Quantity: ${cartItem.quantity}`);
+      data.push(`Name: ${cartItem.name}`);
       data.push("\x0A");
-      data.push(`Price: $${cartItem.price * cartItem.quantity}`);
-    } else {
-      data.push(`Price: $${cartItem.price}`);
-    }
+
+      if (cartItem.quantity > 1) {
+        data.push(`Quantity: ${cartItem.quantity}`);
+        data.push("\x0A");
+        data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+      } else {
+        data.push(`Price: $${cartItem.price}`);
+      }
 
       if (cartItem.description) {
         data.push("\x0A");
@@ -349,7 +367,13 @@ const ReceiptPrint = (element, storeDetails) => {
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
         "\x0A" + "\x0A",
         "Payment method: " + element.method + "\x0A" + "\x0A",
-        `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + "$" + element.total + "\x0A" + "\x0A",
+        `Total Including (${
+          storeDetails.taxRate ? storeDetails.taxRate : "13"
+        }% Tax): ` +
+          "$" +
+          element.total +
+          "\x0A" +
+          "\x0A",
         "------------------------------------------" + "\x0A",
         "\x0A", // line break
         "\x0A", // line break
@@ -366,7 +390,13 @@ const ReceiptPrint = (element, storeDetails) => {
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
         "\x0A" + "\x0A",
         "Payment method: " + element.method + "\x0A" + "\x0A",
-        `Total Including (${storeDetails.taxRate ? storeDetails.taxRate : '13'}% Tax): ` + "$" + element.total + "\x0A" + "\x0A",
+        `Total Including (${
+          storeDetails.taxRate ? storeDetails.taxRate : "13"
+        }% Tax): ` +
+          "$" +
+          element.total +
+          "\x0A" +
+          "\x0A",
         "------------------------------------------" + "\x0A",
         "\x0A", // line break
         "\x0A", // line break

@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Upload } from '../../EntryFile/imagePath';
 import Select2 from 'react-select2-wrapper';
 import 'react-select2-wrapper/css/select2.css';
-import { userStoreState } from 'state/state';
+import { userState, userStoreState } from 'state/state';
 import { updateData } from 'state/firebaseFunctions';
 import { FlatList, Image, Modal, TouchableOpacity, View } from 'react-native';
 import OptionView from 'components/OptionView';
 import { Button } from 'react-native';
 import { Link, useHistory } from 'react-router-dom';
-import { auth, storage } from 'state/firebaseConfig';
+import { auth, db, storage } from 'state/firebaseConfig';
 
 const AddProduct = () => {
     const catalog = userStoreState.use();
@@ -22,6 +22,7 @@ const AddProduct = () => {
             id: Math.random().toString(36).substr(2, 9),
         }
     );
+    const userS = userState.use();
 
     const [newProductOptions, setnewProductOptions] = useState([])
 
@@ -65,7 +66,11 @@ const AddProduct = () => {
             newProduct.hasImage = true
         }
 
-        updateData([...catalog.categories], [...catalog.products, newProduct]);
+        db.collection("users")
+            .doc(userS.uid)
+            .collection("products")
+            .doc(newProduct.id.toString())
+            .set(newProduct)
         history.push("/authed/product/productlist-product");
     }
 

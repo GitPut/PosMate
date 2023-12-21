@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   setStoreDetailState,
   setTrialDetailsState,
   setUserState,
   setUserStoreState,
   setWoocommerceState,
+  storeDetailState,
   trialDetailsState,
   userState,
   woocommerceState,
@@ -12,17 +13,16 @@ import {
 import { auth, db } from "state/firebaseConfig";
 import { updateFreeTrial } from "state/firebaseFunctions";
 const tz = require("moment-timezone");
-import useSound from "use-sound";
-import mySound from "assets/alarm.mp3";
 import NewUserPayment from "screens/authed/NewUserPayment";
 import { Animated, Image } from "react-native";
 import * as Font from "expo-font";
 import TrialEnded from "components/TrialEnded";
+const qz = require("qz-tray");
 
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import AuthRoute from "./authed/AuthRoute";
 import NonAuthRoute from "./non-authed/NonAuthRoute";
-import PrintOnlineOrder from "./PrintOnlineOrder";
+import useInterval from "components/useInterval";
 
 const RouteManagerNew = () => {
   const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
@@ -35,8 +35,9 @@ const RouteManagerNew = () => {
   const [isCanceled, setisCanceled] = useState(null);
   const trialDetails = trialDetailsState.use();
   const wooCredentials = woocommerceState.use();
-  const [playSound] = useSound(mySound);
   const [wooOrders, setwooOrders] = useState([]);
+  const storeDetails = storeDetailState.use();
+  const [isWooError, setisWooError] = useState(false);
 
   const [fontsLoaded] = Font.useFonts({
     "archivo-600": require("assets/fonts/Archivo-SemiBold.ttf"),
@@ -70,13 +71,23 @@ const RouteManagerNew = () => {
             import("assets/css/line-awesome.min.css");
             import("assets/css/style.css");
 
-            // setUserStoreState({
-            //   categories: doc.data().products ? doc.data().products : [],
-            //   products: doc.data().categories ? doc.data().categories : [],
-            // });
+            const products = [];
+            const categories = [];
+
+            doc.ref
+              .collection("products")
+              .get()
+              .then((docs) => {
+                if (!docs.empty) {
+                  docs.forEach((element) => {
+                    products.push(element.data());
+                  });
+                }
+              })
+              .catch(() => console.log("Error has occured with db"));
 
             setUserStoreState({
-              products: doc.data().products ? doc.data().products : [],
+              products: products,
               categories: doc.data().categories ? doc.data().categories : [],
             });
 
@@ -93,10 +104,6 @@ const RouteManagerNew = () => {
               .then((docs) => {
                 if (!docs.empty) {
                   docs.forEach((element) => {
-                    // if (!element.data().printed) {
-                    //   //print order because it hasnt been printed
-                    //   //After printing, set printed to true
-                    // }
                     setwooOrders((prev) => [...prev, element.data()]);
                   });
                 }
@@ -183,10 +190,11 @@ const RouteManagerNew = () => {
               .collection("users")
               .doc(user.uid)
               .onSnapshot((doc) => {
-                // console.log("data updated in firebase");
                 setUserStoreState({
-                  products: doc.data()?.products || [],
-                  categories: doc.data()?.categories || [],
+                  products: products,
+                  categories: doc.data().categories
+                    ? doc.data().categories
+                    : [],
                 });
                 if (doc.data().wooCredentials) {
                   setWoocommerceState(doc.data().wooCredentials);
@@ -216,99 +224,234 @@ const RouteManagerNew = () => {
     };
   }, [savedUserState]);
 
-  useEffect(() => {
-    if (wooCredentials.useWoocommerce === true && isSubscribed) {
-      // console.log("USING WOOCOMMERCE");
-      const interval = setInterval(() => {
-        try {
-          const WooCommerceAPI = require("woocommerce-api");
+  useInterval(() => {
+    if (wooCredentials.useWoocommerce && isSubscribed && !isWooError) {
+      const WooCommerceAPI = require("woocommerce-api");
 
-          const WooCommerce = new WooCommerceAPI({
-            url: wooCredentials.apiUrl,
-            consumerKey: wooCredentials.ck,
-            consumerSecret: wooCredentials.cs,
-            wpAPI: true,
-            version: "wc/v3",
-          });
+      const WooCommerce = new WooCommerceAPI({
+        url: wooCredentials.apiUrl,
+        consumerKey: wooCredentials.ck,
+        consumerSecret: wooCredentials.cs,
+        wpAPI: true,
+        version: "wc/v3",
+      });
 
-          let page = 1;
-          let orders = [];
+      let page = 1;
+      let orders = [];
 
-          const getOrders = async () => {
-            const response = await WooCommerce.getAsync(
-              `orders?page=${page}&per_page=100`
-            );
-            const data = JSON.parse(response.body);
-            orders = [...orders, ...data];
-            if (data.length === 100) {
-              page++;
-              getOrders();
+      const getOrders = async () => {
+        const response = await WooCommerce.getAsync(
+          `orders?page=${page}&per_page=100`
+        );
+        const data = JSON.parse(response.body);
+        orders = [...orders, ...data];
+        if (data.length === 100) {
+          page++;
+          getOrders();
+        } else {
+          //console.log("WOO ORDERS: ", orders);
+        }
+        // console.log("WOO ORDERS: ", orders);
+      };
+
+      getOrders()
+        .then(() => {
+          if (JSON.stringify(orders) === JSON.stringify(wooOrders)) return;
+          for (let index = 0; index < orders.length; index++) {
+            const order = orders[index];
+            let orderIndex;
+            if (wooOrders.length > 0) {
+              orderIndex = wooOrders.findIndex((e) => e.id === order.id);
             } else {
-              //console.log("WOO ORDERS: ", orders);
+              orderIndex = -1;
             }
-            // console.log("WOO ORDERS: ", orders);
-          };
 
-          getOrders()
-            .then(() => {
-              orders.forEach((order) => {
-                let orderIndex;
+            if (orderIndex === -1 || !wooOrders[orderIndex].printed) {
+              if (orderIndex === -1) {
+                db.collection("users")
+                  .doc(userS.uid)
+                  .collection("wooOrders")
+                  .doc(order.id.toString())
+                  .set({ ...order, printed: true })
+                  .then(() => {
+                    setwooOrders((prev) => [
+                      ...prev,
+                      { ...order, printed: true },
+                    ]);
+                    wooOrders.push({ ...order, printed: true });
+                  })
+                  .catch((e) => console.log("Error has occured with db: ", e));
+              } else {
+                db.collection("users")
+                  .doc(userS.uid)
+                  .collection("wooOrders")
+                  .doc(order.id.toString())
+                  .update({ printed: true })
+                  .then(() => {
+                    setwooOrders((prev) => {
+                      const newOrders = [...prev];
+                      newOrders[orderIndex].printed = true;
+                      return newOrders;
+                    });
+                    wooOrders[index].printed = true;
+                  })
+                  .catch((e) => console.log("Error has occured with db: ", e));
+              }
 
-                if (wooOrders.length > 0) {
-                  orderIndex = wooOrders.findIndex((e) => e.id === order.id);
-                  // console.log("orderIndex: ", orderIndex);
+              const CleanupOps = (metaList) => {
+                const opsArray = [];
+
+                metaList.forEach((op) => {
+                  const arrContaingMe = opsArray.filter(
+                    (filterOp) => filterOp.key === op.key
+                  );
+
+                  if (arrContaingMe.length > 0) {
+                    opsArray.forEach((opsArrItem, index) => {
+                      if (opsArrItem.key === op.key) {
+                        opsArray[index].vals.push(op.value);
+                      }
+                    });
+                  } else {
+                    opsArray.push({ key: op.key, vals: [op.value] });
+                  }
+                });
+                return opsArray;
+              };
+
+              const printData = [];
+              const dateString = order.date_created;
+              const newDate = new Date(dateString + "Z");
+              const targetTimezone =
+                Intl.DateTimeFormat().resolvedOptions().timeZone;
+              const resultDate = tz(newDate)
+                .tz(targetTimezone, true)
+                .format("dddd, MMMM Do YYYY, h:mm:ss a z");
+
+              printData.push(
+                "\x1B" + "\x40", // init
+                "\x1B" + "\x61" + "\x31", // center align
+                storeDetails.name,
+                "\x0A",
+                storeDetails.address?.label + "\x0A",
+                storeDetails.website + "\x0A", // text and line break
+                storeDetails.phoneNumber + "\x0A", // text and line break
+                resultDate + "\x0A",
+                "\x0A",
+                "Online Order" + "\x0A", // text and line break
+                `Transaction ID ${order.number}` + "\x0A",
+                "\x0A",
+                "\x0A",
+                "\x0A",
+                "\x1B" + "\x61" + "\x30" // left align
+              );
+
+              order.line_items?.map((cartItem) => {
+                printData.push("\x0A");
+                printData.push(`Name: ${cartItem.name}`);
+                printData.push("\x0A");
+                printData.push(`Quantity: ${cartItem.quantity}`);
+                printData.push("\x0A");
+                printData.push(`Price: $${cartItem.price}`);
+                printData.push("\x0A");
+
+                if (cartItem.meta) {
+                  CleanupOps(cartItem.meta).map((returnedItem) => {
+                    printData.push(`${returnedItem.key} : `);
+                    printData.push("\x0A");
+                    returnedItem.vals.map((val, index) => {
+                      printData.push(`${val}`);
+                      printData.push("\x0A");
+                      if (index >= 0 && index < returnedItem.vals.length - 1) {
+                        printData.push(", ");
+                      }
+                    });
+                    printData.push("\x0A");
+                  });
                 } else {
-                  orderIndex = -1;
-                  // console.log("Order not found");
-                }
-
-                if (orderIndex === -1) {
-                  db.collection("users")
-                    .doc(userS.uid)
-                    .collection("wooOrders")
-                    .doc(order.id.toString())
-                    .set({ ...order, printed: true })
-                    .then(() => {
-                      // console.log("order added to db");
-                      playSound();
-                      PrintOnlineOrder(order);
-                      setwooOrders((prev) => [...prev, order]);
-                    })
-                    .catch((e) =>
-                      console.log("Error has occured with db: ", e)
-                    );
-                } else if (!wooOrders[orderIndex].printed) {
-                  db.collection("users")
-                    .doc(userS.uid)
-                    .collection("wooOrders")
-                    .doc(order.id.toString())
-                    .update({ printed: true })
-                    .then(() => {
-                      // console.log("order updated in db");
-                      playSound();
-                      PrintOnlineOrder(order);
-                      setwooOrders((prev) => {
-                        const newOrders = [...prev];
-                        newOrders[orderIndex].printed = true;
-                        return newOrders;
-                      });
-                    })
-                    .catch((e) =>
-                      console.log("Error has occured with db: ", e)
-                    );
+                  printData.push("\x0A" + "\x0A");
                 }
               });
-            })
-            .catch((e) =>
-              console.log("Error has occured when trying to get WooOrders: ", e)
-            );
-        } catch {
-          console.log("Error has occured with woocommerce");
-        }
-      }, 10000); // this will check for new orders every minute
-      return () => clearInterval(interval);
+
+              printData.push("\x0A");
+              printData.push("\x0A");
+              printData.push(`Customer Details:`);
+              printData.push("\x0A");
+              printData.push(`Address: ${order.shipping.address_1}`);
+              printData.push("\x0A");
+              printData.push(`City: ${order.shipping.city}`);
+              printData.push("\x0A");
+              printData.push(`Zip/Postal Code: ${order.shipping.postcode}`);
+              printData.push("\x0A");
+              printData.push(`Province/State: ${order.shipping.state}`);
+              printData.push("\x0A");
+              printData.push(
+                `Name: ${order.shipping.first_name} ${order.shipping.last_name}`
+              );
+              printData.push("\x0A");
+              printData.push(`Phone Number: ${order.billing.phone}`);
+              printData.push("\x0A");
+              order.shipping_lines.map((line) => {
+                printData.push(`Shipping Method: ${line.method_title}`);
+                printData.push("\x0A");
+              });
+              if (order.customer_note) {
+                printData.push(`Customer Note: ${order.customer_note}`);
+                printData.push("\x0A");
+              }
+              printData.push("\x0A");
+              printData.push("\x0A");
+
+              printData.push(
+                "\x0A",
+                "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+                "\x0A" + "\x0A",
+                "Payment Method: " +
+                  order.payment_method_title +
+                  "\x0A" +
+                  "\x0A",
+                `Total Including (${
+                  storeDetails.taxRate ? storeDetails.taxRate : "13"
+                }% Tax): ` +
+                  "$" +
+                  order.total +
+                  "\x0A" +
+                  "\x0A",
+                "------------------------------------------" + "\x0A",
+                "\x0A", // line break
+                "\x0A", // line break
+                "\x0A", // line break
+                "\x0A", // line break
+                "\x0A", // line break
+                "\x0A" // line break
+              );
+
+              printData.push("\x1D" + "\x56" + "\x00");
+
+              const doublePrint = printData.concat(printData);
+
+              qz.websocket
+                .connect()
+                .then(function () {
+                  const config = qz.configs.create(storeDetails.comSelected);
+                  return qz.print(config, doublePrint);
+                })
+                .then(qz.websocket.disconnect)
+                .catch(function (err) {
+                  console.error(err);
+                });
+            }
+          }
+        })
+        .catch((e) => {
+          console.log("Error has occured when trying to get WooOrders: ", e);
+          alert(
+            "There was an error connecting to your woocommerce store. Please refresh the page to try again."
+          );
+          setisWooError(true);
+        });
     }
-  }, [wooCredentials, isSubscribed]);
+  }, 10000);
 
   const fadeIn = () => {
     // Will change fadeAnim value to 0 in 3 seconds

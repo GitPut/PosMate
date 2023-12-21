@@ -3,13 +3,13 @@ import { Macbook, Upload } from "../../EntryFile/imagePath";
 import { Link, useHistory } from "react-router-dom"
 import Select2 from "react-select2-wrapper";
 import "react-select2-wrapper/css/select2.css";
-import { selectedProductState, userStoreState } from "state/state";
+import { selectedProductState, setUserStoreState, userState, userStoreState } from "state/state";
 import { FlatList, Image, Modal, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { Button } from "react-native";
 import OptionView from "components/OptionView";
 import { updateData } from "state/firebaseFunctions";
 import { useParams } from "react-router-dom";
-import { auth, storage } from "state/firebaseConfig";
+import { auth, db, storage } from "state/firebaseConfig";
 
 const EditProduct = (props) => {
   const catalog = userStoreState.use();
@@ -38,6 +38,8 @@ const EditProduct = (props) => {
   const [selectedFile, setSelectedFile] = useState()
 
   const [currentImgUrl, setcurrentImgUrl] = useState()
+
+  const userS = userState.use();
 
   // const resetProduct = () => {
   //   setnewProduct(
@@ -122,6 +124,8 @@ const EditProduct = (props) => {
 
       copy[findIndex] = newProductUseRef;
 
+      
+
     } else {
       const newProductUseRef = {
         ...newProduct,
@@ -130,7 +134,7 @@ const EditProduct = (props) => {
       };
       copy[existingProductIndex] = newProductUseRef;
     }
-    updateData([...catalog.categories], copy);
+    setUserStoreState({ categories: catalog.categories, products: copy })
     history.push("/authed/product/productlist-product");
   }
 

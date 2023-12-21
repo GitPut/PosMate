@@ -33,11 +33,10 @@ export const signUp = (email, password, name, phoneNumber) =>
     }
   });
 
-export const updateData = (categories, products) => {
+export const updateData = (categories) => {
   db.collection("users")
     .doc(auth.currentUser?.uid)
     .update({
-      products: products,
       categories: categories,
     })
     .catch((e) => console.log("ERROR HAS OCCURE FB: ", e));

@@ -11,9 +11,9 @@ import {
   DuplicateIcon,
 } from "../../EntryFile/imagePath";
 import "react-select2-wrapper/css/select2.css";
-import { userStoreState } from "state/state";
+import { userState, userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
-import { auth, storage } from "state/firebaseConfig";
+import { auth, db, storage } from "state/firebaseConfig";
 
 const ProductList = () => {
   const catalog = userStoreState.use()
@@ -21,6 +21,7 @@ const ProductList = () => {
   const [searchFilterValue, setsearchFilterValue] = useState('')
   const [data, setData] = useState([]);
   const [filteredData, setfilteredData] = useState([]);
+  const userS = userState.use();
 
   const togglefilter = (value) => {
     setInputfilter(value);
@@ -176,10 +177,11 @@ const ProductList = () => {
                 let copy = structuredClone(catalog.products[props.index - 1]);
                 copy.name = copy.name + " Copy";
                 copy.id = Math.random().toString(36).substr(2, 9);
-                updateData(
-                  [...catalog.categories],
-                  [...catalog.products, copy]
-                );
+                db.collection("users")
+                  .doc(userS.uid)
+                  .collection("products")
+                  .doc(copy.id.toString())
+                  .set(copy)
               }}
             >
               <img src={DuplicateIcon} alt="img" />
