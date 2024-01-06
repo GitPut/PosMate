@@ -7,27 +7,23 @@ import {
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Text } from "@react-native-material/core";
-import { storeDetailState, transListState } from "state/state";
 import { updateTransList } from "state/firebaseFunctions";
 import ChangeScreen from "./ChangeScreen";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import useWindowDimensions from "./useWindowDimensions";
 
-const CompletePaymentPhoneOrder = ({ setongoingOrderListModal }) => {
+const CompletePaymentPhoneOrder = ({
+  setongoingOrderListModal,
+  updateOrderHandler,
+  ongoingListState,
+  setongoingListState,
+}) => {
   const { height, width } = useWindowDimensions();
-  // const transList = transListState.use();
-  const [ongoingListState, setongoingListState] = useState(
-    JSON.parse(localStorage.getItem("ongoingList"))
-  );
   const [changeModal, setChangeModal] = useState(false);
   const [currentOrder, setcurrentOrder] = useState({
     element: null,
     index: null,
   });
-
-  useEffect(() => {
-    localStorage.setItem("ongoingList", JSON.stringify(ongoingListState));
-  }, [ongoingListState]);
 
   return (
     <>
@@ -151,12 +147,8 @@ const CompletePaymentPhoneOrder = ({ setongoingOrderListModal }) => {
                               } else {
                                 setongoingListState([]);
                               }
-                              // ongoingList.splice(index, 1);
-                              // localStorage.setItem(
-                              //   "ongoingList",
-                              //   JSON.stringify(ongoingList)
-                              // );
                             }
+                            updateTransList(element);
                           }}
                           name="store"
                           size={26}
@@ -179,12 +171,8 @@ const CompletePaymentPhoneOrder = ({ setongoingOrderListModal }) => {
                               } else {
                                 setongoingListState([]);
                               }
-                              // ongoingList.splice(index, 1);
-                              // localStorage.setItem(
-                              //   "ongoingList",
-                              //   JSON.stringify(ongoingList)
-                              // );
                             }
+                            updateTransList(element);
                           }}
                           name="car"
                           size={26}
@@ -200,48 +188,21 @@ const CompletePaymentPhoneOrder = ({ setongoingOrderListModal }) => {
                           } else {
                             setongoingListState([]);
                           }
-                          // ongoingList.splice(index, 1);
-                          // localStorage.setItem(
-                          //   "ongoingList",
-                          //   JSON.stringify(ongoingList)
-                          // );
                         }}
                         name="cancel"
                         size={26}
                         color="rgba(74,74,74,1)"
                       />
-                      {/* <Text>
-                      Method:{" "}
-                      {element.method === "pickupOrder"
-                        ? "Pick Up"
-                        : "Delivery"}
-                    </Text> */}
-                      {/* <Button
-                      title="Complete Order"
-                      onPress={() => {
-                        if (element.method === "pickupOrder") {
-                          setChangeModal(true);
-                          setcurrentOrder({ element: element, index: index });
-                        } else {
-                          const localChange = structuredClone(transList);
-                          localChange[index].completed = true;
-                          updateTransList(localChange);
-                        }
-                      }}
-                      style={{ marginBottom: 10 }}
-                    />
-                    <Button
-                      title="Cancel Order"
-                      onPress={() => {
-                        const localChange = structuredClone(transList);
-                        localChange[index].cancelled = true;
-                        updateTransList(localChange);
-                      }}
-                    /> */}
+                      <MaterialCommunityIcons
+                        onPress={() => {
+                          updateOrderHandler({ ...element, index: index });
+                        }}
+                        name="square-edit-outline"
+                        size={26}
+                        color="rgba(74,74,74,1)"
+                      />
                     </View>
                   );
-                  //   }
-                  // }
                 } catch {
                   console.log("Error at complete phone order");
                 }

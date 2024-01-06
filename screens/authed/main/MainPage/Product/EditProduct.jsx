@@ -99,42 +99,36 @@ const EditProduct = (props) => {
 
     let copy = structuredClone(catalog.products);
 
-    if (existingProduct.id) {
-      const newProductUseRef = {
-        ...newProduct,
-        options: newProductOptions,
-      };
-      const findIndex = copy.findIndex((e) => e.id === existingProduct.id);
+    const newProductUseRef = {
+      ...newProduct,
+      options: newProductOptions,
+    };
+    const findIndex = copy.findIndex((e) => e.id === existingProduct.id);
 
-      // Upload Image
+    // Upload Image
 
-      if (selectedFile) {
-        storage
-          .ref(auth.currentUser.uid + '/images/' + existingProduct.id)
-          .put(selectedFile);
+    if (selectedFile) {
+      storage
+        .ref(auth.currentUser.uid + '/images/' + existingProduct.id)
+        .put(selectedFile);
 
-        newProductUseRef.hasImage = true
-      }
-
-      if (newProductUseRef.hasImage && !selectedFile && !currentImgUrl) {
-        storage
-          .ref(auth.currentUser.uid + '/images/' + existingProduct.id).delete()
-        newProductUseRef.hasImage = false
-      }
-
-      copy[findIndex] = newProductUseRef;
-
-      
-
-    } else {
-      const newProductUseRef = {
-        ...newProduct,
-        options: newProductOptions,
-        id: Math.random().toString(36).substr(2, 9),
-      };
-      copy[existingProductIndex] = newProductUseRef;
+      newProductUseRef.hasImage = true
     }
+
+    if (newProductUseRef.hasImage && !selectedFile && !currentImgUrl) {
+      storage
+        .ref(auth.currentUser.uid + '/images/' + existingProduct.id).delete()
+      newProductUseRef.hasImage = false
+    }
+
+    copy[findIndex] = newProductUseRef;
+
     setUserStoreState({ categories: catalog.categories, products: copy })
+    db.collection("users")
+      .doc(userS.uid)
+      .collection("products")
+      .doc(newProductUseRef.id.toString())
+      .set(newProductUseRef)
     history.push("/authed/product/productlist-product");
   }
 

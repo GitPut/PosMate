@@ -1,4 +1,5 @@
 import {
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -18,6 +19,7 @@ import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { addCustomerDetailsToDb } from "state/firebaseFunctions";
 import { auth, db } from "state/firebaseConfig";
 import CartItem from "components/CartItem";
+const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
 const SaveCustomer = ({
   setSaveCustomerModal,
@@ -32,6 +34,10 @@ const SaveCustomer = ({
   const [customerSelected, setcustomerSelected] = useState(null);
   const { height, width } = useWindowDimensions();
   const [search, setsearch] = useState(null);
+  const [editModal, setEditModal] = useState(false);
+  const [name, setName] = useState(null);
+  const [phone, setPhone] = useState(null);
+  const [address, setaddress] = useState(null);
 
   useEffect(() => {
     let localCustomers = localStorage.getItem("customers");
@@ -40,6 +46,12 @@ const SaveCustomer = ({
       setcustomers(localCustomers);
     }
   }, []);
+
+  useEffect(() => {
+    setName(customerSelected?.name);
+    setPhone(customerSelected?.phone);
+    setaddress(customerSelected?.address);
+  }, [customerSelected]);
 
   // useEffect(() => {
   //   db.collection("users")
@@ -113,7 +125,7 @@ const SaveCustomer = ({
                 setOngoingDelivery(true);
                 setNameForDelivery(customerSelected.name);
                 setPhoneForDelivery(customerSelected.phone);
-                setAddressForDelivery(null);
+                setAddressForDelivery(customerSelected.address);
                 setDeliveryChecked(false);
                 setSaveCustomerModal(false);
               }}
@@ -345,6 +357,23 @@ const SaveCustomer = ({
               </View>
               <TouchableOpacity
                 onPress={() => {
+                  setEditModal(true);
+                }}
+                style={{ width: 100 }}
+              >
+                <Text
+                  style={{
+                    color: "black",
+                    fontSize: 12,
+                    marginTop: 10,
+                    fontFamily: "archivo-600",
+                  }}
+                >
+                  Edit Customer
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
                   db.collection("users")
                     .doc(auth.currentUser?.uid)
                     .collection("customers")
@@ -446,6 +475,191 @@ const SaveCustomer = ({
             />
           )}
         </View>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={editModal}
+          onRequestClose={() => {
+            setEditModal(false);
+          }}
+        >
+          <>
+            <TouchableOpacity
+              onPress={() => setEditModal(false)}
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+                width: "100%",
+              }}
+            />
+            <View
+              style={{
+                position: "absolute",
+                alignSelf: "center",
+                padding: 50,
+                backgroundColor: "rgba(255,255,255,1)",
+                borderRadius: 30,
+                shadowColor: "rgba(0,0,0,1)",
+                shadowOffset: {
+                  width: 3,
+                  height: 3,
+                },
+                elevation: 30,
+                shadowOpacity: 0.57,
+                shadowRadius: 10,
+                width: "35%",
+                top: "15%",
+              }}
+            >
+              <View>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: 22,
+                    fontWeight: "600",
+                    color: "rgba(74,74,74,1)",
+                    marginBottom: 20,
+                  }}
+                >
+                  Create Phone Order
+                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    backgroundColor: "rgba(243,243,243,1)",
+                    borderRadius: 30,
+                    height: 60,
+                    marginBottom: 25,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 60,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: "rgba(218,216,216,1)",
+                      borderRadius: 30,
+                      height: 60,
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name="account"
+                      size={32}
+                      color="rgba(71,106,229,1)"
+                    />
+                  </View>
+                  <TextInput
+                    color="black"
+                    placeholder="Enter name"
+                    style={{ width: "80%" }}
+                    inputStyle={{ backgroundColor: "rgba(243,243,243,1)" }}
+                    value={name}
+                    onChangeText={(val) => setName(val)}
+                    autoCorrect={false}
+                    textContentType={"name"}
+                  />
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    backgroundColor: "rgba(243,243,243,1)",
+                    borderRadius: 30,
+                    height: 60,
+                    marginBottom: 25,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 60,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: "rgba(218,216,216,1)",
+                      borderRadius: 30,
+                      height: 60,
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name="phone"
+                      size={32}
+                      color="rgba(74,74,74,1)"
+                    />
+                  </View>
+                  <TextInput
+                    color="black"
+                    placeholder="Enter Phone #"
+                    style={{ width: "80%" }}
+                    inputStyle={{ backgroundColor: "rgba(243,243,243,1)" }}
+                    value={phone}
+                    onChangeText={(val) => setPhone(val)}
+                  />
+                </View>
+                <GooglePlacesAutocomplete
+                  apiOptions={{
+                    region: "CA",
+                  }}
+                  debounce={800}
+                  apiKey={GOOGLE_API_KEY}
+                  // onSelect={handleAddress}
+                  selectProps={{
+                    address,
+                    onChange: setaddress,
+                    placeholder: "Enter customer address",
+                    defaultValue: address,
+                    menuPortalTarget: document.body,
+                    styles: {
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    },
+                  }}
+                  renderSuggestions={(
+                    active,
+                    suggestions,
+                    onSelectSuggestion
+                  ) => (
+                    <div style={{ width: "80%" }}>
+                      {suggestions.map((suggestion) => (
+                        <div
+                          className="suggestion"
+                          onClick={(event) => {
+                            onSelectSuggestion(suggestion, event);
+                          }}
+                        >
+                          {suggestion.description}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                />
+                <Button
+                  title="Update"
+                  // onPress={GetTrans}
+                  onPress={() => {
+                    // if (name && phone) {
+                    //   setDeliveryModal(false);
+                    //   setOngoingDelivery(true);
+                    //   if (saveCustomerChecked) {
+                    //     SaveCustomer();
+                    //   }
+                    // }
+                  }}
+                  contentContainerStyle={styles.btn}
+                  style={{ margin: 25, backgroundColor: "#4050B5" }}
+                />
+                <Button
+                  title="Cancel"
+                  onPress={() => {
+                    setEditModal(false);
+                  }}
+                  contentContainerStyle={styles.btn}
+                  style={{ margin: 25, backgroundColor: "#4050B5" }}
+                />
+              </View>
+            </View>
+          </>
+        </Modal>
       </View>
     </>
   );

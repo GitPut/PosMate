@@ -5,9 +5,8 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Animated,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   cartState,
   setCartState,
@@ -23,8 +22,6 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import SaveCustomer from "./SaveCustomer";
 import { auth, db } from "state/firebaseConfig";
-import CartItem from "components/CartItem";
-import ProductListing from "components/ProductListing";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useHistory } from "react-router-dom";
 import CompletePaymentPhoneOrder from "components/CompletePaymentPhoneOrder";
@@ -53,7 +50,7 @@ const CartScreen = ({ navigation }) => {
   const [phone, setPhone] = useState(null);
   const [address, setAddress] = useState(null);
   const [deliveryChecked, setDeliveryChecked] = useState(false);
-  const [changeDue, setChangeDue] = useState();
+  const [changeDue, setChangeDue] = useState(null);
   const cart = cartState.use();
   const storeDetails = storeDetailState.use();
   const [cartSub, setCartSub] = useState(0);
@@ -64,16 +61,24 @@ const CartScreen = ({ navigation }) => {
     useState(false);
   const history = useHistory();
   const height = useWindowDimensions().height;
+  const [updatingOrder, setupdatingOrder] = useState(false);
+  const [ongoingListState, setongoingListState] = useState(
+    JSON.parse(localStorage.getItem("ongoingList"))
+  );
 
   useEffect(() => {
-    console.log("cart", cart);
+    localStorage.setItem("ongoingList", JSON.stringify(ongoingListState));
+  }, [ongoingListState]);
+
+  useEffect(() => {
+    // console.log("cart", cart);
     if (cart.length > 0) {
       let newVal = 0;
       for (let i = 0; i < cart.length; i++) {
         try {
           if (cart[i].quantity > 1) {
             newVal += parseFloat(cart[i].price) * cart[i].quantity;
-            console.log("Cart item quantity ", cart[i].quantity);
+            // console.log("Cart item quantity ", cart[i].quantity);
           } else {
             newVal += parseFloat(cart[i].price);
           }
@@ -91,11 +96,11 @@ const CartScreen = ({ navigation }) => {
     }
   }, [cart]);
 
-  const AddToList = async (payload) => {
-    updateTransList(payload);
-  };
+  // const AddToList = async (payload) => {
+  //   updateTransList(payload);
+  // };
 
-  const Print = (method) => {
+  const Print = (method, dontAddToOngoing) => {
     if (savedCustomerDetails) {
       if (savedCustomerDetails.orders?.length > 0) {
         db.collection("users")
@@ -191,7 +196,7 @@ const CartScreen = ({ navigation }) => {
         "\x0A" + "\x0A",
         "Customer Phone #:  " + phone,
         "\x0A" + "\x0A",
-        "Customer Address #:  " + address?.label,
+        "Customer Address #:  " + address.label,
         "\x0A" + "\x0A",
         `Total Including (${
           storeDetails.taxRate ? storeDetails.taxRate : "13"
@@ -208,21 +213,6 @@ const CartScreen = ({ navigation }) => {
         "\x0A", // line break
         "\x1D" + "\x56" + "\x30"
       );
-      // fetch("http://localhost:8080/print", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     printData: data,
-      //     comSelected: storeDetails.comSelected,
-      //   }),
-      // })
-      //   .then((response) => response.json())
-      //   .then((respData) => {
-      //     console.log(respData);
-      //   })
-      //   .catch((e) => alert("Error with printer"));
       const qz = require("qz-tray");
       qz.websocket
         .connect()
@@ -235,41 +225,58 @@ const CartScreen = ({ navigation }) => {
           console.error(err);
         });
 
-      AddToList({
-        id: Math.random().toString(36).substr(2, 9) + "-l",
-        date: today,
-        transNum: transNum,
-        total: total,
-        method: "deliveryOrder",
-        cart: cart,
-        // completed: false,
-        customer: {
-          name: name,
-          phone: phone,
-          address: address ? address : null,
-        },
-      });
-
-      const ongoingList = JSON.parse(localStorage.getItem("ongoingList"));
-      if (ongoingList) {
-        ongoingList.push({
-          id: Math.random().toString(36).substr(2, 9) + "-l",
-          date: today,
-          transNum: transNum,
-          total: total,
-          method: "deliveryOrder",
-          cart: cart,
-          customer: {
-            name: name,
-            phone: phone,
-            address: address ? address : null,
-          },
-        });
-        localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
-      } else {
-        localStorage.setItem(
-          "ongoingList",
-          JSON.stringify([
+      // AddToList({
+      //   id: Math.random().toString(36).substr(2, 9) + "-l",
+      //   date: today,
+      //   transNum: transNum,
+      //   total: total,
+      //   method: "deliveryOrder",
+      //   cart: cart,
+      //   // completed: false,
+      //   customer: {
+      //     name: name,
+      //     phone: phone,
+      //     address: address ? address : null,
+      //   },
+      // });
+      if (!dontAddToOngoing) {
+        const ongoingList = JSON.parse(localStorage.getItem("ongoingList"));
+        if (ongoingList) {
+          ongoingList.push({
+            id: Math.random().toString(36).substr(2, 9) + "-l",
+            date: today,
+            transNum: transNum,
+            total: total,
+            method: "deliveryOrder",
+            cart: cart,
+            customer: {
+              name: name,
+              phone: phone,
+              address: address ? address : null,
+            },
+          });
+          localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
+          setongoingListState(ongoingList);
+        } else {
+          localStorage.setItem(
+            "ongoingList",
+            JSON.stringify([
+              {
+                id: Math.random().toString(36).substr(2, 9) + "-l",
+                date: today,
+                transNum: transNum,
+                total: total,
+                method: "deliveryOrder",
+                cart: cart,
+                customer: {
+                  name: name,
+                  phone: phone,
+                  address: address ? address : null,
+                },
+              },
+            ])
+          );
+          setongoingListState([
             {
               id: Math.random().toString(36).substr(2, 9) + "-l",
               date: today,
@@ -283,8 +290,8 @@ const CartScreen = ({ navigation }) => {
                 address: address ? address : null,
               },
             },
-          ])
-        );
+          ]);
+        }
       }
 
       setCartState([]);
@@ -313,18 +320,18 @@ const CartScreen = ({ navigation }) => {
       ];
 
       cart.map((cartItem) => {
-     data.push(`Name: ${cartItem.name}`);
-     data.push("\x0A");
+        data.push(`Name: ${cartItem.name}`);
+        data.push("\x0A");
 
-     if (cartItem.quantity > 1) {
-       total += parseFloat(cartItem.price) * cartItem.quantity;
-       data.push(`Quantity: ${cartItem.quantity}`);
-       data.push("\x0A");
-       data.push(`Price: $${cartItem.price * cartItem.quantity}`);
-     } else {
-       total += parseFloat(cartItem.price);
-       data.push(`Price: $${cartItem.price}`);
-     }
+        if (cartItem.quantity > 1) {
+          total += parseFloat(cartItem.price) * cartItem.quantity;
+          data.push(`Quantity: ${cartItem.quantity}`);
+          data.push("\x0A");
+          data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+        } else {
+          total += parseFloat(cartItem.price);
+          data.push(`Price: $${cartItem.price}`);
+        }
 
         if (cartItem.description) {
           data.push("\x0A");
@@ -401,40 +408,57 @@ const CartScreen = ({ navigation }) => {
           console.error(err);
         });
 
-      AddToList({
-        id: Math.random().toString(36).substr(2, 9) + "-l",
-        date: today,
-        transNum: transNum,
-        total: total,
-        method: "pickupOrder",
-        cart: cart,
-        customer: {
-          name: name,
-          phone: phone,
-          address: address ? address : null,
-        },
-      });
-
-      const ongoingList = JSON.parse(localStorage.getItem("ongoingList"));
-      if (ongoingList) {
-        ongoingList.push({
-          id: Math.random().toString(36).substr(2, 9) + "-l",
-          date: today,
-          transNum: transNum,
-          total: total,
-          method: "pickupOrder",
-          cart: cart,
-          customer: {
-            name: name,
-            phone: phone,
-            address: address ? address : null,
-          },
-        });
-        localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
-      } else {
-        localStorage.setItem(
-          "ongoingList",
-          JSON.stringify([
+      // AddToList({
+      //   id: Math.random().toString(36).substr(2, 9) + "-l",
+      //   date: today,
+      //   transNum: transNum,
+      //   total: total,
+      //   method: "pickupOrder",
+      //   cart: cart,
+      //   customer: {
+      //     name: name,
+      //     phone: phone,
+      //     address: address ? address : null,
+      //   },
+      // });
+      if (!dontAddToOngoing) {
+        const ongoingList = JSON.parse(localStorage.getItem("ongoingList"));
+        if (ongoingList) {
+          ongoingList.push({
+            id: Math.random().toString(36).substr(2, 9) + "-l",
+            date: today,
+            transNum: transNum,
+            total: total,
+            method: "pickupOrder",
+            cart: cart,
+            customer: {
+              name: name,
+              phone: phone,
+              address: address ? address : null,
+            },
+          });
+          localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
+          setongoingListState(ongoingList);
+        } else {
+          localStorage.setItem(
+            "ongoingList",
+            JSON.stringify([
+              {
+                id: Math.random().toString(36).substr(2, 9) + "-l",
+                date: today,
+                transNum: transNum,
+                total: total,
+                method: "pickupOrder",
+                cart: cart,
+                customer: {
+                  name: name,
+                  phone: phone,
+                  address: address ? address : null,
+                },
+              },
+            ])
+          );
+          setongoingListState([
             {
               id: Math.random().toString(36).substr(2, 9) + "-l",
               date: today,
@@ -448,12 +472,16 @@ const CartScreen = ({ navigation }) => {
                 address: address ? address : null,
               },
             },
-          ])
-        );
+          ]);
+        }
       }
 
       setCartState([]);
       setDeliveryModal(false);
+      setName(null);
+      setPhone(null);
+      setAddress(null);
+      setDeliveryChecked(false);
     } else {
       let total = 0;
       const today = new Date();
@@ -476,18 +504,18 @@ const CartScreen = ({ navigation }) => {
       ];
 
       cart.map((cartItem) => {
-       data.push(`Name: ${cartItem.name}`);
-       data.push("\x0A");
+        data.push(`Name: ${cartItem.name}`);
+        data.push("\x0A");
 
-       if (cartItem.quantity > 1) {
-         total += parseFloat(cartItem.price) * cartItem.quantity;
-         data.push(`Quantity: ${cartItem.quantity}`);
-         data.push("\x0A");
-         data.push(`Price: $${cartItem.price * cartItem.quantity}`);
-       } else {
-         total += parseFloat(cartItem.price);
-         data.push(`Price: $${cartItem.price}`);
-       }
+        if (cartItem.quantity > 1) {
+          total += parseFloat(cartItem.price) * cartItem.quantity;
+          data.push(`Quantity: ${cartItem.quantity}`);
+          data.push("\x0A");
+          data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+        } else {
+          total += parseFloat(cartItem.price);
+          data.push(`Price: $${cartItem.price}`);
+        }
 
         if (cartItem.description) {
           data.push("\x0A");
@@ -563,21 +591,6 @@ const CartScreen = ({ navigation }) => {
         );
       }
 
-      // fetch("http://localhost:8080/print", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     printData: data,
-      //     comSelected: storeDetails.comSelected,
-      //   }),
-      // })
-      //   .then((response) => response.json())
-      //   .then((respData) => {
-      //     console.log(respData);
-      //   })
-      //   .catch((e) => alert("Error with printer"));
       const qz = require("qz-tray");
       qz.websocket
         .connect()
@@ -590,20 +603,51 @@ const CartScreen = ({ navigation }) => {
           console.error(err);
         });
 
-      AddToList({
-        id: Math.random().toString(36).substr(2, 9) + "-l",
-        date: today,
-        transNum: transNum,
-        total: total,
-        method: method,
-        cart: cart,
-      });
+      // AddToList({
+      //   id: Math.random().toString(36).substr(2, 9) + "-l",
+      //   date: today,
+      //   transNum: transNum,
+      //   total: total,
+      //   method: method,
+      //   cart: cart,
+      // });
     }
 
     setCartState([]);
+    setName(null);
+    setPhone(null);
+    setAddress(null);
+    setDeliveryChecked(false);
+    setChangeDue(null);
   };
 
   const DeliveryBtn = () => {
+    if (updatingOrder) {
+      return (
+        <TouchableOpacity
+          style={[styles.bigButton, cartSub === 0 && { opacity: 0.5 }]}
+          disabled={cart.length < 1}
+          onPress={() => {
+            const oldList = structuredClone(
+              JSON.parse(localStorage.getItem("ongoingList"))
+            );
+            oldList[updatingOrder.index].cart = cart;
+            setongoingListState(oldList);
+
+            Print(deliveryChecked ? "deliveryOrder" : "pickupOrder", true);
+            setOngoingDelivery(null);
+            setName(null);
+            setPhone(null);
+            setAddress(null);
+            setDeliveryChecked(false);
+            setupdatingOrder(false);
+          }}
+        >
+          <Text style={styles.btnTxt}>Update Order</Text>
+        </TouchableOpacity>
+      );
+    }
+
     if (ongoingDelivery === null) {
       return (
         <View
@@ -655,6 +699,10 @@ const CartScreen = ({ navigation }) => {
           onPress={() => {
             setOngoingDelivery(null);
             setDeliveryChecked(false);
+            setName(null);
+            setPhone(null);
+            setAddress(null);
+            setChangeDue(null);
           }}
         >
           <Text style={styles.btnTxt}>Cancel</Text>
@@ -683,39 +731,69 @@ const CartScreen = ({ navigation }) => {
           }}
         >
           <CartButton
-            style={[styles.iconContainer, cart.length > 0 && { opacity: 0.5 }]}
+            style={[
+              styles.iconContainer,
+              (cart.length > 0 || updatingOrder) && { opacity: 0.5 },
+            ]}
             onPress={() => setSaveCustomerModal(true)}
-            disabled={cart.length > 0}
+            disabled={cart.length > 0 || updatingOrder}
             icon={() => (
               <MaterialCommunityIcons name="history" size={26} color="white" />
             )}
           />
           <CartButton
-            style={[styles.iconContainer, cart.length > 0 && { opacity: 0.5 }]}
-            onPress={() => setDeliveryModal(true)}
-            disabled={cart.length > 0}
-            icon={() => <Feather name="phone-call" size={28} color="white" />}
-          />
-
-          <CartButton
-            style={[styles.iconContainer, cart.length > 0 && { opacity: 0.5 }]}
+            style={[
+              styles.iconContainer,
+              (cart.length > 0 || updatingOrder) && { opacity: 0.5 },
+            ]}
+            disabled={cart.length > 0 || updatingOrder}
             onPress={() => setongoingOrderListModal(true)}
             icon={() => (
               <Ionicons name="chevron-down" size={28} color="white" />
             )}
           />
           <CartButton
-            style={[styles.iconContainer, cart.length > 0 && { opacity: 0.5 }]}
-            onPress={() => {
-              if (storeDetails.settingsPassword) {
-                setsettingsPasswordModalVis(true);
-              } else {
-                setIsSignedInSettingsState(true);
-                history.push("/authed/dashboard");
-              }
-            }}
-            icon={() => <Entypo name="cog" size={28} color="white" />}
+            style={[
+              styles.iconContainer,
+              cart.length > 0 && !ongoingDelivery && { opacity: 0.5 },
+            ]}
+            onPress={() => setDeliveryModal(true)}
+            disabled={cart.length > 0 && !ongoingDelivery}
+            icon={() => <Feather name="phone-call" size={28} color="white" />}
           />
+          {updatingOrder ? (
+            <CartButton
+              style={[styles.iconContainer]}
+              onPress={() => {
+                setCartState([]);
+                setName(null);
+                setPhone(null);
+                setAddress(null);
+                setDeliveryChecked(false);
+                setOngoingDelivery(null);
+                setongoingOrderListModal(false);
+                setupdatingOrder(false);
+              }}
+              icon={() => <Entypo name="cross" size={28} color="white" />}
+            />
+          ) : (
+            <CartButton
+              disabled={ongoingDelivery}
+              style={[
+                styles.iconContainer,
+                cart.length > 0 && { opacity: 0.5 },
+              ]}
+              onPress={() => {
+                if (storeDetails.settingsPassword) {
+                  setsettingsPasswordModalVis(true);
+                } else {
+                  setIsSignedInSettingsState(true);
+                  history.push("/authed/dashboard");
+                }
+              }}
+              icon={() => <Entypo name="cog" size={28} color="white" />}
+            />
+          )}
         </View>
       </View>
       <ScrollView
@@ -939,6 +1017,7 @@ const CartScreen = ({ navigation }) => {
           address={address}
           deliveryChecked={deliveryChecked}
           setDeliveryChecked={setDeliveryChecked}
+          ongoingDelivery={ongoingDelivery}
         />
       </Modal>
       <Modal visible={cashModal} transparent>
@@ -955,6 +1034,18 @@ const CartScreen = ({ navigation }) => {
       <Modal visible={ongoingOrderListModal} transparent={true}>
         <CompletePaymentPhoneOrder
           setongoingOrderListModal={setongoingOrderListModal}
+          updateOrderHandler={(order) => {
+            setCartState(order.cart);
+            setName(order.customer.name);
+            setPhone(order.customer.phone);
+            setAddress(order.customer.address);
+            setDeliveryChecked(order.method === "deliveryOrder");
+            setOngoingDelivery(true);
+            setongoingOrderListModal(false);
+            setupdatingOrder(order);
+          }}
+          ongoingListState={ongoingListState}
+          setongoingListState={setongoingListState}
         />
       </Modal>
       <Modal visible={settingsPasswordModalVis} transparent={true}>

@@ -84,7 +84,7 @@ const RouteManagerNew = () => {
                   });
                 }
               })
-              .catch(() => console.log("Error has occured with db"));
+              .catch((e) => console.log("Error has occured with db: ", e));
 
             setUserStoreState({
               products: products,

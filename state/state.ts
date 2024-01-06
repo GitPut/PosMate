@@ -47,7 +47,7 @@ export const addCartState = (val, currentState) => {
 export const userStoreState = entity({ products: [], categories: [] });
 
 export const setUserStoreState = (val) => {
-  console.log("Setting user store state: ", val);
+  // console.log("Setting user store state: ", val);
   userStoreState.set(val);
 };
 

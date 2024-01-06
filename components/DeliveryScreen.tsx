@@ -27,12 +27,20 @@ const DeliveryScreen = ({
   deliveryChecked,
   setDeliveryChecked,
   setsavedCustomerDetails,
+  ongoingDelivery,
 }) => {
   const [localAddress, setlocalAddress] = useState(null);
   const [saveCustomerChecked, setsaveCustomerChecked] = useState(false);
 
   useEffect(() => {
-    setAddress(localAddress?.label);
+    if (address) {
+      console.log("Set address: ", address);
+      setlocalAddress(address);
+    }
+  }, []);
+
+  useEffect(() => {
+    setAddress(localAddress);
   }, [localAddress]);
 
   const SaveCustomer = () => {
@@ -217,6 +225,7 @@ const DeliveryScreen = ({
                 localAddress,
                 onChange: setlocalAddress,
                 placeholder: "Enter customer address",
+                defaultValue: address,
                 menuPortalTarget: document.body,
                 styles: { menuPortal: (base) => ({ ...base, zIndex: 9999 }) },
               }}
@@ -238,7 +247,7 @@ const DeliveryScreen = ({
           )}
           {/* <Text>ADDRESS: {address}</Text> */}
           <Button
-            title="Order"
+            title={ongoingDelivery ? "Update" : "Order"}
             // onPress={GetTrans}
             onPress={() => {
               if (name && phone) {
@@ -253,6 +262,7 @@ const DeliveryScreen = ({
             style={{ margin: 25, backgroundColor: "#4050B5" }}
           />
           <Button
+            disabled={ongoingDelivery}
             title="Cancel"
             onPress={() => {
               setDeliveryModal(false);

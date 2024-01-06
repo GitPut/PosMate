@@ -237,7 +237,9 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
                           });
 
                           if (
-                            parseInt(e.numOfSelectable) >= selectedTimesTotal
+                            parseInt(e.numOfSelectable) >= selectedTimesTotal ||
+                            !e.numOfSelectable ||
+                            e.numOfSelectable === 0
                           ) {
                             console.log(
                               "selectedTimesTotal: ",

@@ -47,6 +47,7 @@
     "cross-env": "^7.0.3",
     "delete-react-zombies": "^2.0.1",
     "draft-js": "^0.11.7",
+    "dragscroll": "^0.0.8",
     "expo": "~46.0.16",
     "expo-font": "~10.2.0",
     "expo-linear-gradient": "~11.4.0",

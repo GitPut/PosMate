@@ -11,7 +11,7 @@ import {
   DuplicateIcon,
 } from "../../EntryFile/imagePath";
 import "react-select2-wrapper/css/select2.css";
-import { userState, userStoreState } from "state/state";
+import { setStoreDetailState, setUserStoreState, userState, userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
 import { auth, db, storage } from "state/firebaseConfig";
 
@@ -53,7 +53,12 @@ const ProductList = () => {
         } else {
           localCatalog.products = [];
         }
-        updateData(localCatalog.categories, localCatalog.products);
+        setUserStoreState({ categories: localCatalog.categories, products: localCatalog.products })
+        db.collection("users")
+          .doc(userS.uid)
+          .collection("products")
+          .doc(props.id.toString())
+          .delete()
       }
     });
   };

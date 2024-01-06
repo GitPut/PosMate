@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Upload } from '../../EntryFile/imagePath';
 import Select2 from 'react-select2-wrapper';
 import 'react-select2-wrapper/css/select2.css';
-import { userState, userStoreState } from 'state/state';
+import { setUserStoreState, userState, userStoreState } from 'state/state';
 import { updateData } from 'state/firebaseFunctions';
 import { FlatList, Image, Modal, TouchableOpacity, View } from 'react-native';
 import OptionView from 'components/OptionView';
@@ -44,6 +44,16 @@ const AddProduct = () => {
         }
     }, []);
 
+    useEffect(() => {
+        setnewProduct(
+            (prev) => {
+                const clone = structuredClone(prev);
+                clone.options = newProductOptions;
+                return clone;
+            }
+        )
+    }, [newProductOptions])
+
     function handleDataUpdate() {
         if (!newProduct.name) {
             seterror('Please enter a product name')
@@ -71,6 +81,7 @@ const AddProduct = () => {
             .collection("products")
             .doc(newProduct.id.toString())
             .set(newProduct)
+        setUserStoreState({ categories: catalog.categories, products: [...catalog.products, newProduct] })
         history.push("/authed/product/productlist-product");
     }
 
@@ -211,19 +222,31 @@ const AddProduct = () => {
                                                             },
                                                         ],
                                                         );
-                                                        // newProductOptions.current.push({
-                                                        //   label: null,
-                                                        //   optionsList: [],
-                                                        //   selectedCaseKey: null,
-                                                        //   selectedCaseValue: null,
-                                                        //   numOfSelectable: null,
-                                                        //   id: Math.random().toString(36).substr(2, 9),
-                                                        //   optionType: null,
-                                                        // });
-                                                        // setnewProduct((prevState) => ({
-                                                        //   ...prevState,
-                                                        //   options: newProductOptions,
-                                                        // }));
+                                                        console.log('Hello')
+                                                        // setnewProduct((prevState) => {
+                                                        //     setnewProductOptions([...prevState.options, {
+                                                        //         label: null,
+                                                        //         optionsList: [],
+                                                        //         selectedCaseKey: null,
+                                                        //         selectedCaseValue: null,
+                                                        //         numOfSelectable: null,
+                                                        //         id: Math.random().toString(36).substr(2, 9),
+                                                        //         optionType: null,
+                                                        //     }])
+
+                                                        //     return ({
+                                                        //         ...prevState,
+                                                        //         options: [...prevState.options, {
+                                                        //             label: null,
+                                                        //             optionsList: [],
+                                                        //             selectedCaseKey: null,
+                                                        //             selectedCaseValue: null,
+                                                        //             numOfSelectable: null,
+                                                        //             id: Math.random().toString(36).substr(2, 9),
+                                                        //             optionType: null,
+                                                        //         }],
+                                                        //     })
+                                                        //   });
                                                         setindexOn(0);
                                                     }}
                                                     style={{ marginBottom: 25, backgroundColor: "#4050B5" }}

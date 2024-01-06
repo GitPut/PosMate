@@ -7,6 +7,14 @@ service cloud.firestore {
       match /customers/{id} {
         allow read, write: if request.auth.uid == uid;
       }
+
+      match /wooOrders/{id} {
+        allow read, write: if request.auth.uid == uid;
+      }
+
+      match /products/{id} {
+        allow read, write: if request.auth.uid == uid;
+      }
       
       match /transList/{id} {
         allow read, write: if request.auth.uid == uid;

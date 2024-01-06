@@ -6,7 +6,7 @@ import { userStoreState } from "state/state";
 const MenuScreenInnerBlock = ({ visible, height, category }) => {
   const catalog = userStoreState.use();
 
-  console.log("catalog: ", catalog);
+  // console.log("catalog: ", catalog);
 
   if (catalog.products?.length > 0) {
     // return catalog.products.map((product, index) => {
