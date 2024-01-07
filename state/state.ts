@@ -112,3 +112,9 @@ export const selectedProductState = entity({});
 export const setSelectedProductState = (val) => {
   selectedProductState.set(val);
 };
+
+export const customersList = entity([]);
+
+export const setCustomersList = (val) => {
+  customersList.set(val);
+};

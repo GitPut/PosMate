@@ -12,6 +12,8 @@ import {
   setCartState,
   storeDetailState,
   setIsSignedInSettingsState,
+  customersList,
+  setCustomersList,
 } from "state/state";
 import DeliveryScreen from "components/DeliveryScreen";
 import CashScreen from "components/CashScreen";
@@ -65,6 +67,7 @@ const CartScreen = ({ navigation }) => {
   const [ongoingListState, setongoingListState] = useState(
     JSON.parse(localStorage.getItem("ongoingList"))
   );
+  const customers = customersList.use();
 
   useEffect(() => {
     localStorage.setItem("ongoingList", JSON.stringify(ongoingListState));
@@ -110,6 +113,12 @@ const CartScreen = ({ navigation }) => {
           .update({
             orders: [...savedCustomerDetails.orders, { cart }],
           });
+        const indexOfCustomer = customers.findIndex(
+          (customer) => customer.id === savedCustomerDetails.id
+        );
+        const newCustomers = structuredClone(customers);
+        newCustomers[indexOfCustomer].orders.push({ cart });
+        setCustomersList(newCustomers);
       } else {
         db.collection("users")
           .doc(auth.currentUser?.uid)
@@ -118,6 +127,12 @@ const CartScreen = ({ navigation }) => {
           .update({
             orders: [{ cart }],
           });
+        const indexOfCustomer = customers.findIndex(
+          (customer) => customer.id === savedCustomerDetails.id
+        );
+        const newCustomers = structuredClone(customers);
+        newCustomers[indexOfCustomer].orders = [{ cart }];
+        setCustomersList(newCustomers);
       }
     }
 
@@ -789,6 +804,7 @@ const CartScreen = ({ navigation }) => {
                 } else {
                   setIsSignedInSettingsState(true);
                   history.push("/authed/dashboard");
+                  localStorage.setItem("isAuthedBackend", true);
                 }
               }}
               icon={() => <Entypo name="cog" size={28} color="white" />}

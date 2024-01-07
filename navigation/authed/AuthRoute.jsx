@@ -17,11 +17,11 @@ import { useHistory } from "react-router-dom";
 
 
 const AuthRoute = (props) => {
-    const isLoginSettings = isSignedInSettingsState.use()
     const { location } = props;
     const history = useHistory();
 
     useEffect(() => {
+        const isLoginSettings = localStorage.getItem("isAuthedBackend")
         if (!location.pathname?.includes("/authed") || location.pathname?.includes("/authed") && isLoginSettings === false) {
             history.push("/pos");
         }

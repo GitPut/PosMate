@@ -213,6 +213,7 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
               history.push("/authed/dashboard");
               setsettingsPasswordModalVis(false);
               setinccorectPass(false);
+              localStorage.setItem("isAuthedBackend", true);
             } else {
               setinccorectPass(true);
             }

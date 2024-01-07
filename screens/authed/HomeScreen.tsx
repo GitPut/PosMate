@@ -12,6 +12,12 @@ import MenuScreen from "./MenuScreen";
 import CartScreen from "./CartScreen";
 
 const HomeScreen = (props) => {
+
+  useEffect(() => {
+    localStorage.setItem("isAuthedBackend", false);
+  }, [])
+  
+
   return (
     <View style={{ flex: 1, height: "100%", width: "100%" }}>
       <View style={{ flexDirection: "row", height: "100%" }}>

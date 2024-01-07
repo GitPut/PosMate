@@ -7,7 +7,12 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Button, TextInput } from "@react-native-material/core";
-import { cartState, setCartState } from "state/state";
+import {
+  cartState,
+  customersList,
+  setCartState,
+  setCustomersList,
+} from "state/state";
 import { Switch } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
@@ -31,6 +36,7 @@ const DeliveryScreen = ({
 }) => {
   const [localAddress, setlocalAddress] = useState(null);
   const [saveCustomerChecked, setsaveCustomerChecked] = useState(false);
+  const customers = customersList.use();
 
   useEffect(() => {
     if (address) {
@@ -57,6 +63,17 @@ const DeliveryScreen = ({
         orders: [],
         id: docRef.id,
       });
+
+      setCustomersList([
+        ...customers,
+        {
+          name: name,
+          phone: phone,
+          address: address ? address : null,
+          orders: [],
+          id: docRef.id,
+        },
+      ]);
     });
   };
 

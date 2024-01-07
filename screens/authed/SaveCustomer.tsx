@@ -9,7 +9,12 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Button, TextInput } from "@react-native-material/core";
-import { cartState, setCartState } from "state/state";
+import {
+  cartState,
+  customersList,
+  setCartState,
+  setCustomersList,
+} from "state/state";
 import { Switch } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -30,7 +35,6 @@ const SaveCustomer = ({
   setDeliveryChecked,
   setsavedCustomerDetails,
 }) => {
-  const [customers, setcustomers] = useState([]);
   const [customerSelected, setcustomerSelected] = useState(null);
   const { height, width } = useWindowDimensions();
   const [search, setsearch] = useState(null);
@@ -38,14 +42,7 @@ const SaveCustomer = ({
   const [name, setName] = useState(null);
   const [phone, setPhone] = useState(null);
   const [address, setaddress] = useState(null);
-
-  useEffect(() => {
-    let localCustomers = localStorage.getItem("customers");
-    if (localCustomers) {
-      localCustomers = JSON.parse(localCustomers);
-      setcustomers(localCustomers);
-    }
-  }, []);
+  const customers = customersList.use();
 
   useEffect(() => {
     setName(customerSelected?.name);
@@ -379,8 +376,8 @@ const SaveCustomer = ({
                     .collection("customers")
                     .doc(customerSelected.id)
                     .delete();
-                  setcustomers((prev) =>
-                    prev.filter((e) => e.id !== customerSelected.id)
+                  setCustomersList(() =>
+                    customers.filter((e) => e.id !== customerSelected.id)
                   );
                   setcustomerSelected(null);
                 }}

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
+  setCustomersList,
   setStoreDetailState,
   setTrialDetailsState,
   setUserState,
@@ -54,10 +55,10 @@ const RouteManagerNew = () => {
         localStorage.setItem("savedUserState", true);
         setUserState(user);
 
-        let customers = localStorage.getItem("customers");
-        if (customers) {
-          customers = JSON.parse(customers);
-        }
+        // let customers = localStorage.getItem("customers");
+        // if (customers) {
+        //   customers = JSON.parse(customers);
+        // }
 
         db.collection("users")
           .doc(user.uid)
@@ -158,14 +159,18 @@ const RouteManagerNew = () => {
                   newCustomerList.push({ ...element.data(), id: element.id });
                 });
 
-                if (
-                  JSON.stringify(customers) !== JSON.stringify(newCustomerList)
-                ) {
-                  localStorage.setItem(
-                    "customers",
-                    JSON.stringify(newCustomerList)
-                  );
-                }
+                setCustomersList(newCustomerList);
+
+                console.log("CUSTOMERS: ", newCustomerList);
+
+                // if (
+                //   JSON.stringify(customers) !== JSON.stringify(newCustomerList)
+                // ) {
+                //   localStorage.setItem(
+                //     "customers",
+                //     JSON.stringify(newCustomerList)
+                //   );
+                // }
               })
               .catch(() => console.log("Error has occured with db"));
 
