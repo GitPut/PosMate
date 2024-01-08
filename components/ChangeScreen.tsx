@@ -8,7 +8,8 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { Button, TextInput } from "@react-native-material/core";
-import { storeDetailState } from "state/state";
+import { myDeviceDetailsState, storeDetailState } from "state/state";
+import { auth, db } from "state/firebaseConfig";
 
 const ChangeScreen = ({
   setChangeModal,
@@ -16,11 +17,12 @@ const ChangeScreen = ({
   completeOrder,
   setcurrentOrder,
   setongoingOrderListModal,
-}) => { 
+}) => {
   const total = order?.total ? order?.total : 0;
   const [cash, setCash] = useState("");
   const storeDetails = storeDetailState.use();
   const { height, width } = useWindowDimensions();
+  const myDeviceDetails = myDeviceDetailsState.use();
 
   const openCash = () => {
     const data = [
@@ -60,16 +62,32 @@ const ChangeScreen = ({
     ];
 
     const qz = require("qz-tray");
-    qz.websocket
-      .connect()
-      .then(function () {
-        let config = qz.configs.create("storeDetails.comSelected");
-        return qz.print(config, data);
-      })
-      .then(qz.websocket.disconnect)
-      .catch(function (err) {
-        console.error(err);
-      });
+
+    if (
+      myDeviceDetails.sendPrintToUserID &&
+      myDeviceDetails.useDifferentDeviceToPrint
+    ) {
+      console.log("Sending print to different user");
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .collection("devices")
+        .doc(myDeviceDetails.sendPrintToUserID.value)
+        .collection("printRequests")
+        .add({
+          printData: data,
+        });
+    } else {
+      qz.websocket
+        .connect()
+        .then(function () {
+          const config = qz.configs.create(myDeviceDetails.printToPrinter);
+          return qz.print(config, data);
+        })
+        .then(qz.websocket.disconnect)
+        .catch(function (err) {
+          console.error(err);
+        });
+    }
 
     // fetch("http://localhost:8080/print", {
     //   method: "POST",

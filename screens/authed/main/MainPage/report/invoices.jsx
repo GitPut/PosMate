@@ -22,7 +22,7 @@ import {
   Product8,
   Product9,
 } from "../../EntryFile/imagePath";
-import { storeDetailState, woocommerceState } from "state/state";
+import { myDeviceDetailsState, storeDetailState, woocommerceState } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 const tz = require("moment-timezone");
 import ReceiptPrint from "components/ReceiptPrint";
@@ -41,6 +41,8 @@ const Sales = () => {
   const [transList, settransList] = useState([]);
   const [transListTableOrg, settransListTableOrg] = useState([]);
   const wooCredentials = woocommerceState.use()
+
+  const myDeviceDetails = myDeviceDetailsState.use();
 
   const togglefilter = (value) => {
     setInputfilter(value);
@@ -225,16 +227,31 @@ const Sales = () => {
           data = data.concat(formatedData);
         });
         const qz = require("qz-tray");
-        qz.websocket
-          .connect()
-          .then(function () {
-            let config = qz.configs.create(storeDetails.comSelected);
-            return qz.print(config, data);
-          })
-          .then(qz.websocket.disconnect)
-          .catch(function (err) {
-            console.error(err);
-          });
+        if (
+          myDeviceDetails.sendPrintToUserID &&
+          myDeviceDetails.useDifferentDeviceToPrint
+        ) {
+          console.log("Sending print to different user");
+          db.collection("users")
+            .doc(auth.currentUser?.uid)
+            .collection("devices")
+            .doc(myDeviceDetails.sendPrintToUserID.value)
+            .collection("printRequests")
+            .add({
+              printData: data,
+            });
+        } else {
+          qz.websocket
+            .connect()
+            .then(function () {
+              const config = qz.configs.create(myDeviceDetails.printToPrinter);
+              return qz.print(config, data);
+            })
+            .then(qz.websocket.disconnect)
+            .catch(function (err) {
+              console.error(err);
+            });
+        }
       } else if (baseSelectedRows.length === 1) {
 
         //find index of item in transList that matches id of selected row
@@ -249,16 +266,31 @@ const Sales = () => {
         const formatedData = ReceiptPrint(element, storeDetails);
 
         const qz = require("qz-tray");
-        qz.websocket
-          .connect()
-          .then(function () {
-            let config = qz.configs.create(storeDetails.comSelected);
-            return qz.print(config, formatedData);
-          })
-          .then(qz.websocket.disconnect)
-          .catch(function (err) {
-            console.error(err);
-          });
+        if (
+          myDeviceDetails.sendPrintToUserID &&
+          myDeviceDetails.useDifferentDeviceToPrint
+        ) {
+          console.log("Sending print to different user");
+          db.collection("users")
+            .doc(auth.currentUser?.uid)
+            .collection("devices")
+            .doc(myDeviceDetails.sendPrintToUserID.value)
+            .collection("printRequests")
+            .add({
+              printData: formatedData,
+            });
+        } else {
+          qz.websocket
+            .connect()
+            .then(function () {
+              const config = qz.configs.create(myDeviceDetails.printToPrinter);
+              return qz.print(config, formatedData);
+            })
+            .then(qz.websocket.disconnect)
+            .catch(function (err) {
+              console.error(err);
+            });
+        }
       } else {
         alert(
           "Higlight one or multiple receipt then click to print them"

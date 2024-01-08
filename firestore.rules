@@ -16,7 +16,7 @@ service cloud.firestore {
         allow read, write: if request.auth.uid == uid;
       }
 
-       match /devices/{id} {
+       match /devices/{document=**} {
         allow read, write: if request.auth.uid == uid;
       }
 

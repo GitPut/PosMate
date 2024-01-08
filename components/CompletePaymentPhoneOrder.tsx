@@ -86,7 +86,10 @@ const CompletePaymentPhoneOrder = ({
             </Text>
             <View style={{ width: "25%" }} />
           </View>
-          <ScrollView contentContainerStyle={styles.contentContainer}>
+          <ScrollView
+            contentContainerStyle={styles.contentContainer}
+            style={{ height: height * 0.5, width: "100%" }}
+          >
             {ongoingListState?.length > 0 ? (
               ongoingListState?.map((element, index) => {
                 const date = element.date.toDate();

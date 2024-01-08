@@ -254,6 +254,12 @@ const DeviceSettings = () => {
                                                 menuPosition="fixed"
                                             />
                                         }
+                                        <Text>Would you like online orders to print to this device?</Text>
+                                        <Switch value={device.printOnlineOrders} onValueChange={val => setdeviceTree(prev => {
+                                            const clone = [...prev]
+                                            clone[index].printOnlineOrders = val
+                                            return clone
+                                        })} />
                                         <Button
                                             title="Update Device"
                                             onPress={() => {

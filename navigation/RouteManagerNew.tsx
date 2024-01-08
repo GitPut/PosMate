@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
+  myDeviceDetailsState,
   setCustomersList,
   setMyDeviceDetailsState,
   setStoreDetailState,
@@ -41,11 +42,53 @@ const RouteManagerNew = () => {
   const [wooOrders, setwooOrders] = useState([]);
   const storeDetails = storeDetailState.use();
   const [isWooError, setisWooError] = useState(false);
+  const myDeviceDetails = myDeviceDetailsState.use();
 
   const [fontsLoaded] = Font.useFonts({
     "archivo-600": require("assets/fonts/Archivo-SemiBold.ttf"),
     "archivo-500": require("assets/fonts/Archivo-Regular.ttf"),
   });
+
+  useEffect(() => {
+    if (myDeviceDetails.docID && userS) {
+      console.log("Listening for print requests");
+      db.collection("users")
+        .doc(userS.uid)
+        .collection("devices")
+        .doc(myDeviceDetails.docID)
+        .collection("printRequests")
+        .onSnapshot((snapshot) => {
+          if (snapshot.empty) return;
+
+          snapshot.forEach((doc) => {
+            console.log("Data to print recieved: ", doc.data().printData);
+
+            const qz = require("qz-tray");
+            qz.websocket
+              .connect()
+              .then(function () {
+                const config = qz.configs.create(
+                  myDeviceDetails.printToPrinter
+                );
+                return qz.print(config, doc.data().printData);
+              })
+              .then(qz.websocket.disconnect)
+              .catch(function (err) {
+                console.error(err);
+              });
+            //print then delete
+
+            db.collection("users")
+              .doc(userS.uid)
+              .collection("devices")
+              .doc(myDeviceDetails.docID)
+              .collection("printRequests")
+              .doc(doc.id)
+              .delete();
+          });
+        });
+    }
+  }, [myDeviceDetails, userS]);
 
   useEffect(() => {
     setUserState(savedUserState);
@@ -201,27 +244,25 @@ const RouteManagerNew = () => {
             }
 
             const deviceID = getCookie("deviceID");
-            let deviceDetailsLocal;
 
             doc.ref
               .collection("devices")
               .get()
               .then((docs) => {
+                console.log("getting details for device: ", deviceID);
                 docs.forEach((element) => {
                   if (element.data().id === deviceID) {
+                    console.log("found device: ", element.data());
                     setMyDeviceDetailsState({
                       ...element.data(),
                       docID: element.id,
                     });
-                    deviceDetailsLocal = {
-                      ...element.data(),
-                      docID: element.id,
-                    };
                   }
                 });
               });
 
-            db.collection("users")
+            const unsub = db
+              .collection("users")
               .doc(user.uid)
               .onSnapshot((doc) => {
                 setUserStoreState({
@@ -238,33 +279,12 @@ const RouteManagerNew = () => {
                 }
               });
 
-            if (deviceDetailsLocal) {
-              db.collection("users")
-                .doc(user.uid)
-                .collection("devices")
-                .doc(deviceDetailsLocal.docID)
-                .collection("printRequests")
-                .onSnapshot((doc) => {
-                  if (doc.empty) return;
-
-                  console.log(
-                    "Data to print recieved: ",
-                    doc.docs[0].data().printData
-                  );
-                  //print then delete
-
-                  db.collection("users")
-                    .doc(user.uid)
-                    .collection("devices")
-                    .doc(deviceDetailsLocal.docID)
-                    .collection("printRequests")
-                    .doc(doc.docs[0].id)
-                    .delete();
-                });
-            }
-
             setloading(false);
             fadeOut();
+
+            return () => {
+              unsub();
+            };
           })
           .catch(() => console.log("Error has occured with db"));
       } else {
@@ -283,7 +303,12 @@ const RouteManagerNew = () => {
   }, [savedUserState]);
 
   useInterval(() => {
-    if (wooCredentials.useWoocommerce && isSubscribed && !isWooError) {
+    if (
+      wooCredentials.useWoocommerce &&
+      isSubscribed &&
+      !isWooError &&
+      myDeviceDetails.printOnlineOrders
+    ) {
       const WooCommerceAPI = require("woocommerce-api");
 
       const WooCommerce = new WooCommerceAPI({
@@ -491,7 +516,9 @@ const RouteManagerNew = () => {
               qz.websocket
                 .connect()
                 .then(function () {
-                  const config = qz.configs.create(storeDetails.comSelected);
+                  const config = qz.configs.create(
+                    myDeviceDetails.printToPrinter
+                  );
                   return qz.print(config, doublePrint);
                 })
                 .then(qz.websocket.disconnect)

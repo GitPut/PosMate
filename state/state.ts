@@ -125,7 +125,8 @@ export const myDeviceDetailsState = entity({
   docID: null,
   useDifferentDeviceToPrint: false,
   printToPrinter: null,
-  sendPrintToUserID: null
+  sendPrintToUserID: null,
+  printOnlineOrders: false,
 });
 
 export const setMyDeviceDetailsState = (val) => {
