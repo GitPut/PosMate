@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   setCustomersList,
+  setMyDeviceDetailsState,
   setStoreDetailState,
   setTrialDetailsState,
   setUserState,
@@ -192,8 +193,35 @@ const RouteManagerNew = () => {
               }
             }
 
-            const unsub = db
-              .collection("users")
+            function getCookie(name) {
+              const match = document.cookie.match(
+                new RegExp("(^| )" + name + "=([^;]+)")
+              );
+              if (match) return match[2];
+            }
+
+            const deviceID = getCookie("deviceID");
+            let deviceDetailsLocal;
+
+            doc.ref
+              .collection("devices")
+              .get()
+              .then((docs) => {
+                docs.forEach((element) => {
+                  if (element.data().id === deviceID) {
+                    setMyDeviceDetailsState({
+                      ...element.data(),
+                      docID: element.id,
+                    });
+                    deviceDetailsLocal = {
+                      ...element.data(),
+                      docID: element.id,
+                    };
+                  }
+                });
+              });
+
+            db.collection("users")
               .doc(user.uid)
               .onSnapshot((doc) => {
                 setUserStoreState({
@@ -209,10 +237,34 @@ const RouteManagerNew = () => {
                   setStoreDetailState(doc.data().storeDetails);
                 }
               });
+
+            if (deviceDetailsLocal) {
+              db.collection("users")
+                .doc(user.uid)
+                .collection("devices")
+                .doc(deviceDetailsLocal.docID)
+                .collection("printRequests")
+                .onSnapshot((doc) => {
+                  if (doc.empty) return;
+
+                  console.log(
+                    "Data to print recieved: ",
+                    doc.docs[0].data().printData
+                  );
+                  //print then delete
+
+                  db.collection("users")
+                    .doc(user.uid)
+                    .collection("devices")
+                    .doc(deviceDetailsLocal.docID)
+                    .collection("printRequests")
+                    .doc(doc.docs[0].id)
+                    .delete();
+                });
+            }
+
             setloading(false);
             fadeOut();
-
-            return () => unsub();
           })
           .catch(() => console.log("Error has occured with db"));
       } else {

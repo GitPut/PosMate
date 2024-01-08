@@ -83,6 +83,17 @@ const Sales = () => {
           querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             // console.log(doc.id, " => ", doc.data());
+            let orderType = "";
+            if (doc.data().method === "deliveryOrder") {
+              orderType = "Delivery";
+            }
+            if (doc.data().method === "pickupOrder") {
+              orderType = "Pickup";
+            }
+            if (doc.data().method === "inStoreOrder") {
+              orderType = "In Store";
+            }
+
             settransList((prevState) => [...prevState, doc.data()]);
             settransListTableOrg((prevState) => [...prevState,
             {
@@ -93,10 +104,13 @@ const Sales = () => {
               originalData: doc.data(),
               amount: doc.data().total,
               system: 'POS',
-              status: doc.data().method === "deliveryOrder" ? "Delivery" : "Pickup",
+              type: orderType,
             }
             ]);
           });
+          //sort by date
+          settransListTableOrg((prevState) => [...prevState.sort((a, b) => new Date(b.originalData.date_created ? b.originalData.date_created : b.originalData.date.seconds * 1000) - new Date(a.originalData.date_created ? a.originalData.date_created : a.originalData.date.seconds * 1000))])
+
         });
     } catch {
       console.log("Error occured retrieving tranasctions");
@@ -176,9 +190,9 @@ const Sales = () => {
       // sorter: (a, b) => a.System.length - b.System.length,
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
       // render: (text, record) => (
       //   <>
       //     {text === "Delivery" && (

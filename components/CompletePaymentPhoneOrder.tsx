@@ -11,6 +11,7 @@ import { updateTransList } from "state/firebaseFunctions";
 import ChangeScreen from "./ChangeScreen";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import useWindowDimensions from "./useWindowDimensions";
+import { auth, db } from "state/firebaseConfig";
 
 const CompletePaymentPhoneOrder = ({
   setongoingOrderListModal,
@@ -88,28 +89,66 @@ const CompletePaymentPhoneOrder = ({
           <ScrollView contentContainerStyle={styles.contentContainer}>
             {ongoingListState?.length > 0 ? (
               ongoingListState?.map((element, index) => {
-                try {
-                  // if (element.id) {
-                  //   if (
-                  //     element.id?.substr(element.id?.length - 2, 2) === "-l" &&
-                  //     element.completed === false &&
-                  //     element.cancelled !== true
-                  //   ) {
-                  const date = new Date(element.date);
+                const date = element.date.toDate();
 
-                  return (
+                let cartString = "";
+
+                element.cart.map((cartItem) => {
+                  cartString += `Name: ${cartItem.name}\n`;
+
+                  if (cartItem.quantity > 1) {
+                    cartString += `Quantity: ${cartItem.quantity}\n`;
+                    cartString += `Price: $${
+                      cartItem.price * cartItem.quantity
+                    }`;
+                  } else {
+                    cartString += `Price: $${cartItem.price}`;
+                  }
+
+                  if (cartItem.description) {
+                    cartString += `\n${cartItem.description}`;
+                  }
+
+                  if (cartItem.options) {
+                    cartString += `\n`;
+                    cartItem.options.map((option) => {
+                      cartString += `${option}\n`;
+                    });
+                  }
+
+                  if (cartItem.extraDetails) {
+                    cartString += `$cartItem.extraDetails}\n`;
+                  }
+                });
+
+                return (
+                  <TouchableOpacity
+                    onPress={() =>
+                      setongoingListState((prev) => {
+                        prev[index].open = !prev[index].open;
+                        return [...prev];
+                      })
+                    }
+                    style={{ marginBottom: 20 }}
+                    key={index}
+                  >
                     <View
-                      style={{
-                        backgroundColor: "rgba(243,243,243,1)",
-                        borderRadius: 30,
-                        width: "100%",
-                        height: 68,
-                        padding: 30,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        marginBottom: 20,
-                      }}
+                      style={[
+                        {
+                          backgroundColor: "rgba(243,243,243,1)",
+                          borderRadius: 30,
+                          width: "100%",
+                          height: 68,
+                          padding: 30,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        },
+                        element.open && {
+                          borderBottomLeftRadius: 0,
+                          borderBottomRightRadius: 0,
+                        },
+                      ]}
                       key={index}
                     >
                       <View
@@ -120,7 +159,11 @@ const CompletePaymentPhoneOrder = ({
                           width: "60%",
                         }}
                       >
-                        <Text>{element.customer?.name}</Text>
+                        <Text>
+                          {element.customer
+                            ? element.customer?.name.toUpperCase()
+                            : `Order ID: ${element.transNum.toUpperCase()}`}
+                        </Text>
                         <Text>{date?.toLocaleTimeString()}</Text>
                       </View>
                       <View
@@ -130,82 +173,109 @@ const CompletePaymentPhoneOrder = ({
                           backgroundColor: "black",
                         }}
                       />
-                      {element.method === "pickupOrder" ? (
-                        <MaterialCommunityIcons
+                      {element.method === "pickupOrder" && (
+                        <TouchableOpacity
+                          style={{ padding: 5 }}
                           onPress={() => {
-                            if (element.method === "pickupOrder") {
-                              setChangeModal(true);
-                              setcurrentOrder({
-                                element: element,
-                                index: index,
-                              });
-                            } else {
-                              const local = structuredClone(ongoingListState);
-                              if (local.length > 0) {
-                                local.splice(index, 1);
-                                setongoingListState(local);
-                              } else {
-                                setongoingListState([]);
-                              }
-                            }
+                            setChangeModal(true);
+                            setcurrentOrder({
+                              element: element,
+                              index: index,
+                            });
                             updateTransList(element);
                           }}
-                          name="store"
-                          size={26}
-                          color="rgba(74,74,74,1)"
-                        />
-                      ) : (
-                        <MaterialCommunityIcons
-                          onPress={() => {
-                            if (element.method === "pickupOrder") {
-                              setChangeModal(true);
-                              setcurrentOrder({
-                                element: element,
-                                index: index,
-                              });
-                            } else {
-                              const local = structuredClone(ongoingListState);
-                              if (local.length > 0) {
-                                local.splice(index, 1);
-                                setongoingListState(local);
-                              } else {
-                                setongoingListState([]);
-                              }
-                            }
-                            updateTransList(element);
-                          }}
-                          name="car"
-                          size={26}
-                          color="rgba(74,74,74,1)"
-                        />
+                        >
+                          <MaterialCommunityIcons
+                            name="store"
+                            size={26}
+                            color="rgba(74,74,74,1)"
+                          />
+                        </TouchableOpacity>
                       )}
-                      <MaterialCommunityIcons
+                      {element.method === "deliveryOrder" && (
+                        <TouchableOpacity
+                          style={{ padding: 5 }}
+                          onPress={() => {
+                            db.collection("users")
+                              .doc(auth.currentUser.uid)
+                              .collection("pendingOrders")
+                              .doc(element.id)
+                              .delete();
+                            updateTransList(element);
+                          }}
+                        >
+                          <MaterialCommunityIcons
+                            name="car"
+                            size={26}
+                            color="rgba(74,74,74,1)"
+                          />
+                        </TouchableOpacity>
+                      )}
+                      {element.method === "inStoreOrder" && (
+                        <TouchableOpacity
+                          style={{ padding: 5 }}
+                          onPress={() => {
+                            db.collection("users")
+                              .doc(auth.currentUser.uid)
+                              .collection("pendingOrders")
+                              .doc(element.id)
+                              .delete();
+                            updateTransList(element);
+                          }}
+                        >
+                          <MaterialCommunityIcons
+                            name="check"
+                            size={26}
+                            color="rgba(74,74,74,1)"
+                          />
+                        </TouchableOpacity>
+                      )}
+                      <TouchableOpacity
+                        style={{ padding: 5 }}
                         onPress={() => {
-                          const local = structuredClone(ongoingListState);
-                          if (local.length > 0) {
-                            local.splice(index, 1);
-                            setongoingListState(local);
-                          } else {
-                            setongoingListState([]);
-                          }
+                          db.collection("users")
+                            .doc(auth.currentUser.uid)
+                            .collection("pendingOrders")
+                            .doc(element.id)
+                            .delete();
                         }}
-                        name="cancel"
-                        size={26}
-                        color="rgba(74,74,74,1)"
-                      />
-                      <MaterialCommunityIcons
-                        onPress={() => {
-                          updateOrderHandler({ ...element, index: index });
-                        }}
-                        name="square-edit-outline"
-                        size={26}
-                        color="rgba(74,74,74,1)"
-                      />
+                      >
+                        <MaterialCommunityIcons
+                          name="cancel"
+                          size={26}
+                          color="rgba(74,74,74,1)"
+                        />
+                      </TouchableOpacity>
+                      {element.method !== "inStoreOrder" && (
+                        <TouchableOpacity
+                          style={{ padding: 5 }}
+                          onPress={() => {
+                            updateOrderHandler({ ...element, index: index });
+                          }}
+                        >
+                          <MaterialCommunityIcons
+                            name="square-edit-outline"
+                            size={26}
+                            color="rgba(74,74,74,1)"
+                          />
+                        </TouchableOpacity>
+                      )}
                     </View>
-                  );
-                } catch {
-                  console.log("Error at complete phone order");
-                }
+                    {element.open && (
+                      <ScrollView
+                        style={{
+                          backgroundColor: "rgba(243,243,243,1)",
+                          padding: 30,
+                          borderTopWidth: 1,
+                          borderBottomLeftRadius: 30,
+                          borderBottomRightRadius: 30,
+                        }}
+                      >
+                        <Text>{cartString}</Text>
+                      </ScrollView>
+                    )}
+                  </TouchableOpacity>
+                );
               })
             ) : (
               <View
@@ -227,13 +297,7 @@ const CompletePaymentPhoneOrder = ({
               setcurrentOrder={setcurrentOrder}
               order={currentOrder.element}
               completeOrder={() => {
-                const local = structuredClone(ongoingListState);
-                if (local.length > 0) {
-                  local.splice(currentOrder.index, 1);
-                  setongoingListState(local);
-                } else {
-                  setongoingListState([]);
-                }
+                db.collection("pendingOrders").doc(currentOrder.id).delete();
                 // ongoingList.splice(currentOrder.index, 1);
                 // localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
                 setChangeModal(false);

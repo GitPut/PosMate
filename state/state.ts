@@ -118,3 +118,16 @@ export const customersList = entity([]);
 export const setCustomersList = (val) => {
   customersList.set(val);
 };
+
+export const myDeviceDetailsState = entity({
+  name: null,
+  id: null,
+  docID: null,
+  useDifferentDeviceToPrint: false,
+  printToPrinter: null,
+  sendPrintToUserID: null
+});
+
+export const setMyDeviceDetailsState = (val) => {
+  myDeviceDetailsState.set(val);
+};

@@ -62,7 +62,6 @@ const MenuScreenInnerBlock = ({ visible, height, category }) => {
           data={catalog.products
             .filter((product) => {
               const isVisible = product.category === category;
-              console.log("rank: ", product.rank);
               return isVisible;
             })
             .sort(customSort)}

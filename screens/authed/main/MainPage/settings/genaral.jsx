@@ -48,7 +48,7 @@ const GenaralSettings = () => {
     { id: 1, text: "DD/MM/YYYY", text: "DD/MM/YYYY" },
     { id: 2, text: "MM/DD/YYYY", text: "MM/DD/YYYY" },
   ];
-
+ 
   const storeDetails = storeDetailState.use();
   const [name, setname] = useState(storeDetails.name);
   const [phoneNumber, setphoneNumber] = useState(storeDetails.phoneNumber);

@@ -5,6 +5,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Button,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -14,6 +15,7 @@ import {
   setIsSignedInSettingsState,
   customersList,
   setCustomersList,
+  myDeviceDetailsState,
 } from "state/state";
 import DeliveryScreen from "components/DeliveryScreen";
 import CashScreen from "components/CashScreen";
@@ -64,14 +66,25 @@ const CartScreen = ({ navigation }) => {
   const history = useHistory();
   const height = useWindowDimensions().height;
   const [updatingOrder, setupdatingOrder] = useState(false);
-  const [ongoingListState, setongoingListState] = useState(
-    JSON.parse(localStorage.getItem("ongoingList"))
-  );
+  const [ongoingListState, setongoingListState] = useState([]);
   const customers = customersList.use();
+  const myDeviceDetails = myDeviceDetailsState.use();
 
   useEffect(() => {
-    localStorage.setItem("ongoingList", JSON.stringify(ongoingListState));
-  }, [ongoingListState]);
+    const unsub = db
+      .collection("users")
+      .doc(auth.currentUser?.uid)
+      .collection("pendingOrders")
+      .onSnapshot((snapshot) => {
+        const list = [];
+        snapshot.forEach((doc) => {
+          list.push({ ...doc.data(), id: doc.id });
+        });
+        setongoingListState(list);
+      });
+
+    return () => unsub();
+  }, []);
 
   useEffect(() => {
     // console.log("cart", cart);
@@ -104,6 +117,7 @@ const CartScreen = ({ navigation }) => {
   // };
 
   const Print = (method, dontAddToOngoing) => {
+    console.log("My device details state: ", myDeviceDetails);
     if (savedCustomerDetails) {
       if (savedCustomerDetails.orders?.length > 0) {
         db.collection("users")
@@ -255,10 +269,11 @@ const CartScreen = ({ navigation }) => {
       //   },
       // });
       if (!dontAddToOngoing) {
-        const ongoingList = JSON.parse(localStorage.getItem("ongoingList"));
-        if (ongoingList) {
-          ongoingList.push({
-            id: Math.random().toString(36).substr(2, 9) + "-l",
+        console.log("Adding to pending orders");
+        db.collection("users")
+          .doc(auth.currentUser?.uid)
+          .collection("pendingOrders")
+          .add({
             date: today,
             transNum: transNum,
             total: total,
@@ -270,43 +285,24 @@ const CartScreen = ({ navigation }) => {
               address: address ? address : null,
             },
           });
-          localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
-          setongoingListState(ongoingList);
-        } else {
-          localStorage.setItem(
-            "ongoingList",
-            JSON.stringify([
-              {
-                id: Math.random().toString(36).substr(2, 9) + "-l",
-                date: today,
-                transNum: transNum,
-                total: total,
-                method: "deliveryOrder",
-                cart: cart,
-                customer: {
-                  name: name,
-                  phone: phone,
-                  address: address ? address : null,
-                },
-              },
-            ])
-          );
-          setongoingListState([
-            {
-              id: Math.random().toString(36).substr(2, 9) + "-l",
-              date: today,
-              transNum: transNum,
-              total: total,
-              method: "deliveryOrder",
-              cart: cart,
-              customer: {
-                name: name,
-                phone: phone,
-                address: address ? address : null,
-              },
-            },
-          ]);
-        }
+        // .then((docRef) => {
+        //   setongoingListState([
+        //     ...ongoingListState,
+        //     {
+        //       id: docRef.id,
+        //       date: today,
+        //       transNum: transNum,
+        //       total: total,
+        //       method: "deliveryOrder",
+        //       cart: cart,
+        //       customer: {
+        //         name: name,
+        //         phone: phone,
+        //         address: address ? address : null,
+        //       },
+        //     },
+        //   ]);
+        // });
       }
 
       setCartState([]);
@@ -437,10 +433,11 @@ const CartScreen = ({ navigation }) => {
       //   },
       // });
       if (!dontAddToOngoing) {
-        const ongoingList = JSON.parse(localStorage.getItem("ongoingList"));
-        if (ongoingList) {
-          ongoingList.push({
-            id: Math.random().toString(36).substr(2, 9) + "-l",
+        console.log("Adding to pending orders");
+        db.collection("users")
+          .doc(auth.currentUser?.uid)
+          .collection("pendingOrders")
+          .add({
             date: today,
             transNum: transNum,
             total: total,
@@ -452,43 +449,6 @@ const CartScreen = ({ navigation }) => {
               address: address ? address : null,
             },
           });
-          localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
-          setongoingListState(ongoingList);
-        } else {
-          localStorage.setItem(
-            "ongoingList",
-            JSON.stringify([
-              {
-                id: Math.random().toString(36).substr(2, 9) + "-l",
-                date: today,
-                transNum: transNum,
-                total: total,
-                method: "pickupOrder",
-                cart: cart,
-                customer: {
-                  name: name,
-                  phone: phone,
-                  address: address ? address : null,
-                },
-              },
-            ])
-          );
-          setongoingListState([
-            {
-              id: Math.random().toString(36).substr(2, 9) + "-l",
-              date: today,
-              transNum: transNum,
-              total: total,
-              method: "pickupOrder",
-              cart: cart,
-              customer: {
-                name: name,
-                phone: phone,
-                address: address ? address : null,
-              },
-            },
-          ]);
-        }
       }
 
       setCartState([]);
@@ -606,6 +566,17 @@ const CartScreen = ({ navigation }) => {
         );
       }
 
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .collection("pendingOrders")
+        .add({
+          date: today,
+          transNum: transNum,
+          total: total,
+          method: "inStoreOrder",
+          cart: cart,
+        });
+
       const qz = require("qz-tray");
       qz.websocket
         .connect()
@@ -643,11 +614,18 @@ const CartScreen = ({ navigation }) => {
           style={[styles.bigButton, cartSub === 0 && { opacity: 0.5 }]}
           disabled={cart.length < 1}
           onPress={() => {
-            const oldList = structuredClone(
-              JSON.parse(localStorage.getItem("ongoingList"))
-            );
-            oldList[updatingOrder.index].cart = cart;
-            setongoingListState(oldList);
+            // const oldList = structuredClone(
+            //   JSON.parse(localStorage.getItem("ongoingList"))
+            // );
+            // oldList[updatingOrder.index].cart = cart;
+            // setongoingListState(oldList);
+            db.collection("users")
+              .doc(auth.currentUser?.uid)
+              .collection("pendingOrders")
+              .doc(updatingOrder.id)
+              .update({
+                cart: cart,
+              });
 
             Print(deliveryChecked ? "deliveryOrder" : "pickupOrder", true);
             setOngoingDelivery(null);
@@ -684,7 +662,9 @@ const CartScreen = ({ navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.cardButton, cartSub === 0 && { opacity: 0.5 }]}
-            onPress={() => Print("Card")}
+            onPress={() => {
+              Print("Card");
+            }}
             disabled={cart.length < 1 || ongoingDelivery}
           >
             <Text style={styles.btnTxt}>Card</Text>

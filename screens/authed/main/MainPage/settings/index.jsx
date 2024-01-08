@@ -8,6 +8,7 @@ import Grouppermission from './grouppermission'
 import Createpermission from './createpermission'
 import Editpermission from './Editpermission'
 import Taxrates from './taxrates'
+import DeviceSettings from './DeviceSettings';
 
 
 
@@ -17,7 +18,8 @@ import Taxrates from './taxrates'
 const UserIndex = ({ match}) =>(
     <Switch>
         <Redirect exact from={`${match.url}/`} to={`${match.url}/generalsettings`} />
-        <Route path={`${match.url}/generalsettings`} component={Genaral} />                                                                                             
+        <Route path={`${match.url}/generalsettings`} component={Genaral} />     
+        <Route path={`${match.url}/devicesettings`} component={DeviceSettings} /> 
         <Route path={`${match.url}/emailsettings`} component={Email} />                                                                                             
         <Route path={`${match.url}/paymentsettings`} component={Payment} />                                                                                             
         <Route path={`${match.url}/currencysettings`} component={Currency} />                                                                                             
