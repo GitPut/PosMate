@@ -24,6 +24,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import AuthRoute from "./authed/AuthRoute";
 import NonAuthRoute from "./non-authed/NonAuthRoute";
 import useInterval from "components/useInterval";
+import ScrollToTop from "components/ScrollToTop";
 
 const RouteManagerNew = () => {
   const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
@@ -493,6 +494,7 @@ const RouteManagerNew = () => {
 
   return (
     <Router>
+      <ScrollToTop />
       <Switch>
         {userS && (
           <>

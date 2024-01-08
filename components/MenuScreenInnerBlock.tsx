@@ -1,12 +1,20 @@
 import { View, Text, FlatList, Modal } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProductDisplayBtn from "components/ProductDisplayBtn";
 import { userStoreState } from "state/state";
 
 const MenuScreenInnerBlock = ({ visible, height, category }) => {
   const catalog = userStoreState.use();
 
-  // console.log("catalog: ", catalog);
+  // Custom sorting function
+  const customSort = (a, b) => {
+    // Handle cases where one or both items don't have a rank
+    const rankA = a.rank || Number.MAX_SAFE_INTEGER;
+    const rankB = b.rank || Number.MAX_SAFE_INTEGER;
+
+    // Compare based on ranks
+    return rankA - rankB;
+  };
 
   if (catalog.products?.length > 0) {
     // return catalog.products.map((product, index) => {
@@ -51,10 +59,13 @@ const MenuScreenInnerBlock = ({ visible, height, category }) => {
             paddingLeft: 50,
             paddingRight: 50,
           }}
-          data={catalog.products.filter((product) => {
-            const isVisible = product.category === category;
-            return isVisible;
-          })}
+          data={catalog.products
+            .filter((product) => {
+              const isVisible = product.category === category;
+              console.log("rank: ", product.rank);
+              return isVisible;
+            })
+            .sort(customSort)}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           getItemLayout={getItemLayout}

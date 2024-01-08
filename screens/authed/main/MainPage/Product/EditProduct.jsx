@@ -84,6 +84,7 @@ const EditProduct = (props) => {
   }, []);
 
   function handleDataUpdate() {
+    console.log('Rank: ', newProduct.rank)
     if (!newProduct.name) {
       seterror('Please enter a product name')
       return
@@ -129,6 +130,12 @@ const EditProduct = (props) => {
       .collection("products")
       .doc(newProductUseRef.id.toString())
       .set(newProductUseRef)
+    // .catch((error) => {
+    //   console.error("Error writing document: ", error);
+    // })
+    // .finally(() => {
+    //   console.log("Document successfully written!");
+    // });
     history.push("/authed/product/productlist-product");
   }
 
@@ -215,6 +222,17 @@ const EditProduct = (props) => {
                     }))} />
                   </div>
                 </div>
+                <div className="col-lg-3 col-sm-6 col-12">
+                  <div className="form-group">
+                    <label>Rank</label>
+                    <input type="text" placeholder={newProduct.rank >= 0 ? newProduct.rank : 'N/A'} onChange={(event) => {
+                      setnewProduct((prevState) => ({
+                        ...prevState,
+                        rank: parseFloat(event.target.value),
+                      }))
+                    }} />
+                  </div>
+                </div>
                 <div className="col-lg-12">
                   <div className="form-group">
                     <label>Description</label>
@@ -242,11 +260,11 @@ const EditProduct = (props) => {
                         //     behavior: "instant",
                         //   })
                         // }
-                        getItemLayout={(data, index) => ({
-                          length: index === indexOn ? 400 * data.optionsList?.length : 100,
-                          offset: 400 * index,
-                          index,
-                        })}
+                        // getItemLayout={(data, index) => ({
+                        //   length: index === indexOn ? 400 * data.optionsList?.length : 100,
+                        //   offset: 400 * index,
+                        //   index,
+                        // })}
                         data={newProduct?.options}
                         keyExtractor={(item) => item.id?.toString()}
                         renderItem={({ item, index }) => (

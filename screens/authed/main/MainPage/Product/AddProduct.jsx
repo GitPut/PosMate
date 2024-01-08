@@ -165,6 +165,15 @@ const AddProduct = () => {
                                         }))} />
                                     </div>
                                 </div>
+                                <div className="col-lg-3 col-sm-6 col-12">
+                                    <div className="form-group">
+                                        <label>Rank</label>
+                                        <input type="text" placeholder={newProduct.rank >= 0 ? newProduct.rank : 'N/A'} onChange={(event) => setnewProduct((prevState) => ({
+                                            ...prevState,
+                                            rank: event.target.value,
+                                        }))} />
+                                    </div>
+                                </div>
                                 <div className="col-lg-12">
                                     <div className="form-group">
                                         <label>Description</label>
