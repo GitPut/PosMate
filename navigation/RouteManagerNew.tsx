@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   myDeviceDetailsState,
   setCustomersList,
+  setEmployeesState,
   setMyDeviceDetailsState,
   setStoreDetailState,
   setTrialDetailsState,
@@ -152,6 +153,20 @@ const RouteManagerNew = () => {
                   docs.forEach((element) => {
                     setwooOrders((prev) => [...prev, element.data()]);
                   });
+                }
+              })
+              .catch(() => console.log("Error has occured with db"));
+
+            doc.ref
+              .collection("employees")
+              .get()
+              .then((docs) => {
+                if (!docs.empty) {
+                  const localEmployees = [];
+                  docs.forEach((element) => {
+                    localEmployees.push(element.data());
+                  });
+                  setEmployeesState(localEmployees);
                 }
               })
               .catch(() => console.log("Error has occured with db"));

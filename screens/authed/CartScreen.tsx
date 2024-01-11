@@ -32,6 +32,7 @@ import CompletePaymentPhoneOrder from "components/CompletePaymentPhoneOrder";
 import SettingsPasswordModal from "components/SettingsPasswordModal";
 import CartItemEditable from "components/CartItemEditable";
 import useWindowDimensions from "components/useWindowDimensions";
+import ClockinModal from "./ClockinModal";
 
 const CartButton = (props) => {
   return (
@@ -69,6 +70,7 @@ const CartScreen = ({ navigation }) => {
   const [ongoingListState, setongoingListState] = useState([]);
   const customers = customersList.use();
   const myDeviceDetails = myDeviceDetailsState.use();
+  const [clockinModal, setclockinModal] = useState(false);
 
   useEffect(() => {
     const unsub = db
@@ -781,6 +783,17 @@ const CartScreen = ({ navigation }) => {
               styles.iconContainer,
               (cart.length > 0 || updatingOrder) && { opacity: 0.5 },
             ]}
+            onPress={() => setclockinModal(true)}
+            disabled={cart.length > 0 || updatingOrder}
+            icon={() => (
+              <MaterialCommunityIcons name="clock" size={26} color="white" />
+            )}
+          />
+          <CartButton
+            style={[
+              styles.iconContainer,
+              (cart.length > 0 || updatingOrder) && { opacity: 0.5 },
+            ]}
             onPress={() => setSaveCustomerModal(true)}
             disabled={cart.length > 0 || updatingOrder}
             icon={() => (
@@ -1040,6 +1053,9 @@ const CartScreen = ({ navigation }) => {
         </View>
         <DeliveryBtn />
       </View>
+      <Modal visible={clockinModal} transparent={true}>
+        <ClockinModal setclockinModal={setclockinModal} />
+      </Modal>
       <Modal visible={saveCustomerModal} transparent={true}>
         <SaveCustomer
           setSaveCustomerModal={setSaveCustomerModal}

@@ -132,3 +132,9 @@ export const myDeviceDetailsState = entity({
 export const setMyDeviceDetailsState = (val) => {
   myDeviceDetailsState.set(val);
 };
+
+export const employeesState = entity([]);
+
+export const setEmployeesState = (val) => {
+  employeesState.set(val);
+};

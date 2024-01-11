@@ -165,6 +165,36 @@ const Sidebar = (props) => {
                         Invoice Report
                       </Link>
                     </li>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/report/employeesreport"
+                        className={
+                          pathname.includes("employeesreport") ? "active" : ""
+                        }
+                      >
+                        Employees Report
+                      </Link>
+                    </li>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/report/addemployee"
+                        className={
+                          pathname.includes("addemployee") ? "active" : ""
+                        }
+                      >
+                        Add Employee
+                      </Link>
+                    </li>
+                    {/* <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/report/editemployee"
+                        className={
+                          pathname.includes("editemployee") ? "active" : ""
+                        }
+                      >
+                        Edit Employee
+                      </Link>
+                    </li> */}
                   </ul>
                 ) : (
                   ""

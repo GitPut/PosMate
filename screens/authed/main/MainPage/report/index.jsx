@@ -7,6 +7,9 @@ import Invoices from './invoices'
 import Purchase from './purchase'
 import Supplier from './supplier'
 import Customer from './customer'
+import EmployeesReport from './EmployeesReport';
+import AddEmployee from './AddEmployee';
+import EditEmployee from './EditEmployee';
 
 
 
@@ -18,7 +21,10 @@ const AppIndex = ({ match}) =>(
         <Route path={`${match.url}/purchaseorderreport`} component={Purchaseorder} />                                                                                             
         <Route path={`${match.url}/inventoryreport`} component={Inventry} />                                                                                             
         <Route path={`${match.url}/salesreport`} component={Sales} />                                                                                             
-        <Route path={`${match.url}/invoicereport`} component={Invoices} />                                                                                             
+        <Route path={`${match.url}/invoicereport`} component={Invoices} />       
+        <Route path={`${match.url}/employeesreport`} component={EmployeesReport} /> 
+        <Route path={`${match.url}/addemployee`} component={AddEmployee} /> 
+        <Route path={`${match.url}/editemployee/:employeeId`} component={EditEmployee} /> 
         <Route path={`${match.url}/purchasereport`} component={Purchase} />                                                                                             
         <Route path={`${match.url}/supplierreport`} component={Supplier} />                                                                                             
         <Route path={`${match.url}/customerreport`} component={Customer} />                                                                                             

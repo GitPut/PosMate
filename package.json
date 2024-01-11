@@ -68,7 +68,6 @@
     "maskedinput": "^3.3.11",
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.40",
-    "node-sass": "^6.0.0",
     "popper.js": "^1.16.1",
     "prop-types": "^15.7.2",
     "qz-tray": "^2.2.1",
