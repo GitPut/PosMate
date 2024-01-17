@@ -239,6 +239,16 @@ const Sidebar = (props) => {
                         Device Settings
                       </Link>
                     </li>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        to="/authed/settings/onlinestoresettings"
+                        className={
+                          pathname.includes("onlinestoresettings") ? "active" : ""
+                        }
+                      >
+                        Online Store Settings
+                      </Link>
+                    </li>
                   </ul>
                 ) : (
                   ""

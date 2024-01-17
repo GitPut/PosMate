@@ -4,6 +4,7 @@ import {
   setCustomersList,
   setEmployeesState,
   setMyDeviceDetailsState,
+  setOnlineStoreState,
   setStoreDetailState,
   setTrialDetailsState,
   setUserState,
@@ -136,6 +137,11 @@ const RouteManagerNew = () => {
             setUserStoreState({
               products: products,
               categories: doc.data().categories ? doc.data().categories : [],
+            });
+
+            setOnlineStoreState({
+              onlineStoreActive: doc.data().onlineStoreActive,
+              onlineStoreSetUp: doc.data().onlineStoreSetUp,
             });
 
             if (doc.data().wooCredentials) {

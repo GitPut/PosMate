@@ -28,6 +28,7 @@ import {
 } from "react-native";
 import { Button, Switch, TextInput } from "@react-native-material/core";
 import {
+    setMyDeviceDetailsState,
     setStoreDetailState,
     setWoocommerceState,
     storeDetailState,
@@ -270,6 +271,8 @@ const DeviceSettings = () => {
                                                     return clone
                                                 }
                                                 )
+                                                console.log('Updated Device')
+                                                setMyDeviceDetailsState(device)
                                             }} />
                                         <Button
                                             title="Set To My ID"
@@ -288,7 +291,13 @@ const DeviceSettings = () => {
                                                     clone[index].id = myDeviceID
                                                     return clone
                                                 })
+                                                setMyDeviceDetailsState(device)
                                             }} />
+                                        <Button title="Delete Device" onPress={() => {
+                                            db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(device.docID).delete()
+                                            setdeviceTree(prev => prev.filter(deviceSearch => deviceSearch.docID !== device.docID))
+                                        }
+                                        } />
                                     </View>
                                 )
                             })}

@@ -9,27 +9,24 @@ import Createpermission from './createpermission'
 import Editpermission from './Editpermission'
 import Taxrates from './taxrates'
 import DeviceSettings from './DeviceSettings';
+import OnlineStoreSettings from './OnlineStoreSettings';
 
-
-
-
-
-
-const UserIndex = ({ match}) =>(
+const UserIndex = ({ match }) => (
     <Switch>
         <Redirect exact from={`${match.url}/`} to={`${match.url}/generalsettings`} />
-        <Route path={`${match.url}/generalsettings`} component={Genaral} />     
-        <Route path={`${match.url}/devicesettings`} component={DeviceSettings} /> 
-        <Route path={`${match.url}/emailsettings`} component={Email} />                                                                                             
-        <Route path={`${match.url}/paymentsettings`} component={Payment} />                                                                                             
-        <Route path={`${match.url}/currencysettings`} component={Currency} />                                                                                             
-        <Route path={`${match.url}/grouppermissions`} component={Grouppermission} />                                                                                             
-        <Route path={`${match.url}/createpermission`} component={Createpermission} />                                                                                             
-        <Route path={`${match.url}/editpermission`} component={Editpermission} />                                                                                             
-        <Route path={`${match.url}/taxrates`} component={Taxrates} />                                                                                             
-                                                                                           
-                                                                                                  
-        
+        <Route path={`${match.url}/generalsettings`} component={Genaral} />
+        <Route path={`${match.url}/devicesettings`} component={DeviceSettings} />
+        <Route path={`${match.url}/onlinestoresettings`} component={OnlineStoreSettings} />
+        <Route path={`${match.url}/emailsettings`} component={Email} />
+        <Route path={`${match.url}/paymentsettings`} component={Payment} />
+        <Route path={`${match.url}/currencysettings`} component={Currency} />
+        <Route path={`${match.url}/grouppermissions`} component={Grouppermission} />
+        <Route path={`${match.url}/createpermission`} component={Createpermission} />
+        <Route path={`${match.url}/editpermission`} component={Editpermission} />
+        <Route path={`${match.url}/taxrates`} component={Taxrates} />
+
+
+
     </Switch>
 )
 

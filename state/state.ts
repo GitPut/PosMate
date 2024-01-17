@@ -138,3 +138,13 @@ export const employeesState = entity([]);
 export const setEmployeesState = (val) => {
   employeesState.set(val);
 };
+
+export const onlineStoreState = entity({
+  onlineStoreActive: false,
+  onlineStoreSetUp: false,
+  urlEnding: null
+});
+
+export const setOnlineStoreState = (val) => {
+  onlineStoreState.set(val);
+};

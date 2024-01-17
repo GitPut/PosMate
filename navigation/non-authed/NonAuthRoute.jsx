@@ -30,7 +30,6 @@ import OrderPage from 'screens/non-authed/OrderPage';
 
 
 const NonAuthRoute = (props) => {
-    const isLoginSettings = isSignedInSettingsState.use()
     const { location } = props;
     const history = useHistory();
 
@@ -56,7 +55,7 @@ const NonAuthRoute = (props) => {
                 <Route path="/legal" component={Legal} />
                 <Route path="/reset-password" component={ResetPassword} />
                 <Route path="/latest-updates" component={LatestUpdates} />
-                <Route path="/order/:store" component={OrderPage} />
+                <Route path="/order/:urlEnding" component={OrderPage} />
                 <Route path="*" component={NotFound} />
             </Switch>
         </>
