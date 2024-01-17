@@ -4,10 +4,12 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
-//when this cloud function is already deployed, change the origin to 'https://your-deployed-app-url
+const stripe = require("stripe");
 const cors = require("cors")({ origin: true });
-// const { SMTPClient } = require("emailjs");
+
 admin.initializeApp();
+
+const db = admin.firestore();
 
 // const client = new SMTPClient({
 //   user: "support@divinepos.com",
@@ -145,7 +147,6 @@ exports.sendPasswordResetEmail = functions.https.onRequest((req, res) => {
   });
 });
 
-
 //export the cloud function called `sendEmail`
 exports.sendSettingsPass = functions.https.onRequest((req, res) => {
   //enable CORS using the `cors` express middleware.
@@ -154,22 +155,22 @@ exports.sendSettingsPass = functions.https.onRequest((req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-        const mailOptions = {
-          from: "support@divinepos.com",
-          to: email,
-          subject: "Divine Pos Settings Password",
-          html: `<h1>Divine Pos Settings Password</h1>
+    const mailOptions = {
+      from: "support@divinepos.com",
+      to: email,
+      subject: "Divine Pos Settings Password",
+      html: `<h1>Divine Pos Settings Password</h1>
                         <p>
                            <b>Hello! Here is your password for your settings page: </b>${password}<br>
                         </p>`,
-        };
-        return transporter.sendMail(mailOptions, (error, data) => {
-          if (error) {
-            return res.send(error.toString());
-          }
-          var data = JSON.stringify(data);
-          return res.send(`Sent! ${data}`);
-        });
+    };
+    return transporter.sendMail(mailOptions, (error, data) => {
+      if (error) {
+        return res.send(error.toString());
+      }
+      var data = JSON.stringify(data);
+      return res.send(`Sent! ${data}`);
+    });
   });
 });
 
@@ -194,5 +195,38 @@ exports.sendCustomEmail = functions.https.onRequest((req, res) => {
       var data = JSON.stringify(data);
       return res.send(`Sent! ${data}`);
     });
+  });
+});
+
+exports.processPayment = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    try {
+      const { token, amount, currency, storeUID, orderDetails } = req.body;
+
+      // Fetch the secret key from Firestore or Realtime Database
+      const configSnapshot = await db.collection("users").doc(storeUID).get();
+      const secretKey = configSnapshot.data().stripeSecretKey;
+
+      const charge = await stripe(secretKey).charges.create({
+        amount: amount * 100,
+        currency: currency || "cad",
+        source: token,
+      });
+
+      console.log("Payment succeeded:", charge);
+
+      await db
+        .collection("users")
+        .doc(storeUID)
+        .collection("pendingOrders")
+        .add(orderDetails);
+
+      res.status(200).json({ success: true, message: "Payment succeeded" });
+    } catch (error) {
+      console.error("Error during payment:", error);
+      res
+        .status(500)
+        .json({ success: false, message: `Payment failed: ${error.message}` });
+    }
   });
 });

@@ -23,27 +23,49 @@ const CleanupOps = (metaList) => {
   return opsArray;
 };
 
+function parseDate(input) {
+  // Check if the input is a Date object
+  if (Object.prototype.toString.call(input) === "[object Date]") {
+    if (!isNaN(input.getTime())) {
+      // It's a valid Date object, return it
+      return input;
+    }
+  }
+
+  // Check if the input is a string
+  if (typeof input === "string") {
+    const dateObject = new Date(input);
+
+    // Check if the dateObject is a valid Date
+    if (!isNaN(dateObject.getTime())) {
+      // It's a valid Date object, return it
+      return dateObject;
+    }
+  }
+
+  // If neither a Date object nor a valid date string, return null or handle accordingly
+  return null;
+}
+
 const ReceiptPrint = (element, storeDetails) => {
   console.log("ELEMENT DETAILS FROM RECEIPT PRINT: ", element);
   let data = [];
 
   let date;
 
-  // if (element.date_created) {
-  //   const dateString = element.date_created;
+  if (element.date_created) {
+    const dateString = element.date_created;
 
-  //   const newDate = new Date(dateString + "Z");
+    const newDate = new Date(dateString + "Z");
 
-  //   const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  //   const result = tz(newDate)
-  //     .tz(targetTimezone, true)
-  //     .format("dddd, MMMM Do YYYY, h:mm:ss a z");
+    const result = tz(newDate)
+      .tz(targetTimezone, true)
+      .format("dddd, MMMM Do YYYY, h:mm:ss a z");
 
-  //   date = result;
-  // } else
-
-  if (element.date) {
+    date = result;
+  } else if (!element.online && element.date) {
     const newDate = new Date(element.date.seconds * 1000);
     const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -52,6 +74,8 @@ const ReceiptPrint = (element, storeDetails) => {
       .format("dddd, MMMM Do YYYY, h:mm:ss a z");
 
     date = result;
+  } else if (element.online) {
+    date = parseDate(element.date);
   }
 
   if (element.method === "deliveryOrder") {
@@ -70,9 +94,9 @@ const ReceiptPrint = (element, storeDetails) => {
       `Delivery Order: $${
         storeDetails.deliveryPrice ? storeDetails.deliveryPrice : "0"
       } Fee` + "\x0A",
-      "\x0A",
-      "\x0A",
-      "\x0A",
+      element.online
+        ? "ONLINE ORDER" + "\x0A" + "\x0A" + "\x0A"
+        : "\x0A" + "\x0A" + "\x0A",
       "\x1B" + "\x61" + "\x30" // left align
     );
 
@@ -149,9 +173,9 @@ const ReceiptPrint = (element, storeDetails) => {
       `Transaction ID ${element.transNum}` + "\x0A",
       "\x0A",
       "Pickup Order" + "\x0A",
-      "\x0A",
-      "\x0A",
-      "\x0A",
+      element.online
+        ? "ONLINE ORDER" + "\x0A" + "\x0A" + "\x0A"
+        : "\x0A" + "\x0A" + "\x0A",
       "\x1B" + "\x61" + "\x30" // left align
     );
 

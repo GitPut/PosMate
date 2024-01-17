@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   myDeviceDetailsState,
   setCustomersList,
+  setDeviceIdState,
+  setDeviceTreeState,
   setEmployeesState,
   setMyDeviceDetailsState,
   setOnlineStoreState,
@@ -140,8 +142,11 @@ const RouteManagerNew = () => {
             });
 
             setOnlineStoreState({
+              urlEnding: doc.data().urlEnding,
               onlineStoreActive: doc.data().onlineStoreActive,
               onlineStoreSetUp: doc.data().onlineStoreSetUp,
+              stripePublicKey: doc.data().stripePublicKey,
+              stripeSecretKey: doc.data().stripeSecretKey,
             });
 
             if (doc.data().wooCredentials) {
@@ -266,12 +271,28 @@ const RouteManagerNew = () => {
 
             const deviceID = getCookie("deviceID");
 
+            if (!deviceID) {
+              // Generate a random device ID
+              const yourDeviceID =
+                Math.random().toString(36).substring(2, 15) +
+                Math.random().toString(36).substring(2, 15);
+
+              // Set a cookie
+              document.cookie = `deviceID=${yourDeviceID}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
+
+              setDeviceIdState(yourDeviceID);
+            } else {
+              setDeviceIdState(deviceID);
+            }
+
             doc.ref
               .collection("devices")
               .get()
               .then((docs) => {
-                console.log("getting details for device: ", deviceID);
+                const devices = [];
+
                 docs.forEach((element) => {
+                  devices.push({ ...element.data(), docID: element.id });
                   if (element.data().id === deviceID) {
                     console.log("found device: ", element.data());
                     setMyDeviceDetailsState({
@@ -280,6 +301,9 @@ const RouteManagerNew = () => {
                     });
                   }
                 });
+
+                setDeviceTreeState(devices);
+
               });
 
             const unsub = db

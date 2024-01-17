@@ -22,9 +22,10 @@ import Logo from "assets/dpos-logo.png";
 import CartItemEditable from "components/CartItemEditable";
 import ProductListing from "components/ProductListing";
 import { addCartState, cartState, setCartState } from "state/state";
-import { CardField, useStripe } from "@stripe/stripe-react-native";
-
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
 const OrderPage = () => {
   const history = useHistory();
@@ -55,7 +56,11 @@ const OrderPage = () => {
 
         const products = [];
 
-        setstoreDetails(querySnapshot.docs[0].data().storeDetails);
+        setstoreDetails({
+          ...querySnapshot.docs[0].data().storeDetails,
+          docID: querySnapshot.docs[0].id,
+          stripePublicKey: querySnapshot.docs[0].data().stripePublicKey,
+        });
 
         querySnapshot.docs[0].ref
           .collection("products")
@@ -118,15 +123,18 @@ const OrderPage = () => {
               catalog={catalog}
             />
           )}
-          {page === 3 && (
-            <Page3
-              storeDetails={storeDetails}
-              setorderDetails={setorderDetails}
-              orderDetails={orderDetails}
-              setpage={setpage}
-              catalog={catalog}
-            />
+          {page === 3 && storeDetails && (
+            <Elements stripe={loadStripe(storeDetails.stripePublicKey)}>
+              <Page3
+                storeDetails={storeDetails}
+                setorderDetails={setorderDetails}
+                orderDetails={orderDetails}
+                setpage={setpage}
+                catalog={catalog}
+              />
+            </Elements>
           )}
+          {page === 4 && <Page4 />}
         </View>
       </ImageBackground>
     </View>
@@ -267,6 +275,7 @@ const Page2 = ({
   const { height, width } = useWindowDimensions();
   const [section, setsection] = useState(null);
   const [cartSub, setCartSub] = useState(0);
+  const [total, setTotal] = useState(0);
   const cart = cartState.use();
 
   useEffect(() => {
@@ -583,7 +592,16 @@ const Page2 = ({
                   cartSub === 0 && { opacity: 0.5 },
                 ]}
               >
-                ${(cartSub * 1.13).toFixed(2)}
+                $
+                {(
+                  Math.ceil(
+                    cartSub *
+                      (storeDetails.taxRate
+                        ? 1 + storeDetails.taxRate / 100
+                        : 1.13) *
+                      10
+                  ) / 10
+                ).toFixed(2)}
               </Text>
             </View>
             <TouchableOpacity
@@ -593,6 +611,48 @@ const Page2 = ({
               ]}
               disabled={cart.length < 1}
               onPress={() => {
+                const today = new Date();
+                const transNum = Math.random().toString(36).substr(2, 9);
+
+                if (orderDetails.delivery) {
+                  setorderDetails({
+                    date: today,
+                    transNum: transNum,
+                    total: (
+                      cartSub *
+                      (storeDetails.taxRate
+                        ? 1 + storeDetails.taxRate / 100
+                        : 1.13)
+                    ).toFixed(2),
+                    method: "deliveryOrder",
+                    online: true,
+                    cart: cart,
+                    customer: {
+                      name: orderDetails.name,
+                      phone: orderDetails.phone,
+                      address: orderDetails.address,
+                    },
+                  });
+                } else {
+                  setorderDetails({
+                    date: today,
+                    transNum: transNum,
+                    total: (
+                      cartSub *
+                      (storeDetails.taxRate
+                        ? 1 + storeDetails.taxRate / 100
+                        : 1.13)
+                    ).toFixed(2),
+                    method: "pickupOrder",
+                    online: true,
+                    cart: cart,
+                    customer: {
+                      name: orderDetails.name,
+                      phone: orderDetails.phone,
+                      address: null,
+                    },
+                  });
+                }
                 setpage(3);
               }}
             >
@@ -851,21 +911,62 @@ const Page3 = ({
   catalog,
 }) => {
   const { height, width } = useWindowDimensions();
-  const { confirmPayment, handleCardAction } = useStripe();
 
-  const handlePayment = async () => {
-    try {
-      const { paymentIntent, error } = await confirmPayment(
-        "client_secret_from_server"
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const [currency, setCurrency] = useState("cad"); // Default to CAD
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      // Stripe.js has not loaded yet.
+      return;
+    }
+
+    const cardElement = elements.getElement(CardElement);
+
+    const { token, error } = await stripe.createToken(cardElement);
+
+    if (error) {
+      console.error("Error creating token:", error);
+    } else {
+      console.log("Token:", token);
+
+      // Send the token, amount, and currency to your Firebase Function to process the payment
+      const response = await fetch(
+        "https://us-central1-posmate-5fc0a.cloudfunctions.net/processPayment",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token.id,
+            amount: orderDetails.total,
+            currency,
+            storeUID: storeDetails.docID,
+            orderDetails: orderDetails,
+          }),
+        }
       );
-      if (error) {
-        console.error("Payment confirmation failed:", error.message);
-      } else {
-        console.log("Payment succeeded:", paymentIntent);
-        // Handle successful payment, e.g., update the order status
+
+      try {
+        const responseData = await response.json();
+
+        if (response.ok && responseData.success) {
+          console.log("Payment processed successfully!");
+          setpage(4);
+        } else {
+          console.error(
+            "Payment processing failed. Server message:",
+            responseData.message
+          );
+        }
+      } catch (jsonError) {
+        console.error("Error parsing JSON response:", jsonError);
       }
-    } catch (error) {
-      console.error("Error during payment:", error);
     }
   };
 
@@ -875,82 +976,48 @@ const Page3 = ({
       <TextInput
         style={styles({ height, width }).textInput}
         placeholder="Name"
-        value={orderDetails.name}
+        value={orderDetails.customer.name}
         onChangeText={(text) =>
-          setorderDetails({ ...orderDetails, name: text })
+          setorderDetails({
+            ...orderDetails,
+            customer: { ...orderDetails.customer, name: text },
+          })
         }
       />
       <TextInput
         style={styles({ height, width }).textInput}
         placeholder="Phone Number"
-        value={orderDetails.phoneNumber}
+        value={orderDetails.customer.phone}
         onChangeText={(text) =>
-          setorderDetails({ ...orderDetails, phoneNumber: text })
+          setorderDetails({
+            ...orderDetails,
+            customer: { ...orderDetails.customer, phone: text },
+          })
         }
       />
       <TextInput
         style={styles({ height, width }).textInput}
         placeholder="Email"
-        value={orderDetails.email}
+        value={orderDetails.customer.email}
         onChangeText={(text) =>
-          setorderDetails({ ...orderDetails, email: text })
+          setorderDetails({
+            ...orderDetails,
+            customer: { ...orderDetails.customer, email: text },
+          })
         }
       />
       <TextInput
         style={styles({ height, width }).textInput}
         placeholder="Notes"
-        value={orderDetails.notes}
+        value={orderDetails.customer.note}
         onChangeText={(text) =>
-          setorderDetails({ ...orderDetails, notes: text })
+          setorderDetails({
+            ...orderDetails,
+            customer: { ...orderDetails.customer, note: text },
+          })
         }
       />
-      <TextInput
-        style={styles({ height, width }).textInput}
-        placeholder="Card Number"
-        value={orderDetails.cardNumber}
-        onChangeText={(text) =>
-          setorderDetails({ ...orderDetails, cardNumber: text })
-        }
-      />
-      <TextInput
-        style={styles({ height, width }).textInput}
-        placeholder="Expiry Date"
-        value={orderDetails.expiryDate}
-        onChangeText={(text) =>
-          setorderDetails({ ...orderDetails, expiryDate: text })
-        }
-      />
-      <TextInput
-        style={styles({ height, width }).textInput}
-        placeholder="CVV"
-        value={orderDetails.cvv}
-        onChangeText={(text) => setorderDetails({ ...orderDetails, cvv: text })}
-      />
-      <CardField
-        postalCodeEnabled={false}
-        placeholder={{
-          number: "4242 4242 4242 4242",
-        }}
-        cardStyle={{
-          backgroundColor: "#FFFFFF",
-          textColor: "#000000",
-        }}
-        style={{
-          width: "100%",
-          height: 50,
-          marginVertical: 30,
-        }}
-        onCardChange={(cardDetails) => {
-          // Handle card details change
-        }}
-        onFocus={(focusedField) => {
-          // Handle field focus
-        }}
-        onSubmitEditing={() => {
-          // Handle form submission
-          handlePayment();
-        }}
-      />
+      <CardElement />
       <TouchableOpacity
         onPress={() => setpage(2)}
         style={{
@@ -965,7 +1032,8 @@ const Page3 = ({
         <Text style={{ fontSize: 16 }}>Back</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => setpage(2)}
+        onPress={handleSubmit}
+        disabled={!stripe}
         style={{
           padding: 20,
           borderRadius: 10,
@@ -977,6 +1045,14 @@ const Page3 = ({
       >
         <Text style={{ fontSize: 16 }}>Checkout</Text>
       </TouchableOpacity>
+    </View>
+  );
+};
+
+const Page4 = () => {
+  return (
+    <View>
+      <Text>Thank you for your order</Text>
     </View>
   );
 };

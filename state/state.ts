@@ -142,9 +142,23 @@ export const setEmployeesState = (val) => {
 export const onlineStoreState = entity({
   onlineStoreActive: false,
   onlineStoreSetUp: false,
-  urlEnding: null
+  urlEnding: null,
+  stripePublicKey: null,
+  stripeSecretKey: null,
 });
 
 export const setOnlineStoreState = (val) => {
   onlineStoreState.set(val);
+};
+
+export const deviceIdState = entity(null);
+
+export const setDeviceIdState = (val) => {
+  deviceIdState.set(val);
+};
+
+export const deviceTreeState = entity([]);
+
+export const setDeviceTreeState = (val) => {
+  deviceTreeState.set(val);
 };

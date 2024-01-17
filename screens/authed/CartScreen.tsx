@@ -33,6 +33,7 @@ import SettingsPasswordModal from "components/SettingsPasswordModal";
 import CartItemEditable from "components/CartItemEditable";
 import useWindowDimensions from "components/useWindowDimensions";
 import ClockinModal from "./ClockinModal";
+import ReceiptPrint from "components/ReceiptPrint";
 
 const CartButton = (props) => {
   return (
@@ -72,6 +73,27 @@ const CartScreen = ({ navigation }) => {
   const myDeviceDetails = myDeviceDetailsState.use();
   const [clockinModal, setclockinModal] = useState(false);
 
+  function parseDate(input) {
+    // Check if the input is a Date object
+    if (Object.prototype.toString.call(input) === "[object Date]") {
+      if (!isNaN(input.getTime())) {
+        // It's a valid Date object, return it
+        return input;
+      }
+    }
+
+    // Check if the input is a string
+    if (typeof input === "string") {
+      const dateObject = new Date(input);
+
+      // Check if the dateObject is a valid Date
+      if (!isNaN(dateObject.getTime())) {
+        // It's a valid Date object, return it
+        return dateObject;
+      }
+    }
+  }
+
   useEffect(() => {
     const unsub = db
       .collection("users")
@@ -81,8 +103,45 @@ const CartScreen = ({ navigation }) => {
         const list = [];
         snapshot.forEach((doc) => {
           list.push({ ...doc.data(), id: doc.id });
+          if (
+            doc.data().online &&
+            !doc.data().printed &&
+            myDeviceDetails.printOnlineOrders
+          ) {
+            console.log("Printing");
+            const data = ReceiptPrint(doc.data(), storeDetails);
+            const qz = require("qz-tray");
+            qz.websocket
+              .connect()
+              .then(function () {
+                const config = qz.configs.create(
+                  myDeviceDetails.printToPrinter
+                );
+                return qz.print(config, data);
+              })
+              .then(qz.websocket.disconnect)
+              .catch(function (err) {
+                console.error(err);
+              });
+            db.collection("users")
+              .doc(auth.currentUser?.uid)
+              .collection("pendingOrders")
+              .doc(doc.id)
+              .update({
+                printed: true,
+              });
+          }
         });
-        setongoingListState(list);
+
+        const sortedArray = list.sort((a, b) => {
+          const dateA = a.online ? parseDate(a.date) : a.date.toDate();
+          const dateB = b.online ? parseDate(b.date) : b.date.toDate();
+
+          // Compare dates
+          return dateB - dateA;
+        });
+
+        setongoingListState(sortedArray);
       });
 
     return () => unsub();

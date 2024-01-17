@@ -59,6 +59,11 @@ export const updateStoreDetails = (storeDetails) => {
   db.collection("users").doc(auth.currentUser?.uid).update({
     storeDetails: storeDetails,
   });
+  if (storeDetails.onlineStoreActive) {
+    db.collection("public").doc(auth.currentUser?.uid).update({
+      storeDetails: storeDetails,
+    });
+  }
 };
 
 export const updateFreeTrial = (endDate) => {

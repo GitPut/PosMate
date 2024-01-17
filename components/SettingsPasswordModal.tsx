@@ -37,12 +37,12 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
   });
 
   const SendEmail = () => {
-    var data = JSON.stringify({
+    const data = JSON.stringify({
       email: auth.currentUser?.email,
       password: storeDetails.settingsPassword,
     });
 
-    var config = {
+    const config = {
       method: "post",
       maxBodyLength: Infinity,
       url: "https://us-central1-posmate-5fc0a.cloudfunctions.net/sendSettingsPass",

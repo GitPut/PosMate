@@ -40,10 +40,12 @@ import ReactSelect from "react-select";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
 const OnlineStoreSettings = () => {
-    const [urlEnding, seturlEnding] = useState(null)
     const onlineStoreDetails = onlineStoreState.use()
     const storeDetails = storeDetailState.use()
     const catalog = userStoreState.use()
+    const [urlEnding, seturlEnding] = useState(onlineStoreDetails.urlEnding)
+    const [stripePublicKey, setstripePublicKey] = useState(onlineStoreDetails.stripePublicKey)
+    const [stripeSecretKey, setstripeSecretKey] = useState(onlineStoreDetails.stripeSecretKey)
 
     const startOnlineStore = () => {
         db.collection("public").where("urlEnding", "==", urlEnding)
@@ -78,6 +80,21 @@ const OnlineStoreSettings = () => {
             });
     }
 
+    const updateStripeDetails = () => {
+        db.collection('users').doc(auth.currentUser.uid).update({
+            stripePublicKey: stripePublicKey,
+            stripeSecretKey: stripeSecretKey
+        })
+        db.collection("public").doc(auth.currentUser.uid).update({
+            stripePublicKey: stripePublicKey
+        })
+        setOnlineStoreState({
+            ...onlineStoreDetails,
+            stripePublicKey: stripePublicKey,
+            stripeSecretKey: stripeSecretKey
+        })
+    }
+
     return (
         <div className="page-wrapper">
             <div className="content">
@@ -94,6 +111,11 @@ const OnlineStoreSettings = () => {
                                 onChangeText={(text) => { if (!onlineStoreDetails.onlineStoreSetUp) { seturlEnding(text.replace(/[^a-zA-Z-]/g, '').toLowerCase()) } }}
                             />
                             <Button title='Start Online Store' onPress={startOnlineStore} disabled={onlineStoreDetails.onlineStoreSetUp} />
+
+                            <Text>Stripe Details: </Text>
+                            <TextInput placeholder="Enter Stripe Public Key" value={onlineStoreDetails.stripePublicKey ? onlineStoreDetails.stripePublicKey : stripePublicKey} onChangeText={(text) => { setstripePublicKey(text) }} />
+                            <TextInput placeholder="Enter Stripe Secret Key" value={onlineStoreDetails.stripeSecretKey ? onlineStoreDetails.stripeSecretKey : stripeSecretKey} onChangeText={(text) => { setstripeSecretKey(text) }} />
+                            <Button title='Update Stripe Details' onPress={() => { updateStripeDetails() }} />
                         </ScrollView>
                     </View>
                 </View>

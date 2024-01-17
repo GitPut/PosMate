@@ -26,6 +26,30 @@ const CompletePaymentPhoneOrder = ({
     index: null,
   });
 
+  function parseDate(input) {
+    // Check if the input is a Date object
+    if (Object.prototype.toString.call(input) === "[object Date]") {
+      if (!isNaN(input.getTime())) {
+        // It's a valid Date object, return it
+        return input;
+      }
+    }
+
+    // Check if the input is a string
+    if (typeof input === "string") {
+      const dateObject = new Date(input);
+
+      // Check if the dateObject is a valid Date
+      if (!isNaN(dateObject.getTime())) {
+        // It's a valid Date object, return it
+        return dateObject;
+      }
+    }
+
+    // If neither a Date object nor a valid date string, return null or handle accordingly
+    return null;
+  }
+
   return (
     <>
       <TouchableOpacity
@@ -92,7 +116,13 @@ const CompletePaymentPhoneOrder = ({
           >
             {ongoingListState?.length > 0 ? (
               ongoingListState?.map((element, index) => {
-                const date = element.date.toDate();
+                let date = null;
+
+                if (element.online) {
+                  date = parseDate(element.date);
+                } else {
+                  date = element.date.toDate();
+                }
 
                 let cartString = "";
 
@@ -135,6 +165,21 @@ const CompletePaymentPhoneOrder = ({
                     style={{ marginBottom: 20 }}
                     key={index}
                   >
+                    {element.online && (
+                      <View
+                        style={{
+                          backgroundColor: "green",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          padding: 5,
+                          width: "100%",
+                          borderTopLeftRadius: 30,
+                          borderTopRightRadius: 30,
+                        }}
+                      >
+                        <Text>ONLINE ORDER</Text>
+                      </View>
+                    )}
                     <View
                       style={[
                         {
@@ -150,6 +195,10 @@ const CompletePaymentPhoneOrder = ({
                         element.open && {
                           borderBottomLeftRadius: 0,
                           borderBottomRightRadius: 0,
+                        },
+                        element.online && {
+                          borderTopLeftRadius: 0,
+                          borderTopRightRadius: 0,
                         },
                       ]}
                       key={index}
@@ -176,92 +225,143 @@ const CompletePaymentPhoneOrder = ({
                           backgroundColor: "black",
                         }}
                       />
-                      {element.method === "pickupOrder" && (
-                        <TouchableOpacity
-                          style={{ padding: 5 }}
-                          onPress={() => {
-                            setChangeModal(true);
-                            setcurrentOrder({
-                              element: element,
-                              index: index,
-                            });
-                            updateTransList(element);
-                          }}
-                        >
-                          <MaterialCommunityIcons
-                            name="store"
-                            size={26}
-                            color="rgba(74,74,74,1)"
-                          />
-                        </TouchableOpacity>
+                      {element.online && (
+                        <>
+                          {element.method === "pickupOrder" && (
+                            <TouchableOpacity
+                              style={{ padding: 5 }}
+                              onPress={() => {
+                                db.collection("users")
+                                  .doc(auth.currentUser.uid)
+                                  .collection("pendingOrders")
+                                  .doc(element.id)
+                                  .delete();
+                                updateTransList(element);
+                              }}
+                            >
+                              <MaterialCommunityIcons
+                                name="store"
+                                size={26}
+                                color="rgba(74,74,74,1)"
+                              />
+                            </TouchableOpacity>
+                          )}
+                          {element.method === "deliveryOrder" && (
+                            <TouchableOpacity
+                              style={{ padding: 5 }}
+                              onPress={() => {
+                                db.collection("users")
+                                  .doc(auth.currentUser.uid)
+                                  .collection("pendingOrders")
+                                  .doc(element.id)
+                                  .delete();
+                                updateTransList(element);
+                              }}
+                            >
+                              <MaterialCommunityIcons
+                                name="car"
+                                size={26}
+                                color="rgba(74,74,74,1)"
+                              />
+                            </TouchableOpacity>
+                          )}
+                        </>
                       )}
-                      {element.method === "deliveryOrder" && (
-                        <TouchableOpacity
-                          style={{ padding: 5 }}
-                          onPress={() => {
-                            db.collection("users")
-                              .doc(auth.currentUser.uid)
-                              .collection("pendingOrders")
-                              .doc(element.id)
-                              .delete();
-                            updateTransList(element);
-                          }}
-                        >
-                          <MaterialCommunityIcons
-                            name="car"
-                            size={26}
-                            color="rgba(74,74,74,1)"
-                          />
-                        </TouchableOpacity>
-                      )}
-                      {element.method === "inStoreOrder" && (
-                        <TouchableOpacity
-                          style={{ padding: 5 }}
-                          onPress={() => {
-                            db.collection("users")
-                              .doc(auth.currentUser.uid)
-                              .collection("pendingOrders")
-                              .doc(element.id)
-                              .delete();
-                            updateTransList(element);
-                          }}
-                        >
-                          <MaterialCommunityIcons
-                            name="check"
-                            size={26}
-                            color="rgba(74,74,74,1)"
-                          />
-                        </TouchableOpacity>
-                      )}
-                      <TouchableOpacity
-                        style={{ padding: 5 }}
-                        onPress={() => {
-                          db.collection("users")
-                            .doc(auth.currentUser.uid)
-                            .collection("pendingOrders")
-                            .doc(element.id)
-                            .delete();
-                        }}
-                      >
-                        <MaterialCommunityIcons
-                          name="cancel"
-                          size={26}
-                          color="rgba(74,74,74,1)"
-                        />
-                      </TouchableOpacity>
-                      {element.method !== "inStoreOrder" && (
-                        <TouchableOpacity
-                          style={{ padding: 5 }}
-                          onPress={() => {
-                            updateOrderHandler({ ...element, index: index });
-                          }}
-                        >
-                          <MaterialCommunityIcons
-                            name="square-edit-outline"
-                            size={26}
-                            color="rgba(74,74,74,1)"
-                          />
-                        </TouchableOpacity>
+                      {/* NOT ONLINE */}
+                      {!element.online && (
+                        <>
+                          {element.method === "pickupOrder" && (
+                            <TouchableOpacity
+                              style={{ padding: 5 }}
+                              onPress={() => {
+                                setChangeModal(true);
+                                setcurrentOrder({
+                                  element: element,
+                                  index: index,
+                                });
+                                updateTransList(element);
+                              }}
+                            >
+                              <MaterialCommunityIcons
+                                name="store"
+                                size={26}
+                                color="rgba(74,74,74,1)"
+                              />
+                            </TouchableOpacity>
+                          )}
+                          {element.method === "deliveryOrder" && (
+                            <TouchableOpacity
+                              style={{ padding: 5 }}
+                              onPress={() => {
+                                db.collection("users")
+                                  .doc(auth.currentUser.uid)
+                                  .collection("pendingOrders")
+                                  .doc(element.id)
+                                  .delete();
+                                updateTransList(element);
+                              }}
+                            >
+                              <MaterialCommunityIcons
+                                name="car"
+                                size={26}
+                                color="rgba(74,74,74,1)"
+                              />
+                            </TouchableOpacity>
+                          )}
+                          {element.method === "inStoreOrder" && (
+                            <TouchableOpacity
+                              style={{ padding: 5 }}
+                              onPress={() => {
+                                db.collection("users")
+                                  .doc(auth.currentUser.uid)
+                                  .collection("pendingOrders")
+                                  .doc(element.id)
+                                  .delete();
+                                updateTransList(element);
+                              }}
+                            >
+                              <MaterialCommunityIcons
+                                name="check"
+                                size={26}
+                                color="rgba(74,74,74,1)"
+                              />
+                            </TouchableOpacity>
+                          )}
+                          <TouchableOpacity
+                            style={{ padding: 5 }}
+                            onPress={() => {
+                              db.collection("users")
+                                .doc(auth.currentUser.uid)
+                                .collection("pendingOrders")
+                                .doc(element.id)
+                                .delete();
+                            }}
+                          >
+                            <MaterialCommunityIcons
+                              name="cancel"
+                              size={26}
+                              color="rgba(74,74,74,1)"
+                            />
+                          </TouchableOpacity>
+                          {element.method !== "inStoreOrder" &&
+                            !element.online && (
+                              <TouchableOpacity
+                                style={{ padding: 5 }}
+                                onPress={() => {
+                                  updateOrderHandler({
+                                    ...element,
+                                    index: index,
+                                  });
+                                }}
+                              >
+                                <MaterialCommunityIcons
+                                  name="square-edit-outline"
+                                  size={26}
+                                  color="rgba(74,74,74,1)"
+                                />
+                              </TouchableOpacity>
+                            )}
+                        </>
                       )}
                     </View>
                     {element.open && (

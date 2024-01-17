@@ -12,6 +12,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Switch, TextInput } from "@react-native-material/core";
 import {
+  onlineStoreState,
   setStoreDetailState,
   setWoocommerceState,
   storeDetailState,
@@ -111,6 +112,8 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
       });
   };
 
+  const onlineStoreDetails = onlineStoreState.use();
+
   const handleDataUpdate = () => {
     if (name !== null && phoneNumber !== null && address !== null) {
       setStoreDetailState({
@@ -122,6 +125,7 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
         comSelected: com,
         settingsPassword: settingsPassword,
         taxRate: parseFloat(taxRate),
+        onlineStoreActive: onlineStoreDetails.onlineStoreActive,
       });
       updateStoreDetails({
         name: name,
@@ -132,6 +136,7 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
         comSelected: com,
         settingsPassword: settingsPassword,
         taxRate: parseFloat(taxRate),
+        onlineStoreActive: onlineStoreDetails.onlineStoreActive,
       });
       if (customBtnExtraFunction) {
         customBtnExtraFunction();

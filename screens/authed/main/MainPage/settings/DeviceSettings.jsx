@@ -1,171 +1,28 @@
-
-// var navigator_info = window.navigator;
-// var screen_info = window.screen;
-// var uid = navigator_info.mimeTypes.length;
-// uid += navigator_info.userAgent.replace(/\D+/g, '');
-// uid += navigator_info.plugins.length;
-// uid += screen_info.height || '';
-// uid += screen_info.width || '';
-// uid += screen_info.pixelDepth || '';
-// console.log(uid);
-
-
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import Select2 from "react-select2-wrapper";
 import "react-select2-wrapper/css/select2.css";
-import { Upload } from "../../EntryFile/imagePath";
 import {
     View,
     Text,
     ScrollView,
-    useWindowDimensions,
     StyleSheet,
-    Image,
-    TouchableOpacity,
     Animated,
-    Modal,
 } from "react-native";
 import { Button, Switch, TextInput } from "@react-native-material/core";
 import {
+    deviceTreeState,
+    myDeviceDetailsState,
+    setDeviceTreeState,
     setMyDeviceDetailsState,
-    setStoreDetailState,
-    setWoocommerceState,
     storeDetailState,
     trialDetailsState,
     woocommerceState,
 } from "state/state";
-import {
-    updateStoreDetails,
-    updateWooCredentials,
-} from "state/firebaseFunctions";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import Foundation from "@expo/vector-icons/Foundation";
 import { auth, db } from "state/firebaseConfig";
-import { loadStripe } from "@stripe/stripe-js";
-import firebase from "firebase/app";
-import EditStoreDetails from "components/EditStoreDetails";
 import ReactSelect from "react-select";
 
-const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
-
 const DeviceSettings = () => {
-    const storeDetails = storeDetailState.use();
-    const [name, setname] = useState(storeDetails.name);
-    const [phoneNumber, setphoneNumber] = useState(storeDetails.phoneNumber);
-    const [address, setaddress] = useState(storeDetails.address);
-    const [website, setwebsite] = useState(storeDetails.website);
-    const [deliveryPrice, setdeliveryPrice] = useState(
-        storeDetails.deliveryPrice
-    );
-    const [com, setcom] = useState(storeDetails.comSelected);
-    const [settingsPassword, setsettingsPassword] = useState(
-        storeDetails.settingsPassword
-    );
-    const fadeAnim = useRef(new Animated.Value(0)).current;
-    const [viewVisible, setviewVisible] = useState(false);
-    const [screen, setscreen] = useState("general");
-    const wooCredentials = woocommerceState.use();
-    const [apiUrl, setapiUrl] = useState(wooCredentials.apiUrl);
-    const [ck, setck] = useState(wooCredentials.ck);
-    const [cs, setcs] = useState(wooCredentials.cs);
-    const [useWoocommerce, setuseWoocommerce] = useState(
-        wooCredentials.useWoocommerce
-    );
-    const trialDetails = trialDetailsState.use();
-
-    // const fadeIn = () => {
-    //     // Will change fadeAnim value to 0 in 3 seconds
-    //     Animated.timing(fadeAnim, {
-    //         toValue: 1,
-    //         duration: 500,
-    //         useNativeDriver: false,
-    //     }).start();
-    // };
-
-    // const resetLoader = () => {
-    //     setviewVisible(true);
-    //     fadeIn();
-    // };
-
-    // const Manage = () => {
-    //     resetLoader();
-    //     firebase
-    //         .functions()
-    //         .httpsCallable("ext-firestore-stripe-payments-createPortalLink")({
-    //             returnUrl: `${window.location.origin}`,
-    //             locale: "auto",
-    //         })
-    //         .then((response) => {
-    //             console.log(response.data);
-    //             window.location = response.data.url;
-    //         })
-    //         .catch((error) => {
-    //             alert("Unknown error has occured: ", error);
-    //         });
-    // };
-
-    // const handleDataUpdate = () => {
-    //     if (name !== null && phoneNumber !== null && address !== null) {
-    //         setStoreDetailState({
-    //             name: name,
-    //             phoneNumber: phoneNumber,
-    //             address: address,
-    //             website: website,
-    //             deliveryPrice: deliveryPrice,
-    //             comSelected: com,
-    //             settingsPassword: settingsPassword,
-    //         });
-    //         updateStoreDetails({
-    //             name: name,
-    //             phoneNumber: phoneNumber,
-    //             address: address,
-    //             website: website,
-    //             deliveryPrice: deliveryPrice,
-    //             comSelected: com,
-    //             settingsPassword: settingsPassword,
-    //         });
-    //         if (customBtnExtraFunction) {
-    //             customBtnExtraFunction();
-    //         }
-    //     } else {
-    //         alert("Please fill in all fields");
-    //     }
-    // };
-
-    const [deviceTree, setdeviceTree] = useState([])
-    const [myDeviceID, setmyDeviceID] = useState(null)
-
-    useEffect(() => {
-        // Retrieve the cookie value
-        function getCookie(name) {
-            const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-            if (match) return match[2];
-        }
-
-        const deviceID = getCookie('deviceID');
-
-        if (!deviceID) {// Generate a random device ID
-            const yourDeviceID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
-            // Set a cookie
-            document.cookie = `deviceID=${yourDeviceID}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
-
-            setmyDeviceID(yourDeviceID)
-        } else {
-            setmyDeviceID(deviceID)
-        }
-
-        db.collection('users').doc(auth.currentUser.uid).collection('devices').get().then((snapshot) => {
-            snapshot.docs.map(doc => {
-                setdeviceTree(prev => [...prev, { ...doc.data(), docID: doc.id }])
-            }
-            )
-        })
-
-    }, [])
-
-
+    const deviceTree = deviceTreeState.use()
+    const myDeviceID = myDeviceDetailsState.use()
 
     return (
         <div className="page-wrapper">
@@ -174,141 +31,150 @@ const DeviceSettings = () => {
                     <View style={styles.headerRowContainer}>
                         <Text style={styles.headerTxt}>Device Settings</Text>
                     </View>
-                    <View style={styles.detailInputContainer}>
-                        <ScrollView>
-                            {deviceTree.map((device, index) => {
+                    {deviceTree.map((device, index) => {
 
-                                const otherDeviceOptions = []
-                                deviceTree.map((deviceSearch, index) => {
-                                    if (deviceSearch.id !== device.id) {
-                                        otherDeviceOptions.push({ value: deviceSearch.docID, label: deviceSearch.name })
-                                    }
-                                })
+                        const otherDeviceOptions = []
+                        deviceTree.map((deviceSearch, index) => {
+                            if (deviceSearch.id !== device.id) {
+                                otherDeviceOptions.push({ value: deviceSearch.docID, label: deviceSearch.name })
+                            }
+                        })
 
-                                return (
-                                    <View key={index} style={{ marginBottom: 25 }}>
-                                        <TextInput placeholder={`Name: ${device.name}`} value={device.name} onChangeText={val => setdeviceTree(prev => {
-                                            const clone = [...prev]
-                                            clone[index].name = val
-                                            return clone
-                                        })} />
-                                        <Text>Id: {device.id}</Text>
-                                        <Switch value={device.useDifferentDeviceToPrint} onValueChange={val => setdeviceTree(prev => {
-                                            const clone = [...prev]
-                                            clone[index].useDifferentDeviceToPrint = val
-                                            return clone
-                                        })} />
-                                        {!device.useDifferentDeviceToPrint ? <TextInput placeholder={`Print To Printer: ${device.printToPrinter}`} value={device.printToPrinter} onChangeText={val => setdeviceTree(prev => {
-                                            const clone = [...prev]
-                                            clone[index].printToPrinter = val
-                                            return clone
-                                        })} /> :
-                                            // <TextInput placeholder={`Enter User ID To Send Print: ${device.sendPrintToUserID}`} value={device.sendPrintToUserID} onChangeText={val => setdeviceTree(prev => {
-                                            //     const clone = [...prev]
-                                            //     clone[index].sendPrintToUserID = val
-                                            //     return clone
-                                            // })} />
-                                            <ReactSelect
-                                                options={otherDeviceOptions}
-                                                value={
-                                                    device.sendPrintToUserID
-                                                }
-                                                onChange={(val) => {
-                                                    setdeviceTree(prev => {
-                                                        const clone = [...prev]
-                                                        clone[index].sendPrintToUserID = val
-                                                        return clone
-                                                    })
-                                                }}
-                                                placeholder={"Choose Device To Send Print To"}
-                                                menuPortalTarget={document.body}
-                                                styles={{
-                                                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                                                    control: (provided, state) => ({
-                                                        ...provided,
-                                                        background: "#fff",
-                                                        borderColor: "#9e9e9e",
-                                                        minHeight: "52px",
-                                                        height: "52px",
-                                                        boxShadow: state.isFocused ? null : null,
-                                                    }),
+                        return (
+                            <View key={index} style={[styles.detailInputContainer, { marginBottom: 25 }]}>
+                                <TextInput placeholder={`Name: ${device.name}`} value={device.name} onChangeText={val => {
+                                    const clone = [...deviceTree]
+                                    clone[index].name = val
 
-                                                    valueContainer: (provided, state) => ({
-                                                        ...provided,
-                                                        height: "52px",
-                                                        padding: "0 6px",
-                                                    }),
+                                    setDeviceTreeState(clone)
 
-                                                    input: (provided, state) => ({
-                                                        ...provided,
-                                                        margin: "0px",
-                                                    }),
-                                                    indicatorSeparator: (state) => ({
-                                                        display: "none",
-                                                    }),
-                                                    indicatorsContainer: (provided, state) => ({
-                                                        ...provided,
-                                                        height: "52px",
-                                                    }),
-                                                }}
-                                                menuPlacement="auto"
-                                                menuPosition="fixed"
-                                            />
+                                }}
+                                    style={{ marginBottom: 10 }}
+                                />
+                                <Text style={{ marginBottom: 10 }} >Id: {device.id ? device.id : 'No Id set to this device'}</Text>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                                    <Text style={{ marginRight: 10 }}>Use Different Device To Print: </Text>
+                                    <Switch value={device.useDifferentDeviceToPrint} onValueChange={val => {
+                                        const clone = [...deviceTree]
+                                        clone[index].useDifferentDeviceToPrint = val
+                                        setDeviceTreeState(clone)
+                                    }} />
+                                </View>
+                                {!device.useDifferentDeviceToPrint ? <TextInput placeholder={`Print To Printer: ${device.printToPrinter}`} value={device.printToPrinter} onChangeText={val => {
+                                    const clone = [...deviceTree]
+                                    clone[index].printToPrinter = val
+                                    setDeviceTreeState(clone)
+                                }}
+                                /> :
+                                    <ReactSelect
+                                        options={otherDeviceOptions}
+                                        value={
+                                            device.sendPrintToUserID
                                         }
-                                        <Text>Would you like online orders to print to this device?</Text>
-                                        <Switch value={device.printOnlineOrders} onValueChange={val => setdeviceTree(prev => {
-                                            const clone = [...prev]
-                                            clone[index].printOnlineOrders = val
-                                            return clone
-                                        })} />
-                                        <Button
-                                            title="Update Device"
-                                            onPress={() => {
-                                                db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(device.docID).update(device)
-                                                setdeviceTree(prev => {
-                                                    const clone = [...prev]
-                                                    clone[index] = device
-                                                    return clone
-                                                }
-                                                )
-                                                console.log('Updated Device')
-                                                setMyDeviceDetailsState(device)
-                                            }} />
-                                        <Button
-                                            title="Set To My ID"
-                                            onPress={() => {
-                                                if (deviceTree.filter(deviceSearch => deviceSearch.id === myDeviceID).length > 0) {
-                                                    db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(deviceTree.filter(deviceSearch => deviceSearch.id === myDeviceID)[0].docID).update({ id: null })
-                                                    setdeviceTree(prev => {
-                                                        const clone = [...prev]
-                                                        clone.filter(deviceSearch => deviceSearch.id === myDeviceID)[0].id = null
-                                                        return clone
-                                                    })
-                                                }
-                                                db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(device.docID).update({ id: myDeviceID })
-                                                setdeviceTree(prev => {
-                                                    const clone = [...prev]
-                                                    clone[index].id = myDeviceID
-                                                    return clone
-                                                })
-                                                setMyDeviceDetailsState(device)
-                                            }} />
-                                        <Button title="Delete Device" onPress={() => {
-                                            db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(device.docID).delete()
-                                            setdeviceTree(prev => prev.filter(deviceSearch => deviceSearch.docID !== device.docID))
+                                        onChange={(val) => {
+                                            const clone = [...deviceTree]
+                                            clone[index].sendPrintToUserID = val
+                                            setDeviceTreeState(clone)
+                                        }}
+                                        placeholder={"Choose Device To Send Print To"}
+                                        menuPortalTarget={document.body}
+                                        styles={{
+                                            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                                            control: (provided, state) => ({
+                                                ...provided,
+                                                background: "#fff",
+                                                borderColor: "#9e9e9e",
+                                                minHeight: "52px",
+                                                height: "52px",
+                                                boxShadow: state.isFocused ? null : null,
+                                            }),
+
+                                            valueContainer: (provided, state) => ({
+                                                ...provided,
+                                                height: "52px",
+                                                padding: "0 6px",
+                                            }),
+
+                                            input: (provided, state) => ({
+                                                ...provided,
+                                                margin: "0px",
+                                            }),
+                                            indicatorSeparator: (state) => ({
+                                                display: "none",
+                                            }),
+                                            indicatorsContainer: (provided, state) => ({
+                                                ...provided,
+                                                height: "52px",
+                                            }),
+                                        }}
+                                        menuPlacement="auto"
+                                        menuPosition="fixed"
+                                    />
+                                }
+                                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, marginTop: 10 }}>
+                                    <Text>Would you like online orders to print to this device?</Text>
+                                    <Switch value={device.printOnlineOrders} onValueChange={val => {
+                                        const clone = [...deviceTree]
+                                        clone[index].printOnlineOrders = val
+                                        setDeviceTreeState(clone)
+                                    }} />
+                                </View>
+                                <Button
+                                    title="Update Device"
+                                    onPress={() => {
+                                        db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(device.docID).update(device)
+                                        const clone = [...deviceTree]
+                                        clone[index] = device
+                                        setDeviceTreeState(clone
+                                        )
+                                        console.log('Updated Device')
+                                        setMyDeviceDetailsState(device)
+                                    }}
+                                    style={{
+                                        marginBottom: 10
+                                    }}
+                                />
+                                <Button
+                                    title="Set To My ID"
+                                    onPress={() => {
+                                        if (deviceTree.filter(deviceSearch => deviceSearch.id === myDeviceID).length > 0) {
+                                            db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(deviceTree.filter(deviceSearch => deviceSearch.id === myDeviceID)[0].docID).update({ id: null })
+                                            const clone = [...deviceTree]
+                                            clone.filter(deviceSearch => deviceSearch.id === myDeviceID)[0].id = null
+                                            setDeviceTreeState(clone)
                                         }
-                                        } />
-                                    </View>
-                                )
-                            })}
-                        </ScrollView>
-                        <Button title="Add Device" onPress={() => {
+                                        db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(device.docID).update({ id: myDeviceID })
+                                        const clone = [...deviceTree]
+                                        clone[index].id = myDeviceID
+                                        setDeviceTreeState(clone)
+                                        setMyDeviceDetailsState(device)
+                                    }}
+                                    style={{
+                                        marginBottom: 10
+                                    }}
+                                />
+                                <Button title="Delete Device" onPress={() => {
+                                    db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(device.docID).delete()
+                                    const clone = [...deviceTree]
+                                    clone.filter(deviceSearch => deviceSearch.docID !== device.docID)
+                                    setDeviceTreeState(clone)
+                                }
+                                }
+                                    style={{
+                                        marginBottom: 10
+                                    }}
+                                />
+                            </View>
+                        )
+                    })}
+                    <Button title="Add Device" onPress={() => {
 
-                            db.collection('users').doc(auth.currentUser.uid).collection('devices').add({ name: `Device${deviceTree.length}`, id: null, printToPrinter: null })
+                        db.collection('users').doc(auth.currentUser.uid).collection('devices').add({ name: `Device${deviceTree.length}`, id: null, printToPrinter: null })
 
-                            setdeviceTree(prev => [...prev, { name: "Device", id: null, printToPrinter: null, sendPrintToUserID: null }])
-                        }} />
-                    </View>
+                        const clone = [...deviceTree]
+                        clone.push({ name: "Device", id: null, printToPrinter: null, sendPrintToUserID: null })
+                        setDeviceTreeState(clone)
+                    }} />
                 </View>
             </div>
         </div >
