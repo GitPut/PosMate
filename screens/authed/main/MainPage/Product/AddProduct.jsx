@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Upload } from '../../EntryFile/imagePath';
 import Select2 from 'react-select2-wrapper';
 import 'react-select2-wrapper/css/select2.css';
-import { setUserStoreState, userState, userStoreState } from 'state/state';
+import { onlineStoreState, setUserStoreState, userState, userStoreState } from 'state/state';
 import { updateData } from 'state/firebaseFunctions';
 import { FlatList, Image, Modal, TouchableOpacity, View } from 'react-native';
 import OptionView from 'components/OptionView';
@@ -23,6 +23,7 @@ const AddProduct = () => {
         }
     );
     const userS = userState.use();
+    const onlineStoreDetails = onlineStoreState.use()
 
     const [newProductOptions, setnewProductOptions] = useState([])
 
@@ -81,6 +82,13 @@ const AddProduct = () => {
             .collection("products")
             .doc(newProduct.id.toString())
             .set(newProduct)
+        if (onlineStoreDetails.onlineStoreSetUp) {
+            db.collection("public")
+                .doc(userS.uid)
+                .collection("products")
+                .doc(newProduct.id.toString())
+                .set(newProduct)
+        }
         setUserStoreState({ categories: catalog.categories, products: [...catalog.products, newProduct] })
         history.push("/authed/product/productlist-product");
     }

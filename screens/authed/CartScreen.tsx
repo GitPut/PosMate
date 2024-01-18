@@ -37,13 +37,32 @@ import ReceiptPrint from "components/ReceiptPrint";
 
 const CartButton = (props) => {
   return (
-    <TouchableOpacity
-      style={props.style}
-      onPress={props.onPress}
-      disabled={props.disabled}
-    >
-      <props.icon />
-    </TouchableOpacity>
+    <View>
+      <TouchableOpacity
+        style={props.style}
+        onPress={props.onPress}
+        disabled={props.disabled}
+      >
+        <props.icon />
+      </TouchableOpacity>
+      {props.notification && (
+        <View
+          style={{
+            height: 20,
+            width: 20,
+            borderRadius: 5,
+            backgroundColor: "green",
+            position: "absolute",
+            top: 0,
+            right: 0,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text>{props.notification}</Text>
+        </View>
+      )}
+    </View>
   );
 };
 
@@ -470,21 +489,6 @@ const CartScreen = ({ navigation }) => {
         "\x0A", // line break
         "\x1D" + "\x56" + "\x30"
       );
-      // fetch("http://localhost:8080/print", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     printData: data,
-      //     comSelected: storeDetails.comSelected,
-      //   }),
-      // })
-      //   .then((response) => response.json())
-      //   .then((respData) => {
-      //     console.log(respData);
-      //   })
-      //   .catch((e) => alert("Error with printer"));
       const qz = require("qz-tray");
 
       if (
@@ -513,20 +517,6 @@ const CartScreen = ({ navigation }) => {
             console.error(err);
           });
       }
-
-      // AddToList({
-      //   id: Math.random().toString(36).substr(2, 9) + "-l",
-      //   date: today,
-      //   transNum: transNum,
-      //   total: total,
-      //   method: "pickupOrder",
-      //   cart: cart,
-      //   customer: {
-      //     name: name,
-      //     phone: phone,
-      //     address: address ? address : null,
-      //   },
-      // });
       if (!dontAddToOngoing) {
         console.log("Adding to pending orders");
         db.collection("users")
@@ -869,6 +859,7 @@ const CartScreen = ({ navigation }) => {
             icon={() => (
               <Ionicons name="chevron-down" size={28} color="white" />
             )}
+            notification={ongoingListState.length}
           />
           <CartButton
             style={[

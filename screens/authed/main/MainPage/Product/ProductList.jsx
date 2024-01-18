@@ -11,7 +11,7 @@ import {
   DuplicateIcon,
 } from "../../EntryFile/imagePath";
 import "react-select2-wrapper/css/select2.css";
-import { setStoreDetailState, setUserStoreState, userState, userStoreState } from "state/state";
+import { onlineStoreState, setStoreDetailState, setUserStoreState, userState, userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
 import { auth, db, storage } from "state/firebaseConfig";
 
@@ -22,6 +22,7 @@ const ProductList = () => {
   const [data, setData] = useState([]);
   const [filteredData, setfilteredData] = useState([]);
   const userS = userState.use();
+  const onlineStoreDetails = onlineStoreState.use()
 
   const togglefilter = (value) => {
     setInputfilter(value);
@@ -59,6 +60,13 @@ const ProductList = () => {
           .collection("products")
           .doc(props.id.toString())
           .delete()
+        if (onlineStoreDetails.onlineStoreSetUp) {
+          db.collection("public")
+            .doc(userS.uid)
+            .collection("products")
+            .doc(props.id.toString())
+            .delete()
+        }
       }
     });
   };
@@ -187,6 +195,13 @@ const ProductList = () => {
                   .collection("products")
                   .doc(copy.id.toString())
                   .set(copy)
+                if (onlineStoreDetails.onlineStoreSetUp) {
+                  db.collection("public")
+                    .doc(userS.uid)
+                    .collection("products")
+                    .doc(copy.id.toString())
+                    .set(copy)
+                }
               }}
             >
               <img src={DuplicateIcon} alt="img" />

@@ -95,6 +95,46 @@ const OnlineStoreSettings = () => {
         })
     }
 
+    const makeOnlineStoreActive = () => {
+        if (!onlineStoreDetails.onlineStoreActive) {
+            catalog.products.forEach((product) => {
+                db.collection("public").doc(auth.currentUser.uid).collection("products").doc(product.id).set(product)
+            })
+            db.collection('users').doc(auth.currentUser.uid).update({
+                onlineStoreActive: true,
+                onlineStoreSetUp: true,
+                urlEnding: urlEnding,
+            })
+            db.collection('public').doc(auth.currentUser.uid).update({
+                onlineStoreActive: true,
+                onlineStoreSetUp: true,
+                urlEnding: urlEnding,
+                storeDetails: storeDetails,
+                categories: catalog.categories,
+            })
+            setOnlineStoreState({
+                ...onlineStoreDetails,
+                onlineStoreActive: true,
+            })
+        } else {
+            db.collection('users').doc(auth.currentUser.uid).update({
+                onlineStoreActive: false,
+                onlineStoreSetUp: true,
+                urlEnding: urlEnding
+            })
+            db.collection('public').doc(auth.currentUser.uid).update({
+                onlineStoreActive: false,
+                onlineStoreSetUp: true,
+                urlEnding: urlEnding
+            })
+            setOnlineStoreState({
+                ...onlineStoreDetails,
+                onlineStoreActive: false,
+            })
+        }
+    }
+
+
     return (
         <div className="page-wrapper">
             <div className="content">
@@ -104,6 +144,10 @@ const OnlineStoreSettings = () => {
                     </View>
                     <View style={styles.detailInputContainer}>
                         <ScrollView>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, marginTop: 10 }}>
+                                <Text>Online Store Active?</Text>
+                                <Switch value={onlineStoreDetails.onlineStoreActive} onValueChange={makeOnlineStoreActive} />
+                            </View>
                             <Text>Order Url Ending: </Text>
                             <TextInput
                                 placeholder="Enter Url Ending"

@@ -3,7 +3,7 @@ import { Macbook, Upload } from "../../EntryFile/imagePath";
 import { Link, useHistory } from "react-router-dom"
 import Select2 from "react-select2-wrapper";
 import "react-select2-wrapper/css/select2.css";
-import { selectedProductState, setUserStoreState, userState, userStoreState } from "state/state";
+import { onlineStoreState, selectedProductState, setUserStoreState, userState, userStoreState } from "state/state";
 import { FlatList, Image, Modal, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { Button } from "react-native";
 import OptionView from "components/OptionView";
@@ -40,6 +40,7 @@ const EditProduct = (props) => {
   const [currentImgUrl, setcurrentImgUrl] = useState()
 
   const userS = userState.use();
+  const onlineStoreDetails = onlineStoreState.use()
 
   // const resetProduct = () => {
   //   setnewProduct(
@@ -130,6 +131,13 @@ const EditProduct = (props) => {
       .collection("products")
       .doc(newProductUseRef.id.toString())
       .set(newProductUseRef)
+    if (onlineStoreDetails.onlineStoreSetUp) {
+      db.collection("public")
+        .doc(userS.uid)
+        .collection("products")
+        .doc(newProductUseRef.id.toString())
+        .set(newProductUseRef)
+    }
     // .catch((error) => {
     //   console.error("Error writing document: ", error);
     // })

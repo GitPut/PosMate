@@ -54,6 +54,12 @@ const OrderPage = () => {
           history.push("/404");
         }
 
+        if (!querySnapshot.docs[0].data().onlineStoreActive) {
+          console.log("Store is not active");
+          //send them to a 404 page
+          history.push("/404");
+        }
+
         const products = [];
 
         setstoreDetails({

@@ -23,13 +23,15 @@ import {
 import Select2 from "react-select2-wrapper";
 import "react-select2-wrapper/css/select2.css";
 import Swal from "sweetalert2";
-import { userStoreState } from "state/state";
+import { onlineStoreState, userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
 import FeatherIcon from "feather-icons-react";
+import { auth, db } from "state/firebaseConfig";
 
 const CategoryList = () => {
   const [inputfilter, setInputfilter] = useState(false);
   const catalog = userStoreState.use();
+  const onlineStoreDetails = onlineStoreState.use()
 
   const togglefilter = (value) => {
     setInputfilter(value);
@@ -69,7 +71,20 @@ const CategoryList = () => {
           localCatalog.categories = [];
         }
 
-        updateData(localCatalog.categories, localCatalog.products);
+        db.collection("users")
+          .doc(auth.currentUser?.uid)
+          .update({
+            categories: localCatalog.categories,
+          })
+          .catch((e) => console.log("ERROR HAS OCCURE FB: ", e));
+        if (onlineStoreDetails.onlineStoreSetUp) {
+          db.collection("public")
+            .doc(auth.currentUser?.uid)
+            .update({
+              categories: localCatalog.categories,
+            })
+            .catch((e) => console.log("ERROR HAS OCCURE FB: ", e));
+        }
       }
     });
   };

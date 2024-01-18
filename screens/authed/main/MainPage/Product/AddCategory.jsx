@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { Upload } from '../../EntryFile/imagePath';
-import { userStoreState } from 'state/state';
+import { onlineStoreState, userStoreState } from 'state/state';
 import { auth, db } from 'state/firebaseConfig';
 import { Link, useHistory } from 'react-router-dom';
 import firebase from "firebase/app";
 
 const AddCategory = () => {
     const catalog = userStoreState.use();
+    const onlineStoreDetails = onlineStoreState.use()
 
     const [name, setname] = useState("");
     const history = useHistory();
@@ -17,6 +18,13 @@ const AddCategory = () => {
             .update({
                 categories: firebase.firestore.FieldValue.arrayUnion(name),
             })
+        if (onlineStoreDetails.onlineStoreSetUp) {
+            db.collection("public")
+                .doc(auth.currentUser.uid)
+                .update({
+                    categories: firebase.firestore.FieldValue.arrayUnion(name),
+                })
+        }
         history.push("/authed/product/categorylist-product");
     }
 
