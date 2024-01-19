@@ -68,10 +68,9 @@ const ReceiptPrint = (element, storeDetails) => {
 
     data.push(
       "\x1B" + "\x40", // init
-      "\x0A",
+      "                                                                              ", // line break
       "\x0A",
       "\x1B" + "\x61" + "\x31", // center align
-      "\x0A",
       storeDetails.name,
       "\x0A",
       storeDetails.address?.label + "\x0A",
@@ -161,6 +160,7 @@ const ReceiptPrint = (element, storeDetails) => {
       "\x0A", // line break
       "\x0A", // line break
       "\x0A", // line break
+      "\x0A", // line break
       "\x0A" // line break
     );
 
@@ -205,10 +205,9 @@ const ReceiptPrint = (element, storeDetails) => {
       data = element.online
         ? [
             "\x1B" + "\x40", // init
-            "\x0A",
+            "                                                                              ", // line break
             "\x0A",
             "\x1B" + "\x61" + "\x31", // center align
-            "\x0A",
             storeDetails.name,
             "\x0A",
             storeDetails.address?.label + "\x0A",
@@ -229,10 +228,9 @@ const ReceiptPrint = (element, storeDetails) => {
           ]
         : [
             "\x1B" + "\x40", // init
-            "\x0A",
+            "                                                                              ", // line break
             "\x0A",
             "\x1B" + "\x61" + "\x31", // center align
-            "\x0A",
             storeDetails.name,
             "\x0A",
             storeDetails.address?.label + "\x0A",
@@ -315,16 +313,16 @@ const ReceiptPrint = (element, storeDetails) => {
         "\x0A", // line break
         "\x0A", // line break
         "\x0A", // line break
+        "\x0A", // line break
         "\x1D" + "\x56" + "\x30"
       );
     } else if (element.method === "pickupOrder") {
       data = element.online
         ? [
             "\x1B" + "\x40", // init
-            "\x0A",
+            "                                                                              ", // line break
             "\x0A",
             "\x1B" + "\x61" + "\x31", // center align
-            "\x0A",
             storeDetails.name,
             "\x0A",
             storeDetails.address?.label + "\x0A",
@@ -343,10 +341,9 @@ const ReceiptPrint = (element, storeDetails) => {
           ]
         : [
             "\x1B" + "\x40", // init
-            "\x0A",
+            "                                                                              ", // line break
             "\x0A",
             "\x1B" + "\x61" + "\x31", // center align
-            "\x0A",
             storeDetails.name,
             "\x0A",
             storeDetails.address?.label + "\x0A",
@@ -427,15 +424,15 @@ const ReceiptPrint = (element, storeDetails) => {
         "\x0A", // line break
         "\x0A", // line break
         "\x0A", // line break
+        "\x0A", // line break
         "\x1D" + "\x56" + "\x30"
       );
     } else {
       data = [
         "\x1B" + "\x40", // init
-        "\x0A",
+        "                                                                              ", // line break
         "\x0A",
         "\x1B" + "\x61" + "\x31", // center align
-        "\x0A",
         storeDetails.name,
         "\x0A",
         storeDetails.address?.label + "\x0A",
@@ -527,6 +524,8 @@ const ReceiptPrint = (element, storeDetails) => {
             "\x0A" +
             "\x0A",
           "------------------------------------------" + "\x0A",
+          "\x0A", // line break
+          "\x0A", // line break
           "\x0A", // line break
           "\x0A", // line break
           "\x0A", // line break

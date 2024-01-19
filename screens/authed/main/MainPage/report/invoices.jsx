@@ -99,6 +99,7 @@ const Sales = () => {
             settransList((prevState) => [...prevState, doc.data()]);
             settransListTableOrg((prevState) => [...prevState,
             {
+              ...doc.data(),
               id: doc.data().transNum.toUpperCase(),
               number: doc.data().transNum,
               name: doc.data().customer?.name ? doc.data().customer?.name : "N/A",
@@ -111,7 +112,12 @@ const Sales = () => {
             ]);
           });
           //sort by date
-          settransListTableOrg((prevState) => [...prevState.sort((a, b) => new Date(b.originalData.date_created ? b.originalData.date_created : b.originalData.date.seconds * 1000) - new Date(a.originalData.date_created ? a.originalData.date_created : a.originalData.date.seconds * 1000))])
+          settransListTableOrg((prevState) => {
+            const newList = [...prevState.sort((a, b) => new Date(b.originalData.date_created ? b.originalData.date_created : b.originalData.date.seconds * 1000) - new Date(a.originalData.date_created ? a.originalData.date_created : a.originalData.date.seconds * 1000))]
+            settransList(newList)
+
+            return newList
+          })
 
         });
     } catch {
@@ -494,7 +500,9 @@ const Sales = () => {
             </div>
             {/* /Filter */}
             <div className="table-responsive">
-              <Table columns={columns} dataSource={filteredTranLlist.length > 0 ? filteredTranLlist : transListTableOrg} updateBaseSelectedRows={updateBaseSelectedRows} setbaseSelectedRows={setbaseSelectedRows} />
+              <Table columns={columns} dataSource={filteredTranLlist.length > 0 ? filteredTranLlist : transListTableOrg} updateBaseSelectedRows={updateBaseSelectedRows} setbaseSelectedRows={setbaseSelectedRows}
+              // noPagnation={true}
+              />
             </div>
           </div>
         </div>

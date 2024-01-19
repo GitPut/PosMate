@@ -162,7 +162,7 @@ const CompletePaymentPhoneOrder = ({
                         return [...prev];
                       })
                     }
-                    style={{ marginBottom: 20 }}
+                    style={{ marginBottom: 20, width: "90%" }}
                     key={index}
                   >
                     {element.online && (
