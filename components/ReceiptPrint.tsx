@@ -68,7 +68,10 @@ const ReceiptPrint = (element, storeDetails) => {
 
     data.push(
       "\x1B" + "\x40", // init
+      "\x0A",
+      "\x0A",
       "\x1B" + "\x61" + "\x31", // center align
+      "\x0A",
       storeDetails.name,
       "\x0A",
       storeDetails.address?.label + "\x0A",
@@ -165,23 +168,6 @@ const ReceiptPrint = (element, storeDetails) => {
 
     return data;
   } else {
-    //end of woo order
-
-    // if (!element.online && element.date) {
-    //   const newDate = new Date(element.date.seconds * 1000);
-    //   const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    //   const result = tz(newDate)
-    //     .tz(targetTimezone, true)
-    //     .format("dddd, MMMM Do YYYY, h:mm:ss a z");
-
-    //   date = result;
-    // } else if (element.online) {
-    //   date = parseDate(element.date);
-    // } else {
-    //   date = new Date(element.date);
-    // }
-    console.log("Date: ", element.date);
     if (element.online) {
       const localDate = parseDate(element.date);
       // Convert to a nice date and time format
@@ -219,7 +205,10 @@ const ReceiptPrint = (element, storeDetails) => {
       data = element.online
         ? [
             "\x1B" + "\x40", // init
+            "\x0A",
+            "\x0A",
             "\x1B" + "\x61" + "\x31", // center align
+            "\x0A",
             storeDetails.name,
             "\x0A",
             storeDetails.address?.label + "\x0A",
@@ -240,7 +229,10 @@ const ReceiptPrint = (element, storeDetails) => {
           ]
         : [
             "\x1B" + "\x40", // init
+            "\x0A",
+            "\x0A",
             "\x1B" + "\x61" + "\x31", // center align
+            "\x0A",
             storeDetails.name,
             "\x0A",
             storeDetails.address?.label + "\x0A",
@@ -329,7 +321,10 @@ const ReceiptPrint = (element, storeDetails) => {
       data = element.online
         ? [
             "\x1B" + "\x40", // init
+            "\x0A",
+            "\x0A",
             "\x1B" + "\x61" + "\x31", // center align
+            "\x0A",
             storeDetails.name,
             "\x0A",
             storeDetails.address?.label + "\x0A",
@@ -348,7 +343,10 @@ const ReceiptPrint = (element, storeDetails) => {
           ]
         : [
             "\x1B" + "\x40", // init
+            "\x0A",
+            "\x0A",
             "\x1B" + "\x61" + "\x31", // center align
+            "\x0A",
             storeDetails.name,
             "\x0A",
             storeDetails.address?.label + "\x0A",
@@ -434,7 +432,10 @@ const ReceiptPrint = (element, storeDetails) => {
     } else {
       data = [
         "\x1B" + "\x40", // init
+        "\x0A",
+        "\x0A",
         "\x1B" + "\x61" + "\x31", // center align
+        "\x0A",
         storeDetails.name,
         "\x0A",
         storeDetails.address?.label + "\x0A",
@@ -538,17 +539,6 @@ const ReceiptPrint = (element, storeDetails) => {
       }
     }
   }
-  // const qz = require("qz-tray");
-  // qz.websocket
-  //   .connect()
-  //   .then(function () {
-  //     const config = qz.configs.create(printerName);
-  //     return qz.print(config, data);
-  //   })
-  //   .then(qz.websocket.disconnect)
-  //   .catch(function (err) {
-  //     console.error(err);
-  //   });
   return { data: data, total: total };
 };
 

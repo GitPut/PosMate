@@ -241,7 +241,6 @@ const CartScreen = ({ navigation }) => {
     }
 
     const transNum = Math.random().toString(36).substr(2, 9);
-    let data;
 
     if (method === "deliveryOrder") {
       const today = new Date();
@@ -425,7 +424,7 @@ const CartScreen = ({ navigation }) => {
           .connect()
           .then(function () {
             const config = qz.configs.create(myDeviceDetails.printToPrinter);
-            return qz.print(config, data.data);
+            return qz.print(config, [data.data]);
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
