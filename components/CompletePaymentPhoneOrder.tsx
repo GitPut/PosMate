@@ -279,7 +279,6 @@ const CompletePaymentPhoneOrder = ({
                                   element: element,
                                   index: index,
                                 });
-                                updateTransList(element);
                               }}
                             >
                               <MaterialCommunityIcons
@@ -400,9 +399,12 @@ const CompletePaymentPhoneOrder = ({
               setcurrentOrder={setcurrentOrder}
               order={currentOrder.element}
               completeOrder={() => {
-                db.collection("pendingOrders").doc(currentOrder.id).delete();
-                // ongoingList.splice(currentOrder.index, 1);
-                // localStorage.setItem("ongoingList", JSON.stringify(ongoingList));
+                db.collection("users")
+                  .doc(auth.currentUser?.uid)
+                  .collection("pendingOrders")
+                  .doc(currentOrder.element.id)
+                  .delete();
+                updateTransList(currentOrder.element);
                 setChangeModal(false);
               }}
               goBack={() => {

@@ -130,6 +130,7 @@ const SaveCustomer = ({
               titleStyle={{ textTransform: "capitalize" }}
             />
             <Button
+              disabled={!customerSelected.address}
               title="Delivery"
               onPress={() => {
                 setCartState(prevOrder.cart);
@@ -140,7 +141,10 @@ const SaveCustomer = ({
                 setDeliveryChecked(true);
                 setSaveCustomerModal(false);
               }}
-              style={{ backgroundColor: "#4050B5", marginRight: 10 }}
+              style={[
+                { backgroundColor: "#4050B5", marginRight: 10 },
+                !customerSelected.address && { opacity: 0.5 },
+              ]}
               titleStyle={{ textTransform: "capitalize" }}
             />
             <TouchableOpacity
@@ -634,13 +638,28 @@ const SaveCustomer = ({
                   title="Update"
                   // onPress={GetTrans}
                   onPress={() => {
-                    // if (name && phone) {
-                    //   setDeliveryModal(false);
-                    //   setOngoingDelivery(true);
-                    //   if (saveCustomerChecked) {
-                    //     SaveCustomer();
-                    //   }
-                    // }
+                    db.collection("users")
+                      .doc(auth.currentUser?.uid)
+                      .collection("customers")
+                      .doc(customerSelected.id)
+                      .update({
+                        name,
+                        phone,
+                        address,
+                      });
+                    const clone = [...customers];
+                    const index = clone.findIndex(
+                      (e) => e.id === customerSelected.id
+                    );
+                    clone[index] = { ...clone[index], name, phone, address };
+                    setCustomersList(clone);
+                    setcustomerSelected((prev) => ({
+                      ...prev,
+                      name,
+                      phone,
+                      address,
+                    }));
+                    setEditModal(false);
                   }}
                   contentContainerStyle={styles.btn}
                   style={{ margin: 25, backgroundColor: "#4050B5" }}

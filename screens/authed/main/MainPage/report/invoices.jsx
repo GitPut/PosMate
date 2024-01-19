@@ -212,7 +212,7 @@ const Sales = () => {
   useEffect(() => {
     console.log('Selected rows from base: ', baseSelectedRows)
     if (updateBaseSelectedRows === true) {
-      if (baseSelectedRows.length > 1) {
+      if (baseSelectedRows.length >= 1) {
         let data = [];
         baseSelectedRows.forEach((idx) => {
           //find index of item in transList that matches id of selected row
@@ -224,7 +224,7 @@ const Sales = () => {
             ];
           console.log('THIS IS ELEMENT: ', element, ' This is Index: ', orderIndex)
           const formatedData = ReceiptPrint(element, storeDetails);
-          data = data.concat(formatedData);
+          data = data.concat(formatedData.data);
         });
         const qz = require("qz-tray");
         if (
@@ -252,51 +252,13 @@ const Sales = () => {
               console.error(err);
             });
         }
-      } else if (baseSelectedRows.length === 1) {
-
-        //find index of item in transList that matches id of selected row
-        const orderIndex = transListTableOrg.findIndex((item) => item.id === baseSelectedRows[0])
-
-        const element =
-          transList[
-          orderIndex
-          ];
-        console.log('THIS IS ELEMENT: ', element, ' This is Index: ', orderIndex)
-
-        const formatedData = ReceiptPrint(element, storeDetails);
-
-        const qz = require("qz-tray");
-        if (
-          myDeviceDetails.sendPrintToUserID &&
-          myDeviceDetails.useDifferentDeviceToPrint
-        ) {
-          console.log("Sending print to different user");
-          db.collection("users")
-            .doc(auth.currentUser?.uid)
-            .collection("devices")
-            .doc(myDeviceDetails.sendPrintToUserID.value)
-            .collection("printRequests")
-            .add({
-              printData: formatedData,
-            });
-        } else {
-          qz.websocket
-            .connect()
-            .then(function () {
-              const config = qz.configs.create(myDeviceDetails.printToPrinter);
-              return qz.print(config, formatedData);
-            })
-            .then(qz.websocket.disconnect)
-            .catch(function (err) {
-              console.error(err);
-            });
-        }
       } else {
         alert(
           "Higlight one or multiple receipt then click to print them"
         );
       }
       setupdateBaseSelectedRows(false)
+      setbaseSelectedRows(null)
     }
   }, [baseSelectedRows])
 

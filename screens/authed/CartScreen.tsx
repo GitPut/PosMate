@@ -37,32 +37,42 @@ import ReceiptPrint from "components/ReceiptPrint";
 
 const CartButton = (props) => {
   return (
-    <View>
-      <TouchableOpacity
-        style={props.style}
-        onPress={props.onPress}
-        disabled={props.disabled}
-      >
-        <props.icon />
-      </TouchableOpacity>
-      {props.notification && (
-        <View
-          style={{
-            height: 20,
-            width: 20,
-            borderRadius: 5,
-            backgroundColor: "green",
-            position: "absolute",
-            top: 0,
-            right: 0,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text>{props.notification}</Text>
+    <>
+      {props.notification ? (
+        <View>
+          <TouchableOpacity
+            style={props.style}
+            onPress={props.onPress}
+            disabled={props.disabled}
+          >
+            <props.icon />
+          </TouchableOpacity>
+          <View
+            style={{
+              height: 20,
+              width: 20,
+              borderRadius: 5,
+              backgroundColor: "green",
+              position: "absolute",
+              top: 0,
+              right: 0,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text>{props.notification}</Text>
+          </View>
         </View>
+      ) : (
+        <TouchableOpacity
+          style={props.style}
+          onPress={props.onPress}
+          disabled={props.disabled}
+        >
+          <props.icon />
+        </TouchableOpacity>
       )}
-    </View>
+    </>
   );
 };
 
@@ -190,7 +200,7 @@ const CartScreen = ({ navigation }) => {
     } else {
       setCartSub(0);
     }
-  }, [cart]);
+  }, [cart, deliveryChecked]);
 
   // const AddToList = async (payload) => {
   //   updateTransList(payload);
@@ -231,99 +241,43 @@ const CartScreen = ({ navigation }) => {
     }
 
     const transNum = Math.random().toString(36).substr(2, 9);
+    let data;
+
     if (method === "deliveryOrder") {
-      let total = cartSub;
       const today = new Date();
 
-      const data = [
-        "\x1B" + "\x40", // init
-        "\x1B" + "\x61" + "\x31", // center align
-        storeDetails.name,
-        "\x0A",
-        storeDetails.address?.label + "\x0A",
-        storeDetails.website + "\x0A", // text and line break
-        storeDetails.phoneNumber + "\x0A", // text and line break
-        today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
-        "\x0A",
-        `Transaction ID ${transNum}` + "\x0A",
-        "\x0A",
-        `Delivery Order: $${
-          storeDetails.deliveryPrice ? storeDetails.deliveryPrice : "0"
-        } Fee` + "\x0A",
-        "\x0A",
-        "\x0A",
-        "\x0A",
-        "\x1B" + "\x61" + "\x30", // left align
-      ];
+      const element = {
+        date: today,
+        transNum: transNum,
+        method: "deliveryOrder",
+        cart: cart,
+        customer: {
+          name: name,
+          phone: phone,
+          address: address,
+        },
+      };
 
-      cart.map((cartItem) => {
-        data.push(`Name: ${cartItem.name}`);
-        data.push("\x0A");
+      const data = ReceiptPrint(element, storeDetails);
 
-        if (cartItem.quantity > 1) {
-          total += parseFloat(cartItem.price) * cartItem.quantity;
-          data.push(`Quantity: ${cartItem.quantity}`);
-          data.push("\x0A");
-          data.push(`Price: $${cartItem.price * cartItem.quantity}`);
-        } else {
-          total += parseFloat(cartItem.price);
-          data.push(`Price: $${cartItem.price}`);
-        }
-
-        if (cartItem.description) {
-          data.push("\x0A");
-          data.push(cartItem.description);
-        }
-
-        if (cartItem.options) {
-          data.push("\x0A");
-          cartItem.options.map((option) => {
-            data.push(option);
-            data.push("\x0A");
+      if (!dontAddToOngoing) {
+        console.log("Adding to pending orders");
+        db.collection("users")
+          .doc(auth.currentUser?.uid)
+          .collection("pendingOrders")
+          .add({
+            date: today,
+            transNum: transNum,
+            method: "deliveryOrder",
+            cart: cart,
+            total: data.total,
+            customer: {
+              name: name,
+              phone: phone,
+              address: address ? address : null,
+            },
           });
-        }
-
-        if (cartItem.extraDetails) {
-          data.push(cartItem.extraDetails);
-          data.push("\x0A");
-        }
-
-        data.push("\x0A" + "\x0A");
-      });
-
-      total = storeDetails.taxRate
-        ? total * (1 + storeDetails.taxRate / 100)
-        : total * 1.13;
-      total = total.toFixed(2);
-
-      //push ending
-      data.push(
-        "\x0A",
-        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-        "\x0A" + "\x0A",
-        "Customer Name: " + name,
-        "\x0A" + "\x0A",
-        "Customer Phone #:  " + phone,
-        "\x0A" + "\x0A",
-        "Customer Address #:  " + address.label,
-        "\x0A" + "\x0A",
-        `Total Including (${
-          storeDetails.taxRate ? storeDetails.taxRate : "13"
-        }% Tax): ` +
-          total +
-          "\x0A" +
-          "\x0A",
-        "------------------------------------------" + "\x0A",
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x1D" + "\x56" + "\x30"
-      );
-
-      const qz = require("qz-tray");
+      }
 
       if (
         myDeviceDetails.sendPrintToUserID &&
@@ -336,160 +290,59 @@ const CartScreen = ({ navigation }) => {
           .doc(myDeviceDetails.sendPrintToUserID.value)
           .collection("printRequests")
           .add({
-            printData: data,
+            printData: data.data,
           });
       } else {
+        const qz = require("qz-tray");
         qz.websocket
           .connect()
           .then(function () {
             const config = qz.configs.create(myDeviceDetails.printToPrinter);
-            return qz.print(config, data);
+            return qz.print(config, data.data);
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
             console.error(err);
           });
-      }
-
-      // AddToList({
-      //   id: Math.random().toString(36).substr(2, 9) + "-l",
-      //   date: today,
-      //   transNum: transNum,
-      //   total: total,
-      //   method: "deliveryOrder",
-      //   cart: cart,
-      //   // completed: false,
-      //   customer: {
-      //     name: name,
-      //     phone: phone,
-      //     address: address ? address : null,
-      //   },
-      // });
-      if (!dontAddToOngoing) {
-        console.log("Adding to pending orders");
-        db.collection("users")
-          .doc(auth.currentUser?.uid)
-          .collection("pendingOrders")
-          .add({
-            date: today,
-            transNum: transNum,
-            total: total,
-            method: "deliveryOrder",
-            cart: cart,
-            customer: {
-              name: name,
-              phone: phone,
-              address: address ? address : null,
-            },
-          });
-        // .then((docRef) => {
-        //   setongoingListState([
-        //     ...ongoingListState,
-        //     {
-        //       id: docRef.id,
-        //       date: today,
-        //       transNum: transNum,
-        //       total: total,
-        //       method: "deliveryOrder",
-        //       cart: cart,
-        //       customer: {
-        //         name: name,
-        //         phone: phone,
-        //         address: address ? address : null,
-        //       },
-        //     },
-        //   ]);
-        // });
       }
 
       setCartState([]);
       setDeliveryModal(false);
     } else if (method === "pickupOrder") {
-      let total = 0;
       const today = new Date();
 
-      const data = [
-        "\x1B" + "\x40", // init
-        "\x1B" + "\x61" + "\x31", // center align
-        storeDetails.name,
-        "\x0A",
-        storeDetails.address?.label + "\x0A",
-        storeDetails.website + "\x0A", // text and line break
-        storeDetails.phoneNumber + "\x0A", // text and line break
-        today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
-        "\x0A",
-        `Transaction ID ${transNum}` + "\x0A",
-        "\x0A",
-        "Pickup Order" + "\x0A",
-        "\x0A",
-        "\x0A",
-        "\x0A",
-        "\x1B" + "\x61" + "\x30", // left align
-      ];
+      const element = {
+        date: today,
+        transNum: transNum,
+        method: "pickupOrder",
+        cart: cart,
+        customer: {
+          name: name,
+          phone: phone,
+          // address: address,
+        },
+      };
 
-      cart.map((cartItem) => {
-        data.push(`Name: ${cartItem.name}`);
-        data.push("\x0A");
+      const data = ReceiptPrint(element, storeDetails);
 
-        if (cartItem.quantity > 1) {
-          total += parseFloat(cartItem.price) * cartItem.quantity;
-          data.push(`Quantity: ${cartItem.quantity}`);
-          data.push("\x0A");
-          data.push(`Price: $${cartItem.price * cartItem.quantity}`);
-        } else {
-          total += parseFloat(cartItem.price);
-          data.push(`Price: $${cartItem.price}`);
-        }
-
-        if (cartItem.description) {
-          data.push("\x0A");
-          data.push(cartItem.description);
-        }
-
-        if (cartItem.options) {
-          data.push("\x0A");
-          cartItem.options.map((option) => {
-            data.push(option);
-            data.push("\x0A");
+      if (!dontAddToOngoing) {
+        console.log("Adding to pending orders");
+        db.collection("users")
+          .doc(auth.currentUser?.uid)
+          .collection("pendingOrders")
+          .add({
+            date: today,
+            transNum: transNum,
+            method: "pickupOrder",
+            cart: cart,
+            total: data.total,
+            customer: {
+              name: name,
+              phone: phone,
+              address: address ? address : "null",
+            },
           });
-        }
-
-        if (cartItem.extraDetails) {
-          data.push(cartItem.extraDetails);
-          data.push("\x0A");
-        }
-
-        data.push("\x0A" + "\x0A");
-      });
-
-      total = total * 1.13;
-      total = total.toFixed(2);
-
-      //push ending
-      data.push(
-        "\x0A",
-        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-        "\x0A" + "\x0A",
-        "Customer Name: " + name,
-        "\x0A" + "\x0A",
-        "Customer Phone #:  " + phone,
-        "\x0A" + "\x0A",
-        `Total Including (${
-          storeDetails.taxRate ? storeDetails.taxRate : "13"
-        }% Tax): ` +
-          total +
-          "\x0A" +
-          "\x0A",
-        "------------------------------------------" + "\x0A",
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x0A", // line break
-        "\x1D" + "\x56" + "\x30"
-      );
-      const qz = require("qz-tray");
+      }
 
       if (
         myDeviceDetails.sendPrintToUserID &&
@@ -502,37 +355,19 @@ const CartScreen = ({ navigation }) => {
           .doc(myDeviceDetails.sendPrintToUserID.value)
           .collection("printRequests")
           .add({
-            printData: data,
-          })
-          .catch((e) => console.log(e));
+            printData: data.data,
+          });
       } else {
+        const qz = require("qz-tray");
         qz.websocket
           .connect()
           .then(function () {
             const config = qz.configs.create(myDeviceDetails.printToPrinter);
-            return qz.print(config, data);
+            return qz.print(config, data.data);
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
             console.error(err);
-          });
-      }
-      if (!dontAddToOngoing) {
-        console.log("Adding to pending orders");
-        db.collection("users")
-          .doc(auth.currentUser?.uid)
-          .collection("pendingOrders")
-          .add({
-            date: today,
-            transNum: transNum,
-            total: total,
-            method: "pickupOrder",
-            cart: cart,
-            customer: {
-              name: name,
-              phone: phone,
-              address: address ? address : null,
-            },
           });
       }
 
@@ -543,113 +378,22 @@ const CartScreen = ({ navigation }) => {
       setAddress(null);
       setDeliveryChecked(false);
     } else {
-      let total = 0;
       const today = new Date();
+      const element = {
+        date: today,
+        transNum: transNum,
+        method: "inStoreOrder",
+        cart: cart,
+        customer: {
+          name: name,
+          phone: phone,
+          address: address,
+        },
+        changeDue: changeDue,
+        paymentMethod: method,
+      };
 
-      const data = [
-        "\x1B" + "\x40", // init
-        "\x1B" + "\x61" + "\x31", // center align
-        storeDetails.name,
-        "\x0A",
-        storeDetails.address?.label + "\x0A",
-        storeDetails.website + "\x0A", // text and line break
-        storeDetails.phoneNumber + "\x0A", // text and line break
-        today.toLocaleDateString() + " " + today.toLocaleTimeString() + "\x0A",
-        "\x0A",
-        `Transaction ID ${transNum}` + "\x0A",
-        "\x0A",
-        "\x0A",
-        "\x0A",
-        "\x1B" + "\x61" + "\x30", // left align
-      ];
-
-      cart.map((cartItem) => {
-        data.push(`Name: ${cartItem.name}`);
-        data.push("\x0A");
-
-        if (cartItem.quantity > 1) {
-          total += parseFloat(cartItem.price) * cartItem.quantity;
-          data.push(`Quantity: ${cartItem.quantity}`);
-          data.push("\x0A");
-          data.push(`Price: $${cartItem.price * cartItem.quantity}`);
-        } else {
-          total += parseFloat(cartItem.price);
-          data.push(`Price: $${cartItem.price}`);
-        }
-
-        if (cartItem.description) {
-          data.push("\x0A");
-          data.push(cartItem.description);
-        }
-
-        if (cartItem.options) {
-          data.push("\x0A");
-          cartItem.options.map((option) => {
-            data.push(option);
-            data.push("\x0A");
-          });
-        }
-
-        if (cartItem.extraDetails) {
-          data.push(cartItem.extraDetails);
-          data.push("\x0A");
-        }
-
-        data.push("\x0A" + "\x0A");
-      });
-
-      total = total * 1.13;
-      total = total.toFixed(2);
-
-      if (method === "Cash") {
-        //push ending
-        data.push(
-          "\x0A",
-          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-          "\x0A" + "\x0A",
-          "Payment Method: " + method + "\x0A" + "\x0A",
-          `Total Including (${
-            storeDetails.taxRate ? storeDetails.taxRate : "13"
-          }% Tax): ` +
-            "$" +
-            total +
-            "\x0A" +
-            "\x0A",
-          "Change Due: " + "$" + changeDue + "\x0A" + "\x0A",
-          "------------------------------------------" + "\x0A",
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          //"\x1D" + "\x56" + "\x00",
-          "\x1D" + "\x56" + "\x30" + "\x10" + "\x14" + "\x01" + "\x00" + "\x05"
-        );
-      } else {
-        data.push(
-          "\x0A",
-          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-          "\x0A" + "\x0A",
-          "Payment Method: " + method + "\x0A" + "\x0A",
-          `Total Including (${
-            storeDetails.taxRate ? storeDetails.taxRate : "13"
-          }% Tax): ` +
-            "$" +
-            total +
-            "\x0A" +
-            "\x0A",
-          "------------------------------------------" + "\x0A",
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          //"\x1D" + "\x56" + "\x00",
-          "\x1D" + "\x56" + "\x30"
-        );
-      }
+      const data = ReceiptPrint(element, storeDetails);
 
       db.collection("users")
         .doc(auth.currentUser?.uid)
@@ -657,13 +401,11 @@ const CartScreen = ({ navigation }) => {
         .add({
           date: today,
           transNum: transNum,
-          total: total,
+          total: data.total,
           method: "inStoreOrder",
+          paymentMethod: method,
           cart: cart,
         });
-
-      const qz = require("qz-tray");
-
       if (
         myDeviceDetails.sendPrintToUserID &&
         myDeviceDetails.useDifferentDeviceToPrint
@@ -675,30 +417,21 @@ const CartScreen = ({ navigation }) => {
           .doc(myDeviceDetails.sendPrintToUserID.value)
           .collection("printRequests")
           .add({
-            printData: data,
-          })
-          .catch((e) => console.log(e));
+            printData: data.data,
+          });
       } else {
+        const qz = require("qz-tray");
         qz.websocket
           .connect()
           .then(function () {
             const config = qz.configs.create(myDeviceDetails.printToPrinter);
-            return qz.print(config, data);
+            return qz.print(config, data.data);
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
             console.error(err);
           });
       }
-
-      // AddToList({
-      //   id: Math.random().toString(36).substr(2, 9) + "-l",
-      //   date: today,
-      //   transNum: transNum,
-      //   total: total,
-      //   method: method,
-      //   cart: cart,
-      // });
     }
 
     setCartState([]);
@@ -725,11 +458,9 @@ const CartScreen = ({ navigation }) => {
               .doc(auth.currentUser?.uid)
               .collection("pendingOrders")
               .doc(updatingOrder.id)
-              .update({
-                cart: cart,
-              });
+              .delete();
 
-            Print(deliveryChecked ? "deliveryOrder" : "pickupOrder", true);
+            Print(deliveryChecked ? "deliveryOrder" : "pickupOrder", false);
             setOngoingDelivery(null);
             setName(null);
             setPhone(null);
@@ -779,7 +510,7 @@ const CartScreen = ({ navigation }) => {
         <TouchableOpacity
           style={styles.bigButton}
           onPress={() => {
-            Print(deliveryChecked ? "deliveryOrder" : "pickupOrder");
+            Print(deliveryChecked ? "deliveryOrder" : "pickupOrder", false);
             setOngoingDelivery(null);
             setName(null);
             setPhone(null);

@@ -89,22 +89,6 @@ const ChangeScreen = ({
         });
     }
 
-    // fetch("http://localhost:8080/print", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     printData: data,
-    //     comSelected: storeDetails.comSelected,
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((respData) => {
-    //     console.log(respData);
-    //   })
-    //   .catch((e) => alert("Error with printer"));
-
     completeOrder();
   };
 
@@ -187,6 +171,16 @@ const ChangeScreen = ({
           contentContainerStyle={styles.btn}
           style={{ margin: 25, backgroundColor: "#4050B5" }}
         />
+        {order.method === "pickupOrder" && (
+          <Button
+            title="Pay By Card"
+            onPress={() => {
+              completeOrder();
+            }}
+            contentContainerStyle={styles.btn}
+            style={{ margin: 25, backgroundColor: "#4050B5" }}
+          />
+        )}
         <Button
           title="Cancel"
           onPress={CancelPayment}

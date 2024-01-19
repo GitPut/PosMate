@@ -2,57 +2,57 @@ import { View, Text } from "react-native";
 import React from "react";
 const tz = require("moment-timezone");
 
-const CleanupOps = (metaList) => {
-  const opsArray = [];
-
-  metaList.forEach((op) => {
-    const arrContaingMe = opsArray.filter(
-      (filterOp) => filterOp.key === op.key
-    );
-
-    if (arrContaingMe.length > 0) {
-      opsArray.forEach((opsArrItem, index) => {
-        if (opsArrItem.key === op.key) {
-          opsArray[index].vals.push(op.value);
-        }
-      });
-    } else {
-      opsArray.push({ key: op.key, vals: [op.value] });
-    }
-  });
-  return opsArray;
-};
-
-function parseDate(input) {
-  // Check if the input is a Date object
-  if (Object.prototype.toString.call(input) === "[object Date]") {
-    if (!isNaN(input.getTime())) {
-      // It's a valid Date object, return it
-      return input;
-    }
-  }
-
-  // Check if the input is a string
-  if (typeof input === "string") {
-    const dateObject = new Date(input);
-
-    // Check if the dateObject is a valid Date
-    if (!isNaN(dateObject.getTime())) {
-      // It's a valid Date object, return it
-      return dateObject;
-    }
-  }
-
-  // If neither a Date object nor a valid date string, return null or handle accordingly
-  return null;
-}
-
 const ReceiptPrint = (element, storeDetails) => {
-  console.log("ELEMENT DETAILS FROM RECEIPT PRINT: ", element);
+  const CleanupOps = (metaList) => {
+    const opsArray = [];
+
+    metaList.forEach((op) => {
+      const arrContaingMe = opsArray.filter(
+        (filterOp) => filterOp.key === op.key
+      );
+
+      if (arrContaingMe.length > 0) {
+        opsArray.forEach((opsArrItem, index) => {
+          if (opsArrItem.key === op.key) {
+            opsArray[index].vals.push(op.value);
+          }
+        });
+      } else {
+        opsArray.push({ key: op.key, vals: [op.value] });
+      }
+    });
+    return opsArray;
+  };
+
+  function parseDate(input) {
+    // Check if the input is a Date object
+    if (Object.prototype.toString.call(input) === "[object Date]") {
+      if (!isNaN(input.getTime())) {
+        // It's a valid Date object, return it
+        return input;
+      }
+    }
+
+    // Check if the input is a string
+    if (typeof input === "string") {
+      const dateObject = new Date(input);
+
+      // Check if the dateObject is a valid Date
+      if (!isNaN(dateObject.getTime())) {
+        // It's a valid Date object, return it
+        return dateObject;
+      }
+    }
+
+    // If neither a Date object nor a valid date string, return null or handle accordingly
+    return null;
+  }
+
   let data = [];
+  let total = 0;
 
   let date;
-
+  //If woo order
   if (element.date_created) {
     const dateString = element.date_created;
 
@@ -65,178 +65,7 @@ const ReceiptPrint = (element, storeDetails) => {
       .format("dddd, MMMM Do YYYY, h:mm:ss a z");
 
     date = result;
-  } else if (!element.online && element.date) {
-    const newDate = new Date(element.date.seconds * 1000);
-    const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    const result = tz(newDate)
-      .tz(targetTimezone, true)
-      .format("dddd, MMMM Do YYYY, h:mm:ss a z");
-
-    date = result;
-  } else if (element.online) {
-    date = parseDate(element.date);
-  }
-
-  if (element.method === "deliveryOrder") {
-    data.push(
-      "\x1B" + "\x40", // init
-      "\x1B" + "\x61" + "\x31", // center align
-      storeDetails.name,
-      "\x0A",
-      storeDetails.address?.label + "\x0A",
-      storeDetails.website + "\x0A", // text and line break
-      storeDetails.phoneNumber + "\x0A", // text and line break
-      date + "\x0A",
-      "\x0A",
-      `Transaction ID ${element.transNum}` + "\x0A",
-      "\x0A",
-      `Delivery Order: $${
-        storeDetails.deliveryPrice ? storeDetails.deliveryPrice : "0"
-      } Fee` + "\x0A",
-      element.online
-        ? "ONLINE ORDER" + "\x0A" + "\x0A" + "\x0A"
-        : "\x0A" + "\x0A" + "\x0A",
-      "\x1B" + "\x61" + "\x30" // left align
-    );
-
-    element.cart.map((cartItem) => {
-      data.push(`Name: ${cartItem.name}`);
-      data.push("\x0A");
-
-      if (cartItem.quantity > 1) {
-        data.push(`Quantity: ${cartItem.quantity}`);
-        data.push("\x0A");
-        data.push(`Price: $${cartItem.price * cartItem.quantity}`);
-      } else {
-        data.push(`Price: $${cartItem.price}`);
-      }
-
-      if (cartItem.description) {
-        data.push("\x0A");
-        data.push(cartItem.description);
-      }
-
-      if (cartItem.options) {
-        data.push("\x0A");
-        cartItem.options.map((option) => {
-          data.push(option);
-          data.push("\x0A");
-        });
-      }
-
-      if (cartItem.extraDetails) {
-        data.push(cartItem.extraDetails);
-        data.push("\x0A");
-      }
-
-      data.push("\x0A" + "\x0A");
-    });
-
-    //push ending
-    data.push(
-      "\x0A",
-      "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-      "\x0A" + "\x0A",
-      "Customer Name: " + element.customer.name,
-      "\x0A" + "\x0A",
-      "Customer Phone #:  " + element.customer.phone,
-      "\x0A" + "\x0A",
-      "Customer Address #:  " + element.customer.address?.label,
-      "\x0A" + "\x0A",
-      `Total Including (${
-        storeDetails.taxRate ? storeDetails.taxRate : "13"
-      }% Tax): ` +
-        element.total +
-        "\x0A" +
-        "\x0A",
-      "------------------------------------------" + "\x0A",
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x1D" + "\x56" + "\x30"
-    );
-  } else if (element.method === "pickupOrder") {
-    data.push(
-      "\x1B" + "\x40", // init
-      "\x1B" + "\x61" + "\x31", // center align
-      storeDetails.name,
-      "\x0A",
-      storeDetails.address?.label + "\x0A",
-      storeDetails.website + "\x0A", // text and line break
-      storeDetails.phoneNumber + "\x0A", // text and line break
-      date + "\x0A",
-      "\x0A",
-      `Transaction ID ${element.transNum}` + "\x0A",
-      "\x0A",
-      "Pickup Order" + "\x0A",
-      element.online
-        ? "ONLINE ORDER" + "\x0A" + "\x0A" + "\x0A"
-        : "\x0A" + "\x0A" + "\x0A",
-      "\x1B" + "\x61" + "\x30" // left align
-    );
-
-    element.cart.map((cartItem) => {
-      data.push(`Name: ${cartItem.name}`);
-      data.push("\x0A");
-
-      if (cartItem.quantity > 1) {
-        data.push(`Quantity: ${cartItem.quantity}`);
-        data.push("\x0A");
-        data.push(`Price: $${cartItem.price * cartItem.quantity}`);
-      } else {
-        data.push(`Price: $${cartItem.price}`);
-      }
-
-      if (cartItem.description) {
-        data.push("\x0A");
-        data.push(cartItem.description);
-      }
-
-      if (cartItem.options) {
-        data.push("\x0A");
-        cartItem.options.map((option) => {
-          data.push(option);
-          data.push("\x0A");
-        });
-      }
-
-      if (cartItem.extraDetails) {
-        data.push(cartItem.extraDetails);
-        data.push("\x0A");
-      }
-
-      data.push("\x0A" + "\x0A");
-    });
-
-    //push ending
-    data.push(
-      "\x0A",
-      "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-      "\x0A" + "\x0A",
-      "Customer Name: " + element.customer.name,
-      "\x0A" + "\x0A",
-      "Customer Phone #:  " + element.customer.phone,
-      "\x0A" + "\x0A",
-      `Total Including (${
-        storeDetails.taxRate ? storeDetails.taxRate : "13"
-      }% Tax): ` +
-        element.total +
-        "\x0A" +
-        "\x0A",
-      "------------------------------------------" + "\x0A",
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x0A", // line break
-      "\x1D" + "\x56" + "\x30"
-    );
-  } else if (element.cart_hash) {
     data.push(
       "\x1B" + "\x40", // init
       "\x1B" + "\x61" + "\x31", // center align
@@ -333,69 +162,158 @@ const ReceiptPrint = (element, storeDetails) => {
     );
 
     data.push("\x1D" + "\x56" + "\x00");
+
+    return data;
   } else {
-    data = [
-      "\x1B" + "\x40", // init
-      "\x1B" + "\x61" + "\x31", // center align
-      storeDetails.name,
-      "\x0A",
-      storeDetails.address?.label + "\x0A",
-      storeDetails.website + "\x0A", // text and line break
-      storeDetails.phoneNumber + "\x0A", // text and line break
-      date + "\x0A",
-      "\x0A",
-      `Transaction ID ${element.transNum}` + "\x0A",
-      "\x0A",
-      "\x0A",
-      "\x0A",
-      "\x1B" + "\x61" + "\x30", // left align
-    ];
+    //end of woo order
 
-    element.cart.map((cartItem) => {
-      data.push(`Name: ${cartItem.name}`);
-      data.push("\x0A");
+    // if (!element.online && element.date) {
+    //   const newDate = new Date(element.date.seconds * 1000);
+    //   const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-      if (cartItem.quantity > 1) {
-        data.push(`Quantity: ${cartItem.quantity}`);
+    //   const result = tz(newDate)
+    //     .tz(targetTimezone, true)
+    //     .format("dddd, MMMM Do YYYY, h:mm:ss a z");
+
+    //   date = result;
+    // } else if (element.online) {
+    //   date = parseDate(element.date);
+    // } else {
+    //   date = new Date(element.date);
+    // }
+    console.log("Date: ", element.date);
+    if (element.online) {
+      const localDate = parseDate(element.date);
+      // Convert to a nice date and time format
+      date = localDate.toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      });
+    } else if (element.date.seconds) {
+      const localDate = new Date(element.date.seconds * 1000);
+      // Convert to a nice date and time format
+      date = localDate.toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      });
+    } else {
+      const localDate = element.date;
+      // Convert to a nice date and time format
+      date = localDate.toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      });
+    }
+
+    if (element.method === "deliveryOrder") {
+      total += parseFloat(storeDetails.deliveryPrice);
+      data = element.online
+        ? [
+            "\x1B" + "\x40", // init
+            "\x1B" + "\x61" + "\x31", // center align
+            storeDetails.name,
+            "\x0A",
+            storeDetails.address?.label + "\x0A",
+            storeDetails.website + "\x0A", // text and line break
+            storeDetails.phoneNumber + "\x0A", // text and line break
+            date + "\x0A",
+            "\x0A",
+            element.online && "Online Order" + "\x0A", // text and line break
+            `Transaction ID ${element.transNum}` + "\x0A",
+            "\x0A",
+            `Delivery Order: $${
+              storeDetails.deliveryPrice ? storeDetails.deliveryPrice : "0"
+            } Fee` + "\x0A",
+            "\x0A",
+            "\x0A",
+            "\x0A",
+            "\x1B" + "\x61" + "\x30", // left align
+          ]
+        : [
+            "\x1B" + "\x40", // init
+            "\x1B" + "\x61" + "\x31", // center align
+            storeDetails.name,
+            "\x0A",
+            storeDetails.address?.label + "\x0A",
+            storeDetails.website + "\x0A", // text and line break
+            storeDetails.phoneNumber + "\x0A", // text and line break
+            date + "\x0A",
+            "\x0A",
+            `Transaction ID ${element.transNum}` + "\x0A",
+            "\x0A",
+            `Delivery Order: $${
+              storeDetails.deliveryPrice ? storeDetails.deliveryPrice : "0"
+            } Fee` + "\x0A",
+            "\x0A",
+            "\x0A",
+            "\x0A",
+            "\x1B" + "\x61" + "\x30", // left align
+          ];
+
+      element.cart.map((cartItem) => {
+        data.push(`Name: ${cartItem.name}`);
         data.push("\x0A");
-        data.push(`Price: $${cartItem.price * cartItem.quantity}`);
-      } else {
-        data.push(`Price: $${cartItem.price}`);
-      }
 
-      if (cartItem.description) {
-        data.push("\x0A");
-        data.push(cartItem.description);
-      }
-
-      if (cartItem.options) {
-        data.push("\x0A");
-        cartItem.options.map((option) => {
-          data.push(option);
+        if (cartItem.quantity > 1) {
+          total += parseFloat(cartItem.price) * cartItem.quantity;
+          data.push(`Quantity: ${cartItem.quantity}`);
           data.push("\x0A");
-        });
-      }
+          data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+        } else {
+          total += parseFloat(cartItem.price);
+          data.push(`Price: $${cartItem.price}`);
+        }
 
-      if (cartItem.extraDetails) {
-        data.push(cartItem.extraDetails);
-        data.push("\x0A");
-      }
+        if (cartItem.description) {
+          data.push("\x0A");
+          data.push(cartItem.description);
+        }
 
-      data.push("\x0A" + "\x0A");
-    });
+        if (cartItem.options) {
+          data.push("\x0A");
+          cartItem.options.map((option) => {
+            data.push(option);
+            data.push("\x0A");
+          });
+        }
 
-    if (element.method === "Cash") {
+        if (cartItem.extraDetails) {
+          data.push(cartItem.extraDetails);
+          data.push("\x0A");
+        }
+
+        data.push("\x0A" + "\x0A");
+      });
+
+      total = storeDetails.taxRate
+        ? total * (1 + storeDetails.taxRate / 100)
+        : total * 1.13;
+      total = total.toFixed(2);
+
       //push ending
       data.push(
         "\x0A",
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
         "\x0A" + "\x0A",
-        "Payment method: " + element.method + "\x0A" + "\x0A",
+        "Customer Name: " + element.customer?.name,
+        "\x0A" + "\x0A",
+        "Customer Phone #:  " + element.customer?.phone,
+        "\x0A" + "\x0A",
+        "Customer Address: " + element.customer?.address?.label,
+        "\x0A" + "\x0A",
         `Total Including (${
           storeDetails.taxRate ? storeDetails.taxRate : "13"
         }% Tax): ` +
-          "$" +
-          element.total +
+          total +
           "\x0A" +
           "\x0A",
         "------------------------------------------" + "\x0A",
@@ -405,20 +323,103 @@ const ReceiptPrint = (element, storeDetails) => {
         "\x0A", // line break
         "\x0A", // line break
         "\x0A", // line break
-        //"\x1D" + "\x56" + "\x00",
         "\x1D" + "\x56" + "\x30"
       );
-    } else {
+    } else if (element.method === "pickupOrder") {
+      data = element.online
+        ? [
+            "\x1B" + "\x40", // init
+            "\x1B" + "\x61" + "\x31", // center align
+            storeDetails.name,
+            "\x0A",
+            storeDetails.address?.label + "\x0A",
+            storeDetails.website + "\x0A", // text and line break
+            storeDetails.phoneNumber + "\x0A", // text and line break
+            date + "\x0A",
+            "\x0A",
+            element.online && "Online Order" + "\x0A", // text and line break
+            `Transaction ID ${element.transNum}` + "\x0A",
+            `                                `,
+            "\x0A",
+            "Pickup Order" + "\x0A", // text and line break
+            "\x0A",
+            "\x0A",
+            "\x1B" + "\x61" + "\x30", // left align
+          ]
+        : [
+            "\x1B" + "\x40", // init
+            "\x1B" + "\x61" + "\x31", // center align
+            storeDetails.name,
+            "\x0A",
+            storeDetails.address?.label + "\x0A",
+            storeDetails.website + "\x0A", // text and line break
+            storeDetails.phoneNumber + "\x0A", // text and line break
+            date + "\x0A",
+            "\x0A",
+            `Transaction ID ${element.transNum}` + "\x0A",
+            `                                `,
+            "\x0A",
+            "Pickup Order" + "\x0A", // text and line break
+            "\x0A",
+            "\x0A",
+            "\x1B" + "\x61" + "\x30", // left align
+          ];
+
+      element.cart.map((cartItem) => {
+        data.push(`Name: ${cartItem.name}`);
+        data.push("\x0A");
+
+        if (cartItem.quantity > 1) {
+          total += parseFloat(cartItem.price) * cartItem.quantity;
+          data.push(`Quantity: ${cartItem.quantity}`);
+          data.push("\x0A");
+          data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+        } else {
+          total += parseFloat(cartItem.price);
+          data.push(`Price: $${cartItem.price}`);
+        }
+
+        if (cartItem.description) {
+          data.push("\x0A");
+          data.push(cartItem.description);
+        }
+
+        if (cartItem.options) {
+          data.push("\x0A");
+          cartItem.options.map((option) => {
+            data.push(option);
+            data.push("\x0A");
+          });
+        }
+
+        if (cartItem.extraDetails) {
+          data.push(cartItem.extraDetails);
+          data.push("\x0A");
+        }
+
+        data.push("\x0A" + "\x0A");
+      });
+
+      total = storeDetails.taxRate
+        ? total * (1 + storeDetails.taxRate / 100)
+        : total * 1.13;
+      total = total.toFixed(2);
+
+      //push ending
       data.push(
         "\x0A",
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
         "\x0A" + "\x0A",
-        "Payment method: " + element.method + "\x0A" + "\x0A",
+        "Customer Name: " + element.customer?.name,
+        "\x0A" + "\x0A",
+        "Customer Phone #:  " + element.customer?.phone,
+        "\x0A" + "\x0A",
+        "Customer Address: N/A                            ",
+        "\x0A",
         `Total Including (${
           storeDetails.taxRate ? storeDetails.taxRate : "13"
         }% Tax): ` +
-          "$" +
-          element.total +
+          total +
           "\x0A" +
           "\x0A",
         "------------------------------------------" + "\x0A",
@@ -428,13 +429,127 @@ const ReceiptPrint = (element, storeDetails) => {
         "\x0A", // line break
         "\x0A", // line break
         "\x0A", // line break
-        //"\x1D" + "\x56" + "\x00",
         "\x1D" + "\x56" + "\x30"
       );
+    } else {
+      data = [
+        "\x1B" + "\x40", // init
+        "\x1B" + "\x61" + "\x31", // center align
+        storeDetails.name,
+        "\x0A",
+        storeDetails.address?.label + "\x0A",
+        storeDetails.website + "\x0A", // text and line break
+        storeDetails.phoneNumber + "\x0A", // text and line break
+        date + "\x0A",
+        "\x0A",
+        `Transaction ID ${element.transNum}` + "\x0A",
+        "\x0A",
+        "\x0A",
+        "\x0A",
+        "\x1B" + "\x61" + "\x30", // left align
+      ];
+
+      element.cart.map((cartItem) => {
+        data.push(`Name: ${cartItem.name}`);
+        data.push("\x0A");
+
+        if (cartItem.quantity > 1) {
+          total += parseFloat(cartItem.price) * cartItem.quantity;
+          data.push(`Quantity: ${cartItem.quantity}`);
+          data.push("\x0A");
+          data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+        } else {
+          total += parseFloat(cartItem.price);
+          data.push(`Price: $${cartItem.price}`);
+        }
+
+        if (cartItem.description) {
+          data.push("\x0A");
+          data.push(cartItem.description);
+        }
+
+        if (cartItem.options) {
+          data.push("\x0A");
+          cartItem.options.map((option) => {
+            data.push(option);
+            data.push("\x0A");
+          });
+        }
+
+        if (cartItem.extraDetails) {
+          data.push(cartItem.extraDetails);
+          data.push("\x0A");
+        }
+
+        data.push("\x0A" + "\x0A");
+      });
+
+      total = total * 1.13;
+      total = total.toFixed(2);
+
+      if (element.paymentMethod === "Cash") {
+        //push ending
+        data.push(
+          "\x0A",
+          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+          "\x0A" + "\x0A",
+          "Payment Method: " + element.method + "\x0A" + "\x0A",
+          `Total Including (${
+            storeDetails.taxRate ? storeDetails.taxRate : "13"
+          }% Tax): ` +
+            "$" +
+            total +
+            "\x0A" +
+            "\x0A",
+          "Change Due: " + "$" + element.changeDue + "\x0A" + "\x0A",
+          "------------------------------------------" + "\x0A",
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          //"\x1D" + "\x56" + "\x00",
+          "\x1D" + "\x56" + "\x30" + "\x10" + "\x14" + "\x01" + "\x00" + "\x05"
+        );
+      } else {
+        data.push(
+          "\x0A",
+          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+          "\x0A" + "\x0A",
+          "Payment Method: " + element.paymentMethod + "\x0A" + "\x0A",
+          `Total Including (${
+            storeDetails.taxRate ? storeDetails.taxRate : "13"
+          }% Tax): ` +
+            "$" +
+            total +
+            "\x0A" +
+            "\x0A",
+          "------------------------------------------" + "\x0A",
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          "\x0A", // line break
+          //"\x1D" + "\x56" + "\x00",
+          "\x1D" + "\x56" + "\x30"
+        );
+      }
     }
   }
-  console.log("DATA TO RETURN TO PRINTER: ", data);
-  return data;
+  // const qz = require("qz-tray");
+  // qz.websocket
+  //   .connect()
+  //   .then(function () {
+  //     const config = qz.configs.create(printerName);
+  //     return qz.print(config, data);
+  //   })
+  //   .then(qz.websocket.disconnect)
+  //   .catch(function (err) {
+  //     console.error(err);
+  //   });
+  return { data: data, total: total };
 };
 
 export default ReceiptPrint;
