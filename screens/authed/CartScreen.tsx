@@ -146,7 +146,7 @@ const CartScreen = ({ navigation }) => {
                 const config = qz.configs.create(
                   myDeviceDetails.printToPrinter
                 );
-                return qz.print(config, data);
+                return qz.print(config, data.data);
               })
               .then(qz.websocket.disconnect)
               .catch(function (err) {
@@ -424,7 +424,7 @@ const CartScreen = ({ navigation }) => {
           .connect()
           .then(function () {
             const config = qz.configs.create(myDeviceDetails.printToPrinter);
-            return qz.print(config, [data.data]);
+            return qz.print(config, data.data);
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {

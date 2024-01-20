@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Button, Switch, TextInput } from "@react-native-material/core";
 import {
+    deviceIdState,
     deviceTreeState,
     myDeviceDetailsState,
     setDeviceTreeState,
@@ -22,7 +23,8 @@ import ReactSelect from "react-select";
 
 const DeviceSettings = () => {
     const deviceTree = deviceTreeState.use()
-    const myDeviceID = myDeviceDetailsState.use()
+    const myDeviceDetails = myDeviceDetailsState.use()
+    const myDeviceID = deviceIdState.use()
 
     return (
         <div className="page-wrapper">

@@ -42,6 +42,8 @@ const OrderPage = () => {
     address: null,
   });
   const [page, setpage] = useState(1);
+  const [loaderVisible, setloaderVisible] = useState(true);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     db.collection("public")
@@ -85,8 +87,33 @@ const OrderPage = () => {
           products: products,
           docID: querySnapshot.docs[0].id,
         });
+
+        fadeOut();
       });
   }, []);
+
+  const fadeIn = () => {
+    // Will change fadeAnim value to 0 in 3 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const fadeOut = () => {
+    // Will change fadeAnim value to 0 in 3 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: false,
+    }).start(() => setloaderVisible(false));
+  };
+
+  const resetLoader = () => {
+    setloaderVisible(true);
+    fadeIn();
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -143,6 +170,24 @@ const OrderPage = () => {
           {page === 4 && <Page4 />}
         </View>
       </ImageBackground>
+      {loaderVisible && (
+        <Animated.View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "white",
+            position: "absolute",
+            opacity: fadeAnim,
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          <Image
+            source={require("assets/loading.gif")}
+            style={{ width: 450, height: 450, resizeMode: "contain" }}
+          />
+        </Animated.View>
+      )}
     </View>
   );
 };

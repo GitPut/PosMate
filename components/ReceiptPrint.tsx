@@ -92,7 +92,7 @@ const ReceiptPrint = (element, storeDetails) => {
       data.push("\x0A");
       data.push(`Quantity: ${cartItem.quantity}`);
       data.push("\x0A");
-      data.push(`Price: $${cartItem.price}`);
+      data.push(`Price: $${cartItem.price.toFixed(2)}`);
       data.push("\x0A");
 
       if (cartItem.meta) {
@@ -254,13 +254,13 @@ const ReceiptPrint = (element, storeDetails) => {
         data.push("\x0A");
 
         if (cartItem.quantity > 1) {
-          total += parseFloat(cartItem.price) * cartItem.quantity;
+          total += parseFloat(cartItem.price.toFixed(2)) * cartItem.quantity;
           data.push(`Quantity: ${cartItem.quantity}`);
           data.push("\x0A");
-          data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+          data.push(`Price: $${cartItem.price.toFixed(2) * cartItem.quantity}`);
         } else {
-          total += parseFloat(cartItem.price);
-          data.push(`Price: $${cartItem.price}`);
+          total += parseFloat(cartItem.price.toFixed(2));
+          data.push(`Price: $${cartItem.price.toFixed(2)}`);
         }
 
         if (cartItem.description) {
@@ -365,13 +365,13 @@ const ReceiptPrint = (element, storeDetails) => {
         data.push("\x0A");
 
         if (cartItem.quantity > 1) {
-          total += parseFloat(cartItem.price) * cartItem.quantity;
+          total += parseFloat(cartItem.price.toFixed(2)) * cartItem.quantity;
           data.push(`Quantity: ${cartItem.quantity}`);
           data.push("\x0A");
-          data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+          data.push(`Price: $${cartItem.price.toFixed(2) * cartItem.quantity}`);
         } else {
-          total += parseFloat(cartItem.price);
-          data.push(`Price: $${cartItem.price}`);
+          total += parseFloat(cartItem.price.toFixed(2));
+          data.push(`Price: $${cartItem.price.toFixed(2)}`);
         }
 
         if (cartItem.description) {
@@ -452,13 +452,13 @@ const ReceiptPrint = (element, storeDetails) => {
         data.push("\x0A");
 
         if (cartItem.quantity > 1) {
-          total += parseFloat(cartItem.price) * cartItem.quantity;
+          total += parseFloat(cartItem.price.toFixed(2)) * cartItem.quantity;
           data.push(`Quantity: ${cartItem.quantity}`);
           data.push("\x0A");
-          data.push(`Price: $${cartItem.price * cartItem.quantity}`);
+          data.push(`Price: $${cartItem.price.toFixed(2) * cartItem.quantity}`);
         } else {
-          total += parseFloat(cartItem.price);
-          data.push(`Price: $${cartItem.price}`);
+          total += parseFloat(cartItem.price.toFixed(2));
+          data.push(`Price: $${cartItem.price.toFixed(2)}`);
         }
 
         if (cartItem.description) {
