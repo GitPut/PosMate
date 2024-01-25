@@ -224,21 +224,48 @@ const EditProduct = (props) => {
                 <div className="col-lg-3 col-sm-6 col-12">
                   <div className="form-group">
                     <label>Price</label>
-                    <input type="text" defaultValue={parseFloat(newProduct?.price)} onChange={(event) => setnewProduct((prevState) => ({
-                      ...prevState,
-                      price: event.target.value,
-                    }))} />
+                    <input type="text" value={newProduct.price > 0 ? newProduct.price : ''} placeholder={parseFloat(newProduct.price)} onChange={(event) => {
+                      const re = /^[0-9.]+$/;
+
+                      // if value is not blank, then test the regex
+                      const val = event.target.value
+
+                      if (re.test(val)) {
+                        setnewProduct((prevState) => ({
+                          ...prevState,
+                          price: val,
+                        }))
+                      } else if (!val) {
+                        setnewProduct((prevState) => ({
+                          ...prevState,
+                          price: 0,
+                        }))
+                      }
+                    }} />
                   </div>
                 </div>
                 <div className="col-lg-3 col-sm-6 col-12">
                   <div className="form-group">
                     <label>Rank</label>
-                    <input type="text" placeholder={newProduct.rank >= 0 ? newProduct.rank : 'N/A'} onChange={(event) => {
-                      setnewProduct((prevState) => ({
-                        ...prevState,
-                        rank: parseFloat(event.target.value),
-                      }))
-                    }} />
+                    <input type="text" value={newProduct.rank >= 0 ? newProduct.rank : ''} placeholder={newProduct.rank >= 0 ? newProduct.rank : 'N/A'} onChange={(event) => {
+                      const re = /^[0-9]+$/;
+
+                      // if value is not blank, then test the regex
+                      const val = event.target.value
+
+                      if (re.test(val)) {
+                        setnewProduct((prevState) => ({
+                          ...prevState,
+                          rank: val,
+                        }))
+                      } else if (!val) {
+                        setnewProduct((prevState) => ({
+                          ...prevState,
+                          rank: undefined,
+                        }))
+                      }
+                    }
+                    } />
                   </div>
                 </div>
                 <div className="col-lg-12">

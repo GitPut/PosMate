@@ -92,7 +92,9 @@ const ReceiptPrint = (element, storeDetails) => {
       data.push("\x0A");
       data.push(`Quantity: ${cartItem.quantity}`);
       data.push("\x0A");
-      data.push(`Price: $${cartItem.price.toFixed(2)}`);
+      if (cartItem.price) {
+        data.push(`Price: $${parseFloat(cartItem.price).toFixed(2)}`);
+      }
       data.push("\x0A");
 
       if (cartItem.meta) {
@@ -254,13 +256,26 @@ const ReceiptPrint = (element, storeDetails) => {
         data.push("\x0A");
 
         if (cartItem.quantity > 1) {
-          total += parseFloat(cartItem.price.toFixed(2)) * cartItem.quantity;
+          if (cartItem.price) {
+            total +=
+              parseFloat(parseFloat(cartItem.price).toFixed(2)) *
+              cartItem.quantity;
+          }
           data.push(`Quantity: ${cartItem.quantity}`);
-          data.push("\x0A");
-          data.push(`Price: $${cartItem.price.toFixed(2) * cartItem.quantity}`);
+          if (cartItem.price) {
+            data.push("\x0A");
+            data.push(
+              `Price: $${
+                parseFloat(cartItem.price).toFixed(2) *
+                parseFloat(cartItem.quantity)
+              }`
+            );
+          }
         } else {
-          total += parseFloat(cartItem.price.toFixed(2));
-          data.push(`Price: $${cartItem.price.toFixed(2)}`);
+          if (cartItem.price) {
+            total += parseFloat(parseFloat(cartItem.price).toFixed(2));
+            data.push(`Price: $${parseFloat(cartItem.price).toFixed(2)}`);
+          }
         }
 
         if (cartItem.description) {
@@ -365,13 +380,26 @@ const ReceiptPrint = (element, storeDetails) => {
         data.push("\x0A");
 
         if (cartItem.quantity > 1) {
-          total += parseFloat(cartItem.price.toFixed(2)) * cartItem.quantity;
+          if (cartItem.price) {
+            total +=
+              parseFloat(parseFloat(cartItem.price).toFixed(2)) *
+              cartItem.quantity;
+          }
           data.push(`Quantity: ${cartItem.quantity}`);
-          data.push("\x0A");
-          data.push(`Price: $${cartItem.price.toFixed(2) * cartItem.quantity}`);
+          if (cartItem.price) {
+            data.push("\x0A");
+            data.push(
+              `Price: $${
+                parseFloat(cartItem.price).toFixed(2) *
+                parseFloat(cartItem.quantity)
+              }`
+            );
+          }
         } else {
-          total += parseFloat(cartItem.price.toFixed(2));
-          data.push(`Price: $${cartItem.price.toFixed(2)}`);
+          if (cartItem.price) {
+            total += parseFloat(parseFloat(cartItem.price).toFixed(2));
+            data.push(`Price: $${parseFloat(cartItem.price).toFixed(2)}`);
+          }
         }
 
         if (cartItem.description) {
@@ -452,13 +480,26 @@ const ReceiptPrint = (element, storeDetails) => {
         data.push("\x0A");
 
         if (cartItem.quantity > 1) {
-          total += parseFloat(cartItem.price.toFixed(2)) * cartItem.quantity;
+          if (cartItem.price) {
+            total +=
+              parseFloat(parseFloat(cartItem.price).toFixed(2)) *
+              cartItem.quantity;
+          }
           data.push(`Quantity: ${cartItem.quantity}`);
-          data.push("\x0A");
-          data.push(`Price: $${cartItem.price.toFixed(2) * cartItem.quantity}`);
+          if (cartItem.price) {
+            data.push("\x0A");
+            data.push(
+              `Price: $${
+                parseFloat(cartItem.price).toFixed(2) *
+                parseFloat(cartItem.quantity)
+              }`
+            );
+          }
         } else {
-          total += parseFloat(cartItem.price.toFixed(2));
-          data.push(`Price: $${cartItem.price.toFixed(2)}`);
+          if (cartItem.price) {
+            total += parseFloat(parseFloat(cartItem.price).toFixed(2));
+            data.push(`Price: $${parseFloat(cartItem.price).toFixed(2)}`);
+          }
         }
 
         if (cartItem.description) {
@@ -491,7 +532,7 @@ const ReceiptPrint = (element, storeDetails) => {
           "\x0A",
           "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
           "\x0A" + "\x0A",
-          "Payment Method: " + element.method + "\x0A" + "\x0A",
+          "Payment Method: " + element.paymentMethod + "\x0A" + "\x0A",
           `Total Including (${
             storeDetails.taxRate ? storeDetails.taxRate : "13"
           }% Tax): ` +

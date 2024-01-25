@@ -64,11 +64,11 @@ const InnerOn = ({
     const eInnerList = structuredClone(eInnerListStart);
 
     const [countsAsValueBeforeBlur, setcountsAsValueBeforeBlur] = useState(
-      eInnerList.countsAs
+      eInnerList.countsAs ? eInnerList.countsAs : ""
     );
 
     const [priceIncreaseBeforeBlur, setpriceIncreaseBeforeBlur] = useState(
-      eInnerList.priceIncrease
+      eInnerList.priceIncrease ? eInnerList.priceIncrease : ""
     );
 
     const [labelBeforeBlur, setlabelBeforeBlur] = useState(eInnerList.label);
@@ -440,7 +440,7 @@ const InnerOn = ({
 
   const [optionLabelBeforeBlur, setoptionLabelBeforeBlur] = useState(e.label);
   const [numOfSelectableBeforeBlur, setnumOfSelectableBeforeBlur] = useState(
-    e.numOfSelectable
+    e.numOfSelectable ? e.numOfSelectable : ""
   );
 
   return (
@@ -740,27 +740,6 @@ const OptionView = ({
   setindexOn,
 }) => {
   const [e, sete] = useState(structuredClone(item));
-  // const [testMap, settestMap] = useState(structuredClone(item.optionsList));
-  // var optionLbls = newProduct.options.map(function (el) {
-  //   if (el.label !== e.label && el.label !== null) {
-  //     return el.label;
-  //   }
-  // });
-
-  // if (e.selectedCaseKey || e.selectedCaseValue) {
-  //   newProductOptions.current[index].selectedCaseList = [
-  //     {
-  //       selectedCaseKey: e.selectedCaseKey,
-  //       selectedCaseValue: e.selectedCaseValue,
-  //     },
-  //   ];
-  //   newProductOptions.current[index].selectedCaseKey = null;
-  //   newProductOptions.current[index].selectedCaseValue = null;
-  //   sete((prev) => ({
-  //     ...prev,
-  //     selectedCaseList: [{ selectedCaseKey: null, selectedCaseValue: null }],
-  //   }));
-  // }
 
   return (
     <View>

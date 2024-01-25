@@ -16,7 +16,7 @@ import { Text } from '@react-native-material/core';
 const EditEmployee = () => {
     const { employeeId } = useParams()
     const employees = employeesState.use()
-    const [employee, setemployee] = useState(employees[employeeId]);
+    const [employee, setemployee] = useState(null);
     const [dateSelected, setdateSelected] = useState(null)
     const [startTime, setstartTime] = useState(null)
     const [endTime, setendTime] = useState(null)
@@ -28,22 +28,30 @@ const EditEmployee = () => {
     const [error, seterror] = useState(false)
 
     useEffect(() => {
-        if (!employees.length > 0) {
+        if (employees.length > 0) {
+            const myEmployee = employees.filter(e => e.id === employeeId)[0]
+
+            if (!myEmployee) {
+                history.push("/authed/report/employeesreport")
+                return
+            }
+
+            setemployee(myEmployee)
+            db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(myEmployee.id.toString()).collection("hours").get().then((snapshot) => {
+                console.log('Made it before empty check')
+                if (snapshot.empty) return
+                const hours = []
+                snapshot.forEach((doc) => {
+                    console.log('doc.data()', doc.data())
+                    hours.push({ ...doc.data(), id: doc.id })
+                })
+                setallHours(hours)
+            }
+            )
+        } else {
             history.push("/authed/report/employeesreport")
             return
         }
-        console.log('hello')
-        db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").get().then((snapshot) => {
-            console.log('Made it before empty check')
-            if (snapshot.empty) return
-            const hours = []
-            snapshot.forEach((doc) => {
-                console.log('doc.data()', doc.data())
-                hours.push({ ...doc.data(), id: doc.id })
-            })
-            setallHours(hours)
-        }
-        )
     }, [])
 
     useEffect(() => {
@@ -60,11 +68,15 @@ const EditEmployee = () => {
             seterror('Please enter a employee name')
             return
         }
-        db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).update(employee)
+        db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).update({
+            name: employee.name,
+            pin: employee.pin
+        })
         const newEmployeesList = [...employees]
-        newEmployeesList[employeeId] = employee
+        const index = newEmployeesList.findIndex(e => e.id === employee.id)
+        newEmployeesList[index] = employee
         setEmployeesState(newEmployeesList)
-        history.push("/authed/report/employeesreport")
+        // history.push("/authed/report/employeesreport")
     }
 
     return (
@@ -78,7 +90,7 @@ const EditEmployee = () => {
                         </div>
                     </div>
                     {/* /add */}
-                    <div className="card">
+                    {employee && <div className="card">
                         <div className="card-body">
                             <div className="row">
                                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -89,7 +101,7 @@ const EditEmployee = () => {
                                                 <input type="text" placeholder="Employee Name" value={employee?.name} onChange={(event) => setemployee((prevState) => ({
                                                     ...prevState,
                                                     name: event.target.value,
-                                                }))} />
+                                                }))} onBlur={handleDataUpdate} />
                                             </div>
                                         </div>
                                         <View style={{ width: 10 }} />
@@ -99,7 +111,7 @@ const EditEmployee = () => {
                                                 <input type="text" placeholder="Employee Pin" value={employee?.pin} onChange={(event) => setemployee((prevState) => ({
                                                     ...prevState,
                                                     pin: event.target.value,
-                                                }))} />
+                                                }))} onBlur={handleDataUpdate} />
                                             </div>
                                         </div>
                                     </View>
@@ -107,8 +119,8 @@ const EditEmployee = () => {
                                     <Button title='Remove Employee' onPress={() => {
                                         db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).delete()
                                         const newEmployeesList = [...employees]
-                                        newEmployeesList.splice(employeeId, 1)
-                                        setEmployeesState(newEmployeesList)
+                                        const filteredEmployeesList = newEmployeesList.filter(e => e.id !== employee.id)
+                                        setEmployeesState(filteredEmployeesList)
                                         history.push("/authed/report/employeesreport")
                                     }}
                                         color={'red'}
@@ -152,12 +164,14 @@ const EditEmployee = () => {
                                                 date: dateSelected,
                                                 startTime: startTime,
                                                 endTime: endTime
+                                            }).then((docRef) => {
+                                                setallHours([...allHours, {
+                                                    date: dateSelected,
+                                                    startTime: startTime,
+                                                    endTime: endTime,
+                                                    id: docRef.id
+                                                }])
                                             })
-                                            setallHours([...allHours, {
-                                                date: dateSelected,
-                                                startTime: startTime,
-                                                endTime: endTime
-                                            }])
                                             setdateSelected(null)
                                             setstartTime(null)
                                             setendTime(null)
@@ -358,17 +372,17 @@ const EditEmployee = () => {
                                     </View>
                                 </View>
 
-                                <div className="col-lg-12">
+                                {/* <div className="col-lg-12">
                                     <button className="btn btn-submit me-2" onClick={handleDataUpdate}>
                                         Update
                                     </button>
                                     <Link style={{ textDecoration: 'none' }} to="/authed/report/employeesreport" className="btn btn-cancel">
                                         Cancel
                                     </Link>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
-                    </div>
+                    </div>}
                     <Modal visible={error} transparent={true}>
                         <TouchableOpacity
                             onPress={() => seterror(false)}

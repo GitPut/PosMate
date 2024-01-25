@@ -24,7 +24,7 @@ const EmployeesReport = () => {
                         {employees.length > 0 ? employees.map((employee, index) => {
                             return (
                                 <View style={{ marginBottom: 10 }} key={index}><Button title={`View/Edit Employee ${employee.name}`} onPress={() => {
-                                    history.push(`/authed/report/editemployee/${index}`)
+                                    history.push(`/authed/report/editemployee/${employee.id}`)
                                 }} />
                                 </View>
                             )
