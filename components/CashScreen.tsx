@@ -73,8 +73,15 @@ const CashScreen = ({ setCashModal, GetTrans, total, setChangeDue }) => {
           variant="outlined"
           style={styles.input}
           onChangeText={(val) => {
-            setCash(val);
-            setChangeDue((parseFloat(val) - total).toFixed(2));
+            const re = /^-?\d*\.?\d*$/;
+
+            if (re.test(val)) {
+              setCash(val.toString());
+              setChangeDue((parseFloat(val) - total).toFixed(2));
+            } else if (!val) {
+              setCash("");
+              setChangeDue(total);
+            }
           }}
           autoCorrect={false}
           value={cash}

@@ -91,7 +91,7 @@ const ChangeScreen = ({
           );
         });
     } else {
-      alert('Please set up a device and printer in "Settings -> Devices"')
+      alert('Please set up a device and printer in "Settings -> Devices"');
     }
 
     completeOrder();
@@ -160,7 +160,15 @@ const ChangeScreen = ({
           label="Enter Cash Given"
           variant="outlined"
           style={styles.input}
-          onChangeText={(val) => setCash(val)}
+          onChangeText={(val) => {
+            const re = /^-?\d*\.?\d*$/;
+
+            if (re.test(val)) {
+              setCash(val.toString());
+            } else if (!val) {
+              setCash("");
+            }
+          }}
           autoCorrect={false}
           value={cash}
         />
