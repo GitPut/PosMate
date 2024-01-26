@@ -120,7 +120,7 @@ const InnerOn = ({
             settestMap(cloneOuter);
           }}
           onChangeText={(val) => {
-            const re = /^[0-9.]+$/;
+            const re = /^-?\d*\.?\d*$/;
 
             // if value is not blank, then test the regex
 

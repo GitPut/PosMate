@@ -42,9 +42,8 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
     storeDetails.deliveryPrice
   );
   const [taxRate, settaxRate] = useState(
-    storeDetails.taxRate ? storeDetails.taxRate : "13"
+    storeDetails.taxRate ? parseFloat(storeDetails.taxRate) : "0"
   );
-  const [com, setcom] = useState(storeDetails.comSelected);
   const [settingsPassword, setsettingsPassword] = useState(
     storeDetails.settingsPassword
   );
@@ -59,10 +58,6 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
     wooCredentials.useWoocommerce
   );
   const trialDetails = trialDetailsState.use();
-
-  useEffect(() => {
-    console.log("Store Details: ", storeDetails);
-  }, [storeDetails]);
 
   const handleWooDataUpdate = () => {
     if (apiUrl !== null && ck !== null && cs !== null) {
@@ -122,7 +117,6 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
         address: address,
         website: website,
         deliveryPrice: deliveryPrice,
-        comSelected: com,
         settingsPassword: settingsPassword,
         taxRate: parseFloat(taxRate),
         onlineStoreActive: onlineStoreDetails.onlineStoreActive,
@@ -133,7 +127,6 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
         address: address,
         website: website,
         deliveryPrice: deliveryPrice,
-        comSelected: com,
         settingsPassword: settingsPassword,
         taxRate: parseFloat(taxRate),
         onlineStoreActive: onlineStoreDetails.onlineStoreActive,
@@ -277,11 +270,21 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
               <TextInput
                 color="black"
                 variant="outlined"
-                placeholder="Enter Printer Name"
-                label="Enter Printer Name"
-                onChangeText={(val) => setcom(val)}
+                placeholder="Enter Tax Rate Percentage"
+                label="Enter Tax Rate Percentage"
+                onChangeText={(val) => {
+                  const re = /^[0-9]+$/;
+
+                  if (re.test(val)) {
+                    if (parseFloat(val) > 100) {
+                      settaxRate(val);
+                    }
+                  } else if (!val) {
+                    settaxRate("0");
+                  }
+                }}
                 style={{ margin: 10, width: "48%" }}
-                value={com}
+                value={taxRate ? taxRate.toString() : "0"}
               />
               <TextInput
                 color="black"
@@ -291,15 +294,6 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                 onChangeText={(val) => setsettingsPassword(val)}
                 style={{ margin: 10, width: "48%" }}
                 value={settingsPassword}
-              />
-              <TextInput
-                color="black"
-                variant="outlined"
-                placeholder="Enter Tax Rate Percentage"
-                label="Enter Tax Rate Percentage"
-                onChangeText={(val) => settaxRate(val)}
-                style={{ margin: 10, width: "48%" }}
-                value={taxRate}
               />
               <View style={{ margin: 10, width: "48%", height: 55 }}>
                 <Button

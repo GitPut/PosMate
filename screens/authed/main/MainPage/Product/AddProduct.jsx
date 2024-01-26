@@ -117,14 +117,15 @@ const AddProduct = () => {
                             <div className="col-lg-12">
                                 <div className="form-group">
                                     <label> Product Image</label>
-                                    <div className="image-upload" style={selectedFile ? { height: '180px' } : { height: '100px' }}>
+                                    <div className="image-upload" style={selectedFile ? { minHeight: '200px', paddingBottom: '100px' } : { minHeight: '100px' }}>
                                         <input type="file"
                                             name="file"
                                             id="html_btn"
+                                            accept="image/*"
                                             onChange={changeHandler}
                                         />
                                         <div className="image-uploads" >
-                                            {selectedFile ? <Image style={{ height: 100, width: '100%', resizeMode: 'contain' }} source={URL.createObjectURL(selectedFile)} alt="img" /> : <img src={Upload} alt="img" />}
+                                            {selectedFile ? <img style={{ height: 150, width: 300, resizeMode: 'contain' }} src={URL.createObjectURL(selectedFile)} alt="img" /> : <img src={Upload} alt="img" />}
                                             {/* <img src={Upload} alt="img" /> */}
                                             <h4>Drag and drop a file to upload</h4>
                                             {selectedFile?.name ? <Button title="Remove" onPress={() => {
@@ -167,8 +168,8 @@ const AddProduct = () => {
                                 <div className="col-lg-3 col-sm-6 col-12">
                                     <div className="form-group">
                                         <label>Price</label>
-                                        <input type="text" value={newProduct.price > 0 ? newProduct.price : ''} placeholder={parseFloat(newProduct.price)} onChange={(event) => {
-                                            const re = /^[0-9.]+$/;
+                                        <input type="text" value={newProduct.price ? newProduct.price : ''} placeholder={newProduct.price ? parseFloat(newProduct.price) : '0'} onChange={(event) => {
+                                            const re = /^-?\d*\.?\d*$/;
 
                                             // if value is not blank, then test the regex
                                             const val = event.target.value

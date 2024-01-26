@@ -76,7 +76,7 @@ const ChangeScreen = ({
         .add({
           printData: data,
         });
-    } else {
+    } else if (myDeviceDetails.printToPrinter) {
       qz.websocket
         .connect()
         .then(function () {
@@ -85,8 +85,13 @@ const ChangeScreen = ({
         })
         .then(qz.websocket.disconnect)
         .catch(function (err) {
-          console.error(err);
+          // console.error(err);
+          alert(
+            "An error occured while trying to print. Try refreshing the page and trying again."
+          );
         });
+    } else {
+      alert('Please set up a device and printer in "Settings -> Devices"')
     }
 
     completeOrder();

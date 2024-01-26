@@ -102,7 +102,7 @@ const MenuScreen = () => {
   );
 };
 
-export default React.memo(MenuScreen);
+export default MenuScreen;
 
 const styles = (props) =>
   StyleSheet.create({

@@ -255,7 +255,8 @@ const Sales = () => {
             })
             .then(qz.websocket.disconnect)
             .catch(function (err) {
-              console.error(err);
+              // console.error(err);
+              alert('An error occured while trying to print. Try refreshing the page and trying again.')
             });
         }
       } else {

@@ -65,7 +65,7 @@ const RouteManagerNew = () => {
           if (snapshot.empty) return;
 
           snapshot.forEach((doc) => {
-            console.log("Data to print recieved: ", doc.data().printData);
+            // console.log("Data to print recieved: ", doc.data().printData);
 
             const qz = require("qz-tray");
             qz.websocket
@@ -78,7 +78,10 @@ const RouteManagerNew = () => {
               })
               .then(qz.websocket.disconnect)
               .catch(function (err) {
-                console.error(err);
+                // console.error(err);
+                alert(
+                  "An error occured while trying to print. Try refreshing the page and trying again."
+                );
               });
             //print then delete
 
@@ -568,7 +571,10 @@ const RouteManagerNew = () => {
                 })
                 .then(qz.websocket.disconnect)
                 .catch(function (err) {
-                  console.error(err);
+                  // console.error(err);
+                  alert(
+                    "An error occured while trying to print. Try refreshing the page and trying again."
+                  );
                 });
             }
           }

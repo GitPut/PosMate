@@ -150,7 +150,10 @@ const CartScreen = ({ navigation }) => {
               })
               .then(qz.websocket.disconnect)
               .catch(function (err) {
-                console.error(err);
+                // console.error(err);
+                alert(
+                  "An error occured while trying to print. Try refreshing the page and trying again."
+                );
               });
             db.collection("users")
               .doc(auth.currentUser?.uid)
@@ -207,7 +210,10 @@ const CartScreen = ({ navigation }) => {
   // };
 
   const Print = (method, dontAddToOngoing) => {
-    console.log("My device details state: ", myDeviceDetails);
+    if (!myDeviceDetails.id) {
+      return alert("Please set up a device in Settings -> Devices");
+    }
+
     if (savedCustomerDetails) {
       if (savedCustomerDetails.orders?.length > 0) {
         db.collection("users")
@@ -301,7 +307,8 @@ const CartScreen = ({ navigation }) => {
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
-            console.error(err);
+            // console.error(err);
+            alert('An error occured while trying to print. Try refreshing the page and trying again.')
           });
       }
 
@@ -366,7 +373,10 @@ const CartScreen = ({ navigation }) => {
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
-            console.error(err);
+            // console.error(err);
+            alert(
+              "An error occured while trying to print. Try refreshing the page and trying again."
+            );
           });
       }
 
@@ -428,7 +438,10 @@ const CartScreen = ({ navigation }) => {
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
-            console.error(err);
+            // console.error(err);
+            alert(
+              "An error occured while trying to print. Try refreshing the page and trying again."
+            );
           });
       }
     }
