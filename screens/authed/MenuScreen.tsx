@@ -76,7 +76,23 @@ const MenuScreen = () => {
           source={Logo}
           style={{ width: 200, height: 160, resizeMode: "contain" }}
         />
-        <SectionSelector />
+        {catalog.categories.length > 0 ? (
+          <SectionSelector />
+        ) : (
+          <View
+            style={{
+              backgroundColor: "white",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 10,
+              borderRadius: 10,
+              height: "70%",
+              width: "90%",
+            }}
+          >
+            <Text>You have no categories yet...</Text>
+          </View>
+        )}
       </View>
       {catalog.categories?.map((category, index) => {
         let visible;
@@ -98,6 +114,30 @@ const MenuScreen = () => {
           />
         );
       })}
+      {!catalog.categories.length > 0 && (
+        <View
+          style={{
+            height: "100%",
+            width: "75%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "grey",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 10,
+              borderRadius: 10,
+              height: "50%",
+              width: "50%",
+            }}
+          >
+            <Text>You have no categories yet...</Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { withRouter, useHistory, useLocation } from "react-router-dom";
 import {
   Dashboard,
@@ -19,11 +19,16 @@ import {
 import { Link } from "react-router-dom";
 import { Scrollbars } from "react-custom-scrollbars";
 import FeatherIcon from "feather-icons-react";
+import { Animated, Image, Modal } from "react-native";
+import firebase from "firebase/app";
 
 const Sidebar = (props) => {
   const [isSideMenu, setSideMenu] = useState("");
   const [path, setPath] = useState("");
   const history = useHistory();
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [viewVisible, setviewVisible] = useState(false);
 
   const toggleSidebar = (value) => {
     setSideMenu(value);
@@ -48,6 +53,37 @@ const Sidebar = (props) => {
       document.querySelector(".main-wrapper").classList.remove("slide-nav");
     };
   }, [pathname]);
+
+  const fadeIn = () => {
+    // Will change fadeAnim value to 0 in 3 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const resetLoader = () => {
+    setviewVisible(true);
+    fadeIn();
+  };
+
+  const Manage = () => {
+    resetLoader();
+    firebase
+      .functions()
+      .httpsCallable("ext-firestore-stripe-payments-createPortalLink")({
+        returnUrl: `${window.location.href}`,
+        locale: "auto",
+      })
+      .then((response) => {
+        console.log(response.data);
+        window.location = response.data.url;
+      })
+      .catch((error) => {
+        alert("Unknown error has occured: ", error);
+      });
+  };
 
   return (
     <div className="sidebar" id="sidebar">
@@ -249,6 +285,13 @@ const Sidebar = (props) => {
                         Online Store Settings
                       </Link>
                     </li>
+                    <li>
+                      <Link style={{ textDecoration: 'none' }}
+                        onClick={Manage}
+                      >
+                        Manage Billing
+                      </Link>
+                    </li>
                   </ul>
                 ) : (
                   ""
@@ -272,6 +315,26 @@ const Sidebar = (props) => {
             </ul>
           </div>
         </div>
+        {viewVisible && (
+          <Modal visible={true}>
+            <Animated.View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "white",
+                position: "absolute",
+                opacity: fadeAnim,
+                height: "100%",
+                width: "100%",
+              }}
+            >
+              <Image
+                source={require("assets/loading.gif")}
+                style={{ width: 450, height: 450, resizeMode: "contain" }}
+              />
+            </Animated.View>
+          </Modal>
+        )}
       </Scrollbars>
     </div>
   );

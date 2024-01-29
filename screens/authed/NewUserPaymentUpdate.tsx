@@ -39,7 +39,7 @@ function NewUserPaymentUpdate({
             >
               {stageLbl}
             </Text>
-            {stageNum <= currentStageNum && (
+            {stageNum < currentStageNum && (
               <View style={styles.stageChecked}>
                 <EntypoIcon name="check" style={styles.checkedIcon} />
               </View>
@@ -141,20 +141,6 @@ function NewUserPaymentUpdate({
             stageLbl="Store Setup"
             stageDesc="Store Info"
           />
-          <View
-            style={{
-              height: 55,
-              width: 2,
-              backgroundColor: "rgba(155,155,155,1)",
-              marginLeft: 10,
-              marginBottom: 10,
-            }}
-          />
-          <StageStepView
-            stageNum={3}
-            stageLbl="Connect Shop"
-            stageDesc="Link"
-          />
         </View>
         <View style={styles.priceAndBtnContainer}>
           <View style={styles.group18}>
@@ -175,17 +161,17 @@ function NewUserPaymentUpdate({
             <TouchableOpacity
               style={[
                 styles.rect34,
-                currentStageNum === 3 && {
+                currentStageNum === 2 && {
                   backgroundColor: "rgba(20,112,239,1)",
                 },
               ]}
-              disabled={currentStageNum < 3}
+              disabled={currentStageNum < 2}
               onPress={CheckOutFunc}
             >
               <Text
                 style={[
                   styles.checkOut1,
-                  currentStageNum === 3 && { opacity: 1, color: "white" },
+                  currentStageNum === 2 && { opacity: 1, color: "white" },
                 ]}
               >
                 Check Out

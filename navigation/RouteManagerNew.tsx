@@ -144,13 +144,13 @@ const RouteManagerNew = () => {
               categories: doc.data().categories ? doc.data().categories : [],
             });
 
-            setOnlineStoreState({
-              urlEnding: doc.data().urlEnding,
-              onlineStoreActive: doc.data().onlineStoreActive,
-              onlineStoreSetUp: doc.data().onlineStoreSetUp,
-              stripePublicKey: doc.data().stripePublicKey,
-              stripeSecretKey: doc.data().stripeSecretKey,
-            });
+            // setOnlineStoreState({
+            //   urlEnding: doc.data().urlEnding,
+            //   onlineStoreActive: doc.data().onlineStoreActive,
+            //   onlineStoreSetUp: doc.data().onlineStoreSetUp,
+            //   stripePublicKey: doc.data().stripePublicKey,
+            //   stripeSecretKey: doc.data().stripeSecretKey,
+            // });
 
             if (doc.data().wooCredentials) {
               setWoocommerceState(doc.data().wooCredentials);
@@ -211,7 +211,60 @@ const RouteManagerNew = () => {
                         setisNewUser(false);
                       }
                     }
-                    // console.log("DATA: ", element.data());
+
+                    //if they are subscribed to pos plan
+                    if (element.data().role === "Pos Software Plan") {
+                      if (element.data().status === "active") {
+                        setisSubscribed(true);
+                        setisNewUser(false);
+                        if (doc.data().freeTrial) {
+                          setTrialDetailsState({
+                            endDate: null,
+                            hasEnded: null,
+                          });
+                          updateFreeTrial(null);
+                        }
+                      } else if (element.data().status === "canceled") {
+                        setisSubscribed(false);
+                        setisNewUser(false);
+                        setisCanceled(true);
+                      } else {
+                        setisSubscribed(false);
+                        setisNewUser(false);
+                      }
+                    }
+
+                    //if they are subscribed to online store
+                    if (element.data().role === "Online Store") {
+                      if (element.data().status === "active") {
+                        setOnlineStoreState({
+                          urlEnding: doc.data().urlEnding,
+                          onlineStoreActive: doc.data().onlineStoreActive,
+                          onlineStoreSetUp: doc.data().onlineStoreSetUp,
+                          stripePublicKey: doc.data().stripePublicKey,
+                          stripeSecretKey: doc.data().stripeSecretKey,
+                          paidStatus: "active",
+                        });
+                      } else if (element.data().status === "canceled") {
+                        setOnlineStoreState({
+                          urlEnding: doc.data().urlEnding,
+                          onlineStoreActive: doc.data().onlineStoreActive,
+                          onlineStoreSetUp: doc.data().onlineStoreSetUp,
+                          stripePublicKey: doc.data().stripePublicKey,
+                          stripeSecretKey: doc.data().stripeSecretKey,
+                          paidStatus: "canceled",
+                        });
+                      } else {
+                        setOnlineStoreState({
+                          urlEnding: doc.data().urlEnding,
+                          onlineStoreActive: doc.data().onlineStoreActive,
+                          onlineStoreSetUp: doc.data().onlineStoreSetUp,
+                          stripePublicKey: doc.data().stripePublicKey,
+                          stripeSecretKey: doc.data().stripeSecretKey,
+                          paidStatus: null,
+                        });
+                      }
+                    }
                   });
                 } else if (doc.data().freeTrial) {
                   setisSubscribed(true);
@@ -306,7 +359,6 @@ const RouteManagerNew = () => {
                 });
 
                 setDeviceTreeState(devices);
-
               });
 
             const unsub = db

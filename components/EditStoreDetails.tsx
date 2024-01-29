@@ -47,8 +47,6 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
   const [settingsPassword, setsettingsPassword] = useState(
     storeDetails.settingsPassword
   );
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const [viewVisible, setviewVisible] = useState(false);
   const [screen, setscreen] = useState("general");
   const wooCredentials = woocommerceState.use();
   const [apiUrl, setapiUrl] = useState(wooCredentials.apiUrl);
@@ -74,37 +72,6 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
         useWoocommerce: useWoocommerce,
       });
     }
-  };
-
-  const fadeIn = () => {
-    // Will change fadeAnim value to 0 in 3 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const resetLoader = () => {
-    setviewVisible(true);
-    fadeIn();
-  };
-
-  const Manage = () => {
-    resetLoader();
-    firebase
-      .functions()
-      .httpsCallable("ext-firestore-stripe-payments-createPortalLink")({
-        returnUrl: `${window.location.origin}`,
-        locale: "auto",
-      })
-      .then((response) => {
-        console.log(response.data);
-        window.location = response.data.url;
-      })
-      .catch((error) => {
-        alert("Unknown error has occured: ", error);
-      });
   };
 
   const onlineStoreDetails = onlineStoreState.use();
@@ -176,19 +143,6 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
             }}
           >
             <Text>WooCommerce</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={Manage}
-            disabled={trialDetails.hasEnded}
-            style={{
-              width: 120,
-              height: 30,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "#F5F3F3",
-            }}
-          >
-            <Text>Billing</Text>
           </TouchableOpacity>
         </View>
         {screen === "general" ? (
@@ -402,26 +356,6 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
           </>
         )}
       </View>
-      {viewVisible && (
-        <Modal visible={true}>
-          <Animated.View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "white",
-              position: "absolute",
-              opacity: fadeAnim,
-              height: "100%",
-              width: "100%",
-            }}
-          >
-            <Image
-              source={require("assets/loading.gif")}
-              style={{ width: 450, height: 450, resizeMode: "contain" }}
-            />
-          </Animated.View>
-        </Modal>
-      )}
     </ScrollView>
   );
 };

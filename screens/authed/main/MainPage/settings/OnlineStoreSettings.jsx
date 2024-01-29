@@ -46,6 +46,22 @@ const OnlineStoreSettings = () => {
     const [urlEnding, seturlEnding] = useState(onlineStoreDetails.urlEnding)
     const [stripePublicKey, setstripePublicKey] = useState(onlineStoreDetails.stripePublicKey)
     const [stripeSecretKey, setstripeSecretKey] = useState(onlineStoreDetails.stripeSecretKey)
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const [viewVisible, setviewVisible] = useState(false);
+
+    const fadeIn = () => {
+        // Will change fadeAnim value to 0 in 3 seconds
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: false,
+        }).start();
+    };
+
+    const resetLoader = () => {
+        setviewVisible(true);
+        fadeIn();
+    };
 
     const startOnlineStore = () => {
         db.collection("public").where("urlEnding", "==", urlEnding)
@@ -134,6 +150,42 @@ const OnlineStoreSettings = () => {
         }
     }
 
+    const payOnlineStore = async () => {
+        resetLoader()
+
+        await db
+            .collection("users")
+            .doc(auth.currentUser.uid)
+            .collection("checkout_sessions")
+            .add({
+                // price: 'price_1Ocw7JCIw3L7DOwIWpAyVUiB', // real price
+                price: 'price_1OdwZqCIw3L7DOwIj1Fu96SW', // test price
+                success_url: window.location.href, // return user to this screen on successful purchase
+                cancel_url: window.location.href, // return user to this screen on failed purchase
+            })
+            .then((docRef) => {
+                // Wait for the checkoutSession to get attached by the extension
+                docRef.onSnapshot(async (snap) => {
+                    const { error, sessionId } = snap.data();
+                    if (error) {
+                        // Show an error to your customer and inspect
+                        // your Cloud Function logs in the Firebase console.
+                        alert(`An error occurred: ${error.message}`);
+                    }
+
+                    if (sessionId) {
+                        // We have a session, let's redirect to Checkout
+                        // Init Stripe
+                        const stripe = await loadStripe(
+                            "pk_live_51MHqrvCIw3L7DOwI0ol9CTCSH7mQXTLKpxTWKzmwOY1MdKwaYwhdJq6WTpkWdBeql3sS44JmybynlRnaO2nSa1FK001dHiEOZO" // todo enter your public stripe key here
+                        );
+                        console.log(`redirecting`);
+                        await stripe.redirectToCheckout({ sessionId });
+                    }
+                });
+            });
+    }
+
 
     return (
         <div className="page-wrapper">
@@ -144,10 +196,10 @@ const OnlineStoreSettings = () => {
                     </View>
                     <View style={styles.detailInputContainer}>
                         <ScrollView>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, marginTop: 10 }}>
+                            {onlineStoreDetails.paidStatus !== 'active' ? <Button title="Pay for online store" onPress={payOnlineStore} /> : <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, marginTop: 10 }}>
                                 <Text>Online Store Active?</Text>
                                 <Switch value={onlineStoreDetails.onlineStoreActive} onValueChange={makeOnlineStoreActive} />
-                            </View>
+                            </View>}
                             <Text>Order Url Ending: </Text>
                             <TextInput
                                 placeholder="Enter Url Ending"
@@ -162,6 +214,26 @@ const OnlineStoreSettings = () => {
                             <Button title='Update Stripe Details' onPress={() => { updateStripeDetails() }} />
                         </ScrollView>
                     </View>
+                    {viewVisible && (
+                        <Modal visible={true}>
+                            <Animated.View
+                                style={{
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    backgroundColor: "white",
+                                    position: "absolute",
+                                    opacity: fadeAnim,
+                                    height: "100%",
+                                    width: "100%",
+                                }}
+                            >
+                                <Image
+                                    source={require("assets/loading.gif")}
+                                    style={{ width: 450, height: 450, resizeMode: "contain" }}
+                                />
+                            </Animated.View>
+                        </Modal>
+                    )}
                 </View>
             </div>
         </div >

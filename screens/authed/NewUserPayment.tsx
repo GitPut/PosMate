@@ -173,149 +173,10 @@ const NewUserPayment = ({ resetLoader }) => {
       )}
       {stageNum === 2 && (
         <NewUserPaymentUpdate
-          planType={planType}
-          setstageNum={setstageNum}
-          currentStageNum={2}
-          currentStageLbl="Store Setup"
-          StageContent={() => {
-            const [localStoreName, setlocalStoreName] = useState(storeName);
-            const [localStorePhone, setlocalStorePhone] = useState(phoneNumber);
-            const [localStoreWebsite, setlocalStoreWebsite] = useState(website);
-            const [localStoreAddress, setlocalStoreAddress] = useState(address);
-
-            return (
-              <>
-                <View style={styles.planItemContainer}>
-                  <View style={styles.pITopContainer}>
-                    <View style={styles.group4}>
-                      <View style={styles.group24}>
-                        <Text style={styles.standard}>Store Details</Text>
-                      </View>
-                      <View style={styles.group23}>
-                        <MaterialCommunityIconsIcon
-                          name="store"
-                          style={styles.icon16}
-                        />
-                      </View>
-                    </View>
-                    <Text style={styles.allYearPayment}>
-                      Fill In Your Stores Information!
-                    </Text>
-                    <TextInput
-                      color="black"
-                      onChangeText={(val) => setlocalStoreName(val)}
-                      value={localStoreName}
-                      style={styles.textInput}
-                      label="Enter store name"
-                      leading={(props) => (
-                        <MaterialCommunityIconsIcon name="account" {...props} />
-                      )}
-                    />
-                    <TextInput
-                      color="black"
-                      onChangeText={(val) => setlocalStorePhone(val)}
-                      value={localStorePhone}
-                      style={styles.textInput}
-                      label="Enter store phone #"
-                      leading={(props) => (
-                        <MaterialCommunityIconsIcon name="phone" {...props} />
-                      )}
-                    />
-                    <TextInput
-                      color="black"
-                      onChangeText={(val) => setlocalStoreWebsite(val)}
-                      value={localStoreWebsite}
-                      style={[styles.textInput, { marginBottom: 15 }]}
-                      label="Enter store website url"
-                      leading={(props) => (
-                        <MaterialCommunityIconsIcon name="web" {...props} />
-                      )}
-                    />
-                    <GooglePlacesAutocomplete
-                      apiOptions={{
-                        region: "CA",
-                      }}
-                      debounce={800}
-                      apiKey={GOOGLE_API_KEY}
-                      // onSelect={handleAddress}
-                      selectProps={{
-                        localStoreAddress,
-                        onChange: setlocalStoreAddress,
-                        defaultValue: localStoreAddress,
-                        placeholder: "Enter store address",
-                        menuPortalTarget: document.body,
-                        styles: {
-                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                        },
-                      }}
-                      renderSuggestions={(
-                        active,
-                        suggestions,
-                        onSelectSuggestion
-                      ) => (
-                        <div>
-                          {suggestions.map((suggestion) => (
-                            <div
-                              className="suggestion"
-                              onClick={(event) => {
-                                onSelectSuggestion(suggestion, event);
-                              }}
-                            >
-                              {suggestion.description}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    />
-                  </View>
-                  <View style={styles.pITBottomContainer}>
-                    <View style={[styles.rect32, { width: "50%" }]} />
-                    <View style={[styles.rect33, { width: "50%" }]} />
-                  </View>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    width: "65%",
-                  }}
-                >
-                  <TouchableOpacity
-                    style={styles.group5}
-                    onPress={() => setstageNum((prev) => prev - 1)}
-                  >
-                    <Text style={styles.monthly6}>Back</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.group5}
-                    onPress={() => {
-                      if (
-                        localStoreName &&
-                        localStorePhone &&
-                        localStoreAddress
-                      ) {
-                        setstageNum((prev) => prev + 1);
-                        setstoreName(localStoreName);
-                        setphoneNumber(localStorePhone);
-                        setaddress(localStoreAddress);
-                        setwebsite(localStoreWebsite);
-                      } else {
-                        alert("Please fill out all required inputs");
-                      }
-                    }}
-                  >
-                    <Text style={styles.monthly6}>Next</Text>
-                  </TouchableOpacity>
-                </View>
-              </>
-            );
-          }}
-        />
-      )}
-      {stageNum === 3 && (
-        <NewUserPaymentUpdate
           CheckOutFunc={async () => {
+            if (!storeName || !phoneNumber || !address)
+              return alert("Please fill in all fields");
+
             resetLoader();
             updateStoreDetails({
               name: storeName,
@@ -377,107 +238,105 @@ const NewUserPayment = ({ resetLoader }) => {
           }}
           planType={planType}
           setstageNum={setstageNum}
-          currentStageNum={3}
-          currentStageLbl="Connect Shop"
+          currentStageNum={2}
+          currentStageLbl="Store Setup"
           StageContent={() => {
-            const [comLocal, setcomLocal] = useState(com);
+            const [localStoreName, setlocalStoreName] = useState(storeName);
+            const [localPhoneNumber, setlocalPhoneNumber] =
+              useState(phoneNumber);
+            const [localWebsite, setlocalWebsite] = useState(website);
 
             return (
               <>
                 <View style={styles.planItemContainer}>
                   <View style={styles.pITopContainer}>
-                    <ScrollView>
-                      <View style={styles.group4}>
-                        <View style={styles.group24}>
-                          <Text style={styles.standard}>Setup Externals</Text>
-                        </View>
-                        <View style={styles.group23}>
-                          <MaterialCommunityIconsIcon
-                            name="progress-question"
-                            style={styles.icon16}
-                          />
-                        </View>
+                    <View style={styles.group4}>
+                      <View style={styles.group24}>
+                        <Text style={styles.standard}>Store Details</Text>
                       </View>
-                      <Text style={styles.allYearPayment}>
-                        Add your woocommerce and set up printer!
-                      </Text>
-                      <TextInput
-                        color="black"
-                        style={styles.textInput}
-                        label="Enter receipt printer name"
-                        leading={(props) => (
-                          <MaterialCommunityIconsIcon
-                            name="printer"
-                            {...props}
-                          />
-                        )}
-                        onChangeText={(val) => setcomLocal(val)}
-                        value={comLocal}
-                        onBlur={() => setcom(comLocal)}
-                      />
-                      <Text style={styles.helperTxt}>
-                        Download helper program that makes your printer work
-                        with our service
-                      </Text>
-                      <View style={styles.helperDownloadContainer}>
-                        <a
-                          href={require("assets/divine-pos-helper.exe")}
-                          download="Divine Pos Helper.exe"
-                        >
-                          <Image
-                            source={require("assets/badge-windows.png")}
-                            resizeMode="contain"
-                            style={styles.badgeWindows}
-                          />
-                        </a>
-                        <a
-                          href={require("assets/divine-pos-helper.pkg")}
-                          download="Divine Pos Helper.pkg"
-                        >
-                          <Image
-                            source={require("assets/badge-mac.png")}
-                            resizeMode="contain"
-                            style={styles.badgeMac}
-                          />
-                        </a>
+                      <View style={styles.group23}>
+                        <MaterialCommunityIconsIcon
+                          name="store"
+                          style={styles.icon16}
+                        />
                       </View>
-                      <Text style={{ marginTop: 10, marginBottom: 5 }}>
-                        Optionaly connect your WooCommerce store
-                      </Text>
-                      <Switch
-                        value={useWoocommerce}
-                        onValueChange={(val) => setuseWoocommerce(val)}
-                      />
-                      {useWoocommerce && (
-                        <View style={{ paddingBottom: 25 }}>
-                          <TextInput
-                            color="black"
-                            style={styles.textInput}
-                            label="Enter Woocommerce 'API Url'"
-                            onChangeText={(val) => setapiUrl(val)}
-                            value={apiUrl}
-                          />
-                          <TextInput
-                            color="black"
-                            style={styles.textInput}
-                            label="Enter Woocommerce 'CK'"
-                            onChangeText={(val) => setck(val)}
-                            value={ck}
-                          />
-                          <TextInput
-                            color="black"
-                            style={styles.textInput}
-                            label="Enter Woocommerce 'CS'"
-                            onChangeText={(val) => setcs(val)}
-                            value={cs}
-                          />
-                        </View>
+                    </View>
+                    <Text style={styles.allYearPayment}>
+                      Fill In Your Stores Information!
+                    </Text>
+                    <TextInput
+                      color="black"
+                      onChangeText={(val) => setlocalStoreName(val)}
+                      onBlur={() => setstoreName(localStoreName)}
+                      value={localStoreName}
+                      style={styles.textInput}
+                      label="Enter store name"
+                      leading={(props) => (
+                        <MaterialCommunityIconsIcon name="account" {...props} />
                       )}
-                    </ScrollView>
+                    />
+                    <TextInput
+                      color="black"
+                      onChangeText={(val) => setlocalPhoneNumber(val)}
+                      onBlur={() => setphoneNumber(localPhoneNumber)}
+                      value={localPhoneNumber}
+                      style={styles.textInput}
+                      label="Enter store phone #"
+                      leading={(props) => (
+                        <MaterialCommunityIconsIcon name="phone" {...props} />
+                      )}
+                    />
+                    <TextInput
+                      color="black"
+                      onChangeText={(val) => setlocalWebsite(val)}
+                      onBlur={() => setwebsite(localWebsite)}
+                      value={localWebsite}
+                      style={[styles.textInput, { marginBottom: 15 }]}
+                      label="Enter store website url"
+                      leading={(props) => (
+                        <MaterialCommunityIconsIcon name="web" {...props} />
+                      )}
+                    />
+                    <GooglePlacesAutocomplete
+                      apiOptions={{
+                        region: "CA",
+                      }}
+                      debounce={800}
+                      apiKey={GOOGLE_API_KEY}
+                      // onSelect={handleAddress}
+                      selectProps={{
+                        address,
+                        onChange: setaddress,
+                        defaultValue: address,
+                        placeholder: "Enter store address",
+                        menuPortalTarget: document.body,
+                        styles: {
+                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                        },
+                      }}
+                      renderSuggestions={(
+                        active,
+                        suggestions,
+                        onSelectSuggestion
+                      ) => (
+                        <div>
+                          {suggestions.map((suggestion) => (
+                            <div
+                              className="suggestion"
+                              onClick={(event) => {
+                                onSelectSuggestion(suggestion, event);
+                              }}
+                            >
+                              {suggestion.description}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    />
                   </View>
                   <View style={styles.pITBottomContainer}>
-                    <View style={[styles.rect32, { width: "100" }]} />
-                    {/* <View style={[styles.rect33, { width: "25%" }]} /> */}
+                    <View style={[styles.rect32, { width: "50%" }]} />
+                    <View style={[styles.rect33, { width: "50%" }]} />
                   </View>
                 </View>
                 <View

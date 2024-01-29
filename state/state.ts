@@ -145,6 +145,7 @@ export const onlineStoreState = entity({
   urlEnding: null,
   stripePublicKey: null,
   stripeSecretKey: null,
+  paidStatus: null,
 });
 
 export const setOnlineStoreState = (val) => {
