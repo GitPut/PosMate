@@ -6,6 +6,8 @@ const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 const stripe = require("stripe");
 const cors = require("cors")({ origin: true });
+const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
+const axios = require("axios");
 
 admin.initializeApp();
 
@@ -227,6 +229,41 @@ exports.processPayment = functions.https.onRequest(async (req, res) => {
       res
         .status(500)
         .json({ success: false, message: `Payment failed: ${error.message}` });
+    }
+  });
+});
+
+exports.getLatLng = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    try {
+      const { placeId } = req.body;
+
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=geometry&key=${GOOGLE_API_KEY}`
+      );
+
+      const data = response.data;
+
+      if (
+        data.status === "OK" &&
+        data.result.geometry &&
+        data.result.geometry.location
+      ) {
+        const { lat, lng } = data.result.geometry.location;
+        res
+          .status(200)
+          .json({ success: true, message: "Success", data: { lat, lng } });
+      } else {
+        res.status(500).json({
+          success: false,
+          message: `Error: No results found for the place ID`,
+        });
+      }
+    } catch (error) {
+      console.error("Error during request:", error);
+      res
+        .status(500)
+        .json({ success: false, message: `Error: ${error.message}` });
     }
   });
 });

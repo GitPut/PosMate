@@ -14,6 +14,7 @@ import {
   customersList,
   setCartState,
   setCustomersList,
+  storeDetailState,
 } from "state/state";
 import { Switch } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -43,6 +44,7 @@ const SaveCustomer = ({
   const [phone, setPhone] = useState(null);
   const [address, setaddress] = useState(null);
   const customers = customersList.use();
+  const storeDetails = storeDetailState.use();
 
   useEffect(() => {
     setName(customerSelected?.name);
@@ -129,24 +131,26 @@ const SaveCustomer = ({
               style={{ backgroundColor: "#4050B5", marginRight: 10 }}
               titleStyle={{ textTransform: "capitalize" }}
             />
-            <Button
-              disabled={!customerSelected.address}
-              title="Delivery"
-              onPress={() => {
-                setCartState(prevOrder.cart);
-                setOngoingDelivery(true);
-                setNameForDelivery(customerSelected.name);
-                setPhoneForDelivery(customerSelected.phone);
-                setAddressForDelivery(customerSelected.address);
-                setDeliveryChecked(true);
-                setSaveCustomerModal(false);
-              }}
-              style={[
-                { backgroundColor: "#4050B5", marginRight: 10 },
-                !customerSelected.address && { opacity: 0.5 },
-              ]}
-              titleStyle={{ textTransform: "capitalize" }}
-            />
+            {storeDetails.acceptDelivery && (
+              <Button
+                disabled={!customerSelected.address}
+                title="Delivery"
+                onPress={() => {
+                  setCartState(prevOrder.cart);
+                  setOngoingDelivery(true);
+                  setNameForDelivery(customerSelected.name);
+                  setPhoneForDelivery(customerSelected.phone);
+                  setAddressForDelivery(customerSelected.address);
+                  setDeliveryChecked(true);
+                  setSaveCustomerModal(false);
+                }}
+                style={[
+                  { backgroundColor: "#4050B5", marginRight: 10 },
+                  !customerSelected.address && { opacity: 0.5 },
+                ]}
+                titleStyle={{ textTransform: "capitalize" }}
+              />
+            )}
             <TouchableOpacity
               onPress={() => removeCustomerOrder(prevOrderIndex)}
             >

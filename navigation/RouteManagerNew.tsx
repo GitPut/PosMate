@@ -246,18 +246,38 @@ const RouteManagerNew = () => {
                           paidStatus: "active",
                         });
                       } else if (element.data().status === "canceled") {
+                        db.collection("users")
+                          .doc(auth.currentUser.uid)
+                          .update({
+                            onlineStoreActive: false,
+                          });
+                        db.collection("public")
+                          .doc(auth.currentUser.uid)
+                          .update({
+                            onlineStoreActive: false,
+                          });
                         setOnlineStoreState({
                           urlEnding: doc.data().urlEnding,
-                          onlineStoreActive: doc.data().onlineStoreActive,
+                          onlineStoreActive: false,
                           onlineStoreSetUp: doc.data().onlineStoreSetUp,
                           stripePublicKey: doc.data().stripePublicKey,
                           stripeSecretKey: doc.data().stripeSecretKey,
                           paidStatus: "canceled",
-                        });
+                        }); 
                       } else {
+                        db.collection("users")
+                          .doc(auth.currentUser.uid)
+                          .update({
+                            onlineStoreActive: false,
+                          });
+                        db.collection("public")
+                          .doc(auth.currentUser.uid)
+                          .update({
+                            onlineStoreActive: false,
+                          });
                         setOnlineStoreState({
                           urlEnding: doc.data().urlEnding,
-                          onlineStoreActive: doc.data().onlineStoreActive,
+                          onlineStoreActive: false,
                           onlineStoreSetUp: doc.data().onlineStoreSetUp,
                           stripePublicKey: doc.data().stripePublicKey,
                           stripeSecretKey: doc.data().stripeSecretKey,
@@ -287,17 +307,6 @@ const RouteManagerNew = () => {
                 });
 
                 setCustomersList(newCustomerList);
-
-                console.log("CUSTOMERS: ", newCustomerList);
-
-                // if (
-                //   JSON.stringify(customers) !== JSON.stringify(newCustomerList)
-                // ) {
-                //   localStorage.setItem(
-                //     "customers",
-                //     JSON.stringify(newCustomerList)
-                //   );
-                // }
               })
               .catch(() => console.log("Error has occured with db"));
 

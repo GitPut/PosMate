@@ -10,6 +10,7 @@ import OptionView from "components/OptionView";
 import { updateData } from "state/firebaseFunctions";
 import { useParams } from "react-router-dom";
 import { auth, db, storage } from "state/firebaseConfig";
+import { Switch } from "@react-native-material/core";
 
 const EditProduct = (props) => {
   const catalog = userStoreState.use();
@@ -268,6 +269,15 @@ const EditProduct = (props) => {
                     } />
                   </div>
                 </div>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 15 }}>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Do not display product on online store:</Text>
+                  <Switch value={newProduct?.dontDisplayOnOnlineStore} onValueChange={(event) => {
+                    setnewProduct((prevState) => ({
+                      ...prevState,
+                      dontDisplayOnOnlineStore: event,
+                    }))
+                  }} />
+                </View>
                 <div className="col-lg-12">
                   <div className="form-group">
                     <label>Description</label>

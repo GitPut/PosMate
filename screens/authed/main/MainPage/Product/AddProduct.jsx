@@ -4,11 +4,12 @@ import Select2 from 'react-select2-wrapper';
 import 'react-select2-wrapper/css/select2.css';
 import { onlineStoreState, setUserStoreState, userState, userStoreState } from 'state/state';
 import { updateData } from 'state/firebaseFunctions';
-import { FlatList, Image, Modal, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, Modal, Text, TouchableOpacity, View } from 'react-native';
 import OptionView from 'components/OptionView';
 import { Button } from 'react-native';
 import { Link, useHistory } from 'react-router-dom';
 import { auth, db, storage } from 'state/firebaseConfig';
+import { Switch } from '@react-native-material/core';
 
 const AddProduct = () => {
     const catalog = userStoreState.use();
@@ -212,6 +213,15 @@ const AddProduct = () => {
                                         } />
                                     </div>
                                 </div>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 15 }}>
+                                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Do not display product on online store:</Text>
+                                    <Switch value={newProduct?.dontDisplayOnOnlineStore} onValueChange={(event) => {
+                                        setnewProduct((prevState) => ({
+                                            ...prevState,
+                                            dontDisplayOnOnlineStore: event,
+                                        }))
+                                    }} />
+                                </View>
                                 <div className="col-lg-12">
                                     <div className="form-group">
                                         <label>Description</label>
@@ -221,7 +231,6 @@ const AddProduct = () => {
                                         />
                                     </div>
                                 </div>
-
                                 <div className="col-lg-12">
                                     <div className="form-group">
                                         <label>Options</label>

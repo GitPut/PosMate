@@ -193,6 +193,68 @@ const OrderPage = () => {
 };
 
 const Page1 = ({ storeDetails, setorderDetails, orderDetails, setpage }) => {
+  ///
+
+  // Function to calculate distance between two points using Haversine formula
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (lat2 - lat1) * (Math.PI / 180); // Convert degrees to radians
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in km
+    return distance;
+  }
+
+  // Function to get the latitude and longitude of an address using the Google Maps Geocoding API
+  async function getLatLng(placeId) {
+    const response = await fetch(
+      "https://us-central1-posmate-5fc0a.cloudfunctions.net/getLatLng",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          placeId: placeId,
+        }),
+      }
+    );
+
+    try {
+      const responseData = await response.json();
+
+      if (response.ok && responseData.success) {
+        console.log("Success!");
+        return responseData.data;
+      } else {
+        console.error(responseData.message);
+      }
+    } catch (jsonError) {
+      console.error("Error parsing JSON response:", jsonError);
+    }
+  }
+
+  // Function to calculate distance between two addresses using Google Places API
+  async function calculateDistanceBetweenAddresses(address1, address2) {
+    try {
+      const { lat: lat1, lng: lon1 } = await getLatLng(address1);
+      const { lat: lat2, lng: lon2 } = await getLatLng(address2);
+      const distance = calculateDistance(lat1, lon1, lat2, lon2);
+      return distance;
+    } catch (error) {
+      console.error("Error calculating distance:", error);
+      return null;
+    }
+  }
+
+  ///
+
   return (
     <View>
       <View
@@ -216,7 +278,8 @@ const Page1 = ({ storeDetails, setorderDetails, orderDetails, setpage }) => {
         }}
       >
         <Text style={{ fontSize: 16 }}>
-          Would you like to order for Delivery or Pickup
+          Would you like to order for Pickup{" "}
+          {storeDetails.acceptDelivery ? "or Delivery" : ""}
         </Text>
       </View>
       <View
@@ -226,19 +289,21 @@ const Page1 = ({ storeDetails, setorderDetails, orderDetails, setpage }) => {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity
-          onPress={() => setorderDetails({ ...orderDetails, delivery: true })}
-          style={{
-            padding: 20,
-            borderRadius: 10,
-            backgroundColor: "rgba(255,255,255, 0.7)",
-            borderWidth: 1,
-            marginBottom: 20,
-            marginRight: 20,
-          }}
-        >
-          <Text style={{ fontSize: 16 }}>Delivery</Text>
-        </TouchableOpacity>
+        {storeDetails.acceptDelivery && (
+          <TouchableOpacity
+            onPress={() => setorderDetails({ ...orderDetails, delivery: true })}
+            style={{
+              padding: 20,
+              borderRadius: 10,
+              backgroundColor: "rgba(255,255,255, 0.7)",
+              borderWidth: 1,
+              marginBottom: 20,
+              marginRight: 20,
+            }}
+          >
+            <Text style={{ fontSize: 16 }}>Delivery</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={() =>
             setorderDetails({ ...orderDetails, delivery: false, address: null })
@@ -300,7 +365,39 @@ const Page1 = ({ storeDetails, setorderDetails, orderDetails, setpage }) => {
         </View>
       )}
       <TouchableOpacity
-        onPress={() => setpage(2)}
+        onPress={() => {
+          if (orderDetails.delivery) {
+            if (!orderDetails.address) {
+              alert("Please enter a delivery address");
+              return;
+            }
+            calculateDistanceBetweenAddresses(
+              storeDetails.address.value.reference,
+              orderDetails.address.value.reference
+            ).then((distance) => {
+              if (distance !== null) {
+                console.log(
+                  `Distance between addresses: ${distance.toFixed(2)} km`
+                );
+                if (storeDetails.deliveryRange) {
+                  if (distance > parseFloat(storeDetails.deliveryRange)) {
+                    alert("The delivery address is out of range");
+                  } else {
+                    setpage(2);
+                  }
+                } else {
+                  setpage(2);
+                }
+              } else {
+                alert(
+                  "Distance calculation between the store and your location failed. Please refresh page."
+                );
+              }
+            });
+          } else {
+            setpage(2);
+          }
+        }}
         style={{
           padding: 20,
           borderRadius: 10,
@@ -759,7 +856,9 @@ const MenuScreenInnerBlockLocal = ({ category, height, visible, catalog }) => {
           }}
           data={catalog.products
             .filter((product) => {
-              const isVisible = product.category === category;
+              const isVisible =
+                product.category === category &&
+                !product.dontDisplayOnOnlineStore;
               return isVisible;
             })
             .sort(customSort)}

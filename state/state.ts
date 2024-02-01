@@ -77,6 +77,8 @@ export const storeDetailState = entity({
   deliveryPrice: "",
   settingsPassword: "",
   taxRate: "",
+  acceptDelivery: false,
+  deliveryRange: "",
 });
 
 export const setStoreDetailState = (val) => {

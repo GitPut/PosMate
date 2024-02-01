@@ -41,6 +41,12 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
   const [deliveryPrice, setdeliveryPrice] = useState(
     storeDetails.deliveryPrice
   );
+  const [acceptDelivery, setacceptDelivery] = useState(
+    storeDetails.acceptDelivery
+  );
+  const [deliveryRange, setdeliveryRange] = useState(
+    storeDetails.deliveryRange
+  );
   const [taxRate, settaxRate] = useState(
     storeDetails.taxRate ? parseFloat(storeDetails.taxRate) : "0"
   );
@@ -87,6 +93,8 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
         settingsPassword: settingsPassword,
         taxRate: parseFloat(taxRate),
         onlineStoreActive: onlineStoreDetails.onlineStoreActive,
+        acceptDelivery: acceptDelivery,
+        deliveryRange: deliveryRange,
       });
       updateStoreDetails({
         name: name,
@@ -97,6 +105,8 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
         settingsPassword: settingsPassword,
         taxRate: parseFloat(taxRate),
         onlineStoreActive: onlineStoreDetails.onlineStoreActive,
+        acceptDelivery: acceptDelivery,
+        deliveryRange: deliveryRange,
       });
       if (customBtnExtraFunction) {
         customBtnExtraFunction();
@@ -212,15 +222,40 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                   )}
                 />
               </View>
-              <TextInput
-                color="black"
-                variant="outlined"
-                placeholder="Enter Delivery Price"
-                label="Enter Delivery Price"
-                onChangeText={(val) => setdeliveryPrice(val)}
-                style={{ margin: 10, width: "48%" }}
-                value={deliveryPrice}
-              />
+              <View style={{ width: "48%", margin: 10 }}>
+                <View
+                  style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text>Accept Delivery</Text>
+                  <Switch
+                    value={acceptDelivery}
+                    onValueChange={(val) => setacceptDelivery(val)}
+                  />
+                </View>
+                <TextInput
+                  color="black"
+                  variant="outlined"
+                  placeholder="Enter Delivery Price"
+                  label="Enter Delivery Price"
+                  onChangeText={(val) => setdeliveryPrice(val)}
+                  style={{ marginTop: 15, width: "100%" }}
+                  value={deliveryPrice}
+                />
+                <TextInput
+                  color="black"
+                  variant="outlined"
+                  placeholder="Enter Delivery Range In KM"
+                  label="Enter Delivery Range In KM"
+                  onChangeText={(val) => setdeliveryRange(val)}
+                  style={{ marginTop: 15, width: "100%" }}
+                  value={deliveryRange}
+                />
+              </View>
               <TextInput
                 color="black"
                 variant="outlined"
