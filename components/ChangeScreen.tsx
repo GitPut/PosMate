@@ -184,7 +184,7 @@ const ChangeScreen = ({
           contentContainerStyle={styles.btn}
           style={{ margin: 25, backgroundColor: "#4050B5" }}
         />
-        {order.method === "pickupOrder" && (
+        {order?.method === "pickupOrder" && (
           <Button
             title="Pay By Card"
             onPress={() => {

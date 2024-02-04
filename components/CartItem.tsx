@@ -8,8 +8,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import Feather from "@expo/vector-icons/Feather";
+import { Feather, AntDesign } from "@expo/vector-icons";
 
 const CartItem = ({
   cartItem,
@@ -101,25 +100,38 @@ const CartItem = ({
             ${parseFloat(cartItem.price).toFixed(2)}
           </Text>
         </View>
-        <View style={styles.closedRightContainer}>
+        {!cartItem.quantityNotChangable ? (
+          <View style={styles.closedRightContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                if (cartItem.quantity < 2 || !cartItem.quantity) {
+                  removeAction();
+                } else {
+                  decreaseAction();
+                }
+              }}
+            >
+              <Entypo name="squared-minus" style={styles.openCloseIcon} />
+            </TouchableOpacity>
+            <Text style={styles.productIndexTxt}>
+              {cartItem.quantity ? cartItem.quantity : 1}
+            </Text>
+            <TouchableOpacity onPress={increaseAction}>
+              <Entypo name="squared-plus" style={styles.openCloseIcon} />
+            </TouchableOpacity>
+          </View>
+        ) : (
           <TouchableOpacity
             onPress={() => {
-              if (cartItem.quantity < 2 || !cartItem.quantity) {
-                removeAction();
-              } else {
-                decreaseAction();
-              }
+              removeAction();
             }}
           >
-            <Entypo name="squared-minus" style={styles.openCloseIcon} />
+            <AntDesign
+              name="closesquare"
+              style={{ color: "#b1b1b1", fontSize: 30 }}
+            />
           </TouchableOpacity>
-          <Text style={styles.productIndexTxt}>
-            {cartItem.quantity ? cartItem.quantity : 1}
-          </Text>
-          <TouchableOpacity onPress={increaseAction}>
-            <Entypo name="squared-plus" style={styles.openCloseIcon} />
-          </TouchableOpacity>
-        </View>
+        )}
       </TouchableOpacity>
     );
   }

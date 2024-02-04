@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   Button,
+  Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -20,13 +21,11 @@ import {
 import DeliveryScreen from "components/DeliveryScreen";
 import CashScreen from "components/CashScreen";
 import ChangeScreen from "components/ChangeScreen";
-import { updateTransList } from "state/firebaseFunctions";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import SaveCustomer from "./SaveCustomer";
 import { auth, db } from "state/firebaseConfig";
-import Entypo from "@expo/vector-icons/Entypo";
+import { MaterialIcons, Entypo, Ionicons } from "@expo/vector-icons";
 import { useHistory } from "react-router-dom";
 import CompletePaymentPhoneOrder from "components/CompletePaymentPhoneOrder";
 import SettingsPasswordModal from "components/SettingsPasswordModal";
@@ -34,6 +33,7 @@ import CartItemEditable from "components/CartItemEditable";
 import useWindowDimensions from "components/useWindowDimensions";
 import ClockinModal from "./ClockinModal";
 import ReceiptPrint from "components/ReceiptPrint";
+import DiscountModal from "components/DiscountModal";
 
 const CartButton = (props) => {
   return (
@@ -101,6 +101,7 @@ const CartScreen = ({ navigation }) => {
   const customers = customersList.use();
   const myDeviceDetails = myDeviceDetailsState.use();
   const [clockinModal, setclockinModal] = useState(false);
+  const [discountModal, setdiscountModal] = useState(false);
 
   function parseDate(input) {
     // Check if the input is a Date object
@@ -199,6 +200,45 @@ const CartScreen = ({ navigation }) => {
         setCartSub(newVal + parseFloat(storeDetails.deliveryPrice));
       } else {
         setCartSub(newVal);
+      }
+      //check if there is a discount in the cart then move it the end of the cart
+      if (cart.length > 1) {
+        if (!cart[cart.length - 1].name.includes("Cart Discount")) {
+          for (let i = 0; i < cart.length; i++) {
+            if (cart[i].name.includes("Cart Discount")) {
+              console.log("In first if");
+              const discountItem = cart[i];
+              const newCart = structuredClone(cart);
+              newCart.splice(i, 1);
+
+              if (discountItem.percent) {
+                newCart.push({
+                  ...discountItem,
+                  price:
+                    (newVal + -discountItem.price) * discountItem.percent * -1,
+                });
+              } else {
+                newCart.push(discountItem);
+              }
+              setCartState(newCart);
+            }
+          }
+        } else if (cart[cart.length - 1].percent) {
+          console.log("In second if");
+          const discountItem = cart[cart.length - 1];
+          if (
+            (newVal + -discountItem.price) * discountItem.percent * -1 !==
+            discountItem.price
+          ) {
+            const newCart = structuredClone(cart);
+            newCart.pop();
+            newCart.push({
+              ...discountItem,
+              price: (newVal + -discountItem.price) * discountItem.percent * -1,
+            });
+            setCartState(newCart);
+          }
+        }
       }
     } else {
       setCartSub(0);
@@ -308,7 +348,9 @@ const CartScreen = ({ navigation }) => {
           .then(qz.websocket.disconnect)
           .catch(function (err) {
             // console.error(err);
-            alert('An error occured while trying to print. Try refreshing the page and trying again.')
+            alert(
+              "An error occured while trying to print. Try refreshing the page and trying again."
+            );
           });
       }
 
@@ -573,6 +615,20 @@ const CartScreen = ({ navigation }) => {
           <CartButton
             style={[
               styles.iconContainer,
+              (cart.length < 1 || updatingOrder) && { opacity: 0.5 },
+            ]}
+            onPress={() => setdiscountModal(true)}
+            disabled={cart.length < 1}
+            icon={() => (
+              <Image
+                style={{ width: 26, height: 26 }}
+                source={require("assets/tag.png")}
+              />
+            )}
+          />
+          <CartButton
+            style={[
+              styles.iconContainer,
               (cart.length > 0 || updatingOrder) && { opacity: 0.5 },
             ]}
             onPress={() => setclockinModal(true)}
@@ -581,7 +637,7 @@ const CartScreen = ({ navigation }) => {
               <MaterialCommunityIcons name="clock" size={26} color="white" />
             )}
           />
-          <CartButton
+          {/* <CartButton
             style={[
               styles.iconContainer,
               (cart.length > 0 || updatingOrder) && { opacity: 0.5 },
@@ -591,7 +647,7 @@ const CartScreen = ({ navigation }) => {
             icon={() => (
               <MaterialCommunityIcons name="history" size={26} color="white" />
             )}
-          />
+          /> */}
           <CartButton
             style={[
               styles.iconContainer,
@@ -874,6 +930,7 @@ const CartScreen = ({ navigation }) => {
           deliveryChecked={deliveryChecked}
           setDeliveryChecked={setDeliveryChecked}
           ongoingDelivery={ongoingDelivery}
+          setsaveCustomerModal={setSaveCustomerModal}
         />
       </Modal>
       <Modal visible={cashModal} transparent>
@@ -908,6 +965,15 @@ const CartScreen = ({ navigation }) => {
         <SettingsPasswordModal
           setsettingsPasswordModalVis={setsettingsPasswordModalVis}
           navigation={navigation}
+        />
+      </Modal>
+      <Modal visible={discountModal} transparent={true}>
+        <DiscountModal
+          setdiscountModal={setdiscountModal}
+          cartSub={cartSub}
+          cart={cart}
+          deliveryChecked={deliveryChecked}
+          storeDetails={storeDetails}
         />
       </Modal>
     </View>

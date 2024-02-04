@@ -34,6 +34,7 @@ const DeliveryScreen = ({
   setDeliveryChecked,
   setsavedCustomerDetails,
   ongoingDelivery,
+  setsaveCustomerModal,
 }) => {
   const [localAddress, setlocalAddress] = useState(null);
   const [saveCustomerChecked, setsaveCustomerChecked] = useState(false);
@@ -199,8 +200,7 @@ const DeliveryScreen = ({
           backgroundColor: "rgba(0, 0, 0, 0.3)",
           justifyContent: "center",
           alignItems: "center",
-          height: "100%",
-          width: "100%",
+          flex: 1,
         }}
       />
       <View
@@ -219,21 +219,46 @@ const DeliveryScreen = ({
           shadowOpacity: 0.57,
           shadowRadius: 10,
           width: "35%",
-          top: "15%",
+          top: "10%",
+          bottom: "10%",
+          height: "80%",
         }}
       >
         <View>
-          <Text
+          <View
             style={{
-              textAlign: "center",
-              fontSize: 22,
-              fontWeight: "600",
-              color: "rgba(74,74,74,1)",
-              marginBottom: 20,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 15,
             }}
           >
-            Create Phone Order
-          </Text>
+            <MaterialCommunityIcons
+              onPress={() => setDeliveryModal(false)}
+              name="close"
+              size={26}
+              color="rgba(74,74,74,1)"
+            />
+            <Text
+              style={{
+                margin: 25,
+                fontSize: 20,
+                fontWeight: "600",
+                textAlign: "center",
+              }}
+            >
+              Phone Order
+            </Text>
+            <MaterialCommunityIcons
+              onPress={() => {
+                setsaveCustomerModal(true);
+                setDeliveryModal(false);
+              }}
+              name="history"
+              size={26}
+              color="rgba(74,74,74,1)"
+            />
+          </View>
           <View
             style={{
               flexDirection: "row",
