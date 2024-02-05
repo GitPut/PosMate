@@ -160,7 +160,10 @@ export const setDeviceIdState = (val) => {
   deviceIdState.set(val);
 };
 
-export const deviceTreeState = entity([]);
+export const deviceTreeState = entity({
+  extraDevicesPayingFor: 0,
+  devices: [],
+});
 
 export const setDeviceTreeState = (val) => {
   deviceTreeState.set(val);

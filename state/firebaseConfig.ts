@@ -16,6 +16,20 @@ const firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+firebase
+  .firestore()
+  .enablePersistence()
+  .catch(function (err) {
+    if (err.code === "failed-precondition") {
+      // Multiple tabs open, persistence can only be enabled
+      // in one tab at a time.
+      console.log("Persistence failed: ", err);
+    } else if (err.code === "unimplemented") {
+      // The current browser does not support all of the
+      // features required to enable persistence
+      console.log("Persistence is not available: ", err);
+    }
+  });
 
 // Initialize Cloud Firestore and get a reference to the service
 export const auth = firebase.auth();

@@ -125,7 +125,7 @@ const RouteManagerNew = () => {
             import("assets/css/style.css");
 
             const products = [];
-            const categories = [];
+            let extraDevicesPayingFor = 0;
 
             doc.ref
               .collection("products")
@@ -137,7 +137,9 @@ const RouteManagerNew = () => {
                   });
                 }
               })
-              .catch((e) => console.log("Error has occured with db: ", e));
+              .catch((e) =>
+                console.log("Error has occured with db products: ", e)
+              );
 
             setUserStoreState({
               products: products,
@@ -169,7 +171,7 @@ const RouteManagerNew = () => {
                   });
                 }
               })
-              .catch(() => console.log("Error has occured with db"));
+              .catch((e) => console.log("Error has occured with db wooorders: ", e));
 
             doc.ref
               .collection("employees")
@@ -183,7 +185,7 @@ const RouteManagerNew = () => {
                   setEmployeesState(localEmployees);
                 }
               })
-              .catch(() => console.log("Error has occured with db"));
+              .catch((e) => console.log("Error has occured with db employees: ", e));
 
             doc.ref
               .collection("subscriptions")
@@ -263,7 +265,7 @@ const RouteManagerNew = () => {
                           stripePublicKey: doc.data().stripePublicKey,
                           stripeSecretKey: doc.data().stripeSecretKey,
                           paidStatus: "canceled",
-                        }); 
+                        });
                       } else {
                         db.collection("users")
                           .doc(auth.currentUser.uid)
@@ -286,6 +288,12 @@ const RouteManagerNew = () => {
                       }
                     }
                   });
+                  const devicesAmount = docs.docs.filter(
+                    (e) =>
+                      e.data().role === "Extra Device" &&
+                      e.data().status === "active"
+                  ).length;
+                  extraDevicesPayingFor = devicesAmount;
                 } else if (doc.data().freeTrial) {
                   setisSubscribed(true);
                   setisNewUser(false);
@@ -294,7 +302,9 @@ const RouteManagerNew = () => {
                   setisSubscribed(false);
                 }
               })
-              .catch(() => console.log("Error has occured with db"));
+              .catch(() =>
+                console.log("Error has occured with db extra devices")
+              );
 
             doc.ref
               .collection("customers")
@@ -308,7 +318,7 @@ const RouteManagerNew = () => {
 
                 setCustomersList(newCustomerList);
               })
-              .catch(() => console.log("Error has occured with db"));
+              .catch((e) => console.log("Error has occured with db customers: ", e));
 
             if (doc.data().freeTrial) {
               setisNewUser(false);
@@ -367,7 +377,7 @@ const RouteManagerNew = () => {
                   }
                 });
 
-                setDeviceTreeState(devices);
+                setDeviceTreeState({ devices: devices, extraDevicesPayingFor });
               });
 
             const unsub = db
@@ -395,7 +405,7 @@ const RouteManagerNew = () => {
               unsub();
             };
           })
-          .catch(() => console.log("Error has occured with db"));
+          .catch((e) => console.log("Error has occured with db users: ", e));
       } else {
         localStorage.removeItem("savedUserState");
         setUserState(null);
@@ -472,7 +482,12 @@ const RouteManagerNew = () => {
                     ]);
                     wooOrders.push({ ...order, printed: true });
                   })
-                  .catch((e) => console.log("Error has occured with db: ", e));
+                  .catch((e) =>
+                    console.log(
+                      "Error has occured with db wooOrders print: ",
+                      e
+                    )
+                  );
               } else {
                 db.collection("users")
                   .doc(userS.uid)
@@ -487,7 +502,12 @@ const RouteManagerNew = () => {
                     });
                     wooOrders[index].printed = true;
                   })
-                  .catch((e) => console.log("Error has occured with db: ", e));
+                  .catch((e) =>
+                    console.log(
+                      "Error has occured with db wooOrder print second if: ",
+                      e
+                    )
+                  );
               }
 
               const CleanupOps = (metaList) => {

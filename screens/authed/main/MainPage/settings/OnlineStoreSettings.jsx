@@ -46,7 +46,6 @@ const OnlineStoreSettings = () => {
     const [urlEnding, seturlEnding] = useState(onlineStoreDetails.urlEnding)
     const [stripePublicKey, setstripePublicKey] = useState(onlineStoreDetails.stripePublicKey)
     const [stripeSecretKey, setstripeSecretKey] = useState(onlineStoreDetails.stripeSecretKey)
-    // const [delivery, setdelivery] = useState(second)
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const [viewVisible, setviewVisible] = useState(false);
 
