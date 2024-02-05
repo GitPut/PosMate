@@ -4,10 +4,18 @@ import "./css/normalize.css";
 import "./css/webflow.css";
 import "./css/divine-pos.webflow.css";
 import Footer from "components/Footer";
+import { Helmet } from "react-helmet";
 
 const AboutUs = () => {
   return (
     <div className="page-wrapper-non">
+      <Helmet>
+        <title>Divine POS - About Us</title>
+        <meta
+          name="description"
+          content="Learn more about Divine POS and our mission to empower businesses with powerful point-of-sale software."
+        />
+      </Helmet>
       <main className="main-wrapper">
         <section className="section-about-us-header">
           <div className="padding-global">

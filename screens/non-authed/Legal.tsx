@@ -1,10 +1,18 @@
 import { View, Text } from "react-native";
 import React from "react";
 import Footer from "components/Footer";
+import { Helmet } from "react-helmet";
 
 const Legal = () => {
   return (
     <div className="page-wrapper-non">
+      <Helmet>
+        <title>Divine POS - Legal</title>
+        <meta
+          name="description"
+          content="Read Divine POS legal information and terms of service."
+        />
+      </Helmet>
       <main className="main-wrapper">
         <section className="section-legal-header">
           <div className="padding-global">

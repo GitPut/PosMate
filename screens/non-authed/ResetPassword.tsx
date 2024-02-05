@@ -1,6 +1,7 @@
 import { View, Text, Button } from "react-native";
 import React, { useState } from "react";
 import Axios from "axios";
+import { Helmet } from "react-helmet";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
@@ -8,6 +9,13 @@ const ResetPassword = () => {
 
   return (
     <div className="w-users-userformpagewrap page-wrapper-non reset-password">
+      <Helmet>
+        <title>Divine POS - Reset Password</title>
+        <meta
+          name="description"
+          content="Reset your Divine POS account password securely and easily."
+        />
+      </Helmet>
       <div
         data-animation="default"
         data-collapse="medium"

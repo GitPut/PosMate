@@ -72,7 +72,11 @@ export const updateFreeTrial = (endDate) => {
   });
 };
 
-export const logout = () => auth.signOut();
+export const logout = () => {
+  localStorage.removeItem("isAuthedBackend");
+  localStorage.removeItem("savedUserState");
+  auth.signOut();
+};
 
 export const addCustomerDetailsToDb = (customer) =>
   db

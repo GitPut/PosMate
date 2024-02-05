@@ -4,6 +4,7 @@ import { Button } from "@react-native-material/core";
 import Footer from "components/Footer";
 import firebase from "firebase/app";
 import Axios from "axios";
+import { Helmet } from "react-helmet";
 
 const Contact = () => {
   const [first, setfirst] = useState("");
@@ -17,6 +18,13 @@ const Contact = () => {
 
   return (
     <div className="page-wrapper-non">
+      <Helmet>
+        <title>Divine POS - Contact</title>
+        <meta
+          name="description"
+          content="Contact Divine POS for support, inquiries, or partnership opportunities."
+        />
+      </Helmet>
       <main className="main-wrapper">
         <section className="section-contact">
           <div className="padding-global">

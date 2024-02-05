@@ -1,32 +1,19 @@
 // import Main from "./WebHomeFiles/index.html";
-import React, { Component, useEffect } from "react";
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-} from "react-native";
-import MaterialButtonViolet from "components/MaterialButtonViolet";
-import FeatureItem from "components/FeatureItem";
-import MaterialButtonPrimary from "components/MaterialButtonPrimary";
-import PlanItem from "components/PlanItem";
-import { LinearGradient } from "expo-linear-gradient";
-import useWindowDimensions from "components/useWindowDimensions";
-import Card from "components/Card";
-import img1 from "assets/backend.png";
+import React from "react";
+import { StyleSheet } from "react-native";
 import Footer from "components/Footer";
+import { Helmet } from "react-helmet";
 
 const WebHome = () => {
-
-  useEffect(() => {
-    console.log('hello')
-  }, [])
-  
-
   return (
     <div className="page-wrapper-non">
+      <Helmet>
+        <title>Divine POS - Home</title>
+        <meta
+          name="description"
+          content="Divine POS - Powerful point-of-sale software for all businesses"
+        />
+      </Helmet>
       <main className="main-wrapper">
         <div className="section-wrapper">
           <header className="section-home-hero">

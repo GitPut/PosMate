@@ -1,10 +1,18 @@
 import { View, Text } from "react-native";
 import React from "react";
 import Footer from "components/Footer";
+import { Helmet } from "react-helmet";
 
 const Features = () => {
   return (
     <div className="page-wrapper-non">
+      <Helmet>
+        <title>Divine POS - Features</title>
+        <meta
+          name="description"
+          content="Explore the powerful features of Divine POS, designed to streamline your business operations."
+        />
+      </Helmet>
       <main className="main-wrapper">
         <section className="section-features-header">
           <div className="padding-global">

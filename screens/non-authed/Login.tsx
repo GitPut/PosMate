@@ -2,6 +2,7 @@ import { View, Text, Modal, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { signIn } from "state/firebaseFunctions";
 import { Button } from "@react-native-material/core";
+import { Helmet } from "react-helmet";
 
 const Login = () => {
   const [email, setEmail] = useState();
@@ -20,6 +21,13 @@ const Login = () => {
 
   return (
     <div className="w-users-userformpagewrap page-wrapper-non login">
+      <Helmet>
+        <title>Divine POS - Login</title>
+        <meta
+          name="description"
+          content="Log in to Divine POS and manage your business with ease."
+        />
+      </Helmet>
       <div
         data-animation="default"
         data-collapse="medium"

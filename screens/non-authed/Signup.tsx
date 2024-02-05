@@ -1,6 +1,7 @@
 import { View, Text, Button, Modal, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { signUp } from "state/firebaseFunctions";
+import { Helmet } from "react-helmet";
 
 const Signup = () => {
   const [email, setEmail] = useState();
@@ -20,6 +21,13 @@ const Signup = () => {
 
   return (
     <div className="w-users-userformpagewrap page-wrapper-non signup">
+      <Helmet>
+        <title>Divine POS - Signup</title>
+        <meta
+          name="description"
+          content="Sign up for Divine POS - Powerful point-of-sale software for all businesses"
+        />
+      </Helmet>
       <div
         data-animation="default"
         data-collapse="medium"

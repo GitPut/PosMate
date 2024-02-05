@@ -1,9 +1,17 @@
 import { View, Text } from "react-native";
 import React from "react";
+import { Helmet } from "react-helmet";
 
 const LatestUpdates = () => {
   return (
     <div className="page-wrapper-non">
+      <Helmet>
+        <title>Divine POS - Latest Updates</title>
+        <meta
+          name="description"
+          content="Stay informed with the latest updates and features from Divine POS."
+        />
+      </Helmet>
       <main className="main-wrapper">
         <div className="section-changelog-hero">
           <div className="padding-global">

@@ -1,10 +1,18 @@
 import { View, Text } from "react-native";
 import React, { useState } from "react";
 import Footer from "components/Footer";
+import { Helmet } from "react-helmet";
 
 const Pricing = () => {
   return (
     <div className="page-wrapper-non">
+      <Helmet>
+        <title>Divine POS - Pricing</title>
+        <meta
+          name="description"
+          content="Explore Divine POS pricing plans and choose the best option for your business."
+        />
+      </Helmet>
       <main className="main-wrapper">
         <section className="section-pricing">
           <div className="padding-global">
