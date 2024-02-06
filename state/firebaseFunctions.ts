@@ -1,9 +1,14 @@
 import { auth, db } from "./firebaseConfig";
 
-export const signIn = (email, password) =>
+export const signIn = (email: string, password: string) =>
   auth.signInWithEmailAndPassword(email, password);
 
-export const signUp = (email, password, name, phoneNumber) =>
+export const signUp = (
+  email: string,
+  password: string,
+  name: string,
+  phoneNumber: string
+) =>
   auth.createUserWithEmailAndPassword(email, password).then((userAuth) => {
     if (userAuth.user) {
       db.collection("users")
@@ -26,14 +31,11 @@ export const signUp = (email, password, name, phoneNumber) =>
             phoneNumber: phoneNumber,
             email: email,
           },
-          //company name
-          //adddress
-          //etc
         });
     }
   });
 
-export const updateData = (categories) => {
+export const updateData = (categories: any) => {
   db.collection("users")
     .doc(auth.currentUser?.uid)
     .update({
@@ -42,20 +44,20 @@ export const updateData = (categories) => {
     .catch((e) => console.log("ERROR HAS OCCURE FB: ", e));
 };
 
-export const updateWooCredentials = (wooCredentials) => {
+export const updateWooCredentials = (wooCredentials: any) => {
   db.collection("users").doc(auth.currentUser?.uid).update({
     wooCredentials: wooCredentials,
   });
 };
 
-export const updateTransList = (reciept) => {
+export const updateTransList = (receipt: any) => {
   db.collection("users")
     .doc(auth.currentUser?.uid)
     .collection("transList")
-    .add(reciept);
+    .add(receipt);
 };
 
-export const updateStoreDetails = (storeDetails) => {
+export const updateStoreDetails = (storeDetails: any) => {
   db.collection("users").doc(auth.currentUser?.uid).update({
     storeDetails: storeDetails,
   });
@@ -66,7 +68,7 @@ export const updateStoreDetails = (storeDetails) => {
   }
 };
 
-export const updateFreeTrial = (endDate) => {
+export const updateFreeTrial = (endDate: any) => {
   db.collection("users").doc(auth.currentUser?.uid).update({
     freeTrial: endDate,
   });
@@ -76,9 +78,10 @@ export const logout = () => {
   localStorage.removeItem("isAuthedBackend");
   localStorage.removeItem("savedUserState");
   auth.signOut();
+  window.location.reload();
 };
 
-export const addCustomerDetailsToDb = (customer) =>
+export const addCustomerDetailsToDb = (customer: any) =>
   db
     .collection("users")
     .doc(auth.currentUser?.uid)

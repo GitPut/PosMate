@@ -15,7 +15,7 @@
       "assets/*": ["assets/*"],
       "components/*": ["components/*"],
       "navigation/*": ["navigation/*"],
-      "screens/*": ["screens/*"],
+      "pages/*": ["pages/*"],
       "state/*": ["state/*"]
     }
   },

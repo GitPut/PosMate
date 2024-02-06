@@ -1,12 +1,12 @@
 import React from "react";
 import "react-native-gesture-handler";
-import RouteManagerNew from "navigation/RouteManagerNew";
+import RouteManager from "navigation/RouteManager";
 
 //Do this before syncing git config --global core.editor "code --wait"
 //
 
 const App = () => {
-  return <RouteManagerNew />;
+  return <RouteManager />;
 };
 
 export default App;

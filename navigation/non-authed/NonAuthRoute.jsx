@@ -1,33 +1,19 @@
-import React, { Component, useEffect } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import { isSignedInSettingsState } from 'state/state';
-
-// import SignIn from './SignIn'
-// import ForgetPassword from './ForgetPassword';
-// import SignUp from './SignUp'
-// import Pos from './pos/pos'
-
-
-// import Error404 from '../MainPage/ErrorPage/Error404';
-// import Error500 from '../MainPage/ErrorPage/Error500';
-
+import React, { useEffect } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
-import Default from './Default';
-import Login from "screens/non-authed/Login";
-import WebHome from "screens/non-authed/WebHome";
-import AboutUs from "screens/non-authed/AboutUs";
-import Features from "screens/non-authed/Features";
-import NotFound from "screens/non-authed/NotFound";
-import Pricing from "screens/non-authed/Pricing";
-import Faqs from "screens/non-authed/Faqs";
-import Contact from "screens/non-authed/Contact";
-import Signup from "screens/non-authed/Signup";
-import ResetPassword from "screens/non-authed/ResetPassword";
-import LatestUpdates from "screens/non-authed/LatestUpdates";
-import Legal from "screens/non-authed/Legal";
-import WebHomeHeader from 'components/WebHomeHeader';
-import OrderPage from 'screens/non-authed/OrderPage';
-
+import Login from "pages/non-authed/Login";
+import WebHome from "pages/non-authed/WebHome";
+import AboutUs from "pages/non-authed/AboutUs";
+import Features from "pages/non-authed/Features";
+import NotFound from "pages/non-authed/NotFound";
+import Pricing from "pages/non-authed/Pricing";
+import Faqs from "pages/non-authed/Faqs";
+import Contact from "pages/non-authed/Contact";
+import Signup from "pages/non-authed/Signup";
+import ResetPassword from "pages/non-authed/ResetPassword";
+import Legal from "pages/non-authed/Legal";
+import WebHomeHeader from 'components/non-authed/WebHomeHeader';
+import OrderPage from 'pages/non-authed/OrderPage';
 
 const NonAuthRoute = (props) => {
     const { location } = props;
@@ -42,7 +28,7 @@ const NonAuthRoute = (props) => {
 
     return (
         <>
-            {location.pathname !== '/log-in' && location.pathname !== '/sign-up' && location.pathname !== '/reset-password' && !location.pathname.includes('/order/') && <WebHomeHeader location={location} />}
+            {location.pathname !== '/log-in' && location.pathname !== '/sign-up' && location.pathname !== '/reset-password' && !location.pathname.includes('/order/') && <WebHomeHeader />}
             <Switch>
                 <Route exact path="/" component={WebHome} />
                 <Route path="/features" component={Features} />
@@ -54,7 +40,6 @@ const NonAuthRoute = (props) => {
                 <Route path="/sign-up" component={Signup} />
                 <Route path="/legal" component={Legal} />
                 <Route path="/reset-password" component={ResetPassword} />
-                <Route path="/latest-updates" component={LatestUpdates} />
                 <Route path="/order/:urlEnding" component={OrderPage} />
                 <Route path="*" component={NotFound} />
             </Switch>

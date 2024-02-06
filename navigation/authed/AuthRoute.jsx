@@ -1,20 +1,8 @@
-import React, { Component, useEffect } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import HomeScreen from 'screens/authed/HomeScreen';
-import DefaultLayout from 'screens/authed/main/InitialPage/Sidebar/DefaultLayout';
-import { isSignedInSettingsState } from 'state/state';
-
-// import SignIn from './SignIn'
-// import ForgetPassword from './ForgetPassword';
-// import SignUp from './SignUp'
-// import Pos from './pos/pos'
-
-
-// import Error404 from '../MainPage/ErrorPage/Error404';
-// import Error500 from '../MainPage/ErrorPage/Error500';
-
+import React, { useEffect } from 'react';
+import { Route, Switch } from 'react-router-dom';
+import HomeScreen from 'pages/authed/pos/HomeScreen';
+import DefaultLayout from 'pages/authed/main/InitialPage/Sidebar/DefaultLayout';
 import { useHistory } from "react-router-dom";
-
 
 const AuthRoute = (props) => {
     const { location } = props;
