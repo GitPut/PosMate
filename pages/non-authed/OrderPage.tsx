@@ -381,7 +381,7 @@ const Page1 = ({ storeDetails, setorderDetails, orderDetails, setpage }) => {
                 );
                 if (storeDetails.deliveryRange) {
                   if (distance > parseFloat(storeDetails.deliveryRange)) {
-                    alert("The delivery address is out of range");
+                    alert("The delivery address is out of range"); 
                   } else {
                     setpage(2);
                   }
@@ -779,6 +779,7 @@ const Page2 = ({
                       name: orderDetails.name,
                       phone: orderDetails.phone,
                       address: orderDetails.address,
+                      email: orderDetails.email,
                     },
                   });
                 } else {
@@ -797,6 +798,7 @@ const Page2 = ({
                     customer: {
                       name: orderDetails.name,
                       phone: orderDetails.phone,
+                      email: orderDetails.email,
                       address: null,
                     },
                   });

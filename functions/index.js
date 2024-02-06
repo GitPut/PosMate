@@ -80,6 +80,51 @@ exports.sendEmail = functions.https.onRequest((req, res) => {
   });
 });
 
+exports.sendCustomEmail = functions.https.onRequest((req, res) => {
+  //for testing purposes
+  console.log(
+    "from sendEmail function. The request object is:",
+    JSON.stringify(req.body)
+  );
+
+  //enable CORS using the `cors` express middleware.
+  cors(req, res, () => {
+    //get contact form data from the req and then assigned it to variables
+    const fromEmail = req.body.fromEmail;
+    const toEmail = req.body.toEmail;
+    const name = req.body.name;
+    const subject = req.body.subject;
+    const message = req.body.message;
+
+    //config the email message
+    const mailOptions = {
+      from: fromEmail,
+      to: toEmail,
+      subject: subject,
+      text: message,
+    };
+
+    //call the built in `sendMail` function and return different responses upon success and failure
+    return transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).send({
+          data: {
+            status: 500,
+            message: error.toString(),
+          },
+        });
+      }
+
+      return res.status(200).send({
+        data: {
+          status: 200,
+          message: "sent",
+        },
+      });
+    });
+  });
+});
+
 //export the cloud function called `sendEmail`
 exports.sendPasswordResetEmail = functions.https.onRequest((req, res) => {
   //enable CORS using the `cors` express middleware.
@@ -223,7 +268,21 @@ exports.processPayment = functions.https.onRequest(async (req, res) => {
         .collection("pendingOrders")
         .add(orderDetails);
 
-      res.status(200).json({ success: true, message: "Payment succeeded" });
+      const mailOptions = {
+        from: "support@divinepos.com",
+        to: orderDetails.customer.email,
+        subject: "Order Confirmation",
+        html: `<h1>Order Confirmation</h1>
+        <p>
+           <b>Hello! Your order has been confirmed.<br>
+        </p>`,
+      };
+      return transporter.sendMail(mailOptions, (error, data) => {
+        if (error) {
+          return res.send(error.toString());
+        }
+        res.status(200).json({ success: true, message: "Payment succeeded" });
+      });
     } catch (error) {
       console.error("Error during payment:", error);
       res

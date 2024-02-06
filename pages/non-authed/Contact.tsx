@@ -267,13 +267,13 @@ const Contact = () => {
                             event.preventDefault();
                             setsuccess(false);
                             seterror(false);
-                            var data = JSON.stringify({
+                            const data = JSON.stringify({
                               email: email,
                               name: "",
                               message: `Hello ${first} ${last} with the company ${companyName} in the country ${country}, wants more information. Here are the notes: ${anythingElse}`,
                             });
 
-                            var config = {
+                            const config = {
                               method: "post",
                               maxBodyLength: Infinity,
                               url: "https://us-central1-posmate-5fc0a.cloudfunctions.net/sendEmail",

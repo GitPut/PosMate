@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/static/js/app.1a96426b.chunk.js",
-    "app.js.map": "/static/js/app.1a96426b.chunk.js.map",
-    "runtime~app.js": "/static/js/runtime~app.88aec9c1.js",
-    "runtime~app.js.map": "/static/js/runtime~app.88aec9c1.js.map",
-    "static/js/2.911ac4e6.chunk.js": "/static/js/2.911ac4e6.chunk.js",
-    "static/js/2.911ac4e6.chunk.js.map": "/static/js/2.911ac4e6.chunk.js.map",
+    "app.js": "/static/js/app.9ad991fb.chunk.js",
+    "app.js.map": "/static/js/app.9ad991fb.chunk.js.map",
+    "runtime~app.js": "/static/js/runtime~app.e444a76a.js",
+    "runtime~app.js.map": "/static/js/runtime~app.e444a76a.js.map",
+    "static/js/2.1902da46.chunk.js": "/static/js/2.1902da46.chunk.js",
+    "static/js/2.1902da46.chunk.js.map": "/static/js/2.1902da46.chunk.js.map",
     "static/js/3.984c64db.chunk.js": "/static/js/3.984c64db.chunk.js",
     "static/js/3.984c64db.chunk.js.map": "/static/js/3.984c64db.chunk.js.map",
     "static/js/4.d4ce3798.chunk.js": "/static/js/4.d4ce3798.chunk.js",
@@ -16,8 +16,8 @@
     "static/js/6.94c39c87.chunk.js.map": "/static/js/6.94c39c87.chunk.js.map",
     "static/js/7.e17b9bc1.chunk.js": "/static/js/7.e17b9bc1.chunk.js",
     "static/js/7.e17b9bc1.chunk.js.map": "/static/js/7.e17b9bc1.chunk.js.map",
-    "static/js/8.158784dd.chunk.js": "/static/js/8.158784dd.chunk.js",
-    "static/js/8.158784dd.chunk.js.map": "/static/js/8.158784dd.chunk.js.map",
+    "static/js/8.a8ba6810.chunk.js": "/static/js/8.a8ba6810.chunk.js",
+    "static/js/8.a8ba6810.chunk.js.map": "/static/js/8.a8ba6810.chunk.js.map",
     "fonts/AntDesign.ttf": "/./fonts/AntDesign.ttf",
     "fonts/Archivo-Regular.ttf": "/./fonts/Archivo-Regular.ttf",
     "fonts/Archivo-SemiBold.ttf": "/./fonts/Archivo-SemiBold.ttf",
@@ -61,7 +61,7 @@
     "robots.txt": "/robots.txt",
     "serve.json": "/serve.json",
     "sitemap.xml": "/sitemap.xml",
-    "static/js/2.911ac4e6.chunk.js.LICENSE.txt": "/static/js/2.911ac4e6.chunk.js.LICENSE.txt",
+    "static/js/2.1902da46.chunk.js.LICENSE.txt": "/static/js/2.1902da46.chunk.js.LICENSE.txt",
     "static/media/adidas.png": "/static/media/adidas.838658b0.png",
     "static/media/avatar-02.jpg": "/static/media/avatar-02.6168ca8a.jpg",
     "static/media/avatar-03.jpg": "/static/media/avatar-03.4265c65e.jpg",
@@ -188,8 +188,8 @@
     "static/media/wallet1.svg": "/static/media/wallet1.b741d691.svg"
   },
   "entrypoints": [
-    "static/js/runtime~app.88aec9c1.js",
-    "static/js/2.911ac4e6.chunk.js",
-    "static/js/app.1a96426b.chunk.js"
+    "static/js/runtime~app.e444a76a.js",
+    "static/js/2.1902da46.chunk.js",
+    "static/js/app.9ad991fb.chunk.js"
   ]
 }

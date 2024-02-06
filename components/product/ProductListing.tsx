@@ -1,24 +1,29 @@
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
 import { Button } from "@react-native-material/core";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import ProductOptionDropDown from "./ProductOptionDropDown";
 import { addCartState, cartState, setCartState } from "state/state";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
-const ProductListing = ({ product, itemIndex, goBack }) => {
+const ProductListing = React.memo(function ProductListing({
+  product,
+  itemIndex,
+  goBack,
+}) {
   const cart = cartState.use();
-  const myObj = product;
-  const [myObjProfile, setmyObjProfile] = useState(myObj);
-  const [total, settotal] = useState(myObj.total ? myObj.total : myObj.price);
-  const [extraInput, setextraInput] = useState(
-    myObj.extraDetails ? myObj.extraDetails : ""
+  const [myObjProfile, setMyObjProfile] = useState(product);
+  const [total, setTotal] = useState(
+    myObjProfile.total ? myObjProfile.total : myObjProfile.price
+  );
+  const [extraInput, setExtraInput] = useState(
+    myObjProfile.extraDetails ? myObjProfile.extraDetails : ""
   );
 
   const DisplayOption = ({ e, index }) => {
@@ -94,7 +99,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
                 newMyObjProfile.options[index].optionsList[listIndex].selected =
                   true;
                 setoptionVal(option);
-                setmyObjProfile(newMyObjProfile);
+                newMyObjProfile(newMyObjProfile);
               }}
               value={optionVal}
               style={{ marginBottom: 25 }}
@@ -194,7 +199,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
                             ].selectedTimes -= 1 * thisItemCountsAs;
                           }
 
-                          setmyObjProfile(newMyObjProfile);
+                          newMyObjProfile(newMyObjProfile);
                         }}
                       />
                       <Text style={{ padding: 5 }}>
@@ -286,7 +291,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
           if (item.selected === true) {
             newMyObjProfile.options[index].optionsList[indexOfItem].selected =
               false;
-            setmyObjProfile(newMyObjProfile);
+            newMyObjProfile(newMyObjProfile);
           }
         }
       );
@@ -294,8 +299,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
   };
 
   useEffect(() => {
-    settotal(getPrice());
-    console.log("myObjProfile: ", myObjProfile);
+    setTotal(getPrice());
   }, [myObjProfile]);
 
   const getPrice = () => {
@@ -403,96 +407,55 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
       }
 
       goBack();
-      setmyObjProfile(myObj);
-      settotal(myObjProfile.price);
-      setextraInput(null);
+      setMyObjProfile(myObj);
+      setTotal(myObjProfile.price);
+      setExtraInput(null);
     }
   };
 
   return (
-    <View style={{ padding: "5%", backgroundColor: "white", height: "100%" }}>
-      <View
-        style={{
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexDirection: "row",
-        }}
-      >
-        <TouchableOpacity
-          onPress={goBack}
-          style={{
-            alignItems: "center",
-            flexDirection: "row",
-          }}
-        >
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={goBack} style={styles.backButton}>
           <MaterialCommunityIcons
             name="chevron-left"
             size={32}
             color="#4A4A4A"
           />
-          <Text
-            style={{
-              fontFamily: "archivo-600",
-              fontSize: 22,
-              color: "#4A4A4A",
-            }}
-          >
-            Dashboard
-          </Text>
+          <Text style={styles.dashboardText}>Dashboard</Text>
         </TouchableOpacity>
-        <Text style={{ fontFamily: "archivo-600", fontSize: 24 }}>
-          {myObj.name}
-        </Text>
-        <Text
-          style={{ fontFamily: "archivo-600", fontSize: 22, color: "#4A4A4A" }}
-        >
+        <Text style={styles.productName}>{myObjProfile.name}</Text>
+        <Text style={styles.totalText}>
           Total: ${parseFloat(total).toFixed(2)}
         </Text>
       </View>
-      <ScrollView style={styles.modalContainer}>
-        {myObj.description && (
-          <Text style={{ fontWeight: "600", fontSize: 16, marginBottom: 15 }}>
-            Description: {myObj.description}
+      <ScrollView style={styles.scrollView}>
+        {myObjProfile.description && (
+          <Text style={styles.description}>
+            Description: {myObjProfile.description}
           </Text>
         )}
         {myObjProfile.options.map((e, index) => (
           <DisplayOption e={e} index={index} key={index} />
         ))}
       </ScrollView>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
+      <View style={styles.footer}>
         <TextInput
           placeholder="Write any extra info here.."
-          onChangeText={(val) => setextraInput(val)}
+          onChangeText={(val) => setExtraInput(val)}
           value={extraInput}
-          style={{
-            width: "70%",
-            height: 45,
-            borderColor: "lightgrey",
-            borderWidth: 1,
-            padding: 5,
-            borderRadius: 3,
-            paddingLeft: 10,
-            fontSize: 14,
-          }}
+          style={styles.input}
         />
         <Button
           title={itemIndex >= 0 ? "Save" : "Add To Cart"}
           onPress={AddToCart}
-          style={{ backgroundColor: "#3351F3", width: 140, height: 40 }}
-          titleStyle={{ fontSize: 16, textTransform: "capitalize" }}
+          style={styles.button}
+          titleStyle={styles.buttonTitle}
         />
       </View>
     </View>
   );
-};
+});
 
 export default ProductListing;
 
@@ -579,5 +542,82 @@ const styles = StyleSheet.create({
     fontFamily: "archivo-600",
     fontSize: 16,
     padding: 10,
+  },
+  header: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "row",
+  },
+  backButton: {
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  dashboardText: {
+    fontFamily: "archivo-600",
+    fontSize: 22,
+    color: "#4A4A4A",
+  },
+  productName: {
+    fontFamily: "archivo-600",
+    fontSize: 24,
+  },
+  totalText: {
+    fontFamily: "archivo-600",
+    fontSize: 22,
+    color: "#4A4A4A",
+  },
+  scrollView: {
+    marginTop: 25,
+    marginBottom: 25,
+    padding: "5%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "rgba(232,232,232,1)",
+    shadowColor: "rgba(0,0,0,1)",
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    elevation: 30,
+    shadowOpacity: 0.03,
+    shadowRadius: 10,
+    height: "70%",
+  },
+  description: {
+    fontWeight: "600",
+    fontSize: 16,
+    marginBottom: 15,
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  input: {
+    width: "70%",
+    height: 45,
+    borderColor: "lightgrey",
+    borderWidth: 1,
+    padding: 5,
+    borderRadius: 3,
+    paddingLeft: 10,
+    fontSize: 14,
+  },
+  button: {
+    backgroundColor: "#3351F3",
+    width: 140,
+    height: 40,
+  },
+  buttonTitle: {
+    fontSize: 16,
+    textTransform: "capitalize",
+  },
+  container: {
+    padding: "5%",
+    backgroundColor: "white",
+    height: "100%",
   },
 });
