@@ -27,6 +27,8 @@ import { onlineStoreState, userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
 import FeatherIcon from "feather-icons-react";
 import { auth, db } from "state/firebaseConfig";
+import { TouchableOpacity, View } from "react-native";
+import { Feather } from "@expo/vector-icons";
 
 const CategoryList = () => {
   const [inputfilter, setInputfilter] = useState(false);
@@ -126,7 +128,6 @@ const CategoryList = () => {
       dataIndex: "categoryName",
       render: (text, record) => (
         <div className="productimgname">
-          <img alt="" src={record.image} />
           <p style={{ textDecoration: 'none' }} style={{ fontSize: "15px", marginLeft: "10px" }}>
             {record.categoryName}
           </p>
@@ -149,20 +150,17 @@ const CategoryList = () => {
       title: "Action",
       render: (props) => (
         <>
-          <>
-            {/* <Link style={{ textDecoration: 'none' }} className="me-3" to="/authed/product/editcategory-product">
-              <img src={EditIcon} alt="img" />
-            </Link> */}
-            <Link style={{ textDecoration: 'none' }} className="confirm-text" to="#" onClick={() => moveCategory(props, 'up')}>
-              <FeatherIcon icon="arrow-up" />
-            </Link>
-            <Link style={{ textDecoration: 'none' }} className="confirm-text" to="#" onClick={() => moveCategory(props, 'down')}>
-              <FeatherIcon icon="arrow-down" />
-            </Link>
-            <Link style={{ textDecoration: 'none' }} className="confirm-text" to="#" onClick={() => confirmText(props)}>
+          <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+            <TouchableOpacity onPress={() => moveCategory(props, 'up')} style={{ marginRight: 8, backgroundColor: '#CCCCCC', padding: 3, borderRadius: 5 }}>
+              <Feather name="arrow-up" color="black" size={18} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => moveCategory(props, 'down')} style={{ marginRight: 8, backgroundColor: '#CCCCCC', padding: 3, borderRadius: 5 }}>
+              <Feather name="arrow-down" color="black" size={18} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => confirmText(props)}>
               <img src={DeleteIcon} alt="img" />
-            </Link>
-          </>
+            </TouchableOpacity>
+          </View>
         </>
       ),
     },

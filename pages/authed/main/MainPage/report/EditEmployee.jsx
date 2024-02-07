@@ -12,6 +12,8 @@ import { auth, db, storage } from 'state/firebaseConfig';
 
 import DatePicker from "react-datepicker";
 import { Text } from '@react-native-material/core';
+import { Entypo } from '@expo/vector-icons';
+import tw from 'twrnc';
 
 const EditEmployee = () => {
     const { employeeId } = useParams()
@@ -95,7 +97,10 @@ const EditEmployee = () => {
                             <div className="row">
                                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', width: '80%' }}>
-                                        <div className="col-lg-3 col-sm-6 col-12">
+                                        <TouchableOpacity onPress={() => history.push("/authed/report/employeesreport")} >
+                                            <Entypo name="chevron-thin-left" size={24} color="black" />
+                                        </TouchableOpacity>
+                                        <div className="col-lg-3 col-sm-6 col-12" style={{ marginLeft: 20 }}>
                                             <div className="form-group">
                                                 <label>Employee Name</label>
                                                 <input type="text" placeholder="Employee Name" value={employee?.name} onChange={(event) => setemployee((prevState) => ({
@@ -116,7 +121,7 @@ const EditEmployee = () => {
                                         </div>
                                     </View>
 
-                                    <Button title='Remove Employee' onPress={() => {
+                                    {/* <Button title='Remove Employee' onPress={() => {
                                         db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).delete()
                                         const newEmployeesList = [...employees]
                                         const filteredEmployeesList = newEmployeesList.filter(e => e.id !== employee.id)
@@ -124,7 +129,18 @@ const EditEmployee = () => {
                                         history.push("/authed/report/employeesreport")
                                     }}
                                         color={'red'}
-                                    />
+                                    /> */}
+                                    <TouchableOpacity onPress={() => {
+                                        db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).delete()
+                                        const newEmployeesList = [...employees]
+                                        const filteredEmployeesList = newEmployeesList.filter(e => e.id !== employee.id)
+                                        setEmployeesState(filteredEmployeesList)
+                                        history.push("/authed/report/employeesreport")
+                                    }}
+                                        style={tw.style(['bg-red-500', 'p-2', 'rounded-md'])}
+                                    >
+                                        <Text style={tw.style(['text-white'])}>Remove Employee</Text>
+                                    </TouchableOpacity>
                                 </View>
 
                                 <View style={{ marginBottom: 50 }}>
@@ -157,7 +173,7 @@ const EditEmployee = () => {
                                                 <input id='endTime' aria-label="Time" type="time" onChange={event => setendTime(event.target.value)} />
                                             </div>
                                         </View>
-                                        <Button title="Add" onPress={() => {
+                                        {/* <Button title="Add" onPress={() => {
                                             if (!dateSelected || !startTime || !endTime) return
                                             console.log('dateSelected in add button: ', dateSelected)
                                             db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").add({
@@ -178,7 +194,35 @@ const EditEmployee = () => {
                                             document.getElementById('dateSelected').value = null
                                             document.getElementById('startTime').value = null
                                             document.getElementById('endTime').value = null
-                                        }} />
+                                        }} /> */}
+                                        <TouchableOpacity onPress={() => {
+                                            if (!dateSelected || !startTime || !endTime) return
+                                            console.log('dateSelected in add button: ', dateSelected)
+                                            db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").add({
+                                                date: dateSelected,
+                                                startTime: startTime,
+                                                endTime: endTime,
+                                                paid: false
+                                            }).then((docRef) => {
+                                                setallHours([...allHours, {
+                                                    date: dateSelected,
+                                                    startTime: startTime,
+                                                    endTime: endTime,
+                                                    id: docRef.id,
+                                                    paid: false
+                                                }])
+                                            })
+                                            setdateSelected(null)
+                                            setstartTime(null)
+                                            setendTime(null)
+                                            document.getElementById('dateSelected').value = null
+                                            document.getElementById('startTime').value = null
+                                            document.getElementById('endTime').value = null
+                                        }}
+                                            style={tw.style(['bg-blue-500', 'p-2', 'rounded-md'])}
+                                        >
+                                            <Text style={tw.style(['text-white'])}>Add</Text>
+                                        </TouchableOpacity>
                                     </View>
                                     <View style={{ marginTop: 50 }}>
                                         <Text>Unpaid</Text>
@@ -194,7 +238,7 @@ const EditEmployee = () => {
                                             <View style={{ alignItems: 'center', flex: 1 }}> <Text>Clock In</Text></View>
                                             <View style={{ alignItems: 'center', flex: 1 }}> <Text>Clock Out</Text></View>
                                             <View style={{ alignItems: 'center', flex: 2, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                                <Button title="Delete" onPress={() => {
+                                                {/* <Button title="Delete" onPress={() => {
                                                     const newHours = [...allHours]
                                                     unPaidSelected.forEach(hour => {
                                                         db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).delete()
@@ -205,9 +249,24 @@ const EditEmployee = () => {
                                                     setunPaidSelected([])
                                                     document.getElementById('unPaidCheckAll').checked = false;
                                                 }
-                                                } />
+                                                } /> */}
+                                                <TouchableOpacity onPress={() => {
+                                                    const newHours = [...allHours]
+                                                    unPaidSelected.forEach(hour => {
+                                                        db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).delete()
+                                                        newHours.splice(allHours.indexOf(hour), 1)
+                                                    }
+                                                    )
+                                                    setallHours(prev => prev.filter(e => !unPaidSelected.includes(e)))
+                                                    setunPaidSelected([])
+                                                    document.getElementById('unPaidCheckAll').checked = false;
+                                                }}
+                                                    style={tw.style(['bg-red-500', 'p-2', 'rounded-md'])}
+                                                >
+                                                    <Text style={tw.style(['text-white'])}>Delete</Text>
+                                                </TouchableOpacity>
                                                 <View style={{ width: 10 }} />
-                                                <Button title='Mark as Paid' onPress={() => {
+                                                {/* <Button title='Mark as Paid' onPress={() => {
                                                     const newHours = [...allHours]
                                                     unPaidSelected.forEach(hour => {
                                                         db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).update({
@@ -220,7 +279,24 @@ const EditEmployee = () => {
                                                     setunPaidSelected([])
                                                     document.getElementById('unPaidCheckAll').checked = false;
                                                 }
-                                                } />
+                                                } /> */}
+                                                <TouchableOpacity onPress={() => {
+                                                    const newHours = [...allHours]
+                                                    unPaidSelected.forEach(hour => {
+                                                        db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).update({
+                                                            paid: true
+                                                        })
+                                                        newHours[allHours.indexOf(hour)].paid = true
+                                                    }
+                                                    )
+                                                    setallHours(newHours)
+                                                    setunPaidSelected([])
+                                                    document.getElementById('unPaidCheckAll').checked = false;
+                                                }}
+                                                    style={tw.style(['bg-blue-500', 'p-2', 'rounded-md'])}
+                                                >
+                                                    <Text style={tw.style(['text-white'])}>Mark as Paid</Text>
+                                                </TouchableOpacity>
                                             </View>
                                         </View>
                                         <View style={{ width: '100%', height: 1, backgroundColor: 'black', marginBottom: 10 }} />
@@ -252,15 +328,25 @@ const EditEmployee = () => {
                                                     <View style={{ alignItems: 'center', flex: 1 }}> <Text>{hour.startTime}</Text></View>
                                                     <View style={{ alignItems: 'center', flex: 1 }}> <Text>{hour.endTime}</Text></View>
                                                     <View style={{ alignItems: 'center', flex: 2, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                                        <Button title="Delete" onPress={() => {
+                                                        {/* <Button title="Delete" onPress={() => {
                                                             db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).delete()
                                                             const newHours = [...allHours]
                                                             newHours.splice(index, 1)
                                                             setallHours(newHours)
                                                         }
-                                                        } />
+                                                        } /> */}
+                                                        <TouchableOpacity onPress={() => {
+                                                            db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).delete()
+                                                            const newHours = [...allHours]
+                                                            newHours.splice(index, 1)
+                                                            setallHours(newHours)
+                                                        }}
+                                                            style={tw.style(['bg-red-500', 'p-2', 'rounded-md'])}
+                                                        >
+                                                            <Text style={tw.style(['text-white'])}>Delete</Text>
+                                                        </TouchableOpacity>
                                                         <View style={{ width: 10 }} />
-                                                        <Button title='Mark as Paid' onPress={() => {
+                                                        {/* <Button title='Mark as Paid' onPress={() => {
                                                             db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).update({
                                                                 paid: true
                                                             })
@@ -268,7 +354,19 @@ const EditEmployee = () => {
                                                             newHours[index].paid = true
                                                             setallHours(newHours)
                                                         }
-                                                        } />
+                                                        } /> */}
+                                                        <TouchableOpacity onPress={() => {
+                                                            db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).update({
+                                                                paid: true
+                                                            })
+                                                            const newHours = [...allHours]
+                                                            newHours[index].paid = true
+                                                            setallHours(newHours)
+                                                        }}
+                                                            style={tw.style(['bg-blue-500', 'p-2', 'rounded-md'])}
+                                                        >
+                                                            <Text style={tw.style(['text-white'])}>Mark as Paid</Text>
+                                                        </TouchableOpacity>
                                                     </View>
                                                 </View>
                                             )
@@ -289,7 +387,7 @@ const EditEmployee = () => {
                                             <View style={{ alignItems: 'center', flex: 1 }}> <Text>Clock In</Text></View>
                                             <View style={{ alignItems: 'center', flex: 1 }}> <Text>Clock Out</Text></View>
                                             <View style={{ alignItems: 'center', flex: 2, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                                <Button title="Delete" onPress={() => {
+                                                {/* <Button title="Delete" onPress={() => {
                                                     const newHours = [...allHours]
                                                     paidSelected.forEach(hour => {
                                                         db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).delete()
@@ -300,9 +398,24 @@ const EditEmployee = () => {
                                                     setpaidSelected([])
                                                     document.getElementById('paidCheckAll').checked = false;
                                                 }
-                                                } />
+                                                } /> */}
+                                                <TouchableOpacity onPress={() => {
+                                                    const newHours = [...allHours]
+                                                    paidSelected.forEach(hour => {
+                                                        db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).delete()
+                                                        newHours.splice(allHours.indexOf(hour), 1)
+                                                    }
+                                                    )
+                                                    setallHours(prev => prev.filter(e => !paidSelected.includes(e)))
+                                                    setpaidSelected([])
+                                                    document.getElementById('paidCheckAll').checked = false;
+                                                }}
+                                                    style={tw.style(['bg-red-500', 'p-2', 'rounded-md'])}
+                                                >
+                                                    <Text style={tw.style(['text-white'])}>Delete</Text>
+                                                </TouchableOpacity>
                                                 <View style={{ width: 10 }} />
-                                                <Button title='Mark as unPaid' onPress={() => {
+                                                {/* <Button title='Mark as unPaid' onPress={() => {
                                                     const newHours = [...allHours]
                                                     paidSelected.forEach(hour => {
                                                         db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).update({
@@ -315,7 +428,24 @@ const EditEmployee = () => {
                                                     setpaidSelected([])
                                                     document.getElementById('paidCheckAll').checked = false;
                                                 }
-                                                } />
+                                                } /> */}
+                                                <TouchableOpacity onPress={() => {
+                                                    const newHours = [...allHours]
+                                                    paidSelected.forEach(hour => {
+                                                        db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).update({
+                                                            paid: false
+                                                        })
+                                                        newHours[allHours.indexOf(hour)].paid = false
+                                                    }
+                                                    )
+                                                    setallHours(newHours)
+                                                    setpaidSelected([])
+                                                    document.getElementById('paidCheckAll').checked = false;
+                                                }}
+                                                    style={tw.style(['bg-blue-500', 'p-2', 'rounded-md'])}
+                                                >
+                                                    <Text style={tw.style(['text-white'])}>Mark as unPaid</Text>
+                                                </TouchableOpacity>
                                             </View>
                                         </View>
                                         <View style={{ width: '100%', height: 1, backgroundColor: 'black', marginBottom: 10 }} />
@@ -347,15 +477,25 @@ const EditEmployee = () => {
                                                     <View style={{ alignItems: 'center', flex: 1 }}> <Text>{hour.startTime}</Text></View>
                                                     <View style={{ alignItems: 'center', flex: 1 }}> <Text>{hour.endTime}</Text></View>
                                                     <View style={{ alignItems: 'center', flex: 2, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                                        <Button title="Delete" onPress={() => {
+                                                        {/* <Button title="Delete" onPress={() => {
                                                             db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).delete()
                                                             const newHours = [...allHours]
                                                             newHours.splice(index, 1)
                                                             setallHours(newHours)
                                                         }
-                                                        } />
+                                                        } /> */}
+                                                        <TouchableOpacity onPress={() => {
+                                                            db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).delete()
+                                                            const newHours = [...allHours]
+                                                            newHours.splice(index, 1)
+                                                            setallHours(newHours)
+                                                        }}
+                                                            style={tw.style(['bg-red-500', 'p-2', 'rounded-md'])}
+                                                        >
+                                                            <Text style={tw.style(['text-white'])}>Delete</Text>
+                                                        </TouchableOpacity>
                                                         <View style={{ width: 10 }} />
-                                                        <Button title='Mark as unPaid' onPress={() => {
+                                                        {/* <Button title='Mark as unPaid' onPress={() => {
                                                             db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).update({
                                                                 paid: false
                                                             })
@@ -363,7 +503,19 @@ const EditEmployee = () => {
                                                             newHours[index].paid = false
                                                             setallHours(newHours)
                                                         }
-                                                        } />
+                                                        } /> */}
+                                                        <TouchableOpacity onPress={() => {
+                                                            db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).update({
+                                                                paid: false
+                                                            })
+                                                            const newHours = [...allHours]
+                                                            newHours[index].paid = false
+                                                            setallHours(newHours)
+                                                        }}
+                                                            style={tw.style(['bg-blue-500', 'p-2', 'rounded-md'])}
+                                                        >
+                                                            <Text style={tw.style(['text-white'])}>Mark as unPaid</Text>
+                                                        </TouchableOpacity>
                                                     </View>
                                                 </View>
                                             )

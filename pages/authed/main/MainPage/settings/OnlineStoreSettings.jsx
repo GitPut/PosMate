@@ -38,6 +38,7 @@ import EditStoreDetails from "pages/authed/main/MainPage/settings/EditStoreDetai
 import ReactSelect from "react-select";
 
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
+import tw from 'twrnc'
 
 const OnlineStoreSettings = () => {
     const onlineStoreDetails = onlineStoreState.use()
@@ -186,6 +187,8 @@ const OnlineStoreSettings = () => {
             });
     }
 
+    //update styling of the page
+
 
     return (
         <div className="page-wrapper">
@@ -195,7 +198,7 @@ const OnlineStoreSettings = () => {
                         <Text style={styles.headerTxt}>Online Store Settings</Text>
                     </View>
                     <View style={styles.detailInputContainer}>
-                        <ScrollView>
+                        {/* <ScrollView>
                             {onlineStoreDetails.paidStatus !== 'active' ? <Button title="Pay for online store" onPress={payOnlineStore} /> : <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, marginTop: 10 }}>
                                 <Text>Online Store Active?</Text>
                                 <Switch value={onlineStoreDetails.onlineStoreActive} onValueChange={makeOnlineStoreActive} />
@@ -212,7 +215,54 @@ const OnlineStoreSettings = () => {
                             <TextInput placeholder="Enter Stripe Public Key" value={onlineStoreDetails.stripePublicKey ? onlineStoreDetails.stripePublicKey : stripePublicKey} onChangeText={(text) => { setstripePublicKey(text) }} />
                             <TextInput placeholder="Enter Stripe Secret Key" value={onlineStoreDetails.stripeSecretKey ? onlineStoreDetails.stripeSecretKey : stripeSecretKey} onChangeText={(text) => { setstripeSecretKey(text) }} />
                             <Button title='Update Stripe Details' onPress={() => { updateStripeDetails() }} />
-                        </ScrollView>
+                        </ScrollView> */}
+                        {onlineStoreDetails.paidStatus === 'active' ?
+                            <View style={tw.style([
+                                'flex-row',
+                                'justify-between',
+                                'items-center',
+                                'mb-5',
+                            ])}>
+                                <Text style={tw.style('text-base')}>Online Store Active?</Text>
+                                <Switch value={onlineStoreDetails.onlineStoreActive} onValueChange={makeOnlineStoreActive} />
+                            </View> :
+                            <TouchableOpacity onPress={payOnlineStore} style={tw.style('bg-blue-500 p-2 rounded-md')}>
+                                <Text style={tw.style('text-white')}>Pay for online store</Text>
+                            </TouchableOpacity>
+                        }
+                        <View style={tw.style('mb-5')}>
+                            <Text style={tw.style('text-base')}>Order Url Ending: </Text>
+                            <TextInput
+                                placeholder="Enter Url Ending"
+                                value={onlineStoreDetails.urlEnding ? onlineStoreDetails.urlEnding : urlEnding}
+                                onChangeText={(text) => { if (!onlineStoreDetails.onlineStoreSetUp) { seturlEnding(text.replace(/[^a-zA-Z-]/g, '').toLowerCase()) } }}
+                            />
+                            {!onlineStoreDetails.onlineStoreSetUp && <TouchableOpacity onPress={startOnlineStore} disabled={onlineStoreDetails.onlineStoreSetUp} style={tw.style('bg-blue-500 p-2 rounded-md')}>
+                                <Text style={tw.style('text-white')}>Start Online Store</Text>
+                            </TouchableOpacity>}
+                            <View style={tw.style('mt-5')}>
+                                <View >
+                                    <Text style={tw.style('text-base')}>Stripe Public Key</Text>
+                                    <TextInput placeholder="Enter Stripe Public Key" value={onlineStoreDetails.stripePublicKey ? onlineStoreDetails.stripePublicKey : stripePublicKey} onChangeText={(text) => { setstripePublicKey(text) }} />
+                                </View>
+                                <View style={tw.style('mt-5')}>
+                                    <Text style={tw.style('text-base')}>Stripe Secret Key</Text>
+                                    <TextInput placeholder="Enter Stripe Secret Key" value={onlineStoreDetails.stripeSecretKey ? onlineStoreDetails.stripeSecretKey : stripeSecretKey} onChangeText={(text) => { setstripeSecretKey(text) }} />
+                                </View>
+                                <TouchableOpacity onPress={() => { updateStripeDetails() }} style={tw.style([
+                                    'bg-blue-500',
+                                    'p-5',
+                                    'rounded-md',
+                                    'mt-5',
+
+                                ])}>
+                                    <Text style={tw.style(['text-white',
+                                        'text-center',
+                                        'text-base'
+                                    ])}>Update Billing Details</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
                     {viewVisible && (
                         <Modal visible={true}>

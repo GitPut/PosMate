@@ -55,18 +55,6 @@ const AddCategory = () => {
                                     </div>
                                 </div>
                                 <div className="col-lg-12">
-                                    <div className="form-group">
-                                        <label> Category Image</label>
-                                        <div className="image-upload">
-                                            <input type="file" />
-                                            <div className="image-uploads">
-                                                <img src={Upload} alt="img" />
-                                                <h4>Drag and drop a file to upload</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-12">
                                     <button className="btn btn-submit me-2" onClick={AddToDb}>
                                         Add
                                     </button>

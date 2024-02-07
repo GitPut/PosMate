@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Table from "../../EntryFile/datatable";
-import { Link } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
   ClosesIcon,
   Excel,
   Filter,
-  Pdf,
   Calendar,
   Printer,
   search_whites,
-  Search,
-  MacbookIcon,
-  OrangeImage,
-  PineappleImage,
-  StawberryImage,
-  AvocatImage,
-  Product1,
-  Product7,
-  Product8,
-  Product9,
 } from "../../EntryFile/imagePath";
-import { myDeviceDetailsState, storeDetailState, woocommerceState } from "state/state";
+import { myDeviceDetailsState, storeDetailState, transListState, transListTableOrgState } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 const tz = require("moment-timezone");
 import ReceiptPrint from "components/functional/ReceiptPrint";
@@ -37,132 +25,14 @@ const Sales = () => {
   const [updateBaseSelectedRows, setupdateBaseSelectedRows] = useState(false)
   const [filteredTranLlist, setfilteredTransList] = useState([])
   const [search, setsearch] = useState(null)
-
-  const [transList, settransList] = useState([]);
-  const [transListTableOrg, settransListTableOrg] = useState([]);
-  const wooCredentials = woocommerceState.use()
+  const transList = transListState.use()
+  const transListTableOrg = transListTableOrgState.use()
 
   const myDeviceDetails = myDeviceDetailsState.use();
 
   const togglefilter = (value) => {
     setInputfilter(value);
   };
-
-
-
-  const getDate = (receipt) => {
-    if (receipt.date_created) {
-      const dateString = receipt.date_created;
-
-      const newDate = new Date(dateString + "Z");
-
-      const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-      const result = tz(newDate)
-        .tz(targetTimezone, true)
-        .format("YYYY-MM-DD HH:mm a");
-
-      return result;
-    } else if (receipt.date) {
-      const newDate = new Date(receipt.date.seconds * 1000);
-      const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-      const result = tz(newDate)
-        .tz(targetTimezone, true)
-        .format("YYYY-MM-DD HH:mm a");
-
-      return result;
-    }
-  };
-
-  useEffect(() => {
-    try {
-      db.collection("users")
-        .doc(auth.currentUser?.uid)
-        .collection("transList")
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            // console.log(doc.id, " => ", doc.data());
-            let orderType = "";
-            if (doc.data().method === "deliveryOrder") {
-              orderType = "Delivery";
-            }
-            if (doc.data().method === "pickupOrder") {
-              orderType = "Pickup";
-            }
-            if (doc.data().method === "inStoreOrder") {
-              orderType = "In Store";
-            }
-
-            settransList((prevState) => [...prevState, doc.data()]);
-            settransListTableOrg((prevState) => [...prevState,
-            {
-              ...doc.data(),
-              id: doc.data().transNum.toUpperCase(),
-              number: doc.data().transNum,
-              name: doc.data().customer?.name ? doc.data().customer?.name : "N/A",
-              date: getDate(doc.data()),
-              originalData: doc.data(),
-              amount: doc.data().total,
-              system: 'POS',
-              type: orderType,
-            }
-            ]);
-          });
-          //sort by date
-          settransListTableOrg((prevState) => {
-            const newList = [...prevState.sort((a, b) => new Date(b.originalData.date_created ? b.originalData.date_created : b.originalData.date.seconds * 1000) - new Date(a.originalData.date_created ? a.originalData.date_created : a.originalData.date.seconds * 1000))]
-            settransList(newList)
-
-            return newList
-          })
-
-        });
-    } catch {
-      console.log("Error occured retrieving tranasctions");
-    }
-
-    if (wooCredentials.useWoocommerce === true) {
-      try {
-        const WooCommerceAPI = require("woocommerce-api");
-
-        const WooCommerce = new WooCommerceAPI({
-          url: wooCredentials.apiUrl,
-          consumerKey: wooCredentials.ck,
-          consumerSecret: wooCredentials.cs,
-          wpAPI: true,
-          version: "wc/v1",
-        });
-
-        let page = 1;
-        let orders = [];
-
-        const getOrders = async () => {
-          const response = await WooCommerce.getAsync(
-            `orders?page=${page}&per_page=100`
-          );
-          const data = JSON.parse(response.body);
-          orders = [...orders, ...data];
-          if (data.length === 100) {
-            page++;
-            getOrders();
-          } else {
-            // console.log(orders);
-          }
-        };
-
-        getOrders()
-          .then(() => settransList((prevState) => [...prevState, ...orders]))
-          .catch((e) => console.log("error has occured"));
-      } catch {
-        console.log("Something occured with woo");
-      }
-    }
-  }, []);
-
-
 
   const columns = [
     {

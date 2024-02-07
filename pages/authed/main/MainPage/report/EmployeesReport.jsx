@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { employeesState, myDeviceDetailsState, storeDetailState, woocommerceState } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 const tz = require("moment-timezone");
-import { Button, Modal, Text, View } from "react-native";
+import { Button, Modal, Text, TouchableOpacity, View } from "react-native";
+import tw from 'twrnc';
 import { useHistory } from "react-router-dom";
 
 const EmployeesReport = () => {
@@ -21,14 +22,21 @@ const EmployeesReport = () => {
                 {/* /product list */}
                 <div className="card">
                     <div className="card-body">
-                        {employees.length > 0 ? employees.map((employee, index) => {
-                            return (
-                                <View style={{ marginBottom: 10 }} key={index}><Button title={`View/Edit Employee ${employee.name}`} onPress={() => {
-                                    history.push(`/authed/report/editemployee/${employee.id}`)
-                                }} />
-                                </View>
-                            )
-                        }) : <Text>No Employees</Text>}
+                        <View style={tw.style(['flex-1', 'p-5'])}>
+                            {employees.length > 0 ? employees.map((employee, index) => {
+                                return (
+                                    <TouchableOpacity key={index} onPress={() => {
+                                        history.push(`/authed/report/editemployee/${employee.id}`)
+                                    }}
+                                        style={tw.style(['flex', 'flex-row', 'justify-between', 'items-center', 'p-4', 'border-b', 'border-gray-200'])}
+                                    >
+                                        <Text>
+                                            {employee.name}
+                                        </Text>
+                                    </TouchableOpacity>
+                                )
+                            }) : <Text>No Employees</Text>}
+                        </View>
                     </div>
                 </div>
                 {/* /product list */}

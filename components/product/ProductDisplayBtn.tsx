@@ -20,12 +20,23 @@ const ProductDisplayBtn = ({ product, productIndex }) => {
 
   useEffect(() => {
     if (product.hasImage) {
-      storage
-        .ref(auth.currentUser.uid + "/images/" + product.id)
-        .getDownloadURL()
-        .then((url) => {
-          setproductImage(url);
-        });
+      const imageUrlSaved = localStorage.getItem(
+        "imageUrl" + auth.currentUser.uid + product.id
+      );
+      if (imageUrlSaved) {
+        setproductImage(imageUrlSaved);
+      } else {
+        storage
+          .ref(auth.currentUser.uid + "/images/" + product.id)
+          .getDownloadURL()
+          .then((url) => {
+            setproductImage(url);
+            localStorage.setItem(
+              "imageUrl" + auth.currentUser.uid + product.id,
+              url
+            );
+          });
+      }
     }
   }, []);
 

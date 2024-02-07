@@ -381,7 +381,7 @@ const Page1 = ({ storeDetails, setorderDetails, orderDetails, setpage }) => {
                 );
                 if (storeDetails.deliveryRange) {
                   if (distance > parseFloat(storeDetails.deliveryRange)) {
-                    alert("The delivery address is out of range"); 
+                    alert("The delivery address is out of range");
                   } else {
                     setpage(2);
                   }
@@ -423,7 +423,6 @@ const Page2 = ({
   const { height, width } = useWindowDimensions();
   const [section, setsection] = useState(null);
   const [cartSub, setCartSub] = useState(0);
-  const [total, setTotal] = useState(0);
   const cart = cartState.use();
 
   useEffect(() => {

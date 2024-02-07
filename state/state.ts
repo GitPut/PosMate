@@ -46,12 +46,6 @@ export const setUserStoreState = (val: any): void => {
   userStoreState.set(val);
 };
 
-export const transListState = entity<any[]>([]);
-
-export const setTransListState = (val: any[]): void => {
-  transListState.set(val);
-};
-
 export const woocommerceState = entity<{
   apiUrl: string;
   ck: string;
@@ -197,3 +191,15 @@ export const deviceTreeState = entity<{
 export const setDeviceTreeState = (val: any): void => {
   deviceTreeState.set(val);
 };
+  
+export const transListState = entity<any[]>([]);
+
+export const setTransListState = (val: any[]): void => {
+  transListState.set(val);
+}
+
+export const transListTableOrgState = entity<any[]>([]);
+
+export const setTransListTableOrgState = (val: any[]): void => {
+  transListTableOrgState.set(val);
+}
