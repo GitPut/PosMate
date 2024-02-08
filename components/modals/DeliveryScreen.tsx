@@ -1,16 +1,7 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Button, TextInput } from "@react-native-material/core";
-import {
-  customersList,
-  setCustomersList,
-  storeDetailState,
-} from "state/state";
+import { customersList, setCustomersList, storeDetailState } from "state/state";
 import { Switch } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
@@ -106,12 +97,15 @@ const DeliveryScreen = ({
       setlocalAddress(address);
       calculateDistanceBetweenAddresses(
         storeDetails.address.value.reference,
-        address.address.value.reference
+        address.value.reference
       ).then((distance) => {
         if (distance !== null) {
           console.log(`Distance between addresses: ${distance.toFixed(2)} km`);
           if (storeDetails.deliveryRange) {
-            if (distance > parseFloat(storeDetails.deliveryRange)) {
+            if (
+              distance > parseFloat(storeDetails.deliveryRange) &&
+              deliveryChecked
+            ) {
               alert("The delivery address is out of range");
             }
             // else {
@@ -141,7 +135,10 @@ const DeliveryScreen = ({
         if (distance !== null) {
           console.log(`Distance between addresses: ${distance.toFixed(2)} km`);
           if (storeDetails.deliveryRange) {
-            if (distance > parseFloat(storeDetails.deliveryRange)) {
+            if (
+              distance > parseFloat(storeDetails.deliveryRange) &&
+              deliveryChecked
+            ) {
               alert("The delivery address is out of range");
             }
             // else {
@@ -246,15 +243,19 @@ const DeliveryScreen = ({
             >
               Phone Order
             </Text>
-            <MaterialCommunityIcons
+            <TouchableOpacity
               onPress={() => {
                 setsaveCustomerModal(true);
                 setDeliveryModal(false);
               }}
-              name="history"
-              size={26}
-              color="rgba(74,74,74,1)"
-            />
+              disabled={ongoingDelivery}
+            >
+              <MaterialCommunityIcons
+                name="history"
+                size={26}
+                color="rgba(74,74,74,1)"
+              />
+            </TouchableOpacity>
           </View>
           <View
             style={{

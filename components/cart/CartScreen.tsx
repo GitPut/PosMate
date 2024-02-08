@@ -629,10 +629,10 @@ const CartScreen = ({ navigation }) => {
           <CartButton
             style={[
               styles.iconContainer,
-              (cart.length > 0 || updatingOrder) && { opacity: 0.5 },
+              (cart.length > 0 || updatingOrder || ongoingDelivery) && { opacity: 0.5 },
             ]}
             onPress={() => setclockinModal(true)}
-            disabled={cart.length > 0 || updatingOrder}
+            disabled={cart.length > 0 || updatingOrder || ongoingDelivery}
             icon={() => (
               <MaterialCommunityIcons name="clock" size={26} color="white" />
             )}
@@ -640,9 +640,9 @@ const CartScreen = ({ navigation }) => {
           <CartButton
             style={[
               styles.iconContainer,
-              (cart.length > 0 || updatingOrder) && { opacity: 0.5 },
+              (cart.length > 0 || updatingOrder || ongoingDelivery) && { opacity: 0.5 },
             ]}
-            disabled={cart.length > 0 || updatingOrder}
+            disabled={cart.length > 0 || updatingOrder || ongoingDelivery}
             onPress={() => setongoingOrderListModal(true)}
             icon={() => (
               <Ionicons name="chevron-down" size={28} color="white" />
