@@ -95,9 +95,6 @@ const ProductOptionMultiChoiceDropdown = ({
                     index
                   ].optionsList.filter((op) => op.selectedTimes > 0);
 
-                  const thisItemSelectedTimes = selection.selectedTimes
-                    ? parseInt(selection.selectedTimes)
-                    : 1;
                   const thisItemCountsAs = selection.countsAs
                     ? parseInt(selection.countsAs)
                     : 1;

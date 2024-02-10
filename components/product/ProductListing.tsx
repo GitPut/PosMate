@@ -30,18 +30,14 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
     e,
     optionVal,
     setoptionVal,
-    scrollToItem,
+    innerViewRef,
   }) => {
-    // useEffect(() => {
-    //   if (openOptions === index) {
-    //     console.log("scrolling to item");
-    //     scrollToItem();
-    //   }
-    // }, []);
-
     if (openOptions === index) {
       return (
-        <View style={{ flexWrap: "wrap", flexDirection: "row" }}>
+        <View
+          style={{ flexWrap: "wrap", flexDirection: "row" }}
+          ref={innerViewRef}
+        >
           {e.numOfSelectable === "1" ? (
             <ProductOption1Selectable
               label={e.label}
@@ -83,6 +79,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
 
   const DisplayOption = ({ e, index, scrollviewRef }) => {
     const viewRef = useRef(null);
+    const innerViewRef = useRef(null);
     const checkCases = () => {
       if (e.selectedCaseList?.length > 0) {
         const listOfTrueIfS = [];
@@ -125,13 +122,20 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
 
     const scrollToItem = () => {
       if (scrollviewRef.current && viewRef.current) {
-        viewRef.current.measureLayout(
-          scrollviewRef.current,
-          (x, y) => {
-            scrollviewRef.current.scrollTo({ y, animated: true });
-          },
-          () => console.error("Failed to measure layout")
-        );
+        // viewRef.current.measureLayout(
+        //   scrollviewRef.current,
+        //   (x, y) => {
+        scrollviewRef.current.scrollTo({ y: 70 * index, animated: true });
+        //   },
+        //   () => console.error("Failed to measure layout")
+        // );
+        // innerViewRef.current.measureLayout(
+        //   scrollviewRef.current,
+        //   (x, y) => {
+        //     scrollviewRef.current.scrollTo({ y, animated: true });
+        //   },
+        //   () => console.error("Failed to measure layout")
+        // );
       }
     };
 
@@ -218,7 +222,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
               e={e}
               optionVal={optionVal}
               setoptionVal={setoptionVal}
-              scrollToItem={scrollToItem}
+              innerViewRef={innerViewRef}
             />
           </View>
         );

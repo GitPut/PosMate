@@ -253,57 +253,98 @@ const ReceiptPrint = (element, storeDetails) => {
             "\x1B" + "\x61" + "\x30", // left align
           ];
 
-      element.cart.map((cartItem) => {
-        data.push(
-          "\x1B" + "\x45" + "\x01",
-          `Name: ${cartItem.name}`,
-          "\x1B" + "\x45" + "\x00"
-        );
-        data.push("\x0A");
+     element.cart.map((cartItem) => {
+       data.push(
+         "\x1B" + "\x45" + "\x01",
+         `Name: ${cartItem.name}`,
+         "\x1B" + "\x45" + "\x00"
+       );
+       data.push("\x0A");
 
-        if (cartItem.quantity > 1) {
-          if (cartItem.price) {
-            total +=
-              parseFloat(parseFloat(cartItem.price).toFixed(2)) *
-              cartItem.quantity;
-          }
-          data.push(`Quantity: ${cartItem.quantity}`);
-          if (cartItem.price) {
-            data.push("\x0A");
-            data.push(
-              `Price: $${
-                parseFloat(cartItem.price).toFixed(2) *
-                parseFloat(cartItem.quantity)
-              }`
-            );
-          }
-        } else {
-          if (cartItem.price) {
-            total += parseFloat(parseFloat(cartItem.price).toFixed(2));
-            data.push(`Price: $${parseFloat(cartItem.price).toFixed(2)}`);
-          }
-        }
+       if (cartItem.quantity > 1) {
+         if (cartItem.price) {
+           total +=
+             parseFloat(parseFloat(cartItem.price).toFixed(2)) *
+             cartItem.quantity;
+         }
+         data.push(`Quantity: ${cartItem.quantity}`);
+         if (cartItem.price) {
+           data.push("\x0A");
+           data.push(
+             "\x1B" +
+               "\x45" +
+               "\x01" +
+               `Price: $${
+                 parseFloat(cartItem.price).toFixed(2) *
+                 parseFloat(cartItem.quantity)
+               }` +
+               "\x1B" +
+               "\x45" +
+               "\x00"
+           );
+         }
+       } else {
+         if (cartItem.price) {
+           total += parseFloat(parseFloat(cartItem.price).toFixed(2));
+           data.push(
+             "\x1B" +
+               "\x45" +
+               "\x01" +
+               `Price: $${parseFloat(cartItem.price).toFixed(2)}` +
+               "\x1B" +
+               "\x45" +
+               "\x00"
+           );
+         }
+       }
 
-        if (cartItem.description) {
-          data.push("\x0A");
-          data.push(cartItem.description);
-        }
+       if (cartItem.description) {
+         data.push("\x0A");
+         data.push(
+           "\x1B" +
+             "\x45" +
+             "\x01" +
+             "Description:" +
+             "\x1B" +
+             "\x45" +
+             "\x00" +
+             "\x0A"
+         );
+         data.push(cartItem.description);
+       }
 
-        if (cartItem.options) {
-          data.push("\x0A");
-          cartItem.options.map((option) => {
-            data.push(option);
-            data.push("\x0A");
-          });
-        }
+       if (cartItem.options) {
+         data.push("\x0A");
+         cartItem.options.map((option) => {
+           const copyOption = option;
+           // Split the string into an array of substrings based on the newline character
+           const optionLines = copyOption.split("\n");
 
-        if (cartItem.extraDetails) {
-          data.push(cartItem.extraDetails);
-          data.push("\x0A");
-        }
+           // Access the first element of the array to get the first part of the text
+           const label = optionLines[0];
+           const restOfOption = option.slice(label.length);
 
-        data.push("\x0A" + "\x0A");
-      });
+           data.push(
+             "\x1B" +
+               "\x45" +
+               "\x01" +
+               label +
+               "\x1B" +
+               "\x45" +
+               "\x00" +
+               restOfOption +
+               "\x0A"
+           );
+         });
+       }
+
+       if (cartItem.extraDetails) {
+         data.push(cartItem.extraDetails);
+         data.push("\x0A");
+       }
+
+       data.push("\x0A" + "\x0A");
+     });
 
       total = storeDetails.taxRate
         ? total * (1 + storeDetails.taxRate / 100)
@@ -325,9 +366,9 @@ const ReceiptPrint = (element, storeDetails) => {
         "\x0A",
         "Address: " + element.customer?.address?.label,
         "\x0A",
-        "Unit #: " + element.customer?.unitNumber,
+        "Unit #: " + element.customer?.unitNumber ? element.customer?.unitNumber : "N/A",
         "\x0A",
-        "Buzz Code: " + element.customer?.buzzCode,
+        "Buzz Code: " + element.customer?.buzzCode ? element.customer?.buzzCode : "N/A",
         "\x0A" + "\x0A",
         `Total Including (${
           storeDetails.taxRate ? storeDetails.taxRate : "13"
@@ -410,29 +451,70 @@ const ReceiptPrint = (element, storeDetails) => {
           if (cartItem.price) {
             data.push("\x0A");
             data.push(
-              `Price: $${
-                parseFloat(cartItem.price).toFixed(2) *
-                parseFloat(cartItem.quantity)
-              }`
+              "\x1B" +
+                "\x45" +
+                "\x01" +
+                `Price: $${
+                  parseFloat(cartItem.price).toFixed(2) *
+                  parseFloat(cartItem.quantity)
+                }` +
+                "\x1B" +
+                "\x45" +
+                "\x00"
             );
           }
         } else {
           if (cartItem.price) {
             total += parseFloat(parseFloat(cartItem.price).toFixed(2));
-            data.push(`Price: $${parseFloat(cartItem.price).toFixed(2)}`);
+            data.push(
+              "\x1B" +
+                "\x45" +
+                "\x01" +
+                `Price: $${parseFloat(cartItem.price).toFixed(2)}` +
+                "\x1B" +
+                "\x45" +
+                "\x00"
+            );
           }
         }
 
         if (cartItem.description) {
           data.push("\x0A");
+          data.push(
+            "\x1B" +
+              "\x45" +
+              "\x01" +
+              "Description:" +
+              "\x1B" +
+              "\x45" +
+              "\x00" +
+              "\x0A"
+          );
           data.push(cartItem.description);
         }
 
         if (cartItem.options) {
           data.push("\x0A");
           cartItem.options.map((option) => {
-            data.push(option);
-            data.push("\x0A");
+            const copyOption = option;
+            // Split the string into an array of substrings based on the newline character
+            const optionLines = copyOption.split("\n");
+
+            // Access the first element of the array to get the first part of the text
+            const label = optionLines[0];
+            const restOfOption = option.slice(label.length);
+
+            data.push(
+              "\x1B" +
+                "\x45" +
+                "\x01" +
+                label +
+                "\x1B" +
+                "\x45" +
+                "\x00" +
+                restOfOption +
+                "\x0A"
+            );
           });
         }
 
