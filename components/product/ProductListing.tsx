@@ -1,32 +1,88 @@
-import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
+  ScrollView,
   TouchableOpacity,
   StyleSheet,
   TextInput,
-  ScrollView,
 } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@react-native-material/core";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import ProductOptionDropDown from "./ProductOptionDropDown";
 import { addCartState, cartState, setCartState } from "state/state";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import ProductOption1Selectable from "./ProductOption1Selectable";
+import ProductOptionMultiChoiceDropdown from "./ProductOptionMultiChoiceDropdown";
 
-const ProductListing = React.memo(function ProductListing({
-  product,
-  itemIndex,
-  goBack,
-}) {
+const ProductListing = ({ product, itemIndex, goBack }) => {
   const cart = cartState.use();
-  const [myObjProfile, setMyObjProfile] = useState(product);
-  const [total, setTotal] = useState(
-    myObjProfile.total ? myObjProfile.total : myObjProfile.price
+  const myObj = product;
+  const [myObjProfile, setmyObjProfile] = useState(myObj);
+  const [total, settotal] = useState(myObj.total ? myObj.total : myObj.price);
+  const [extraInput, setextraInput] = useState(
+    myObj.extraDetails ? myObj.extraDetails : ""
   );
-  const [extraInput, setExtraInput] = useState(
-    myObjProfile.extraDetails ? myObjProfile.extraDetails : ""
-  );
+  const [openOptions, setopenOptions] = useState(0);
 
-  const DisplayOption = ({ e, index }) => {
+  const InnerDisplayOption = ({
+    index,
+    e,
+    optionVal,
+    setoptionVal,
+    scrollToItem,
+  }) => {
+    // useEffect(() => {
+    //   if (openOptions === index) {
+    //     console.log("scrolling to item");
+    //     scrollToItem();
+    //   }
+    // }, []);
+
+    if (openOptions === index) {
+      return (
+        <View style={{ flexWrap: "wrap", flexDirection: "row" }}>
+          {e.numOfSelectable === "1" ? (
+            <ProductOption1Selectable
+              label={e.label}
+              options={e.optionsList}
+              setValue={({ option, listIndex }) => {
+                const newMyObjProfile = structuredClone(myObjProfile);
+                newMyObjProfile.options[index].optionsList.forEach(
+                  (element, indexOfOl) => {
+                    if (element.selected) {
+                      newMyObjProfile.options[index].optionsList[
+                        indexOfOl
+                      ].selected = false;
+                    }
+                  }
+                );
+
+                newMyObjProfile.options[index].optionsList[listIndex].selected =
+                  true;
+                setoptionVal(option);
+                setmyObjProfile(newMyObjProfile);
+              }}
+              value={optionVal}
+              style={{ marginBottom: 25 }}
+            />
+          ) : (
+            <ProductOptionMultiChoiceDropdown
+              e={e}
+              index={index}
+              myObjProfile={myObjProfile}
+              setmyObjProfile={setmyObjProfile}
+            />
+          )}
+        </View>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
+  const DisplayOption = ({ e, index, scrollviewRef }) => {
+    const viewRef = useRef(null);
     const checkCases = () => {
       if (e.selectedCaseList?.length > 0) {
         const listOfTrueIfS = [];
@@ -67,6 +123,18 @@ const ProductListing = React.memo(function ProductListing({
       setoptionVal(selectedList[0]);
     }
 
+    const scrollToItem = () => {
+      if (scrollviewRef.current && viewRef.current) {
+        viewRef.current.measureLayout(
+          scrollviewRef.current,
+          (x, y) => {
+            scrollviewRef.current.scrollTo({ y, animated: true });
+          },
+          () => console.error("Failed to measure layout")
+        );
+      }
+    };
+
     if (!(e.selectedCaseList?.length > 0) || checkCases()) {
       if (e.optionType?.toLowerCase() === "dropdown") {
         return (
@@ -99,7 +167,7 @@ const ProductListing = React.memo(function ProductListing({
                 newMyObjProfile.options[index].optionsList[listIndex].selected =
                   true;
                 setoptionVal(option);
-                newMyObjProfile(newMyObjProfile);
+                setmyObjProfile(newMyObjProfile);
               }}
               value={optionVal}
               style={{ marginBottom: 25 }}
@@ -115,172 +183,43 @@ const ProductListing = React.memo(function ProductListing({
               width: "100%",
             }}
             key={index}
+            ref={viewRef}
           >
-            <Text style={{ fontWeight: "700", fontSize: 18 }}>
-              {e.isRequired && "* "}
-              {e.label}
-              {e.numOfSelectable > 0 &&
-                ` - Selections Allowed: ${e.numOfSelectable}`}
-            </Text>
-            <View style={{ flexWrap: "wrap", flexDirection: "row" }}>
-              {e.optionsList.map((selection, listIndex) => {
-                return (
-                  <View
-                    key={listIndex}
-                    style={[
-                      styles.multiOption,
-                      myObjProfile.options[index].optionsList[listIndex]
-                        .selected == true
-                        ? {
-                            backgroundColor: "rgba(205,213,255,1)",
-                            borderWidth: 2,
-                            borderColor: "rgba(205,213,255,1)",
-                          }
-                        : {
-                            borderWidth: 2,
-                            borderColor: "rgba(203,202,202,1)",
-                          },
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.optionNameTxt,
-                        myObjProfile.options[index].optionsList[listIndex]
-                          .selected == true
-                          ? { color: "rgba(41,122,217,1)" }
-                          : { color: "rgba(155, 155, 155, 1) " },
-                      ]}
-                    >
-                      {selection.label}
-                    </Text>
-                    {selection.priceIncrease !== null && (
-                      <Text
-                        style={[
-                          styles.optionPriceTxt,
-                          myObjProfile.options[index].optionsList[listIndex]
-                            .selected == true
-                            ? { color: "rgba(41,122,217,1)" }
-                            : { color: "rgba(155, 155, 155, 1) " },
-                        ]}
-                      >
-                        ${selection.priceIncrease}
-                      </Text>
-                    )}
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        width: "100%",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        marginTop: 10,
-                      }}
-                    >
-                      <Button
-                        title="-"
-                        style={{
-                          width: 30,
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                        onPress={() => {
-                          const newMyObjProfile = structuredClone(myObjProfile);
-                          //filter out all options[index].optionsList that have selectedTimes > 0 then map through and multiply by countsAs
-                          const thisItemCountsAs = selection.countsAs
-                            ? parseInt(selection.countsAs)
-                            : 1;
-
-                          if (
-                            newMyObjProfile.options[index].optionsList[
-                              listIndex
-                            ].selectedTimes > 0
-                          ) {
-                            newMyObjProfile.options[index].optionsList[
-                              listIndex
-                            ].selectedTimes -= 1 * thisItemCountsAs;
-                          }
-
-                          newMyObjProfile(newMyObjProfile);
-                        }}
-                      />
-                      <Text style={{ padding: 5 }}>
-                        {myObjProfile.options[index].optionsList[listIndex]
-                          .selectedTimes > 0
-                          ? myObjProfile.options[index].optionsList[listIndex]
-                              .selectedTimes
-                          : 0}
-                      </Text>
-                      <Button
-                        title="+"
-                        style={{
-                          width: 30,
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                        onPress={() => {
-                          const newMyObjProfile = structuredClone(myObjProfile);
-                          //filter out all options[index].optionsList that have selectedTimes > 0 then map through and multiply by countsAs
-
-                          const selectedItems = newMyObjProfile.options[
-                            index
-                          ].optionsList.filter((op) => op.selectedTimes > 0);
-
-                          const thisItemSelectedTimes = selection.selectedTimes
-                            ? parseInt(selection.selectedTimes)
-                            : 1;
-                          const thisItemCountsAs = selection.countsAs
-                            ? parseInt(selection.countsAs)
-                            : 1;
-
-                          let selectedTimesTotal = thisItemCountsAs;
-
-                          selectedItems.map((op) => {
-                            selectedTimesTotal += op.countsAs
-                              ? parseInt(op.selectedTimes) *
-                                parseInt(op.countsAs)
-                              : parseInt(op.selectedTimes);
-                          });
-
-                          if (
-                            parseInt(e.numOfSelectable) >= selectedTimesTotal ||
-                            !e.numOfSelectable ||
-                            parseInt(e.numOfSelectable) === 0
-                          ) {
-                            console.log(
-                              "selectedTimesTotal: ",
-                              selectedTimesTotal,
-                              " e.numOfSelectable: ",
-                              e.numOfSelectable
-                            );
-                            if (
-                              newMyObjProfile.options[index].optionsList[
-                                listIndex
-                              ].selectedTimes
-                            ) {
-                              newMyObjProfile.options[index].optionsList[
-                                listIndex
-                              ].selectedTimes += 1;
-                            } else {
-                              newMyObjProfile.options[index].optionsList[
-                                listIndex
-                              ].selectedTimes = 1;
-                            }
-                            setmyObjProfile(newMyObjProfile);
-                          } else {
-                            console.log(
-                              "Didnt Work ",
-                              "selectedTimesTotal: ",
-                              selectedTimesTotal,
-                              " e.numOfSelectable: ",
-                              e.numOfSelectable
-                            );
-                          }
-                        }}
-                      />
-                    </View>
-                  </View>
-                );
-              })}
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                if (openOptions === index) {
+                  setopenOptions(null);
+                } else {
+                  setopenOptions(index);
+                  scrollToItem();
+                }
+              }}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Text style={{ fontWeight: "700", fontSize: 18 }}>
+                {e.isRequired && "* "}
+                {e.label}
+                {e.numOfSelectable > 0 &&
+                  ` - Selections Allowed: ${e.numOfSelectable}`}
+              </Text>
+              <Ionicons
+                name={openOptions === index ? "chevron-up" : "chevron-down"}
+                size={24}
+                color="black"
+              />
+            </TouchableOpacity>
+            <InnerDisplayOption
+              index={index}
+              e={e}
+              optionVal={optionVal}
+              setoptionVal={setoptionVal}
+              scrollToItem={scrollToItem}
+            />
           </View>
         );
       }
@@ -291,7 +230,7 @@ const ProductListing = React.memo(function ProductListing({
           if (item.selected === true) {
             newMyObjProfile.options[index].optionsList[indexOfItem].selected =
               false;
-            newMyObjProfile(newMyObjProfile);
+            setmyObjProfile(newMyObjProfile);
           }
         }
       );
@@ -299,7 +238,8 @@ const ProductListing = React.memo(function ProductListing({
   };
 
   useEffect(() => {
-    setTotal(getPrice());
+    settotal(getPrice());
+    console.log("myObjProfile: ", myObjProfile);
   }, [myObjProfile]);
 
   const getPrice = () => {
@@ -334,7 +274,10 @@ const ProductListing = React.memo(function ProductListing({
     let stop = false;
 
     myObjProfile.options.forEach((op) => {
-      if (op.optionType?.toLowerCase() === "dropdown") {
+      if (
+        op.optionType?.toLowerCase() === "dropdown" ||
+        op.numOfSelectable === "1"
+      ) {
         let opWVal = `${op.label}: `;
         const numberOfSelected = op.optionsList.filter(
           (f) => f.selected === true
@@ -407,55 +350,103 @@ const ProductListing = React.memo(function ProductListing({
       }
 
       goBack();
-      setMyObjProfile(myObj);
-      setTotal(myObjProfile.price);
-      setExtraInput(null);
+      setmyObjProfile(myObj);
+      settotal(myObjProfile.price);
+      setextraInput(null);
     }
   };
 
+  const scrollviewRef = useRef(null);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={goBack} style={styles.backButton}>
+    <View style={{ padding: "5%", backgroundColor: "white", height: "100%" }}>
+      <View
+        style={{
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexDirection: "row",
+        }}
+      >
+        <TouchableOpacity
+          onPress={goBack}
+          style={{
+            alignItems: "center",
+            flexDirection: "row",
+          }}
+        >
           <MaterialCommunityIcons
             name="chevron-left"
             size={32}
             color="#4A4A4A"
           />
-          <Text style={styles.dashboardText}>Dashboard</Text>
+          <Text
+            style={{
+              fontFamily: "archivo-600",
+              fontSize: 22,
+              color: "#4A4A4A",
+            }}
+          >
+            Dashboard
+          </Text>
         </TouchableOpacity>
-        <Text style={styles.productName}>{myObjProfile.name}</Text>
-        <Text style={styles.totalText}>
+        <Text style={{ fontFamily: "archivo-600", fontSize: 24 }}>
+          {myObj.name}
+        </Text>
+        <Text
+          style={{ fontFamily: "archivo-600", fontSize: 22, color: "#4A4A4A" }}
+        >
           Total: ${parseFloat(total).toFixed(2)}
         </Text>
       </View>
-      <ScrollView style={styles.scrollView}>
-        {myObjProfile.description && (
-          <Text style={styles.description}>
-            Description: {myObjProfile.description}
+      <ScrollView style={styles.modalContainer} ref={scrollviewRef}>
+        {myObj.description && (
+          <Text style={{ fontWeight: "600", fontSize: 16, marginBottom: 15 }}>
+            Description: {myObj.description}
           </Text>
         )}
         {myObjProfile.options.map((e, index) => (
-          <DisplayOption e={e} index={index} key={index} />
+          <DisplayOption
+            e={e}
+            index={index}
+            key={index}
+            scrollviewRef={scrollviewRef}
+          />
         ))}
       </ScrollView>
-      <View style={styles.footer}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
         <TextInput
           placeholder="Write any extra info here.."
-          onChangeText={(val) => setExtraInput(val)}
+          onChangeText={(val) => setextraInput(val)}
           value={extraInput}
-          style={styles.input}
+          style={{
+            width: "70%",
+            height: 45,
+            borderColor: "lightgrey",
+            borderWidth: 1,
+            padding: 5,
+            borderRadius: 3,
+            paddingLeft: 10,
+            fontSize: 14,
+          }}
         />
         <Button
           title={itemIndex >= 0 ? "Save" : "Add To Cart"}
           onPress={AddToCart}
-          style={styles.button}
-          titleStyle={styles.buttonTitle}
+          style={{ backgroundColor: "#3351F3", width: 140, height: 40 }}
+          titleStyle={{ fontSize: 16, textTransform: "capitalize" }}
         />
       </View>
     </View>
   );
-});
+};
 
 export default ProductListing;
 
@@ -542,82 +533,5 @@ const styles = StyleSheet.create({
     fontFamily: "archivo-600",
     fontSize: 16,
     padding: 10,
-  },
-  header: {
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
-  },
-  backButton: {
-    alignItems: "center",
-    flexDirection: "row",
-  },
-  dashboardText: {
-    fontFamily: "archivo-600",
-    fontSize: 22,
-    color: "#4A4A4A",
-  },
-  productName: {
-    fontFamily: "archivo-600",
-    fontSize: 24,
-  },
-  totalText: {
-    fontFamily: "archivo-600",
-    fontSize: 22,
-    color: "#4A4A4A",
-  },
-  scrollView: {
-    marginTop: 25,
-    marginBottom: 25,
-    padding: "5%",
-    backgroundColor: "white",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "rgba(232,232,232,1)",
-    shadowColor: "rgba(0,0,0,1)",
-    shadowOffset: {
-      width: 3,
-      height: 3,
-    },
-    elevation: 30,
-    shadowOpacity: 0.03,
-    shadowRadius: 10,
-    height: "70%",
-  },
-  description: {
-    fontWeight: "600",
-    fontSize: 16,
-    marginBottom: 15,
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-  },
-  input: {
-    width: "70%",
-    height: 45,
-    borderColor: "lightgrey",
-    borderWidth: 1,
-    padding: 5,
-    borderRadius: 3,
-    paddingLeft: 10,
-    fontSize: 14,
-  },
-  button: {
-    backgroundColor: "#3351F3",
-    width: 140,
-    height: 40,
-  },
-  buttonTitle: {
-    fontSize: 16,
-    textTransform: "capitalize",
-  },
-  container: {
-    padding: "5%",
-    backgroundColor: "white",
-    height: "100%",
   },
 });

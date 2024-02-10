@@ -23,6 +23,10 @@ const DeliveryScreen = ({
   setsavedCustomerDetails,
   ongoingDelivery,
   setsaveCustomerModal,
+  buzzCode,
+  setBuzzCode,
+  unitNumber,
+  setUnitNumber,
 }) => {
   const [localAddress, setlocalAddress] = useState(null);
   const [saveCustomerChecked, setsaveCustomerChecked] = useState(false);
@@ -95,66 +99,56 @@ const DeliveryScreen = ({
     if (address) {
       console.log("Set address: ", address);
       setlocalAddress(address);
-      calculateDistanceBetweenAddresses(
-        storeDetails.address.value.reference,
-        address.value.reference
-      ).then((distance) => {
-        if (distance !== null) {
-          console.log(`Distance between addresses: ${distance.toFixed(2)} km`);
-          if (storeDetails.deliveryRange) {
-            if (
-              distance > parseFloat(storeDetails.deliveryRange) &&
-              deliveryChecked
-            ) {
-              alert("The delivery address is out of range");
+      try {
+        calculateDistanceBetweenAddresses(
+          storeDetails.address.value.reference,
+          address.value.reference
+        ).then((distance) => {
+          if (distance !== null) {
+            console.log(
+              `Distance between addresses: ${distance.toFixed(2)} km`
+            );
+            if (storeDetails.deliveryRange) {
+              if (
+                distance > parseFloat(storeDetails.deliveryRange) &&
+                deliveryChecked
+              ) {
+                alert("The delivery address is out of range");
+              }
             }
-            // else {
-            //   setpage(2);
-            // }
           }
-          // else {
-          //   setpage(2);
-          // }
-        }
-        // else {
-        //   alert(
-        //     "Distance calculation between the store and your location failed. Please refresh page."
-        //   );
-        // }
-      });
+        });
+      } catch {
+        console.log("Error calculating distance between addresses");
+      }
     }
   }, []);
 
   useEffect(() => {
     if (localAddress) {
       setAddress(localAddress);
-      calculateDistanceBetweenAddresses(
-        storeDetails.address.value.reference,
-        localAddress.value.reference
-      ).then((distance) => {
-        if (distance !== null) {
-          console.log(`Distance between addresses: ${distance.toFixed(2)} km`);
-          if (storeDetails.deliveryRange) {
-            if (
-              distance > parseFloat(storeDetails.deliveryRange) &&
-              deliveryChecked
-            ) {
-              alert("The delivery address is out of range");
+      try {
+        calculateDistanceBetweenAddresses(
+          storeDetails.address.value.reference,
+          localAddress.value.reference
+        ).then((distance) => {
+          if (distance !== null) {
+            console.log(
+              `Distance between addresses: ${distance.toFixed(2)} km`
+            );
+            if (storeDetails.deliveryRange) {
+              if (
+                distance > parseFloat(storeDetails.deliveryRange) &&
+                deliveryChecked
+              ) {
+                alert("The delivery address is out of range");
+              }
             }
-            // else {
-            //   setpage(2);
-            // }
           }
-          // else {
-          //   setpage(2);
-          // }
-        }
-        // else {
-        //   alert(
-        //     "Distance calculation between the store and your location failed. Please refresh page."
-        //   );
-        // }
-      });
+        });
+      } catch {
+        console.log("Error calculating distance between addresses");
+      }
     }
   }, [localAddress]);
 
@@ -163,12 +157,16 @@ const DeliveryScreen = ({
       name: name,
       phone: phone,
       address: address ? address : null,
+      buzzCode: buzzCode ? buzzCode : null,
+      unitNumber: unitNumber ? unitNumber : null,
       orders: [],
     }).then((docRef) => {
       setsavedCustomerDetails({
         name: name,
         phone: phone,
         address: address ? address : null,
+        buzzCode: buzzCode ? buzzCode : null,
+        unitNumber: unitNumber ? unitNumber : null,
         orders: [],
         id: docRef.id,
       });
@@ -179,6 +177,8 @@ const DeliveryScreen = ({
           name: name,
           phone: phone,
           address: address ? address : null,
+          buzzCode: buzzCode ? buzzCode : null,
+          unitNumber: unitNumber ? unitNumber : null,
           orders: [],
           id: docRef.id,
         },
@@ -213,9 +213,8 @@ const DeliveryScreen = ({
           shadowOpacity: 0.57,
           shadowRadius: 10,
           width: "35%",
-          top: "10%",
-          bottom: "10%",
-          height: "80%",
+          top: "7.5%",
+          height: "85%",
         }}
       >
         <View>
@@ -370,36 +369,63 @@ const DeliveryScreen = ({
             </View>
           )}
           {deliveryChecked && (
-            <GooglePlacesAutocomplete
-              apiOptions={{
-                region: "CA",
-              }}
-              debounce={800}
-              apiKey={GOOGLE_API_KEY}
-              // onSelect={handleAddress}
-              selectProps={{
-                localAddress,
-                onChange: setlocalAddress,
-                placeholder: "Enter customer address",
-                defaultValue: address,
-                menuPortalTarget: document.body,
-                styles: { menuPortal: (base) => ({ ...base, zIndex: 9999 }) },
-              }}
-              renderSuggestions={(active, suggestions, onSelectSuggestion) => (
-                <div style={{ width: "80%" }}>
-                  {suggestions.map((suggestion) => (
-                    <div
-                      className="suggestion"
-                      onClick={(event) => {
-                        onSelectSuggestion(suggestion, event);
-                      }}
-                    >
-                      {suggestion.description}
-                    </div>
-                  ))}
-                </div>
-              )}
-            />
+            <>
+              {" "}
+              <GooglePlacesAutocomplete
+                apiOptions={{
+                  region: "CA",
+                }}
+                debounce={800}
+                apiKey={GOOGLE_API_KEY}
+                // onSelect={handleAddress}
+                selectProps={{
+                  localAddress,
+                  onChange: setlocalAddress,
+                  placeholder: "Enter customer address",
+                  defaultValue: address,
+                  menuPortalTarget: document.body,
+                  styles: { menuPortal: (base) => ({ ...base, zIndex: 9999 }) },
+                }}
+                renderSuggestions={(
+                  active,
+                  suggestions,
+                  onSelectSuggestion
+                ) => (
+                  <div style={{ width: "80%" }}>
+                    {suggestions.map((suggestion) => (
+                      <div
+                        className="suggestion"
+                        onClick={(event) => {
+                          onSelectSuggestion(suggestion, event);
+                        }}
+                      >
+                        {suggestion.description}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <TextInput
+                  placeholder="Enter Unit #"
+                  onChangeText={(val) => setUnitNumber(val)}
+                  style={{ width: "50%", height: 50 }}
+                  value={unitNumber}
+                />
+                <TextInput
+                  placeholder="Enter Buzz Code"
+                  onChangeText={(val) => setBuzzCode(val)}
+                  style={{ width: "50%", height: 50 }}
+                  value={buzzCode}
+                />
+              </View>
+            </>
           )}
           {/* <Text>ADDRESS: {address}</Text> */}
           <Button
@@ -426,6 +452,10 @@ const DeliveryScreen = ({
               setName(null);
               setPhone(null);
               setAddress(null);
+              setDeliveryChecked(false);
+              setlocalAddress(null);
+              setBuzzCode(null);
+              setUnitNumber(null);
             }}
             contentContainerStyle={styles.btn}
             style={{ margin: 25, backgroundColor: "#4050B5" }}

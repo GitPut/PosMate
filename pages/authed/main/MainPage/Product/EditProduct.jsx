@@ -18,8 +18,8 @@ const EditProduct = (props) => {
   const { productId } = useParams();
 
   const product = {
-    existingProduct: catalog.products[productId],
-    existingProductIndex: productId,
+    existingProduct: catalog.products[catalog.products.findIndex((e) => e.id === productId)],
+    existingProductIndex: catalog.products.findIndex((e) => e.id === productId),
   }
 
   const { existingProduct, existingProductIndex } = product

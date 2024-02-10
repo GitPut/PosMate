@@ -146,7 +146,7 @@ const ReceiptPrint = (element, storeDetails) => {
 
     data.push(
       "\x0A",
-      "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + "\x0A",
       "\x0A" + "\x0A",
       "Payment Method: " + element.payment_method_title + "\x0A" + "\x0A",
       `Total Including (${
@@ -156,7 +156,7 @@ const ReceiptPrint = (element, storeDetails) => {
         element.total +
         "\x0A" +
         "\x0A",
-      "------------------------------------------" + "\x0A",
+      "------------------------------------------------" + "\x0A",
       "\x0A", // line break
       "\x0A", // line break
       "\x0A", // line break
@@ -210,6 +210,7 @@ const ReceiptPrint = (element, storeDetails) => {
             "                                                                              ", // line break
             "\x0A",
             "\x1B" + "\x61" + "\x31", // center align
+            "\x1B" + "\x45" + "\x00",
             storeDetails.name,
             "\x0A",
             storeDetails.address?.label + "\x0A",
@@ -218,7 +219,7 @@ const ReceiptPrint = (element, storeDetails) => {
             date + "\x0A",
             "\x0A",
             element.online && "Online Order" + "\x0A", // text and line break
-            `Transaction ID ${element.transNum}` + "\x0A",
+            `Transaction ID ${element.transNum.toUpperCase()}` + "\x0A",
             "\x0A",
             `Delivery Order: $${
               storeDetails.deliveryPrice ? storeDetails.deliveryPrice : "0"
@@ -233,6 +234,7 @@ const ReceiptPrint = (element, storeDetails) => {
             "                                                                              ", // line break
             "\x0A",
             "\x1B" + "\x61" + "\x31", // center align
+            "\x1B" + "\x45" + "\x00",
             storeDetails.name,
             "\x0A",
             storeDetails.address?.label + "\x0A",
@@ -240,7 +242,7 @@ const ReceiptPrint = (element, storeDetails) => {
             storeDetails.phoneNumber + "\x0A", // text and line break
             date + "\x0A",
             "\x0A",
-            `Transaction ID ${element.transNum}` + "\x0A",
+            `Transaction ID ${element.transNum.toUpperCase()}` + "\x0A",
             "\x0A",
             `Delivery Order: $${
               storeDetails.deliveryPrice ? storeDetails.deliveryPrice : "0"
@@ -252,7 +254,11 @@ const ReceiptPrint = (element, storeDetails) => {
           ];
 
       element.cart.map((cartItem) => {
-        data.push(`Name: ${cartItem.name}`);
+        data.push(
+          "\x1B" + "\x45" + "\x01",
+          `Name: ${cartItem.name}`,
+          "\x1B" + "\x45" + "\x00"
+        );
         data.push("\x0A");
 
         if (cartItem.quantity > 1) {
@@ -307,21 +313,30 @@ const ReceiptPrint = (element, storeDetails) => {
       //push ending
       data.push(
         "\x0A",
-        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + "\x0A",
         "\x0A" + "\x0A",
-        "Customer Name: " + element.customer?.name,
-        "\x0A" + "\x0A",
-        "Customer Phone #:  " + element.customer?.phone,
-        "\x0A" + "\x0A",
-        "Customer Address: " + element.customer?.address?.label,
+        "\x1B" + "\x45" + "\x01",
+        "Customer Details:",
+        "\x1B" + "\x45" + "\x00",
+        "\x0A",
+        "Name: " + element.customer?.name,
+        "\x0A",
+        "Phone #:  " + element.customer?.phone,
+        "\x0A",
+        "Address: " + element.customer?.address?.label,
+        "\x0A",
+        "Unit #: " + element.customer?.unitNumber,
+        "\x0A",
+        "Buzz Code: " + element.customer?.buzzCode,
         "\x0A" + "\x0A",
         `Total Including (${
           storeDetails.taxRate ? storeDetails.taxRate : "13"
         }% Tax): ` +
+          "$" +
           total +
           "\x0A" +
           "\x0A",
-        "------------------------------------------" + "\x0A",
+        "------------------------------------------------" + "\x0A",
         "\x0A", // line break
         "\x0A", // line break
         "\x0A", // line break
@@ -338,6 +353,7 @@ const ReceiptPrint = (element, storeDetails) => {
             "                                                                              ", // line break
             "\x0A",
             "\x1B" + "\x61" + "\x31", // center align
+            "\x1B" + "\x45" + "\x00",
             storeDetails.name,
             "\x0A",
             storeDetails.address?.label + "\x0A",
@@ -346,7 +362,7 @@ const ReceiptPrint = (element, storeDetails) => {
             date + "\x0A",
             "\x0A",
             element.online && "Online Order" + "\x0A", // text and line break
-            `Transaction ID ${element.transNum}` + "\x0A",
+            `Transaction ID ${element.transNum.toUpperCase()}` + "\x0A",
             `                                `,
             "\x0A",
             "Pickup Order" + "\x0A", // text and line break
@@ -359,6 +375,7 @@ const ReceiptPrint = (element, storeDetails) => {
             "                                                                              ", // line break
             "\x0A",
             "\x1B" + "\x61" + "\x31", // center align
+            "\x1B" + "\x45" + "\x00",
             storeDetails.name,
             "\x0A",
             storeDetails.address?.label + "\x0A",
@@ -366,7 +383,7 @@ const ReceiptPrint = (element, storeDetails) => {
             storeDetails.phoneNumber + "\x0A", // text and line break
             date + "\x0A",
             "\x0A",
-            `Transaction ID ${element.transNum}` + "\x0A",
+            `Transaction ID ${element.transNum.toUpperCase()}` + "\x0A",
             `                                `,
             "\x0A",
             "Pickup Order" + "\x0A", // text and line break
@@ -376,7 +393,11 @@ const ReceiptPrint = (element, storeDetails) => {
           ];
 
       element.cart.map((cartItem) => {
-        data.push(`Name: ${cartItem.name}`);
+        data.push(
+          "\x1B" + "\x45" + "\x01",
+          `Name: ${cartItem.name}`,
+          "\x1B" + "\x45" + "\x00"
+        );
         data.push("\x0A");
 
         if (cartItem.quantity > 1) {
@@ -431,21 +452,26 @@ const ReceiptPrint = (element, storeDetails) => {
       //push ending
       data.push(
         "\x0A",
-        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + "\x0A",
         "\x0A" + "\x0A",
-        "Customer Name: " + element.customer?.name,
-        "\x0A" + "\x0A",
-        "Customer Phone #:  " + element.customer?.phone,
-        "\x0A" + "\x0A",
-        "Customer Address: N/A                            ",
+        "\x1B" + "\x45" + "\x01",
+        "Customer Details:",
+        "\x1B" + "\x45" + "\x00",
         "\x0A",
+        "Customer Name: " + element.customer?.name,
+        "\x0A",
+        "Customer Phone #:  " + element.customer?.phone,
+        "\x0A",
+        "Customer Address: N/A                            ",
+        "\x0A" + "\x0A",
         `Total Including (${
           storeDetails.taxRate ? storeDetails.taxRate : "13"
         }% Tax): ` +
+          "$" +
           total +
           "\x0A" +
           "\x0A",
-        "------------------------------------------" + "\x0A",
+        "------------------------------------------------" + "\x0A",
         "\x0A", // line break
         "\x0A", // line break
         "\x0A", // line break
@@ -461,6 +487,7 @@ const ReceiptPrint = (element, storeDetails) => {
         "                                                                              ", // line break
         "\x0A",
         "\x1B" + "\x61" + "\x31", // center align
+        "\x1B" + "\x45" + "\x00",
         storeDetails.name,
         "\x0A",
         storeDetails.address?.label + "\x0A",
@@ -468,7 +495,7 @@ const ReceiptPrint = (element, storeDetails) => {
         storeDetails.phoneNumber + "\x0A", // text and line break
         date + "\x0A",
         "\x0A",
-        `Transaction ID ${element.transNum}` + "\x0A",
+        `Transaction ID ${element.transNum.toUpperCase()}` + "\x0A",
         "\x0A",
         "\x0A",
         "\x0A",
@@ -476,7 +503,11 @@ const ReceiptPrint = (element, storeDetails) => {
       ];
 
       element.cart.map((cartItem) => {
-        data.push(`Name: ${cartItem.name}`);
+        data.push(
+          "\x1B" + "\x45" + "\x01",
+          `Name: ${cartItem.name}`,
+          "\x1B" + "\x45" + "\x00"
+        );
         data.push("\x0A");
 
         if (cartItem.quantity > 1) {
@@ -489,29 +520,70 @@ const ReceiptPrint = (element, storeDetails) => {
           if (cartItem.price) {
             data.push("\x0A");
             data.push(
-              `Price: $${
-                parseFloat(cartItem.price).toFixed(2) *
-                parseFloat(cartItem.quantity)
-              }`
+              "\x1B" +
+                "\x45" +
+                "\x01" +
+                `Price: $${
+                  parseFloat(cartItem.price).toFixed(2) *
+                  parseFloat(cartItem.quantity)
+                }` +
+                "\x1B" +
+                "\x45" +
+                "\x00"
             );
           }
         } else {
           if (cartItem.price) {
             total += parseFloat(parseFloat(cartItem.price).toFixed(2));
-            data.push(`Price: $${parseFloat(cartItem.price).toFixed(2)}`);
+            data.push(
+              "\x1B" +
+                "\x45" +
+                "\x01" +
+                `Price: $${parseFloat(cartItem.price).toFixed(2)}` +
+                "\x1B" +
+                "\x45" +
+                "\x00"
+            );
           }
         }
 
         if (cartItem.description) {
           data.push("\x0A");
+          data.push(
+            "\x1B" +
+              "\x45" +
+              "\x01" +
+              "Description:" +
+              "\x1B" +
+              "\x45" +
+              "\x00" +
+              "\x0A"
+          );
           data.push(cartItem.description);
         }
 
         if (cartItem.options) {
           data.push("\x0A");
           cartItem.options.map((option) => {
-            data.push(option);
-            data.push("\x0A");
+            const copyOption = option;
+            // Split the string into an array of substrings based on the newline character
+            const optionLines = copyOption.split("\n");
+
+            // Access the first element of the array to get the first part of the text
+            const label = optionLines[0];
+            const restOfOption = option.slice(label.length);
+
+            data.push(
+              "\x1B" +
+                "\x45" +
+                "\x01" +
+                label +
+                "\x1B" +
+                "\x45" +
+                "\x00" +
+                restOfOption +
+                "\x0A"
+            );
           });
         }
 
@@ -530,7 +602,7 @@ const ReceiptPrint = (element, storeDetails) => {
         //push ending
         data.push(
           "\x0A",
-          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + "\x0A",
           "\x0A" + "\x0A",
           "Payment Method: " + element.paymentMethod + "\x0A" + "\x0A",
           `Total Including (${
@@ -541,7 +613,7 @@ const ReceiptPrint = (element, storeDetails) => {
             "\x0A" +
             "\x0A",
           "Change Due: " + "$" + element.changeDue + "\x0A" + "\x0A",
-          "------------------------------------------" + "\x0A",
+          "------------------------------------------------" + "\x0A",
           "\x0A", // line break
           "\x0A", // line break
           "\x0A", // line break
@@ -554,7 +626,7 @@ const ReceiptPrint = (element, storeDetails) => {
       } else {
         data.push(
           "\x0A",
-          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + "\x0A",
           "\x0A" + "\x0A",
           "Payment Method: " + element.paymentMethod + "\x0A" + "\x0A",
           `Total Including (${
@@ -564,7 +636,7 @@ const ReceiptPrint = (element, storeDetails) => {
             total +
             "\x0A" +
             "\x0A",
-          "------------------------------------------" + "\x0A",
+          "------------------------------------------------" + "\x0A",
           "\x0A", // line break
           "\x0A", // line break
           "\x0A", // line break

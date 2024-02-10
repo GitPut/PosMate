@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Animated,
+  Dimensions,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { addCartState, cartState } from "state/state";
@@ -17,6 +18,7 @@ const ProductDisplayBtn = ({ product, productIndex }) => {
   const shadowOpacity = useRef(new Animated.Value(0)).current;
   const [productImage, setproductImage] = useState();
   const cart = cartState.use();
+  const width = Dimensions.get("window").width;
 
   useEffect(() => {
     if (product.hasImage) {
@@ -146,7 +148,7 @@ const ProductDisplayBtn = ({ product, productIndex }) => {
             <View
               style={{
                 height: "100%",
-                width: "70%",
+                width: width < 1400 ? "65%" : "70%",
                 borderTopRightRadius: 3,
               }}
             >
@@ -160,7 +162,7 @@ const ProductDisplayBtn = ({ product, productIndex }) => {
           <Animated.View
             style={{
               height: "100%",
-              width: "30%",
+              width: width < 1400 ? "35%" : "30%",
               padding: 20,
               shadowColor: "rgba(0,0,0,1)",
               shadowOffset: {

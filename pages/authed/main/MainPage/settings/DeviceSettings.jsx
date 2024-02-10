@@ -242,17 +242,26 @@ const DeviceSettings = () => {
                                             setDeviceTreeState(clone)
                                         }} />
                                     </View>
-                                    {!device.useDifferentDeviceToPrint ? <View>
-                                        <Text style={tw.style([
+                                    {!device.useDifferentDeviceToPrint ? <View style={
+                                        tw.style([
+                                            'flex',
+                                            'flex-col',
+                                            'items-center',
+                                            'mb-2',
+                                            'mt-2',
+                                            'w-1/2',
+                                        ])
+                                    }>
+                                        <Text style={[tw.style([
                                             'text-sm',
                                             'mb-2',
-                                        ])} >Print To Printer</Text>
+                                        ]), { width: '100%' }]} >Print To Printer</Text>
                                         <TextInput placeholder='Enter printer name' value={device.printToPrinter} onChangeText={val => {
                                             const clone = { ...deviceTree }
                                             clone.devices[index].printToPrinter = val
                                             setDeviceTreeState(clone)
                                         }}
-                                            style={tw.style(['w-1/2', 'p-2', 'border', 'border-gray-300', 'rounded-md', 'mb-2'])}
+                                            style={[tw.style(['p-2', 'border', 'border-gray-300', 'rounded-md', 'mb-2']), { width: '100%' }]}
                                         />
                                     </View> :
                                         <View style={
@@ -269,7 +278,7 @@ const DeviceSettings = () => {
                                                 'text-sm',
                                                 'mb-2',
                                             ])} >Choose Device To Send Print To</Text>
-                                            <select
+                                            {/* <select
                                                 style={tw.style([
                                                     'w-1/2',
                                                     'p-2',
@@ -279,19 +288,74 @@ const DeviceSettings = () => {
                                                     'mb-2'
                                                 ])}
                                                 value={device.sendPrintToUserID}
-                                                onChange={(e) => {
-                                                    const clone = { ...deviceTree }
-                                                    clone.devices[index].sendPrintToUserID = e.target.value
-                                                    setDeviceTreeState(clone)
-                                                }
-                                                }
+                                            // onChange={(e) => {
+                                            //     const clone = { ...deviceTree }
+                                            //     clone.devices[index].sendPrintToUserID = e.target.value
+                                            //     setDeviceTreeState(clone)
+                                            //     console.log('Device to send to updated to: ', ' Label: ', e.target.label, ' Value: ', e.target.value)
+                                            // }
+                                            // }
                                             >
+                                                <option value={null}>Select Device</option>
                                                 {otherDeviceOptions.map((device, index) => {
                                                     return (
-                                                        <option key={index} value={device.value}>{device.label}</option>
+                                                        <option key={index} label={device.label} value={device.value} onClick={() => {
+                                                            const clone = { ...deviceTree }
+                                                            clone.devices[index].sendPrintToUserID = { value: device.value, label: device.label }
+                                                            setDeviceTreeState(clone)
+                                                            console.log('Device to send to updated to: ', ' Label: ', device.label, ' Value: ', device.value)
+                                                        }}>{device.label}</option>
                                                     )
                                                 })}
-                                            </select>
+                                            </select> */}
+                                            <ReactSelect
+                                                options={otherDeviceOptions}
+                                                value={
+                                                    device.sendPrintToUserID
+                                                }
+                                                onChange={(val) => {
+                                                    const clone = { ...deviceTree }
+                                                    clone.devices[index].sendPrintToUserID = val
+                                                    setDeviceTreeState(clone)
+                                                }}
+                                                placeholder={"Choose Device To Send Print To"}
+                                                menuPortalTarget={document.body}
+                                                styles={{
+                                                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                                                    control: (provided, state) => ({
+                                                        ...provided,
+                                                        background: "#fff",
+                                                        borderColor: "#9e9e9e",
+                                                        minHeight: "52px",
+                                                        height: "52px",
+                                                        boxShadow: state.isFocused ? null : null,
+                                                    }),
+
+                                                    valueContainer: (provided, state) => ({
+                                                        ...provided,
+                                                        height: "52px",
+                                                        padding: "0 6px",
+                                                    }),
+
+                                                    input: (provided, state) => ({
+                                                        ...provided,
+                                                        margin: "0px",
+                                                    }),
+                                                    indicatorSeparator: (state) => ({
+                                                        display: "none",
+                                                    }),
+                                                    indicatorsContainer: (provided, state) => ({
+                                                        ...provided,
+                                                        height: "52px",
+                                                    }),
+                                                    container: (provided, state) => ({
+                                                        ...provided,
+                                                        width: "100%",
+                                                    }),
+                                                }}
+                                                menuPlacement="auto"
+                                                menuPosition="fixed"
+                                            />
                                         </View>
                                     }
                                     <View style={[{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, justifyContent: 'space-between' }, tw.style('w-1/2')]}>
@@ -304,6 +368,7 @@ const DeviceSettings = () => {
                                                 )
                                                 console.log('Updated Device')
                                                 setMyDeviceDetailsState(device)
+                                                console.log('Updated My Device Details: ', device)
                                             }}
                                             style={tw.style([
                                                 'bg-blue-500',

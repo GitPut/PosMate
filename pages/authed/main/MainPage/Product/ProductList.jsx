@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
 import Table from "../../EntryFile/datatable";
 import Tabletop from "../../EntryFile/tabletop";
@@ -23,6 +23,7 @@ const ProductList = () => {
   const [filteredData, setfilteredData] = useState([]);
   const userS = userState.use();
   const onlineStoreDetails = onlineStoreState.use()
+  const history = useHistory()
 
   const togglefilter = (value) => {
     setInputfilter(value);
@@ -48,9 +49,9 @@ const ProductList = () => {
           text: "Your file has been deleted.",
           confirmButtonClass: "btn btn-success",
         });
-        const localCatalog = structuredClone(catalog);
+        let localCatalog = structuredClone(catalog);
         if (localCatalog.products.length > 1) {
-          localCatalog.products.splice(props.index - 1, 1);
+          localCatalog.products = localCatalog.products.filter((item) => item.id !== props.id);
         } else {
           localCatalog.products = [];
         }
@@ -151,14 +152,14 @@ const ProductList = () => {
             <Link
               style={{ textDecoration: "none" }}
               className="product-img"
-              to={`/authed/product/editproduct-product/${record.index - 1}`}
+              to={`/authed/product/editproduct-product/${record.id}`}
             >
               < img id={record.id} alt="" src={record.imageUrl} loading="lazy" />
             </Link>
             <Link
               style={{ textDecoration: "none" }}
               style={{ fontSize: "15px", marginLeft: "10px" }}
-              to={`/authed/product/editproduct-product/${record.index - 1}`}
+              to={`/authed/product/editproduct-product/${record.id}`}
             >
               {record.productName}
             </Link>
@@ -187,8 +188,10 @@ const ProductList = () => {
               style={{ textDecoration: "none" }}
               className="me-3"
               onClick={() => {
-                let copy = structuredClone(catalog.products[props.index - 1]);
+                let copy = structuredClone(catalog.products[catalog.products.findIndex((item) => item.id === props.id)]);
                 copy.name = copy.name + " Copy";
+                copy.imageUrl = "";
+                copy.hasImage = false;
                 copy.id = Math.random().toString(36).substr(2, 9);
                 db.collection("users")
                   .doc(userS.uid)
@@ -202,6 +205,8 @@ const ProductList = () => {
                     .doc(copy.id.toString())
                     .set(copy)
                 }
+                setUserStoreState({ categories: catalog.categories, products: [...catalog.products, copy] })
+                history.push(`/authed/product/editproduct-product/${copy.id}`)
               }}
             >
               <img src={DuplicateIcon} alt="img" />
@@ -209,7 +214,7 @@ const ProductList = () => {
             <Link
               style={{ textDecoration: "none" }}
               className="me-3"
-              to={`/authed/product/editproduct-product/${props.index - 1}`}
+              to={`/authed/product/editproduct-product/${props.id}`}
             >
               <img src={EditIcon} alt="img" />
             </Link>

@@ -1,17 +1,17 @@
 {
   "files": {
-    "app.js": "/static/js/app.97c72786.chunk.js",
-    "app.js.map": "/static/js/app.97c72786.chunk.js.map",
-    "runtime~app.js": "/static/js/runtime~app.52ba38f4.js",
-    "runtime~app.js.map": "/static/js/runtime~app.52ba38f4.js.map",
-    "static/js/2.b9846c65.chunk.js": "/static/js/2.b9846c65.chunk.js",
-    "static/js/2.b9846c65.chunk.js.map": "/static/js/2.b9846c65.chunk.js.map",
+    "app.js": "/static/js/app.479ebd0d.chunk.js",
+    "app.js.map": "/static/js/app.479ebd0d.chunk.js.map",
+    "runtime~app.js": "/static/js/runtime~app.b62d96fc.js",
+    "runtime~app.js.map": "/static/js/runtime~app.b62d96fc.js.map",
+    "static/js/2.5af926d1.chunk.js": "/static/js/2.5af926d1.chunk.js",
+    "static/js/2.5af926d1.chunk.js.map": "/static/js/2.5af926d1.chunk.js.map",
     "static/js/3.d9ff982d.chunk.js": "/static/js/3.d9ff982d.chunk.js",
     "static/js/3.d9ff982d.chunk.js.map": "/static/js/3.d9ff982d.chunk.js.map",
     "static/js/4.d9002e44.chunk.js": "/static/js/4.d9002e44.chunk.js",
     "static/js/4.d9002e44.chunk.js.map": "/static/js/4.d9002e44.chunk.js.map",
-    "static/js/5.387ee071.chunk.js": "/static/js/5.387ee071.chunk.js",
-    "static/js/5.387ee071.chunk.js.map": "/static/js/5.387ee071.chunk.js.map",
+    "static/js/5.2984caf9.chunk.js": "/static/js/5.2984caf9.chunk.js",
+    "static/js/5.2984caf9.chunk.js.map": "/static/js/5.2984caf9.chunk.js.map",
     "static/js/6.1803ec84.chunk.js": "/static/js/6.1803ec84.chunk.js",
     "static/js/6.1803ec84.chunk.js.map": "/static/js/6.1803ec84.chunk.js.map",
     "static/js/7.30d83d15.chunk.js": "/static/js/7.30d83d15.chunk.js",
@@ -61,7 +61,7 @@
     "robots.txt": "/robots.txt",
     "serve.json": "/serve.json",
     "sitemap.xml": "/sitemap.xml",
-    "static/js/2.b9846c65.chunk.js.LICENSE.txt": "/static/js/2.b9846c65.chunk.js.LICENSE.txt",
+    "static/js/2.5af926d1.chunk.js.LICENSE.txt": "/static/js/2.5af926d1.chunk.js.LICENSE.txt",
     "static/media/adidas.png": "/static/media/adidas.838658b0.png",
     "static/media/avatar-02.jpg": "/static/media/avatar-02.6168ca8a.jpg",
     "static/media/avatar-03.jpg": "/static/media/avatar-03.4265c65e.jpg",
@@ -188,8 +188,8 @@
     "static/media/wallet1.svg": "/static/media/wallet1.b741d691.svg"
   },
   "entrypoints": [
-    "static/js/runtime~app.52ba38f4.js",
-    "static/js/2.b9846c65.chunk.js",
-    "static/js/app.97c72786.chunk.js"
+    "static/js/runtime~app.b62d96fc.js",
+    "static/js/2.5af926d1.chunk.js",
+    "static/js/app.479ebd0d.chunk.js"
   ]
 }

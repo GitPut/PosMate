@@ -66,7 +66,7 @@ const MenuScreen = () => {
       <View
         style={{
           backgroundColor: "rgba(31,35,48,1)",
-          width: "23%",
+          width: width < 1400 ? "28%" : "25%",
           height: "100%",
           alignItems: "center",
           alignSelf: "center",
@@ -149,7 +149,7 @@ const styles = (props) =>
     container: {
       backgroundColor: "white",
       height: "100%",
-      width: props.width * 0.7,
+      width: props.width < 1400 ? props.width * 0.65 : props.width * 0.7,
       flexDirection: "row",
     },
     wrapper: {

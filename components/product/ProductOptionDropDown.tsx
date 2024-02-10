@@ -85,6 +85,7 @@ const ProductOptionDropDown = ({ label, options, setValue, value, style }) => {
         >
           {options.map((option, listIndex) => (
             <HoverButton
+              key={listIndex}
               title={`${option.label}  (+$${
                 option.priceIncrease !== null ? option.priceIncrease : 0
               })`}

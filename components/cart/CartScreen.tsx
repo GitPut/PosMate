@@ -84,6 +84,8 @@ const CartScreen = ({ navigation }) => {
   const [name, setName] = useState(null);
   const [phone, setPhone] = useState(null);
   const [address, setAddress] = useState(null);
+  const [buzzCode, setBuzzCode] = useState(null);
+  const [unitNumber, setUnitNumber] = useState(null);
   const [deliveryChecked, setDeliveryChecked] = useState(false);
   const [changeDue, setChangeDue] = useState(null);
   const cart = cartState.use();
@@ -96,6 +98,7 @@ const CartScreen = ({ navigation }) => {
     useState(false);
   const history = useHistory();
   const height = useWindowDimensions().height;
+  const width = useWindowDimensions().width;
   const [updatingOrder, setupdatingOrder] = useState(false);
   const [ongoingListState, setongoingListState] = useState([]);
   const customers = customersList.use();
@@ -300,6 +303,8 @@ const CartScreen = ({ navigation }) => {
           name: name,
           phone: phone,
           address: address,
+          buzzCode: buzzCode,
+          unitNumber: unitNumber,
         },
       };
 
@@ -320,6 +325,8 @@ const CartScreen = ({ navigation }) => {
               name: name,
               phone: phone,
               address: address ? address : null,
+              buzzCode: buzzCode,
+              unitNumber: unitNumber,
             },
           });
       }
@@ -594,7 +601,12 @@ const CartScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        width < 1400 ? { width: "35%" } : { width: "30%" },
+      ]}
+    >
       <View style={styles.cartHeader}>
         <Text
           style={{
@@ -612,7 +624,7 @@ const CartScreen = ({ navigation }) => {
             justifyContent: "space-between",
           }}
         >
-          <CartButton
+          {/* <CartButton
             style={[
               styles.iconContainer,
               (cart.length < 1 || updatingOrder) && { opacity: 0.5 },
@@ -625,40 +637,73 @@ const CartScreen = ({ navigation }) => {
                 source={require("assets/tag.png")}
               />
             )}
-          />
-          <CartButton
-            style={[
-              styles.iconContainer,
-              (cart.length > 0 || updatingOrder || ongoingDelivery) && { opacity: 0.5 },
-            ]}
-            onPress={() => setclockinModal(true)}
-            disabled={cart.length > 0 || updatingOrder || ongoingDelivery}
-            icon={() => (
-              <MaterialCommunityIcons name="clock" size={26} color="white" />
-            )}
-          />
-          <CartButton
-            style={[
-              styles.iconContainer,
-              (cart.length > 0 || updatingOrder || ongoingDelivery) && { opacity: 0.5 },
-            ]}
-            disabled={cart.length > 0 || updatingOrder || ongoingDelivery}
-            onPress={() => setongoingOrderListModal(true)}
-            icon={() => (
-              <Ionicons name="chevron-down" size={28} color="white" />
-            )}
-            notification={ongoingListState.length}
-          />
-          <CartButton
-            style={[
-              styles.iconContainer,
-              cart.length > 0 && !ongoingDelivery && { opacity: 0.5 },
-            ]}
-            onPress={() => setDeliveryModal(true)}
-            disabled={cart.length > 0 && !ongoingDelivery}
-            icon={() => <Feather name="phone-call" size={28} color="white" />}
-          />
-          {updatingOrder ? (
+          /> */}
+          {cart.length > 0 ? (
+            <CartButton
+              style={[
+                styles.iconContainer,
+                cart.length < 1 && { opacity: 0.5 },
+              ]}
+              onPress={() => setdiscountModal(true)}
+              disabled={cart.length < 1}
+              icon={() => (
+                <Image
+                  style={{ width: 26, height: 26 }}
+                  source={require("assets/tag.png")}
+                />
+              )}
+            />
+          ) : (
+            <>
+              <CartButton
+                style={[
+                  styles.iconContainer,
+                  (cart.length > 0 || updatingOrder || ongoingDelivery) && {
+                    opacity: 0.5,
+                  },
+                ]}
+                onPress={() => setclockinModal(true)}
+                disabled={cart.length > 0 || updatingOrder || ongoingDelivery}
+                icon={() => (
+                  <MaterialCommunityIcons
+                    name="clock"
+                    size={26}
+                    color="white"
+                  />
+                )}
+              />
+              <CartButton
+                style={[
+                  styles.iconContainer,
+                  (cart.length > 0 || updatingOrder || ongoingDelivery) && {
+                    opacity: 0.5,
+                  },
+                ]}
+                disabled={cart.length > 0 || updatingOrder || ongoingDelivery}
+                onPress={() => setongoingOrderListModal(true)}
+                icon={() => (
+                  <Ionicons name="chevron-down" size={28} color="white" />
+                )}
+                notification={ongoingListState.length}
+              />
+            </>
+          )}
+          {!(cart.length > 0 && !ongoingDelivery) && (
+            <CartButton
+              style={[
+                styles.iconContainer,
+                cart.length > 0 && !ongoingDelivery && { opacity: 0.5 },
+              ]}
+              onPress={() => setDeliveryModal(true)}
+              disabled={cart.length > 0 && !ongoingDelivery}
+              icon={() => <Feather name="phone-call" size={28} color="white" />}
+            />
+          )}
+          {updatingOrder ||
+          cart.length > 0 ||
+          ongoingDelivery ||
+          name ||
+          phone ? (
             <CartButton
               style={[styles.iconContainer]}
               onPress={() => {
@@ -675,11 +720,7 @@ const CartScreen = ({ navigation }) => {
             />
           ) : (
             <CartButton
-              disabled={ongoingDelivery}
-              style={[
-                styles.iconContainer,
-                cart.length > 0 && { opacity: 0.5 },
-              ]}
+              style={[styles.iconContainer]}
               onPress={() => {
                 if (storeDetails.settingsPassword) {
                   setsettingsPasswordModalVis(true);
@@ -730,7 +771,7 @@ const CartScreen = ({ navigation }) => {
           ) : (
             <View
               style={{
-                height: height * 0.7,
+                height: height * 0.66,
                 width: "100%",
                 justifyContent: "center",
                 alignItems: "center",
@@ -901,6 +942,8 @@ const CartScreen = ({ navigation }) => {
           setNameForDelivery={setName}
           setPhoneForDelivery={setPhone}
           setAddressForDelivery={setAddress}
+          setBuzzCodeForDelivery={setBuzzCode}
+          setUnitNumberForDelivery={setUnitNumber}
           setDeliveryChecked={setDeliveryChecked}
           setsavedCustomerDetails={setsavedCustomerDetails}
         />
@@ -920,6 +963,10 @@ const CartScreen = ({ navigation }) => {
           setDeliveryChecked={setDeliveryChecked}
           ongoingDelivery={ongoingDelivery}
           setsaveCustomerModal={setSaveCustomerModal}
+          setUnitNumber={setUnitNumber}
+          setBuzzCode={setBuzzCode}
+          unitNumber={unitNumber}
+          buzzCode={buzzCode}
         />
       </Modal>
       <Modal visible={cashModal} transparent>
@@ -974,7 +1021,6 @@ export default CartScreen;
 const styles = StyleSheet.create({
   container: {
     height: "100%",
-    width: "30%",
     padding: 20,
     backgroundColor: "rgba(31,35,48,1)",
     borderTopRightRadius: 0,

@@ -29,6 +29,8 @@ const SaveCustomer = ({
   setNameForDelivery,
   setPhoneForDelivery,
   setAddressForDelivery,
+  setBuzzCodeForDelivery,
+  setUnitNumberForDelivery,
   setDeliveryChecked,
   setsavedCustomerDetails,
 }) => {
@@ -39,6 +41,8 @@ const SaveCustomer = ({
   const [name, setName] = useState(null);
   const [phone, setPhone] = useState(null);
   const [address, setaddress] = useState(null);
+  const [buzzCode, setBuzzCode] = useState(null);
+  const [unitNumber, setUnitNumber] = useState(null);
   const customers = customersList.use();
   const storeDetails = storeDetailState.use();
 
@@ -46,6 +50,8 @@ const SaveCustomer = ({
     setName(customerSelected?.name);
     setPhone(customerSelected?.phone);
     setaddress(customerSelected?.address);
+    setBuzzCode(customerSelected?.buzzCode);
+    setUnitNumber(customerSelected?.unitNumber);
   }, [customerSelected]);
 
   const removeCustomerOrder = (removeIndex) => {
@@ -104,6 +110,8 @@ const SaveCustomer = ({
                 setNameForDelivery(customerSelected.name);
                 setPhoneForDelivery(customerSelected.phone);
                 setAddressForDelivery(customerSelected.address);
+                setBuzzCodeForDelivery(customerSelected.buzzCode);
+                setUnitNumberForDelivery(customerSelected.unitNumber);
                 setDeliveryChecked(false);
                 setSaveCustomerModal(false);
               }}
@@ -120,6 +128,8 @@ const SaveCustomer = ({
                   setNameForDelivery(customerSelected.name);
                   setPhoneForDelivery(customerSelected.phone);
                   setAddressForDelivery(customerSelected.address);
+                  setBuzzCodeForDelivery(customerSelected.buzzCode);
+                  setUnitNumberForDelivery(customerSelected.unitNumber);
                   setDeliveryChecked(true);
                   setSaveCustomerModal(false);
                 }}
@@ -272,6 +282,8 @@ const SaveCustomer = ({
                         setNameForDelivery(customerSelected.name);
                         setPhoneForDelivery(customerSelected.phone);
                         setAddressForDelivery(customerSelected.address);
+                        setBuzzCodeForDelivery(customerSelected.buzzCode);
+                        setUnitNumberForDelivery(customerSelected.unitNumber);
                         setDeliveryChecked(true);
                         setSaveCustomerModal(false);
                       }}
@@ -290,6 +302,8 @@ const SaveCustomer = ({
                         setNameForDelivery(customerSelected.name);
                         setPhoneForDelivery(customerSelected.phone);
                         setAddressForDelivery(customerSelected.address);
+                        setBuzzCodeForDelivery(customerSelected.buzzCode);
+                        setUnitNumberForDelivery(customerSelected.unitNumber);
                         setDeliveryChecked(false);
                         setSaveCustomerModal(false);
                       }}
@@ -337,6 +351,12 @@ const SaveCustomer = ({
                     : customerSelected.address
                     ? customerSelected.address
                     : null}
+                  <br />
+                  {customerSelected.unitNumber &&
+                    `Unit #: ${customerSelected.unitNumber}`}{" "}
+                  -{" "}
+                  {customerSelected.buzzCode &&
+                    `Buzz Code: ${customerSelected.buzzCode}`}
                 </Text>
               </View>
               <TouchableOpacity
@@ -396,6 +416,7 @@ const SaveCustomer = ({
               <View>
                 {customerSelected.orders.map((prevOrder, prevOrderIndex) => (
                   <PrevOrderItem
+                    key={prevOrderIndex}
                     prevOrder={prevOrder}
                     prevOrderIndex={prevOrderIndex}
                   />
@@ -403,15 +424,23 @@ const SaveCustomer = ({
               </View>
             ) : (
               customers.map((customer) => {
+                const newAddress = customer.address?.label
+                  ? customer.address?.label.toLowerCase()
+                  : "";
+                const newName = customer.name
+                  ? customer.name?.toLowerCase()
+                  : "";
+                const lowerCaseSearch = search ? search?.toLowerCase() : "";
                 if (
                   search?.length > 0 &&
-                  !customer.name?.includes(search) &&
-                  !customer.phone?.includes(search) &&
-                  !customer.address?.label?.includes(search)
+                  !newName.includes(lowerCaseSearch) &&
+                  !customer.phone?.toLowerCase().includes(lowerCaseSearch) &&
+                  !newAddress.includes(lowerCaseSearch)
                 )
                   return;
                 return (
                   <TouchableOpacity
+                    key={customer.id}
                     style={{
                       backgroundColor: "#E6E6E6",
                       flexDirection: "row",
@@ -494,7 +523,8 @@ const SaveCustomer = ({
                 shadowOpacity: 0.57,
                 shadowRadius: 10,
                 width: "35%",
-                top: "15%",
+                top: "7.5%",
+                height: "85%",
               }}
             >
               <View>
@@ -617,6 +647,34 @@ const SaveCustomer = ({
                     </div>
                   )}
                 />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginTop: 15,
+                    marginBottom: 15,
+                  }}
+                >
+                  <View style={{ width: "40%" }}>
+                    <Text>Unit #:</Text>
+                    <TextInput
+                      placeholder="Enter Unit #"
+                      onChangeText={(val) => setUnitNumber(val)}
+                      style={{ width: "100%", height: 50 }}
+                      value={unitNumber}
+                    />
+                  </View>
+                  <View style={{ width: "40%" }}>
+                    <Text>Buzz Code:</Text>
+                    <TextInput
+                      placeholder="Enter Buzz Code"
+                      onChangeText={(val) => setBuzzCode(val)}
+                      style={{ width: "100%", height: 50 }}
+                      value={buzzCode}
+                    />
+                  </View>
+                </View>
                 <Button
                   title="Update"
                   // onPress={GetTrans}
@@ -629,18 +687,29 @@ const SaveCustomer = ({
                         name,
                         phone,
                         address,
+                        buzzCode,
+                        unitNumber,
                       });
                     const clone = [...customers];
                     const index = clone.findIndex(
                       (e) => e.id === customerSelected.id
                     );
-                    clone[index] = { ...clone[index], name, phone, address };
+                    clone[index] = {
+                      ...clone[index],
+                      name,
+                      phone,
+                      address,
+                      buzzCode,
+                      unitNumber,
+                    };
                     setCustomersList(clone);
                     setcustomerSelected((prev) => ({
                       ...prev,
                       name,
                       phone,
                       address,
+                      buzzCode,
+                      unitNumber,
                     }));
                     setEditModal(false);
                   }}
