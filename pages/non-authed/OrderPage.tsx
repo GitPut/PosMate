@@ -1076,7 +1076,9 @@ const Page3 = ({
       return;
     }
 
-    const cardElement = elements.getElement(CardElement);
+    const cardElement = elements.getElement(
+      <CardElement options={{ hidePostalCode: true }} />
+    );
 
     const { token, error } = await stripe.createToken(cardElement);
 

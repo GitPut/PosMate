@@ -563,6 +563,7 @@ const InnerOn = ({
         <TouchableOpacity
           disabled={e.optionType !== "Multi Choice"}
           style={{ margin: 10, width: "47%", height: 52 }}
+          activeOpacity={1}
         >
           <TextInput
             placeholder="Enter selection limit or leave empty"
@@ -609,6 +610,33 @@ const InnerOn = ({
             alignItems: "center",
           }}
         >
+          <Text>Share Selection Limit With Other Options?</Text>
+          <Switch
+            value={e.shareSelectionLimit}
+            onValueChange={(val) => {
+              sete((prevState) => ({
+                ...prevState,
+                shareSelectionLimit: val,
+              }));
+              // newProductOptions.current[index].shareSelectionLimit = val;
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone[index].shareSelectionLimit = val;
+                return clone;
+              });
+            }}
+          />
+        </View>
+        <View
+          style={{
+            margin: 10,
+            width: "47%",
+            height: 52,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Text style={{ marginBottom: 5, fontSize: 14 }}>
             Is Option Required?
           </Text>
@@ -625,6 +653,125 @@ const InnerOn = ({
             }}
           />
         </View>
+        {e.shareSelectionLimit && (
+          <View
+            style={{
+              margin: 10,
+              width: "47%",
+              height: 52,
+            }}
+          >
+            <Button
+              title="Share Selection Limit With"
+              onPress={() => {
+                if (e.shareSelectionWith) {
+                  sete((prevState) => ({
+                    ...prevState,
+                    shareSelectionWith: [
+                      ...prevState.shareSelectionWith,
+                      { value: null, label: null, id: null },
+                    ],
+                  }));
+                  // newProductOptions.current[index].shareSelectionWith.push({value: null, label: null, id: null});
+                  setnewProductOptions((prev) => {
+                    const clone = structuredClone(prev);
+                    clone[index].shareSelectionWith.push({
+                      value: null,
+                      label: null,
+                      id: null,
+                    });
+                    return clone;
+                  });
+                } else {
+                  sete((prevState) => ({
+                    ...prevState,
+                    shareSelectionWith: [
+                      { value: null, label: null, id: null },
+                    ],
+                  }));
+                  // newProductOptions.current[index].shareSelectionWith = [{value: null, label: null, id: null}];
+                  setnewProductOptions((prev) => {
+                    const clone = structuredClone(prev);
+                    clone[index].shareSelectionWith = [
+                      { value: null, label: null, id: null },
+                    ];
+                    return clone;
+                  });
+                }
+              }}
+              style={{ backgroundColor: "#4050B5" }}
+            />
+            {e.shareSelectionWith &&
+              e.shareSelectionWith.map(
+                (sharedSelection, sharedSelectionIndex) => (
+                  <ReactSelect
+                    key={sharedSelectionIndex}
+                    options={ifOptionOptions}
+                    value={
+                      e.shareSelectionWith[sharedSelectionIndex] && {
+                        value: e.shareSelectionWith[sharedSelectionIndex].value,
+                        label: e.shareSelectionWith[sharedSelectionIndex].label,
+                      }
+                    }
+                    onChange={(val) => {
+                      sete((prevState) => {
+                        const newShareSelectionWith = [
+                          ...prevState.shareSelectionWith,
+                        ];
+                        newShareSelectionWith[sharedSelectionIndex].value = val.value;
+                        newShareSelectionWith[sharedSelectionIndex].label = val.label;
+                        return {
+                          ...prevState,
+                          shareSelectionWith: newShareSelectionWith,
+                        };
+                      });
+                      // newProductOptions.current[index].sharedSelectionLimitOption = val.value;
+                      setnewProductOptions((prev) => {
+                        const clone = structuredClone(prev);
+                        clone[index].shareSelectionWith[sharedSelectionIndex].value =
+                          val.value;
+                        clone[index].shareSelectionWith[sharedSelectionIndex].label = val.label;
+                        return clone;
+                      });
+                    }}
+                    placeholder={"Share Selection Limit With"}
+                    menuPortalTarget={document.body}
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                      control: (provided, state) => ({
+                        ...provided,
+                        background: "#fff",
+                        borderColor: "#9e9e9e",
+                        minHeight: "52px",
+                        height: "52px",
+                        boxShadow: state.isFocused ? null : null,
+                      }),
+
+                      valueContainer: (provided, state) => ({
+                        ...provided,
+                        height: "52px",
+                        padding: "0 6px",
+                      }),
+
+                      input: (provided, state) => ({
+                        ...provided,
+                        margin: "0px",
+                      }),
+                      indicatorSeparator: (state) => ({
+                        display: "none",
+                      }),
+                      indicatorsContainer: (provided, state) => ({
+                        ...provided,
+                        height: "52px",
+                      }),
+                    }}
+                    menuPlacement="auto"
+                    menuPosition="fixed"
+                  />
+                )
+              )}
+          </View>
+        )}
       </View>
       {/* Convert .map to flatlist */}
       <FlatList

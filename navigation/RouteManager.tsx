@@ -31,6 +31,7 @@ import AuthRoute from "./authed/AuthRoute";
 import NonAuthRoute from "./non-authed/NonAuthRoute";
 import useInterval from "components/functional/useInterval";
 import ScrollToTop from "components/functional/ScrollToTop";
+import PaymentUpdateNotification from "components/modals/PaymentUpdateNotification";
 
 const RouteManager = () => {
   const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
@@ -705,6 +706,7 @@ const RouteManager = () => {
         {isSubscribed && <Route path="/" component={AuthRoute} />}
         {trialDetails.hasEnded && <TrialEnded resetLoader={resetLoader} />}
         {isNewUser && <NewUserPayment resetLoader={resetLoader} />}
+        {/* {isCanceled && <PaymentUpdateNotification resetLoader={resetLoader} isCanceled={isCanceled} />} */}
       </>
     );
   };

@@ -50,7 +50,7 @@ const DeviceSettings = () => {
             .doc(auth.currentUser.uid)
             .collection("checkout_sessions")
             .add({
-                price: 'price_1OgX1pCIw3L7DOwIIavoer1P', // todo price Id from your products price in the Stripe Dashboard
+                price: 'price_1Oj9NZCIw3L7DOwI7DKAhIve', // todo price Id from your products price in the Stripe Dashboard
                 quantity: 1,
                 success_url: window.location.href, // return user to this screen on successful purchase
                 cancel_url: window.location.href, // return user to this screen on failed purchase

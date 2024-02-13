@@ -160,7 +160,7 @@ const OnlineStoreSettings = () => {
             .collection("checkout_sessions")
             .add({
                 // price: 'price_1Ocw7JCIw3L7DOwIWpAyVUiB', // real price
-                price: 'price_1OdwZqCIw3L7DOwIj1Fu96SW', // test price
+                price: 'price_1Ocw7JCIw3L7DOwIWpAyVUiB', // real price
                 success_url: window.location.href, // return user to this screen on successful purchase
                 cancel_url: window.location.href, // return user to this screen on failed purchase
             })
@@ -198,24 +198,6 @@ const OnlineStoreSettings = () => {
                         <Text style={styles.headerTxt}>Online Store Settings</Text>
                     </View>
                     <View style={styles.detailInputContainer}>
-                        {/* <ScrollView>
-                            {onlineStoreDetails.paidStatus !== 'active' ? <Button title="Pay for online store" onPress={payOnlineStore} /> : <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, marginTop: 10 }}>
-                                <Text>Online Store Active?</Text>
-                                <Switch value={onlineStoreDetails.onlineStoreActive} onValueChange={makeOnlineStoreActive} />
-                            </View>}
-                            <Text>Order Url Ending: </Text>
-                            <TextInput
-                                placeholder="Enter Url Ending"
-                                value={onlineStoreDetails.urlEnding ? onlineStoreDetails.urlEnding : urlEnding}
-                                onChangeText={(text) => { if (!onlineStoreDetails.onlineStoreSetUp) { seturlEnding(text.replace(/[^a-zA-Z-]/g, '').toLowerCase()) } }}
-                            />
-                            <Button title='Start Online Store' onPress={startOnlineStore} disabled={onlineStoreDetails.onlineStoreSetUp} />
-
-                            <Text>Stripe Details: </Text>
-                            <TextInput placeholder="Enter Stripe Public Key" value={onlineStoreDetails.stripePublicKey ? onlineStoreDetails.stripePublicKey : stripePublicKey} onChangeText={(text) => { setstripePublicKey(text) }} />
-                            <TextInput placeholder="Enter Stripe Secret Key" value={onlineStoreDetails.stripeSecretKey ? onlineStoreDetails.stripeSecretKey : stripeSecretKey} onChangeText={(text) => { setstripeSecretKey(text) }} />
-                            <Button title='Update Stripe Details' onPress={() => { updateStripeDetails() }} />
-                        </ScrollView> */}
                         {onlineStoreDetails.paidStatus === 'active' ?
                             <View style={tw.style([
                                 'flex-row',
