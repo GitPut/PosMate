@@ -19,6 +19,17 @@ const AuthRoute = (props) => {
         // //CHANGE BACK ONCE PUBLISHING
     }, [])
 
+    // useEffect(() => {
+    //     if (
+    //         location.pathname !== '/pos' &&
+    //         location.pathname !== '/authed'
+    //     ) {
+    //         history.push("/pos");
+    //     }
+    // }
+    //     , [location.pathname])
+
+
 
     return (
         <Switch>

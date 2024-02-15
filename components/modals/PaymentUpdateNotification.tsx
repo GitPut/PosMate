@@ -4,7 +4,7 @@ import { auth, db } from "state/firebaseConfig";
 import { loadStripe } from "@stripe/stripe-js";
 import firebase from "firebase/app";
 import Logo from "assets/dpos-logo-black.png";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { logout } from "state/firebaseFunctions";
 
 const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
@@ -79,7 +79,7 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
               }}
               onPress={logout}
             >
-              <Ionicons name="chevron-back" size={32} color="black" />
+              <SimpleLineIcons name="logout" size={32} color="black" />
             </TouchableOpacity>
             <Image source={Logo} resizeMode="contain" style={styles.logo} />
           </View>

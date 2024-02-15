@@ -18,7 +18,7 @@ import {
   woocommerceState,
 } from "state/state";
 import { auth, db } from "state/firebaseConfig";
-import { updateFreeTrial } from "state/firebaseFunctions";
+import { logout, updateFreeTrial } from "state/firebaseFunctions";
 const tz = require("moment-timezone");
 import NewUserPayment from "components/modals/NewUserPayment";
 import { Animated, Image } from "react-native";
@@ -706,7 +706,12 @@ const RouteManager = () => {
         {isSubscribed && <Route path="/" component={AuthRoute} />}
         {trialDetails.hasEnded && <TrialEnded resetLoader={resetLoader} />}
         {isNewUser && <NewUserPayment resetLoader={resetLoader} />}
-        {/* {isCanceled && <PaymentUpdateNotification resetLoader={resetLoader} isCanceled={isCanceled} />} */}
+        {isCanceled && !isSubscribed && !isNewUser && (
+          <PaymentUpdateNotification
+            resetLoader={resetLoader}
+            isCanceled={isCanceled}
+          />
+        )}
       </>
     );
   };

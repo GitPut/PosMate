@@ -23,14 +23,29 @@ const NonAuthRoute = (props) => {
         if (location.pathname.includes("/authed")) {
             history.push("/");
         }
-    }, [])
+        if (
+            location.pathname !== '/home' &&
+            location.pathname !== '/features' &&
+            location.pathname !== '/about-us' &&
+            location.pathname !== '/pricing' &&
+            location.pathname !== '/faqs' &&
+            location.pathname !== '/contact' &&
+            location.pathname !== '/log-in' &&
+            location.pathname !== '/sign-up' &&
+            location.pathname !== '/legal' &&
+            location.pathname !== '/reset-password' &&
+            !location.pathname.includes('/order/')
+        ) {
+            window.location.href = "https://divinepos.com"
+        }
+    }, [location.pathname])
 
 
     return (
         <>
             {location.pathname !== '/log-in' && location.pathname !== '/sign-up' && location.pathname !== '/reset-password' && !location.pathname.includes('/order/') && <WebHomeHeader />}
             <Switch>
-                <Route exact path="/" component={WebHome} />
+                <Route path="/home" component={WebHome} />
                 <Route path="/features" component={Features} />
                 <Route path="/about-us" component={AboutUs} />
                 <Route path="/pricing" component={Pricing} />
@@ -41,7 +56,7 @@ const NonAuthRoute = (props) => {
                 <Route path="/legal" component={Legal} />
                 <Route path="/reset-password" component={ResetPassword} />
                 <Route path="/order/:urlEnding" component={OrderPage} />
-                <Route path="*" component={NotFound} />
+                {/* <Route path="*" component={NotFound} /> */}
             </Switch>
         </>
     )
