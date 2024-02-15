@@ -9,8 +9,8 @@ const Signup = () => {
   const [password, setPassword] = useState();
   const [name, setname] = useState();
   const [phoneNumber, setphoneNumber] = useState();
-  const [error, seterror] = useState(false); 
-   const history = useHistory();
+  const [error, seterror] = useState(false);
+  const history = useHistory();
 
   const attemptSignUp = () => {
     if (email && password) {
@@ -48,7 +48,7 @@ const Signup = () => {
               >
                 <a
                   // href="/"
-                  onClick={() => history.push("/")}
+                  onClick={() => history.push("/log-in")}
                   className="button is-text text-color-black w-inline-block"
                 >
                   <div className="icon-1x1-xsmall w-embed">
@@ -69,15 +69,14 @@ const Signup = () => {
                 </a>
               </div>
               <a
-                // href="/"
-onClick={() => history.push("/")}
+                href="https://divinepos.com"
+                // onClick={() => history.push("/log-in")}
                 className="nav-logo-link w-nav-brand"
                 aria-label="home"
               >
                 <img
                   src={require("assets/dpos-logo-black.png")}
-                  loading="lazy"
-                  alt=""
+                  alt="Divine-POS-Logo"
                   className="nav-logo"
                 />
               </a>
@@ -126,7 +125,8 @@ onClick={() => history.push("/")}
                     <a
                       // href="/"
                       onClick={() => history.push("/")}
-                      className="form-link is-solo">
+                      className="form-link is-solo"
+                    >
                       If nothing happens, click here.
                     </a>
                   </div>
@@ -227,9 +227,10 @@ onClick={() => history.push("/")}
                     >
                       By creating an account, I agree to Divine Pos's{" "}
                       <a
-                        // href="/legal"
-                        onClick={() => history.push("/legal")}
-                        className="form-link is-small">
+                        href="https://divinepos.com/terms-conditions/"
+                        // onClick={() => history.push("/legal")}
+                        className="form-link is-small"
+                      >
                         terms of service
                       </a>
                     </span>
@@ -250,7 +251,8 @@ onClick={() => history.push("/")}
                       <a
                         // href="/log-in"
                         onClick={() => history.push("/log-in")}
-                        className="form-link">
+                        className="form-link"
+                      >
                         Log In
                       </a>
                     </div>

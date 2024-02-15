@@ -9,7 +9,7 @@ const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [error, seterror] = useState(false);
- const history = useHistory();
+  const history = useHistory();
 
   const attemptSignIn = () => {
     if (email && password) {
@@ -46,8 +46,8 @@ const Login = () => {
                 className="alt-nav-item-wrapper"
               >
                 <a
-                  // href="/"
-                  onClick={() => history.push("/")}
+                  href="https://divinepos.com"
+                  // onClick={() => history.push("/")}
                   className="button is-text text-color-black w-inline-block"
                 >
                   <div className="icon-1x1-xsmall w-embed">
@@ -68,15 +68,14 @@ const Login = () => {
                 </a>
               </div>
               <a
-                // href="/"
-                onClick={() => history.push("/")}
+                href="https://divinepos.com"
+                // onClick={() => history.push("/")}
                 className="nav-logo-link w-nav-brand"
                 aria-label="home"
               >
                 <img
                   src={require("assets/dpos-logo-black.png")}
-                  loading="lazy"
-                  alt=""
+                  alt="Divine-POS-Logo"
                   className="nav-logo"
                 />
               </a>
@@ -156,7 +155,8 @@ const Login = () => {
                       <a
                         // href="/sign-up"
                         onClick={() => history.push("/sign-up")}
-                        className="form-link">
+                        className="form-link"
+                      >
                         Sign Up
                       </a>
                     </div>

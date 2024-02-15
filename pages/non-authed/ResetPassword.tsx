@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
   const [error, seterror] = useState(false);
-   const history = useHistory();
+  const history = useHistory();
 
   return (
     <div className="w-users-userformpagewrap page-wrapper-non reset-password">
@@ -36,7 +36,7 @@ const ResetPassword = () => {
               >
                 <a
                   // href="/"
-                  onClick={() => history.push("/")}
+                  onClick={() => history.push("/log-in")}
                   className="button is-text text-color-black w-inline-block"
                 >
                   <div className="icon-1x1-xsmall w-embed">
@@ -57,15 +57,14 @@ const ResetPassword = () => {
                 </a>
               </div>
               <a
-                // href="/"
-                onClick={() => history.push("/")}
+                href="https://divinepos.com"
+                // onClick={() => history.push("/")}
                 className="nav-logo-link w-nav-brand"
                 aria-label="home"
               >
                 <img
                   src={require("assets/dpos-logo-black.png")}
-                  loading="lazy"
-                  alt=""
+                  alt="Divine-POS-Logo"
                   className="nav-logo"
                 />
               </a>
@@ -156,11 +155,11 @@ const ResetPassword = () => {
                     wf-submit-button-value="Reset password"
                     onClick={() => {
                       event.preventDefault();
-                      var data = JSON.stringify({
+                      const data = JSON.stringify({
                         email: email,
                       });
 
-                      var config = {
+                      const config = {
                         method: "post",
                         maxBodyLength: Infinity,
                         url: "https://us-central1-posmate-5fc0a.cloudfunctions.net/sendPasswordResetEmail",
