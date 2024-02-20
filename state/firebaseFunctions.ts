@@ -78,7 +78,8 @@ export const logout = () => {
   localStorage.removeItem("isAuthedBackend");
   localStorage.removeItem("savedUserState");
   auth.signOut();
-  window.location.reload();
+  // window.location.reload();
+  window.location.href = "https://divinepos.com";
 };
 
 export const addCustomerDetailsToDb = (customer: any) =>

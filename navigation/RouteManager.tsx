@@ -737,6 +737,7 @@ const RouteManager = () => {
               >
                 <Image
                   source={require("assets/loading.gif")}
+                  // source={require("assets/divinepos-loading.gif")}
                   style={{ width: 450, height: 450, resizeMode: "contain" }}
                 />
               </Animated.View>

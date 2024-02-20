@@ -26,6 +26,8 @@ const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import OnlineOrderHome from "./OnlineOrderPages/OnlineOrderHome";
+import OrderCartMain from "./OnlineOrderPages/OrderCartMain";
 
 const OrderPage = () => {
   const history = useHistory();
@@ -40,10 +42,24 @@ const OrderPage = () => {
   const [orderDetails, setorderDetails] = useState({
     delivery: null,
     address: null,
+    customer: {
+      name: "",
+      phoneNumber: "",
+      email: "",
+      address: null,
+    },
   });
   const [page, setpage] = useState(1);
-  const [loaderVisible, setloaderVisible] = useState(true);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  const customSort = (a, b) => {
+    // Handle cases where one or both items don't have a rank
+    const rankA = a.rank || Number.MAX_SAFE_INTEGER;
+    const rankB = b.rank || Number.MAX_SAFE_INTEGER;
+
+    // Compare based on ranks
+    return rankA - rankB;
+  };
 
   useEffect(() => {
     db.collection("public")
@@ -78,9 +94,39 @@ const OrderPage = () => {
               docs.forEach((element) => {
                 products.push(element.data());
               });
+              // Move logging and operations that depend on 'products' being populated inside the .then() block
+              if (products.length > 0) {
+                setdata([]);
+                const newData = [];
+                products.sort(customSort).map((product, index) => {
+                  setdata((prev) => {
+                    const productsWithCategory = prev.filter(
+                      (item) => item.category === product.category
+                    );
+                    if (productsWithCategory.length > 0) {
+                      const indexOfLastItem = prev.indexOf(
+                        productsWithCategory[productsWithCategory.length - 1]
+                      );
+                      prev.splice(indexOfLastItem + 1, 0, {
+                        ...product,
+                        index: index + 1,
+                      });
+                      return prev;
+                    }
+
+                    return [
+                      ...prev,
+                      {
+                        ...product,
+                        index: index + 1,
+                      },
+                    ];
+                  });
+                });
+              }
             }
           })
-          .catch((e) => console.log("Error has occured with db: ", e));
+          .catch((e) => console.log("Error has occurred with db: ", e));
 
         setcatalog({
           categories: querySnapshot.docs[0].data().categories,
@@ -92,85 +138,61 @@ const OrderPage = () => {
       });
   }, []);
 
-  const fadeIn = () => {
-    // Will change fadeAnim value to 0 in 3 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: false,
-    }).start();
-  };
-
   const fadeOut = () => {
     // Will change fadeAnim value to 0 in 3 seconds
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 500,
       useNativeDriver: false,
-    }).start(() => setloaderVisible(false));
+    }).start(() => (document.getElementById("loader").style.display = "none"));
   };
 
-  const resetLoader = () => {
-    setloaderVisible(true);
-    fadeIn();
-  };
+  const [data, setdata] = useState([]);
 
   return (
     <View style={{ flex: 1 }}>
-      <ImageBackground
-        source={
-          storeDetails.bannerImage ? storeDetails.bannerImage : TemplateImage
-        }
+      {page === 1 && (
+        <OnlineOrderHome
+          storeDetails={storeDetails}
+          setorderDetails={setorderDetails}
+          orderDetails={orderDetails}
+          setpage={setpage}
+        />
+      )}
+      {page === 2 && (
+        <OrderCartMain
+          storeDetails={storeDetails}
+          setorderDetails={setorderDetails}
+          orderDetails={orderDetails}
+          setpage={setpage}
+          catalog={{ categories: catalog.categories, products: data }}
+        />
+      )}
+      {page === 3 && storeDetails && (
+        <Elements stripe={loadStripe(storeDetails.stripePublicKey)}>
+          <Page3
+            storeDetails={storeDetails}
+            setorderDetails={setorderDetails}
+            orderDetails={orderDetails}
+            setpage={setpage}
+            catalog={catalog}
+          />
+        </Elements>
+      )}
+      {page === 4 && <Page4 />}
+      <div
+        id="loader"
         style={{
-          height: height,
-          width: width,
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          height: "100vh", // Viewport Height
+          width: "100vw", // Viewport Width
+          display: "flex",
+          alignItems: "center", // This will center the content vertically
+          justifyContent: "center", // This will center the content horizontally
         }}
-        resizeMode="cover"
       >
-        <View
-          style={{
-            backgroundColor: "rgba(0,0,0,0.5)",
-            width: "100%",
-            height: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {page === 1 && (
-            <Page1
-              storeDetails={storeDetails}
-              setorderDetails={setorderDetails}
-              orderDetails={orderDetails}
-              setpage={setpage}
-            />
-          )}
-          {page === 2 && (
-            <Page2
-              storeDetails={storeDetails}
-              setorderDetails={setorderDetails}
-              orderDetails={orderDetails}
-              setpage={setpage}
-              catalog={catalog}
-            />
-          )}
-          {page === 3 && storeDetails && (
-            <Elements stripe={loadStripe(storeDetails.stripePublicKey)}>
-              <Page3
-                storeDetails={storeDetails}
-                setorderDetails={setorderDetails}
-                orderDetails={orderDetails}
-                setpage={setpage}
-                catalog={catalog}
-              />
-            </Elements>
-          )}
-          {page === 4 && <Page4 />}
-        </View>
-      </ImageBackground>
-      {loaderVisible && (
         <Animated.View
           style={{
             alignItems: "center",
@@ -187,7 +209,7 @@ const OrderPage = () => {
             style={{ width: 450, height: 450, resizeMode: "contain" }}
           />
         </Animated.View>
-      )}
+      </div>
     </View>
   );
 };

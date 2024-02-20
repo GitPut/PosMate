@@ -284,7 +284,7 @@ const PosHeader = (props) => {
                   Settings
                 </Link>
                 <hr className="m-0" />
-                <Link style={{ textDecoration: 'none' }}  className="dropdown-item logout pb-0" to="/signIn">
+                <Link style={{ textDecoration: 'none' }}  className="dropdown-item logout pb-0" href="https://divinepos.com">
                   <img src={Logout} className="me-2" alt="img" />
                   Logout
                 </Link>

@@ -1,0 +1,271 @@
+import React, { Component, useEffect, useRef, useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  Animated,
+  Modal,
+} from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { addCartState, cartState } from "state/state";
+import { storage } from "state/firebaseConfig";
+import ProductImage from "./ProductImage";
+
+function ItemContainer({ product, productIndex, userUid, style, imageUrl }) {
+  const [showProductScreen, setshowProductScreen] = useState(false);
+  const xPos = useRef(new Animated.Value(-1000)).current;
+  const shadowOpacity = useRef(new Animated.Value(0)).current;
+  const cart = cartState.use();
+
+  const fadeIn = () => {
+    // Will change xPos value to 0 in 3 seconds
+    setshowProductScreen(true);
+    Animated.timing(xPos, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
+    Animated.timing(shadowOpacity, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const fadeOut = () => {
+    // Will change xPos value to 0 in 3 seconds
+    Animated.timing(shadowOpacity, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
+    Animated.timing(xPos, {
+      toValue: -1000,
+      duration: 200,
+      useNativeDriver: false,
+    }).start(() => setshowProductScreen(false));
+  };
+
+  return (
+    <div id={product.id}>
+      {product.hasImage ? (
+        <View style={[styles.container, style]}>
+          <ProductImage
+            source={{ uri: imageUrl }}
+            resizeMode="contain"
+            style={styles?.itemImg}
+          />
+          <View style={styles?.rightSide}>
+            <Text style={styles?.familyCombo}>
+              {product.name ? product.name : "Placeholder"}
+            </Text>
+            <Text style={styles?.price}>
+              ${product.price ? product.price : "Placeholder"}
+            </Text>
+            <View style={styles?.openBtnRow}>
+              <TouchableOpacity style={styles?.openBtn}>
+                <MaterialCommunityIcons
+                  name="plus"
+                  style={styles?.plusIcon}
+                  onPress={() => {
+                    if (product.options.length > 0) {
+                      // navigation.navigate("Product Listing", { product: product });
+                      // setshowProductScreen(true);
+                      fadeIn();
+                    } else {
+                      addCartState(
+                        {
+                          name: product.name,
+                          price: product.price,
+                          description: product.description,
+                          options: [],
+                          extraDetails: null,
+                        },
+                        cart
+                      );
+                    }
+                  }}
+                ></MaterialCommunityIcons>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      ) : (
+        <View
+          style={[
+            {
+              backgroundColor: "#ffffff",
+              borderRadius: 20,
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              padding: 20,
+            },
+            style,
+          ]}
+        >
+          <View>
+            <Text style={styles?.familyCombo}>
+              {product.name ? product.name : "Placeholder"}
+            </Text>
+            <Text style={styles?.price}>
+              ${product.price ? product.price : "Placeholder"}
+            </Text>
+            <View
+              style={[
+                styles?.openBtnRow,
+                {
+                  width: 250,
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  alignItems: "flex-end",
+                },
+              ]}
+            >
+              <TouchableOpacity style={styles?.openBtn}>
+                <MaterialCommunityIcons
+                  name="plus"
+                  style={styles?.plusIcon}
+                  onPress={() => {
+                    if (product.options.length > 0) {
+                      // navigation.navigate("Product Listing", { product: product });
+                      // setshowProductScreen(true);
+                      fadeIn();
+                    } else {
+                      addCartState(
+                        {
+                          name: product.name,
+                          price: product.price,
+                          description: product.description,
+                          options: [],
+                          extraDetails: null,
+                        },
+                        cart
+                      );
+                    }
+                  }}
+                ></MaterialCommunityIcons>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
+      {showProductScreen && (
+        <Modal transparent={true}>
+          <Animated.View
+            style={{
+              flex: 1,
+              justifyContent: "flex-end",
+              alignItems: "flex-start",
+              position: "absolute",
+              height: "100%",
+              width: "100%",
+              bottom: 0,
+              left: xPos,
+              zIndex: 0,
+            }}
+          >
+            <View
+              style={{
+                height: "100%",
+                width: "70%",
+                borderTopRightRadius: 3,
+              }}
+            >
+              {/* <ProductListing
+                product={product}
+                // itemIndex={productIndex}
+                goBack={() => fadeOut()}
+              /> */}
+            </View>
+          </Animated.View>
+          <Animated.View
+            style={{
+              height: "100%",
+              width: "30%",
+              padding: 20,
+              shadowColor: "rgba(0,0,0,1)",
+              shadowOffset: {
+                width: -3,
+                height: 3,
+              },
+              elevation: 30,
+              shadowOpacity: 0.5,
+              shadowRadius: 5,
+              position: "absolute",
+              opacity: shadowOpacity,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#ffffff",
+    borderRadius: 20,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+  },
+  itemImg: {
+    height: 133,
+    width: 117,
+    margin: 6,
+  },
+  rightSide: {
+    width: '40%',
+    justifyContent: "space-between",
+    margin: 6,
+    alignSelf: "stretch",
+    marginTop: 12,
+    marginRight: 11,
+  },
+  familyCombo: {
+    fontWeight: "700",
+    color: "#121212",
+    fontSize: 18,
+    height: 42,
+    alignSelf: "stretch",
+    paddingBottom: 50,
+  },
+  price: {
+    fontWeight: "700",
+    color: "#00c93b",
+    fontSize: 18,
+    height: 24,
+    alignSelf: "stretch",
+  },
+  openBtnRow: {
+    height: 42,
+    alignItems: "flex-end",
+    alignSelf: "stretch",
+  },
+  openBtn: {
+    width: 35,
+    height: 32,
+    backgroundColor: "rgba(255,255,255,1)",
+    borderRadius: 100,
+    shadowColor: "rgba(0,0,0,1)",
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    elevation: 30,
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  plusIcon: {
+    color: "rgba(0,0,0,1)",
+    fontSize: 30,
+  },
+});
+
+export default ItemContainer;
