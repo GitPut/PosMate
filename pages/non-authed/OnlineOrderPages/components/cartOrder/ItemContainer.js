@@ -12,6 +12,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { addCartState, cartState } from "state/state";
 import { storage } from "state/firebaseConfig";
 import ProductImage from "./ProductImage";
+import ProductBuilderModal from "../ProductBuilderModal/ProductBuilderModal";
 
 function ItemContainer({ product, productIndex, userUid, style, imageUrl }) {
   const [showProductScreen, setshowProductScreen] = useState(false);
@@ -169,7 +170,7 @@ function ItemContainer({ product, productIndex, userUid, style, imageUrl }) {
             <View
               style={{
                 height: "100%",
-                width: "70%",
+                width: "72%",
                 borderTopRightRadius: 3,
               }}
             >
@@ -178,27 +179,9 @@ function ItemContainer({ product, productIndex, userUid, style, imageUrl }) {
                 // itemIndex={productIndex}
                 goBack={() => fadeOut()}
               /> */}
+              <ProductBuilderModal product={product} goBack={() => fadeOut()} />
             </View>
           </Animated.View>
-          <Animated.View
-            style={{
-              height: "100%",
-              width: "30%",
-              padding: 20,
-              shadowColor: "rgba(0,0,0,1)",
-              shadowOffset: {
-                width: -3,
-                height: 3,
-              },
-              elevation: 30,
-              shadowOpacity: 0.5,
-              shadowRadius: 5,
-              position: "absolute",
-              opacity: shadowOpacity,
-              right: 0,
-              bottom: 0,
-            }}
-          />
         </Modal>
       )}
     </div>
@@ -219,7 +202,7 @@ const styles = StyleSheet.create({
     margin: 6,
   },
   rightSide: {
-    width: '40%',
+    width: "40%",
     justifyContent: "space-between",
     margin: 6,
     alignSelf: "stretch",

@@ -14,6 +14,7 @@ import UntitledComponent from "./components/cartOrder/UntitledComponent";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { cartState } from "state/state";
 import { storage } from "state/firebaseConfig";
+import ProductBuilderModal from "./components/ProductBuilderModal/ProductBuilderModal";
 
 function OrderCartMain({
   storeDetails,
@@ -143,18 +144,25 @@ function OrderCartMain({
       </View>
       <View style={styles.cartContainer}>
         <Text style={styles.myCartTxt}>My Cart</Text>
-        <View style={styles.cartItems}>
-          <ScrollView
-            horizontal={false}
-            contentContainerStyle={styles.cartItems_contentContainerStyle}
-          >
-            <CartItem style={styles.cartItem1}></CartItem>
-            <CartItem style={styles.cartItem2}></CartItem>
-            <CartItem style={styles.cartItem3}></CartItem>
-            <CartItem style={styles.cartItem4}></CartItem>
-            <CartItem style={styles.cartItem5}></CartItem>
-          </ScrollView>
-        </View>
+        {cart.length > 0 ? (
+          <View style={styles.cartItems}>
+            <ScrollView
+              horizontal={false}
+              contentContainerStyle={styles.cartItems_contentContainerStyle}
+            >
+              <CartItem style={styles.cartItem1}></CartItem>
+              <CartItem style={styles.cartItem2}></CartItem>
+              <CartItem style={styles.cartItem3}></CartItem>
+              <CartItem style={styles.cartItem4}></CartItem>
+              <CartItem style={styles.cartItem5}></CartItem>
+            </ScrollView>
+          </View>
+        ) : (
+          <Image
+            source={require("./assets/images/noItemsImg.png")}
+            style={{ width: 200, height: "35%", resizeMode: "contain" }}
+          />
+        )}
         <View style={styles.totalsContainer}>
           <View style={styles.topGroupTotalsContainer}>
             <UntitledComponent
@@ -261,7 +269,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#121212",
     fontSize: 19,
-    marginBottom: 10
+    marginBottom: 10,
   },
   scrollArea: {
     height: 156,
@@ -322,10 +330,10 @@ const styles = StyleSheet.create({
   },
   cartItems: {
     width: "90%",
-    height: 337,
+    height: "50%",
   },
   cartItems_contentContainerStyle: {
-    height: 468,
+    height: "100%",
     width: "100%",
   },
   cartItem1: {

@@ -138,6 +138,10 @@ const OrderPage = () => {
       });
   }, []);
 
+  useEffect(() => {
+    fadeOut();
+  }, []);
+
   const fadeOut = () => {
     // Will change fadeAnim value to 0 in 3 seconds
     Animated.timing(fadeAnim, {
