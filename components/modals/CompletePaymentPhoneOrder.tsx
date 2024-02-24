@@ -213,7 +213,7 @@ const CompletePaymentPhoneOrder = ({
                       >
                         <Text>
                           {element.customer
-                            ? element.customer?.name.toUpperCase()
+                            ? element.customer?.name?.toUpperCase()
                             : `Order ID: ${element.transNum.toUpperCase()}`}
                         </Text>
                         <Text>{date?.toLocaleTimeString()}</Text>

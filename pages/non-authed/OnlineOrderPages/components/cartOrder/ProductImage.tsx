@@ -4,20 +4,18 @@ import React, { useEffect, useRef, useState } from "react";
 const ProductImage = ({ source, style, resizeMode }) => {
   const loadingImgAnim = useRef(new Animated.Value(1)).current;
   const productImgAnim = useRef(new Animated.Value(0)).current;
-  const [loading, setloading] = useState(true);
 
   useEffect(() => {
     Animated.timing(loadingImgAnim, {
       toValue: 0,
       duration: 500,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start(() => {
       Animated.timing(productImgAnim, {
         toValue: 1,
         duration: 500,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }).start();
-      setloading(false);
     });
   }, []);
 

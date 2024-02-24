@@ -73,9 +73,15 @@ const AddProduct = () => {
         if (selectedFile) {
             storage
                 .ref(auth.currentUser.uid + '/images/' + newProduct.id)
-                .put(selectedFile);
-
-            newProduct.hasImage = true
+                .put(selectedFile).then(() => {
+                    storage
+                        .ref(auth.currentUser.uid + "/images/" + newProduct.id)
+                        .getDownloadURL()
+                        .then((url) => {
+                            newProduct.hasImage = true
+                            newProduct.imageUrl = url
+                        });
+                })
         }
 
         db.collection("users")

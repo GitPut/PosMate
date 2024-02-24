@@ -1,23 +1,23 @@
 import React, { Component } from "react";
 import { StyleSheet, TouchableOpacity, Text } from "react-native";
 
-function OneTimeSelectableBtn({ style, selectedVal, setselectedVal, id }) {
+function OneTimeSelectableBtn({ style, selectedVal, setselectedVal, label, isSelected, onPress }) {
   return (
     <TouchableOpacity
       style={[
         styles.container,
         style,
-        id === selectedVal && { backgroundColor: "#1a2a51" },
+        isSelected && { backgroundColor: "#1a2a51" },
       ]}
-      onPress={() => setselectedVal(id)}
+      onPress={onPress}
     >
       <Text
         style={[
           styles.lbl,
-          id === selectedVal ? { color: "white" } : { color: "#28292c" },
+          isSelected ? { color: "white" } : { color: "#28292c" },
         ]}
       >
-        Small (+$0)
+        {label}
       </Text>
     </TouchableOpacity>
   );

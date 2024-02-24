@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
 
-function GoBackBtn(props) {
+function GoBackBtn({ style, onPress }) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]}>
+    <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
       <Icon name="chevron-left" style={styles.backIcon}></Icon>
       <Text style={styles.lbl}>Dashboard</Text>
     </TouchableOpacity>

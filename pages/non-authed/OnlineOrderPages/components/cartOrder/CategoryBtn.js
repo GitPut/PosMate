@@ -1,31 +1,36 @@
 import React, { Component } from "react";
-import { StyleSheet, TouchableOpacity, Text, Image } from "react-native";
+import { StyleSheet, TouchableOpacity, Text, Image, View } from "react-native";
+import ProductImage from "./ProductImage";
 
-function CategoryBtn(props) {
+function CategoryBtn({ style, isSelected, onPress, category, imageUrl }) {
   return (
     <TouchableOpacity
       style={[
         styles.container,
-        props?.style,
-        props.isSelected
+        style,
+        isSelected
           ? { backgroundColor: "rgba(29,41,78,1)" }
           : { backgroundColor: "#f9fafc" },
       ]}
-      onPress={props.onPress}
+      onPress={onPress}
     >
       <Text
         style={[
           styles.categoryLbl,
-          props.isSelected ? { color: "white" } : { color: "rgba(0,0,0,1)" },
+          isSelected ? { color: "white" } : { color: "rgba(0,0,0,1)" },
         ]}
       >
-        {props.category ? props.category : "Placeholder"}
+        {category ? category : "Placeholder"}
       </Text>
-      <Image
-        source={require("../../assets/images/image_HuEF..png")}
-        resizeMode="contain"
-        style={styles.categoryImg}
-      ></Image>
+      {imageUrl && (
+        <View>
+          <ProductImage
+            source={{ uri: imageUrl }}
+            resizeMode="contain"
+            style={styles.categoryImg}
+          />
+        </View>
+      )}
     </TouchableOpacity>
   );
 }

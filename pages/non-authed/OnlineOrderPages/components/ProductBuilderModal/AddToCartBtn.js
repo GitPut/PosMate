@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { StyleSheet, TouchableOpacity, Text } from "react-native";
 
-function AddToCartBtn(props) {
+function AddToCartBtn({ style, onPress, title }) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]}>
-      <Text style={styles.lbl}>Add To Cart</Text>
+    <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
+      <Text style={styles.lbl}>{title}</Text>
     </TouchableOpacity>
   );
 }

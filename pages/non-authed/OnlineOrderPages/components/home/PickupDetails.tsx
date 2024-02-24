@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
 
@@ -8,6 +8,11 @@ function PickupDetails({
   orderDetails,
   setpage,
 }) {
+  const [localName, setlocalName] = useState(orderDetails.customer.name);
+  const [localPhoneNumber, setlocalPhoneNumber] = useState(
+    orderDetails.customer.phone
+  );
+
   return (
     <>
       <View style={styles.fieldsGroup}>
@@ -15,35 +20,30 @@ function PickupDetails({
           txtInput="Name"
           label="Name*"
           style={styles.nameField}
-          value={orderDetails.customer.name}
-          onChangeText={(text) =>
-            setorderDetails({
-              ...orderDetails,
-              customer: { ...orderDetails.customer, name: text },
-            })
-          }
-        ></FieldInputWithLabel>
+          value={localName}
+          onChangeText={(text) => setlocalName(text)}
+        />
         <FieldInputWithLabel
           txtInput="(123) 456-7890"
           label="Phone Number*"
           style={styles.addressField}
-          value={orderDetails.customer.phone}
-          onChangeText={(text) =>
-            setorderDetails({
-              ...orderDetails,
-              customer: { ...orderDetails.customer, phone: text },
-            })
-          }
-        ></FieldInputWithLabel>
+          value={localPhoneNumber}
+          onChangeText={(text) => setlocalPhoneNumber(text)}
+        />
       </View>
       <TouchableOpacity
         style={styles.continueBtn}
         onPress={() => {
-          if (
-            orderDetails.customer.name === "" ||
-            orderDetails.customer.phone === ""
-          )
+          if (localName === "" || localPhoneNumber === "")
             return alert("Please fill in all fields");
+          setorderDetails((prev) => ({
+            ...prev,
+            customer: {
+              ...prev.customer,
+              phone: localPhoneNumber,
+              name: localName,
+            },
+          }));
           setpage(2);
         }}
       >

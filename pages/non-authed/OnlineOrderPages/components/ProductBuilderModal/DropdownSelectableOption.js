@@ -1,10 +1,11 @@
-import React, { Component, useState } from "react";
+import React, { Component, useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   ScrollView,
+  Modal,
 } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
 
@@ -13,23 +14,29 @@ function DropdownSelectableOption({
   setopenDropdown,
   openDropdown,
   id,
+  label,
+  isRequired,
+  value,
+  setValue,
+  options,
 }) {
-  const [val, setval] = useState(null);
+  const dropdownRef = useRef(); // Reference to the original button
+  const [dropdownLayout, setDropdownLayout] = useState();
 
-  const options = [
-    { id: 1, name: "Thin" },
-    { id: 2, name: "Thick" },
-    { id: 3, name: "Stuffed" },
-    { id: 4, name: "Gluten Free" },
-    { id: 5, name: "Cauliflower" },
-  ];
+  useEffect(() => {
+    dropdownRef.current.measureInWindow((x, y, width, height) => {
+      setDropdownLayout({ x, y, width, height });
+    });
+  }, []);
 
   return (
     <View
       style={[styles.container, style, openDropdown === id && { zIndex: 1000 }]}
     >
-      <Text style={styles.lbl}>Crust</Text>
-      <View>
+      <Text style={styles.lbl}>
+        {label} {isRequired ? "*" : ""}
+      </Text>
+      <View ref={dropdownRef}>
         <TouchableOpacity
           style={styles.dropdown}
           onPress={() => {
@@ -41,7 +48,13 @@ function DropdownSelectableOption({
             }
           }}
         >
-          <Text style={styles.placeholder}>{val ? val : "Select"}</Text>
+          <Text style={styles.placeholder}>
+            {value
+              ? `${value.label} (+$${
+                  value.priceIncrease !== null ? value.priceIncrease : 0
+                })`
+              : label}
+          </Text>
           <Icon
             name={
               openDropdown === id ? "chevron-small-up" : "chevron-small-down"
@@ -59,12 +72,21 @@ function DropdownSelectableOption({
               height: options.length > 3 ? 44 * 3 : 44 * options.length,
             }}
           >
-            {options.map((option, index) => (
+            {options.map((option, listIndex) => (
               <TouchableOpacity
-                key={index}
+                key={listIndex}
                 id={option.id}
                 onPress={() => {
-                  setval(option.name);
+                  setValue({
+                    option: {
+                      label: option.label,
+                      priceIncrease:
+                        option.priceIncrease !== null
+                          ? option.priceIncrease
+                          : 0,
+                    },
+                    listIndex: listIndex,
+                  });
                   setopenDropdown(null);
                 }}
                 style={{
@@ -75,12 +97,104 @@ function DropdownSelectableOption({
                   borderWidth: 1,
                 }}
               >
-                <Text>{option.name}</Text>
+                <Text>{`${option.label}  (+$${
+                  option.priceIncrease !== null ? option.priceIncrease : 0
+                })`}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         )}
       </View>
+      <Modal visible={openDropdown === id} transparent={true}>
+        <TouchableOpacity
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+          onPress={() => {
+            setopenDropdown(null);
+          }} // Hide modal when the background is pressed
+        />
+        {dropdownLayout && (
+          <View
+            style={{
+              position: "absolute",
+              top: dropdownLayout.y,
+              left: dropdownLayout.x,
+            }}
+          >
+            <TouchableOpacity
+              style={styles.dropdown}
+              onPress={() => {
+                console.log("openDropdown", openDropdown, id);
+                if (openDropdown === id) {
+                  setopenDropdown(null);
+                } else {
+                  setopenDropdown(id);
+                }
+              }}
+            >
+              <Text style={styles.placeholder}>
+                {value
+                  ? `${value.label} (+$${
+                      value.priceIncrease !== null ? value.priceIncrease : 0
+                    })`
+                  : label}
+              </Text>
+              <Icon
+                name={
+                  openDropdown === id
+                    ? "chevron-small-up"
+                    : "chevron-small-down"
+                }
+                style={styles.downIcon}
+              ></Icon>
+            </TouchableOpacity>
+            {openDropdown === id && (
+              <ScrollView
+                style={{
+                  width: 352,
+                  position: "absolute",
+                  backgroundColor: "white",
+                  bottom: options.length > 3 ? -44 * 3 : -44 * options.length,
+                  height: options.length > 3 ? 44 * 3 : 44 * options.length,
+                }}
+              >
+                {options.map((option, listIndex) => (
+                  <TouchableOpacity
+                    key={listIndex}
+                    id={option.id}
+                    onPress={() => {
+                      setValue({
+                        option: {
+                          label: option.label,
+                          priceIncrease:
+                            option.priceIncrease !== null
+                              ? option.priceIncrease
+                              : 0,
+                        },
+                        listIndex: listIndex,
+                      });
+                      setopenDropdown(null);
+                    }}
+                    style={{
+                      width: "100%",
+                      height: 44,
+                      backgroundColor: "white",
+                      padding: 10,
+                      borderWidth: 1,
+                    }}
+                  >
+                    <Text>{`${option.label}  (+$${
+                      option.priceIncrease !== null ? option.priceIncrease : 0
+                    })`}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            )}
+          </View>
+        )}
+      </Modal>
     </View>
   );
 }

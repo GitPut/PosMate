@@ -1,12 +1,24 @@
-import React, { Component } from "react";
+import React, { memo } from "react";
 import { StyleSheet, View, Text, TextInput } from "react-native";
 
-function FieldInputWithLabel(props) {
+type FieldInputWithLabelProps = {
+  style?: object;
+  label?: string;
+  customInput?: React.ComponentType<any>;
+  customInputProps?: object;
+  txtInput?: string;
+  value?: string;
+  onChangeText?: (text: string) => void;
+};
+
+const FieldInputWithLabel = memo((props: FieldInputWithLabelProps) => {
   return (
     <View style={[styles.container, props.style]}>
       <Text style={styles.label}>{props.label || "Label"}</Text>
       {props.customInput ? (
-        <props.customInput />
+        React.createElement(props.customInput, {
+          ...props.customInputProps,
+        })
       ) : (
         <TextInput
           placeholder={props.txtInput || "Placeholder"}
@@ -15,10 +27,19 @@ function FieldInputWithLabel(props) {
           style={styles.txtInput}
           value={props.value}
           onChangeText={props.onChangeText}
-        ></TextInput>
+        />
       )}
     </View>
   );
+}, areEqual);
+
+FieldInputWithLabel.displayName = "FieldInputWithLabel";
+
+function areEqual(
+  prevProps: FieldInputWithLabelProps,
+  nextProps: FieldInputWithLabelProps
+) {
+  return prevProps.value === nextProps.value;
 }
 
 const styles = StyleSheet.create({

@@ -14,7 +14,7 @@ import { storage } from "state/firebaseConfig";
 import ProductImage from "./ProductImage";
 import ProductBuilderModal from "../ProductBuilderModal/ProductBuilderModal";
 
-function ItemContainer({ product, productIndex, userUid, style, imageUrl }) {
+function ItemContainer({ product, style }) {
   const [showProductScreen, setshowProductScreen] = useState(false);
   const xPos = useRef(new Animated.Value(-1000)).current;
   const shadowOpacity = useRef(new Animated.Value(0)).current;
@@ -54,7 +54,7 @@ function ItemContainer({ product, productIndex, userUid, style, imageUrl }) {
       {product.hasImage ? (
         <View style={[styles.container, style]}>
           <ProductImage
-            source={{ uri: imageUrl }}
+            source={{ uri: product.imageUrl }}
             resizeMode="contain"
             style={styles?.itemImg}
           />
@@ -83,6 +83,7 @@ function ItemContainer({ product, productIndex, userUid, style, imageUrl }) {
                           description: product.description,
                           options: [],
                           extraDetails: null,
+                          imageUrl: product.imageUrl,
                         },
                         cart
                       );
@@ -141,6 +142,7 @@ function ItemContainer({ product, productIndex, userUid, style, imageUrl }) {
                           description: product.description,
                           options: [],
                           extraDetails: null,
+                          imageUrl: null,
                         },
                         cart
                       );
@@ -174,12 +176,11 @@ function ItemContainer({ product, productIndex, userUid, style, imageUrl }) {
                 borderTopRightRadius: 3,
               }}
             >
-              {/* <ProductListing
+              <ProductBuilderModal
                 product={product}
-                // itemIndex={productIndex}
                 goBack={() => fadeOut()}
-              /> */}
-              <ProductBuilderModal product={product} goBack={() => fadeOut()} />
+                imageUrl={product.imageUrl}
+              />
             </View>
           </Animated.View>
         </Modal>

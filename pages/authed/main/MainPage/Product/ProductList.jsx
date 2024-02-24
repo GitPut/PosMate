@@ -14,6 +14,8 @@ import "react-select2-wrapper/css/select2.css";
 import { onlineStoreState, setStoreDetailState, setUserStoreState, userState, userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
 import { auth, db, storage } from "state/firebaseConfig";
+import ProductImage from "pages/non-authed/OnlineOrderPages/components/cartOrder/ProductImage";
+import { Text, TouchableOpacity, View } from "react-native";
 
 const ProductList = () => {
   const catalog = userStoreState.use()
@@ -24,6 +26,7 @@ const ProductList = () => {
   const userS = userState.use();
   const onlineStoreDetails = onlineStoreState.use()
   const history = useHistory()
+  const [selectedCategory, setselectedCategory] = useState()
 
   const togglefilter = (value) => {
     setInputfilter(value);
@@ -115,10 +118,10 @@ const ProductList = () => {
   }, [catalog]);
 
   useEffect(() => {
-    if (searchFilterValue.length > 0) {
+    if (searchFilterValue.length > 0 || selectedCategory) {
 
       const filtered = data.filter((item) => {
-        return item.productName.toLowerCase().includes(searchFilterValue.toLowerCase()) || item.category.toLowerCase().includes(searchFilterValue.toLowerCase())
+        return item.productName.toLowerCase().includes(searchFilterValue.toLowerCase()) && item.category === selectedCategory || item.category.toLowerCase().includes(searchFilterValue.toLowerCase()) && item.category === selectedCategory
       })
 
       setfilteredData(filtered)
@@ -126,26 +129,13 @@ const ProductList = () => {
       setfilteredData([])
     }
 
-  }, [searchFilterValue])
+  }, [searchFilterValue, selectedCategory])
 
   const columns = [
     {
       title: "Product Name",
       dataIndex: "productName",
       render: (text, record) => {
-
-        if (record.hasImage) {
-          storage
-            .ref(auth.currentUser.uid + "/images/" + record.id)
-            .getDownloadURL()
-            .then((url) => {
-              if (url) {
-                document.getElementById(record.id).src = url;
-              }
-            }).catch((err) => {
-              console.log(err)
-            })
-        }
 
         return (
           <div className="productimgname">
@@ -154,11 +144,10 @@ const ProductList = () => {
               className="product-img"
               to={`/authed/product/editproduct-product/${record.id}`}
             >
-              < img id={record.id} alt="" src={record.imageUrl} loading="lazy" />
+              <ProductImage source={{ uri: record.image }} resizeMode="contain" style={{ height: 96, width: 95 }} />
             </Link>
             <Link
-              style={{ textDecoration: "none" }}
-              style={{ fontSize: "15px", marginLeft: "10px" }}
+              style={{ fontSize: "15px", marginLeft: "10px", textDecoration: "none" }}
               to={`/authed/product/editproduct-product/${record.id}`}
             >
               {record.productName}
@@ -257,7 +246,15 @@ const ProductList = () => {
             <div className="card-body">
               <Tabletop inputfilter={inputfilter} togglefilter={togglefilter} removePrintAndFilter={true} searchFilterValue={searchFilterValue} setsearchFilterValue={setsearchFilterValue} />
               {/* /Filter */}
-
+              {catalog.categories.length > 0 && <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: '98%', height: 50, flexWrap: 'wrap', margin: 10 }}>
+                {catalog.categories.map((category, index) => (
+                  <TouchableOpacity key={index}
+                    style={[{ padding: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 10 }, selectedCategory === category ? { backgroundColor: 'black' } : { backgroundColor: 'grey' }]}
+                    onPress={() => setselectedCategory(prev => prev === category ? null : category)}>
+                    <Text style={{ fontSize: 18, color: 'white' }}>{category}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>}
               {/* /Filter */}
               <div className="table-responsive">
                 <Table columns={columns} dataSource={filteredData.length > 0 ? filteredData : data} noPagnation={true} />

@@ -11,6 +11,7 @@ import { updateData } from "state/firebaseFunctions";
 import { useParams } from "react-router-dom";
 import { auth, db, storage } from "state/firebaseConfig";
 import { Switch } from "@react-native-material/core";
+import ProductImage from "pages/non-authed/OnlineOrderPages/components/cartOrder/ProductImage";
 
 const EditProduct = (props) => {
   const catalog = userStoreState.use();
@@ -38,7 +39,7 @@ const EditProduct = (props) => {
 
   const [selectedFile, setSelectedFile] = useState()
 
-  const [currentImgUrl, setcurrentImgUrl] = useState()
+  const [currentImgUrl, setcurrentImgUrl] = useState(existingProduct.imageUrl)
 
   const userS = userState.use();
   const onlineStoreDetails = onlineStoreState.use()
@@ -74,15 +75,6 @@ const EditProduct = (props) => {
       catalog.categories.map((val, index) => local.push({ id: index, text: val, }));
       setselectValues(local);
     }
-
-    if (existingProduct?.hasImage) {
-      storage
-        .ref(auth.currentUser.uid + "/images/" + existingProduct.id)
-        .getDownloadURL()
-        .then((url) => {
-          setcurrentImgUrl(url);
-        });
-    }
   }, []);
 
   function handleDataUpdate() {
@@ -111,17 +103,25 @@ const EditProduct = (props) => {
     // Upload Image
 
     if (selectedFile) {
+      newProductUseRef.hasImage = true
       storage
         .ref(auth.currentUser.uid + '/images/' + existingProduct.id)
-        .put(selectedFile);
-
-      newProductUseRef.hasImage = true
+        .put(selectedFile).then(() => {
+          storage
+            .ref(auth.currentUser.uid + '/images/' + existingProduct.id)
+            .getDownloadURL()
+            .then((url) => {
+              newProductUseRef.hasImage = true
+              newProductUseRef.imageUrl = url
+            });
+        })
     }
 
     if (newProductUseRef.hasImage && !selectedFile && !currentImgUrl) {
       storage
         .ref(auth.currentUser.uid + '/images/' + existingProduct.id).delete()
       newProductUseRef.hasImage = false
+      newProductUseRef.imageUrl = null
     }
 
     copy[findIndex] = newProductUseRef;
@@ -180,8 +180,8 @@ const EditProduct = (props) => {
                       accept="image/*"
                       onChange={changeHandler}
                     />
-                    <div className="image-uploads" >
-                      {selectedFile ? <img style={{ height: 150, width: 300, resizeMode: 'contain' }} src={URL.createObjectURL(selectedFile)} alt="img" /> : currentImgUrl ? <img style={{ height: 150, width: 300, resizeMode: 'contain' }} src={currentImgUrl} alt="img" /> : <img src={Upload} alt="img" />}
+                    <div className="image-uploads">
+                      {selectedFile ? <img style={{ height: 150, width: 300, resizeMode: 'contain' }} src={URL.createObjectURL(selectedFile)} alt="img" /> : currentImgUrl ? <ProductImage style={{ height: 150, width: '100%', resizeMode: 'contain', }} source={currentImgUrl} /> : <img src={Upload} alt="img" />}
                       {/* <img src={Upload} alt="img" /> */}
                       <h4>Drag and drop a file to upload</h4>
                       {selectedFile?.name || currentImgUrl ? <Button title="Remove" onPress={() => {

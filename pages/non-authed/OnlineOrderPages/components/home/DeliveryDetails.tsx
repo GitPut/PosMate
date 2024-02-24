@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
@@ -9,8 +9,19 @@ function DeliveryDetails({
   setorderDetails,
   orderDetails,
   setpage,
-  resetLoader
 }) {
+  const [localName, setlocalName] = useState(orderDetails.customer.name);
+  const [localPhoneNumber, setlocalPhoneNumber] = useState(
+    orderDetails.customer.phoneNumber
+  );
+  const [localAddress, setlocalAddress] = useState(orderDetails.address);
+  const [localBuzzCode, setlocalBuzzCode] = useState(
+    orderDetails.customer.buzzCode
+  );
+  const [localUnitNumber, setlocalUnitNumber] = useState(
+    orderDetails.customer.unitNumber
+  );
+
   // Function to calculate distance between two points using Haversine formula
   function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371; // Radius of the Earth in km
@@ -78,26 +89,16 @@ function DeliveryDetails({
           txtInput="Name"
           label="Name*"
           style={styles.nameField}
-          value={orderDetails.customer.name}
-          onChangeText={(text) =>
-            setorderDetails({
-              ...orderDetails,
-              customer: { ...orderDetails.customer, name: text },
-            })
-          }
-        ></FieldInputWithLabel>
+          value={localName}
+          onChangeText={(text) => setlocalName(text)}
+        />
         <FieldInputWithLabel
           txtInput="(123) 456-7890"
           label="Phone Number*"
           style={styles.nameField}
-          value={orderDetails.customer.phoneNumber}
-          onChangeText={(text) =>
-            setorderDetails({
-              ...orderDetails,
-              customer: { ...orderDetails.customer, phoneNumber: text },
-            })
-          }
-        ></FieldInputWithLabel>
+          value={localPhoneNumber}
+          onChangeText={(text) => setlocalPhoneNumber(text)}
+        />
         <FieldInputWithLabel
           txtInput="Delivery Address"
           label="Delivery Address*"
@@ -111,10 +112,9 @@ function DeliveryDetails({
               apiKey={GOOGLE_API_KEY}
               // onSelect={handleAddress}
               selectProps={{
-                address: orderDetails.address,
-                onChange: (address) =>
-                  setorderDetails({ ...orderDetails, address }),
-                defaultValue: orderDetails.address,
+                address: localAddress,
+                onChange: (address) => setlocalAddress(address),
+                defaultValue: localAddress,
                 menuPortalTarget: document.body,
                 styles: {
                   menuPortal: (base) => ({ ...base, zIndex: 9999 }),
@@ -136,67 +136,78 @@ function DeliveryDetails({
               )}
             />
           )}
-        ></FieldInputWithLabel>
+        />
         <View style={styles.buzzCodeAndPhoneRow}>
           <FieldInputWithLabel
             txtInput="#"
             label="Buzz Code"
             style={styles.buzzCodeField}
-            value={orderDetails.customer.buzzCode}
-            onChangeText={(text) =>
-              setorderDetails({
-                ...orderDetails,
-                customer: { ...orderDetails.customer, buzzCode: text },
-              })
-            }
-          ></FieldInputWithLabel>
+            value={localBuzzCode}
+            onChangeText={(text) => setlocalBuzzCode(text)}
+          />
           <FieldInputWithLabel
             txtInput="#"
             label="Unit Number"
             style={styles.phoneNumberField}
-            value={orderDetails.customer.unitNumber}
-            onChangeText={(text) =>
-              setorderDetails({
-                ...orderDetails,
-                customer: { ...orderDetails.customer, unitNumber: text },
-              })
-            }
-          ></FieldInputWithLabel>
+            value={localUnitNumber}
+            onChangeText={(text) => setlocalUnitNumber(text)}
+          />
         </View>
       </View>
       <TouchableOpacity
         style={styles.continueBtn}
         onPress={() => {
-          // if (
-          //   orderDetails.customer.name === "" ||
-          //   orderDetails.customer.phoneNumber === "" ||
-          //   orderDetails.address === ""
-          // )
-          //   return alert("Please fill in all fields");
-          // calculateDistanceBetweenAddresses(
-          //   storeDetails.address.value.reference,
-          //   orderDetails.address.value.reference
-          // ).then((distance) => {
-          //   if (distance !== null) {
-          //     console.log(
-          //       `Distance between addresses: ${distance.toFixed(2)} km`
-          //     );
-          //     if (storeDetails.deliveryRange) {
-          //       if (distance > parseFloat(storeDetails.deliveryRange)) {
-          //         alert("The delivery address is out of range");
-          //       } else {
-          //         setpage(2);
-          //       }
-          //     } else {
-          //       setpage(2);
-          //     }
-          //   } else {
-          //     alert(
-          //       "Distance calculation between the store and your location failed. Please refresh page."
-          //     );
-          //   }
-          // });
-          setpage(2);
+          if (
+            localName === "" ||
+            localPhoneNumber === "" ||
+            localAddress === ""
+          )
+            return alert("Please fill in all fields");
+          calculateDistanceBetweenAddresses(
+            storeDetails.address.value.reference,
+            localAddress.value.reference
+          ).then((distance) => {
+            if (distance !== null) {
+              console.log(
+                `Distance between addresses: ${distance.toFixed(2)} km`
+              );
+              if (storeDetails.deliveryRange) {
+                if (distance > parseFloat(storeDetails.deliveryRange)) {
+                  alert("The delivery address is out of range");
+                } else {
+                  setorderDetails((prev) => ({
+                    ...prev,
+                    address: localAddress,
+                    customer: {
+                      ...prev.customer,
+                      name: localName,
+                      phoneNumber: localPhoneNumber,
+                      buzzCode: localBuzzCode,
+                      unitNumber: localUnitNumber,
+                    },
+                  }));
+                  setpage(2);
+                }
+              } else {
+                setorderDetails((prev) => ({
+                  ...prev,
+                  address: localAddress,
+                  customer: {
+                    ...prev.customer,
+                    name: localName,
+                    phoneNumber: localPhoneNumber,
+                    buzzCode: localBuzzCode,
+                    unitNumber: localUnitNumber,
+                  },
+                }));
+                setpage(2);
+              }
+            } else {
+              alert(
+                "Distance calculation between the store and your location failed. Please refresh page."
+              );
+            }
+          });
         }}
       >
         <Text style={styles.continueBtnTxt}>CONTINUE</Text>

@@ -8,7 +8,7 @@ const CartItemEditable = ({
   cartItem,
   index,
   removeAction,
-  decreaseAction,
+  decreaseAction, 
   increaseAction,
 }) => {
   const [showProductScreen, setshowProductScreen] = useState(false);

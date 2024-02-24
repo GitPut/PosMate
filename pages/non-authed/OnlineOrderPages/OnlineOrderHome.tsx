@@ -200,15 +200,59 @@ import { FontAwesome, Entypo } from "@expo/vector-icons";
 import DeliveryDetails from "./components/home/DeliveryDetails";
 import PickupDetails from "./components/home/PickupDetails";
 import { Text, TouchableOpacity, View } from "react-native";
+import CheckOutDetails from "./components/home/CheckOutDetails";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 function OnlineOrderHome({
   storeDetails,
   setorderDetails,
   orderDetails,
   setpage,
+  page,
 }) {
-  const [enterDetailsSection, setenterDetailsSection] = useState(null);
-  const [logoImg, setlogoImg] = useState(null);
+  const [enterDetailsSection, setenterDetailsSection] = useState(
+    page === 3 ? "checkout" : null
+  );
+
+  const RenderDetailsSection = () => {
+    if (enterDetailsSection === "delivery") {
+      return (
+        <DeliveryDetails
+          storeDetails={storeDetails}
+          setorderDetails={setorderDetails}
+          orderDetails={orderDetails}
+          setpage={setpage}
+        />
+      );
+    } else if (enterDetailsSection === "pickup") {
+      return (
+        <PickupDetails
+          storeDetails={storeDetails}
+          setorderDetails={setorderDetails}
+          orderDetails={orderDetails}
+          setpage={setpage}
+        />
+      );
+    } else if (page === 3) {
+      return (
+        <Elements stripe={loadStripe(storeDetails.stripePublicKey)}>
+          <CheckOutDetails
+            storeDetails={storeDetails}
+            setorderDetails={setorderDetails}
+            orderDetails={orderDetails}
+            setpage={setpage}
+          />
+        </Elements>
+      );
+    } else {
+      return (
+        <Text style={{ fontSize: 35, fontWeight: "700", color: "white" }}>
+          Thank you for placing a order.
+        </Text>
+      );
+    }
+  };
 
   return (
     <Container>
@@ -221,24 +265,32 @@ function OnlineOrderHome({
             {storeDetails.hasLogo ? (
               <Logo
                 onClick={() => {
-                  setorderDetails({
-                    ...orderDetails,
-                    delivery: false,
-                    address: null,
-                  });
-                  setenterDetailsSection(null);
+                  if (page > 1) {
+                    setpage((prev) => prev - 1);
+                  } else {
+                    setorderDetails({
+                      ...orderDetails,
+                      delivery: false,
+                      address: null,
+                    });
+                    setenterDetailsSection(null);
+                  }
                 }}
                 src={require("./assets/images/dpos-logo-white.png")}
               ></Logo>
             ) : (
               <TouchableOpacity
                 onPress={() => {
-                  setorderDetails({
-                    ...orderDetails,
-                    delivery: false,
-                    address: null,
-                  });
-                  setenterDetailsSection(null);
+                  if (page > 1) {
+                    setpage((prev) => prev - 1);
+                  } else {
+                    setorderDetails({
+                      ...orderDetails,
+                      delivery: false,
+                      address: null,
+                    });
+                    setenterDetailsSection(null);
+                  }
                 }}
               >
                 <Text
@@ -287,20 +339,8 @@ function OnlineOrderHome({
                 </div>
               )}
             </>
-          ) : enterDetailsSection === "delivery" ? (
-            <DeliveryDetails
-              storeDetails={storeDetails}
-              setorderDetails={setorderDetails}
-              orderDetails={orderDetails}
-              setpage={setpage}
-            />
           ) : (
-            <PickupDetails
-              storeDetails={storeDetails}
-              setorderDetails={setorderDetails}
-              orderDetails={orderDetails}
-              setpage={setpage}
-            />
+            <RenderDetailsSection />
           )}
           <BottomRowGroup>
             <DetailsLocationGroup>
