@@ -7,11 +7,11 @@ import {
   TouchableOpacity,
   Animated,
   Modal,
+  useWindowDimensions,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { addCartState, cartState } from "state/state";
-import { storage } from "state/firebaseConfig";
-import ProductImage from "./ProductImage";
+import ProductImage from "components/ProductImage";
 import ProductBuilderModal from "../ProductBuilderModal/ProductBuilderModal";
 
 function ItemContainer({ product, style }) {
@@ -19,6 +19,7 @@ function ItemContainer({ product, style }) {
   const xPos = useRef(new Animated.Value(-1000)).current;
   const shadowOpacity = useRef(new Animated.Value(0)).current;
   const cart = cartState.use();
+  const screenWidth = useWindowDimensions().width;
 
   const fadeIn = () => {
     // Will change xPos value to 0 in 3 seconds
@@ -170,11 +171,19 @@ function ItemContainer({ product, style }) {
             }}
           >
             <View
-              style={{
-                height: "100%",
-                width: "72%",
-                borderTopRightRadius: 3,
-              }}
+              style={[
+                screenWidth > 1250
+                  ? {
+                      height: "100%",
+                      width: "72%",
+                      borderTopRightRadius: 3,
+                    }
+                  : {
+                      height: "100%",
+                      width: "100%",
+                      borderTopRightRadius: 3,
+                    },
+              ]}
             >
               <ProductBuilderModal
                 product={product}

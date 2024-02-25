@@ -36,7 +36,7 @@ function DropdownSelectableOption({
       <Text style={styles.lbl}>
         {label} {isRequired ? "*" : ""}
       </Text>
-      <View ref={dropdownRef}>
+      <View ref={dropdownRef} style={{ width: "70%" }}>
         <TouchableOpacity
           style={styles.dropdown}
           onPress={() => {
@@ -65,7 +65,7 @@ function DropdownSelectableOption({
         {openDropdown === id && (
           <ScrollView
             style={{
-              width: 352,
+              width: "100%",
               position: "absolute",
               backgroundColor: "white",
               bottom: options.length > 3 ? -44 * 3 : -44 * options.length,
@@ -121,6 +121,7 @@ function DropdownSelectableOption({
               position: "absolute",
               top: dropdownLayout.y,
               left: dropdownLayout.x,
+              width: dropdownLayout.width,
             }}
           >
             <TouchableOpacity
@@ -153,7 +154,7 @@ function DropdownSelectableOption({
             {openDropdown === id && (
               <ScrollView
                 style={{
-                  width: 352,
+                  width: "100%",
                   position: "absolute",
                   backgroundColor: "white",
                   bottom: options.length > 3 ? -44 * 3 : -44 * options.length,
@@ -208,9 +209,10 @@ const styles = StyleSheet.create({
   lbl: {
     fontWeight: "700",
     color: "#3e3f41",
+    width: '25%'
   },
   dropdown: {
-    width: 352,
+    width: "100%",
     height: 44,
     backgroundColor: "rgba(255,255,255,1)",
     borderRadius: 10,

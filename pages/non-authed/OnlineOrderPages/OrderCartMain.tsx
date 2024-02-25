@@ -6,6 +6,7 @@ import {
   Image,
   Text,
   ScrollView,
+  useWindowDimensions,
 } from "react-native";
 import CategoryBtn from "./components/cartOrder/CategoryBtn";
 import ItemContainer from "./components/cartOrder/ItemContainer";
@@ -15,6 +16,8 @@ import { Entypo, Feather } from "@expo/vector-icons";
 import { cartState, setCartState } from "state/state";
 import { storage } from "state/firebaseConfig";
 import ProductBuilderModal from "./components/ProductBuilderModal/ProductBuilderModal";
+import ItemContainerMobile from "../OnlineOrderPagesMobile/components/cartOrder/ItemContainerMobile";
+import Modal from "react-native-modal";
 
 function OrderCartMain({
   storeDetails,
@@ -28,21 +31,9 @@ function OrderCartMain({
   );
   const [cartSub, setCartSub] = useState(0);
   const cart = cartState.use();
-  // const [productImages, setproductImages] = useState([]);
-
-  // useEffect(() => {
-  //   catalog.products.map((product) => {
-  //     if (product.hasImage) {
-  //       storage
-  //         .ref(storeDetails.docID + "/images/" + product.id)
-  //         .getDownloadURL()
-  //         .then((url) => {
-  //           setproductImages((prev) => [...prev, { id: product.id, url: url }]);
-  //           console.log("Image url: ", url);
-  //         });
-  //     }
-  //   });
-  // }, []);
+  const [cartOpen, setcartOpen] = useState(false);
+  const screenWidth = useWindowDimensions().width;
+  const screenHeight = useWindowDimensions().height;
 
   useEffect(() => {
     if (cart.length > 0) {
@@ -81,20 +72,88 @@ function OrderCartMain({
 
   return (
     <View style={styles.container}>
-      <View style={styles.leftMenuBarContainer}>
-        <TouchableOpacity style={styles.menuBtn}>
-          <Entypo name="menu" style={styles.menuIcon}></Entypo>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setpage(1)}>
-          <Feather name="log-out" style={styles.icon}></Feather>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.menuContainer}>
-        <View style={styles.bannerContainer}>
+      {screenWidth > 1250 && (
+        <View style={styles.leftMenuBarContainer}>
+          <TouchableOpacity style={styles.menuBtn}>
+            <Entypo name="menu" style={styles.menuIcon}></Entypo>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setpage(1)}>
+            <Feather name="log-out" style={styles.icon}></Feather>
+          </TouchableOpacity>
+        </View>
+      )}
+      <View
+        style={[
+          styles.menuContainer,
+          screenWidth < 1250 && { width: "62%" },
+          screenWidth < 1000 && { width: "100%" },
+        ]}
+      >
+        {screenWidth < 1000 && (
+          <View
+            style={{
+              flexDirection: "row",
+              width: "88%",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 10,
+              marginTop: 10,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                setpage(1);
+              }}
+              style={{
+                backgroundColor: "#1D294E",
+                borderRadius: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                width: 34,
+                height: 34,
+              }}
+            >
+              <Feather name="log-out" style={{ color: "white" }} size={20} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setcartOpen(true);
+              }}
+              style={{
+                backgroundColor: "#1D294E",
+                borderRadius: 10,
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: 58,
+                height: 34,
+                flexDirection: "row",
+                padding: 5,
+              }}
+            >
+              <Feather
+                name="shopping-cart"
+                style={{ color: "white" }}
+                size={20}
+              />
+              <Text style={{ color: "white", fontSize: 20 }}>
+                {cart.length}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        <View
+          style={[
+            styles.bannerContainer,
+            screenWidth < 1000 && { height: 100 },
+          ]}
+        >
           <Image
             source={require("./assets/images/image_onW3..png")}
             resizeMode="contain"
-            style={styles.logo}
+            style={[
+              styles.logo,
+              screenWidth < 1000 && { height: 60, maxWidth: 250 },
+            ]}
           ></Image>
         </View>
         <View style={styles.categoryContainer}>
@@ -105,12 +164,6 @@ function OrderCartMain({
               contentContainerStyle={styles.scrollArea_contentContainerStyle}
             >
               {catalog.categories?.map((category, index) => {
-                const listOfProductsInCategoryWithImages =
-                  catalog.products.filter(
-                    (product) =>
-                      product.category === category && product.hasImage
-                  );
-
                 if (
                   catalog.products.filter(
                     (x) => x.category === category && x.hasImage
@@ -132,14 +185,6 @@ function OrderCartMain({
                           )
                         ]?.imageUrl
                       }
-                      // imageUrl={
-                      //   productImages[
-                      //     productImages.findIndex(
-                      //       (x) =>
-                      //         x.id === listOfProductsInCategoryWithImages[0].id
-                      //     )
-                      //   ]?.url
-                      // }
                     />
                   );
                 } else {
@@ -166,179 +211,415 @@ function OrderCartMain({
               styles.scrollAreaProducts_contentContainerStyle
             }
           >
-            {catalog.products.map((product, index) => (
-              <ItemContainer
-                product={product}
-                productIndex={index}
-                key={index}
-                userUid={catalog.docID}
-                style={styles.itemContainer}
-                // imageUrl={
-                //   product.hasImage &&
-                //   productImages[
-                //     productImages.findIndex((x) => x.id === product.id)
-                //   ]?.url
-                // }
-              />
-            ))}
+            {catalog.products.map((product, index) =>
+              screenWidth > 1250 ? (
+                <ItemContainer
+                  product={product}
+                  productIndex={index}
+                  key={index}
+                  userUid={catalog.docID}
+                  style={styles.itemContainer}
+                />
+              ) : (
+                <ItemContainerMobile
+                  product={product}
+                  productIndex={index}
+                  key={index}
+                  userUid={catalog.docID}
+                  style={{
+                    height: 220,
+                    width: 250, // Ensure this width accounts for any margins or padding
+                    marginBottom: 30,
+                  }}
+                />
+              )
+            )}
           </ScrollView>
         </View>
       </View>
-      <View style={styles.cartContainer}>
-        <Text style={styles.myCartTxt}>My Cart</Text>
-        {cart.length > 0 ? (
-          <View style={styles.cartItems}>
-            <ScrollView
-              horizontal={false}
-              contentContainerStyle={styles.cartItems_contentContainerStyle}
-            >
-              {cart?.map((cartItem, index) => (
-                <CartItem
-                  style={styles.cartItem1}
-                  key={index}
-                  cartItem={cartItem}
-                  index={index}
-                  removeAction={() => {
-                    console.log("Removing");
-                    const local = structuredClone(cart);
-                    local.splice(index, 1);
-                    setCartState(local);
-                  }}
-                  decreaseAction={() => {
-                    const local = structuredClone(cart);
-                    local[index].quantity--;
-                    setCartState(local);
-                  }}
-                  increaseAction={() => {
-                    const local = structuredClone(cart);
-                    if (local[index].quantity) {
-                      local[index].quantity++;
-                    } else {
-                      local[index].quantity = 2;
-                    }
-                    setCartState(local);
-                  }}
-                />
-              ))}
-            </ScrollView>
-          </View>
-        ) : (
-          <Image
-            source={require("./assets/images/noItemsImg.png")}
-            style={{ width: 200, height: "35%", resizeMode: "contain" }}
-          />
-        )}
-        <View style={styles.totalsContainer}>
-          <View style={styles.topGroupTotalsContainer}>
-            <UntitledComponent
-              amountValue="N/A"
-              amountLbl="Discount"
-              style={styles.discountRow}
+      {screenWidth > 1000 ? (
+        <View
+          style={[styles.cartContainer, screenWidth < 1250 && { width: "38%" }]}
+        >
+          <Text style={styles.myCartTxt}>My Cart</Text>
+          {cart.length > 0 ? (
+            <View style={styles.cartItems}>
+              <ScrollView
+                horizontal={false}
+                contentContainerStyle={styles.cartItems_contentContainerStyle}
+              >
+                {cart?.map((cartItem, index) => (
+                  <CartItem
+                    style={styles.cartItem1}
+                    key={index}
+                    cartItem={cartItem}
+                    index={index}
+                    removeAction={() => {
+                      console.log("Removing");
+                      const local = structuredClone(cart);
+                      local.splice(index, 1);
+                      setCartState(local);
+                    }}
+                    decreaseAction={() => {
+                      const local = structuredClone(cart);
+                      local[index].quantity--;
+                      setCartState(local);
+                    }}
+                    increaseAction={() => {
+                      const local = structuredClone(cart);
+                      if (local[index].quantity) {
+                        local[index].quantity++;
+                      } else {
+                        local[index].quantity = 2;
+                      }
+                      setCartState(local);
+                    }}
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          ) : (
+            <Image
+              source={require("./assets/images/noItemsImg.png")}
+              style={{ width: 200, height: "35%", resizeMode: "contain" }}
             />
-            {orderDetails.delivery &&
-              parseFloat(storeDetails.deliveryPrice) && (
+          )}
+          <View style={styles.totalsContainer}>
+            <View style={styles.topGroupTotalsContainer}>
+              <UntitledComponent
+                amountValue="N/A"
+                amountLbl="Discount"
+                style={styles.discountRow}
+              />
+              {orderDetails.delivery &&
+                parseFloat(storeDetails.deliveryPrice) && (
+                  <UntitledComponent
+                    amountValue={`$${parseFloat(
+                      storeDetails.deliveryPrice
+                    ).toFixed(2)}`}
+                    amountLbl="Delivery"
+                    style={styles.discountRow}
+                  />
+                )}
+              <UntitledComponent
+                amountValue={
+                  orderDetails.delivery &&
+                  parseFloat(storeDetails.deliveryPrice) &&
+                  cartSub > 0
+                    ? `$${(
+                        cartSub - parseFloat(storeDetails.deliveryPrice)
+                      ).toFixed(2)}`
+                    : `$${cartSub.toFixed(2)}`
+                }
+                amountLbl="Subtotal"
+                style={styles.subtotalRow}
+              />
+              <UntitledComponent
+                amountValue={`$${(
+                  cartSub *
+                  (storeDetails.taxRate ? storeDetails.taxRate / 100 : 0.13)
+                ).toFixed(2)}`}
+                amountLbl="Tax"
+                style={styles.taxRow}
+              />
+            </View>
+            <View style={styles.totalRowGroup}>
+              <View style={styles.totalRow}>
+                <Text style={styles.total2}>Total</Text>
+                <Text style={styles.totalValue}>
+                  $
+                  {(
+                    Math.ceil(
+                      cartSub *
+                        (storeDetails.taxRate
+                          ? 1 + storeDetails.taxRate / 100
+                          : 1.13) *
+                        10
+                    ) / 10
+                  ).toFixed(2)}
+                </Text>
+              </View>
+              <TouchableOpacity style={styles.discountCodeBtn}>
+                <Text style={styles.discountCode}>Discount Code</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <TouchableOpacity
+            style={styles.checkoutBtn}
+            disabled={cart.length < 1}
+            onPress={() => {
+              const today = new Date();
+              const transNum = Math.random().toString(36).substr(2, 9);
+
+              if (orderDetails.delivery) {
+                setorderDetails((prev) => ({
+                  date: today,
+                  transNum: transNum,
+                  total: (
+                    cartSub *
+                    (storeDetails.taxRate
+                      ? 1 + storeDetails.taxRate / 100
+                      : 1.13)
+                  ).toFixed(2),
+                  method: "deliveryOrder",
+                  online: true,
+                  cart: cart,
+                  customer: {
+                    name: prev.customer.name,
+                    phone: prev.customer.phone,
+                    address: prev.customer.address,
+                    email: prev.customer.email,
+                  },
+                  address: prev.address,
+                }));
+              } else {
+                setorderDetails((prev) => ({
+                  date: today,
+                  transNum: transNum,
+                  total: (
+                    cartSub *
+                    (storeDetails.taxRate
+                      ? 1 + storeDetails.taxRate / 100
+                      : 1.13)
+                  ).toFixed(2),
+                  method: "pickupOrder",
+                  online: true,
+                  cart: cart,
+                  customer: {
+                    name: prev.customer.name,
+                    phone: prev.customer.phone,
+                    email: prev.customer.email,
+                    address: null,
+                  },
+                }));
+              }
+              setpage(3);
+            }}
+          >
+            <Text style={styles.checkoutLbl}>Checkout</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <Modal
+          isVisible={cartOpen}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          style={{ margin: 0 }}
+        >
+          <View
+            style={{
+              width: screenWidth,
+              height: screenHeight,
+              justifyContent: "space-evenly",
+              alignItems: "center",
+              backgroundColor: "white",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                width: "90%",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 10,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  setcartOpen(false);
+                }}
+              >
+                <Feather
+                  onPress={() => {
+                    setcartOpen(false);
+                  }}
+                  name="chevron-down"
+                  style={{ color: "grey" }}
+                  size={40}
+                />
+              </TouchableOpacity>
+              <View
+                style={{
+                  backgroundColor: "#1D294E",
+                  borderRadius: 10,
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: 80,
+                  height: 40,
+                  flexDirection: "row",
+                  padding: 15,
+                }}
+              >
+                <Feather
+                  name="shopping-cart"
+                  style={{ color: "white" }}
+                  size={22}
+                />
+                <Text style={{ color: "white", fontSize: 20 }}>
+                  {cart.length}
+                </Text>
+              </View>
+            </View>
+            <Text style={styles.myCartTxt}>My Cart</Text>
+            {cart.length > 0 ? (
+              <View style={styles.cartItems}>
+                <ScrollView
+                  horizontal={false}
+                  contentContainerStyle={styles.cartItems_contentContainerStyle}
+                >
+                  {cart?.map((cartItem, index) => (
+                    <CartItem
+                      style={styles.cartItem1}
+                      key={index}
+                      cartItem={cartItem}
+                      index={index}
+                      removeAction={() => {
+                        console.log("Removing");
+                        const local = structuredClone(cart);
+                        local.splice(index, 1);
+                        setCartState(local);
+                      }}
+                      decreaseAction={() => {
+                        const local = structuredClone(cart);
+                        local[index].quantity--;
+                        setCartState(local);
+                      }}
+                      increaseAction={() => {
+                        const local = structuredClone(cart);
+                        if (local[index].quantity) {
+                          local[index].quantity++;
+                        } else {
+                          local[index].quantity = 2;
+                        }
+                        setCartState(local);
+                      }}
+                    />
+                  ))}
+                </ScrollView>
+              </View>
+            ) : (
+              <Image
+                source={require("./assets/images/noItemsImg.png")}
+                style={{ width: 200, height: "35%", resizeMode: "contain" }}
+              />
+            )}
+            <View style={styles.totalsContainer}>
+              <View style={styles.topGroupTotalsContainer}>
                 <UntitledComponent
-                  amountValue={`$${parseFloat(
-                    storeDetails.deliveryPrice
-                  ).toFixed(2)}`}
-                  amountLbl="Delivery"
+                  amountValue="N/A"
+                  amountLbl="Discount"
                   style={styles.discountRow}
                 />
-              )}
-            <UntitledComponent
-              amountValue={
-                orderDetails.delivery &&
-                parseFloat(storeDetails.deliveryPrice) &&
-                cartSub > 0
-                  ? `$${(
-                      cartSub - parseFloat(storeDetails.deliveryPrice)
-                    ).toFixed(2)}`
-                  : `$${cartSub.toFixed(2)}`
-              }
-              amountLbl="Subtotal"
-              style={styles.subtotalRow}
-            />
-            <UntitledComponent
-              amountValue={`$${(
-                cartSub *
-                (storeDetails.taxRate ? storeDetails.taxRate / 100 : 0.13)
-              ).toFixed(2)}`}
-              amountLbl="Tax"
-              style={styles.taxRow}
-            />
-          </View>
-          <View style={styles.totalRowGroup}>
-            <View style={styles.totalRow}>
-              <Text style={styles.total2}>Total</Text>
-              <Text style={styles.totalValue}>
-                $
-                {(
-                  Math.ceil(
+                {orderDetails.delivery &&
+                  parseFloat(storeDetails.deliveryPrice) && (
+                    <UntitledComponent
+                      amountValue={`$${parseFloat(
+                        storeDetails.deliveryPrice
+                      ).toFixed(2)}`}
+                      amountLbl="Delivery"
+                      style={styles.discountRow}
+                    />
+                  )}
+                <UntitledComponent
+                  amountValue={
+                    orderDetails.delivery &&
+                    parseFloat(storeDetails.deliveryPrice) &&
+                    cartSub > 0
+                      ? `$${(
+                          cartSub - parseFloat(storeDetails.deliveryPrice)
+                        ).toFixed(2)}`
+                      : `$${cartSub.toFixed(2)}`
+                  }
+                  amountLbl="Subtotal"
+                  style={styles.subtotalRow}
+                />
+                <UntitledComponent
+                  amountValue={`$${(
                     cartSub *
+                    (storeDetails.taxRate ? storeDetails.taxRate / 100 : 0.13)
+                  ).toFixed(2)}`}
+                  amountLbl="Tax"
+                  style={styles.taxRow}
+                />
+              </View>
+              <View style={styles.totalRowGroup}>
+                <View style={styles.totalRow}>
+                  <Text style={styles.total2}>Total</Text>
+                  <Text style={styles.totalValue}>
+                    $
+                    {(
+                      Math.ceil(
+                        cartSub *
+                          (storeDetails.taxRate
+                            ? 1 + storeDetails.taxRate / 100
+                            : 1.13) *
+                          10
+                      ) / 10
+                    ).toFixed(2)}
+                  </Text>
+                </View>
+                <TouchableOpacity style={styles.discountCodeBtn}>
+                  <Text style={styles.discountCode}>Discount Code</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <TouchableOpacity
+              style={styles.checkoutBtn}
+              disabled={cart.length < 1}
+              onPress={() => {
+                const today = new Date();
+                const transNum = Math.random().toString(36).substr(2, 9);
+
+                if (orderDetails.delivery) {
+                  setorderDetails((prev) => ({
+                    date: today,
+                    transNum: transNum,
+                    total: (
+                      cartSub *
                       (storeDetails.taxRate
                         ? 1 + storeDetails.taxRate / 100
-                        : 1.13) *
-                      10
-                  ) / 10
-                ).toFixed(2)}
-              </Text>
-            </View>
-            <TouchableOpacity style={styles.discountCodeBtn}>
-              <Text style={styles.discountCode}>Discount Code</Text>
+                        : 1.13)
+                    ).toFixed(2),
+                    method: "deliveryOrder",
+                    online: true,
+                    cart: cart,
+                    customer: {
+                      name: prev.customer.name,
+                      phone: prev.customer.phone,
+                      address: prev.customer.address,
+                      email: prev.customer.email,
+                    },
+                    address: prev.address,
+                  }));
+                } else {
+                  setorderDetails((prev) => ({
+                    date: today,
+                    transNum: transNum,
+                    total: (
+                      cartSub *
+                      (storeDetails.taxRate
+                        ? 1 + storeDetails.taxRate / 100
+                        : 1.13)
+                    ).toFixed(2),
+                    method: "pickupOrder",
+                    online: true,
+                    cart: cart,
+                    customer: {
+                      name: prev.customer.name,
+                      phone: prev.customer.phone,
+                      email: prev.customer.email,
+                      address: null,
+                    },
+                  }));
+                }
+                setpage(3);
+              }}
+            >
+              <Text style={styles.checkoutLbl}>Checkout</Text>
             </TouchableOpacity>
           </View>
-        </View>
-        <TouchableOpacity
-          style={styles.checkoutBtn}
-          disabled={cart.length < 1}
-          onPress={() => {
-            const today = new Date();
-            const transNum = Math.random().toString(36).substr(2, 9);
-
-            if (orderDetails.delivery) {
-              setorderDetails((prev) => ({
-                date: today,
-                transNum: transNum,
-                total: (
-                  cartSub *
-                  (storeDetails.taxRate ? 1 + storeDetails.taxRate / 100 : 1.13)
-                ).toFixed(2),
-                method: "deliveryOrder",
-                online: true,
-                cart: cart,
-                customer: {
-                  name: prev.customer.name,
-                  phone: prev.customer.phone,
-                  address: prev.customer.address,
-                  email: prev.customer.email,
-                },
-                address: prev.address,
-              }));
-            } else {
-              setorderDetails((prev) => ({
-                date: today,
-                transNum: transNum,
-                total: (
-                  cartSub *
-                  (storeDetails.taxRate ? 1 + storeDetails.taxRate / 100 : 1.13)
-                ).toFixed(2),
-                method: "pickupOrder",
-                online: true,
-                cart: cart,
-                customer: {
-                  name: prev.customer.name,
-                  phone: prev.customer.phone,
-                  email: prev.customer.email,
-                  address: null,
-                },
-              }));
-            }
-            setpage(3);
-          }}
-        >
-          <Text style={styles.checkoutLbl}>Checkout</Text>
-        </TouchableOpacity>
-      </View>
+        </Modal>
+      )}
     </View>
   );
 }

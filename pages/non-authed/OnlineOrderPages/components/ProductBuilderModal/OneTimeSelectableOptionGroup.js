@@ -68,10 +68,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#121212",
     fontSize: 14,
+    width: "25%",
   },
   optionsRow: {
-    width: 352,
-    height: 82,
+    width: "70%",
     flexDirection: "row",
     flexWrap: "wrap",
   },

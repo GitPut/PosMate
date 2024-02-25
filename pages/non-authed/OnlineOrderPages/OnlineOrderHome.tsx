@@ -199,7 +199,12 @@ import styled, { css } from "styled-components";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import DeliveryDetails from "./components/home/DeliveryDetails";
 import PickupDetails from "./components/home/PickupDetails";
-import { Text, TouchableOpacity, View } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import CheckOutDetails from "./components/home/CheckOutDetails";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -214,6 +219,8 @@ function OnlineOrderHome({
   const [enterDetailsSection, setenterDetailsSection] = useState(
     page === 3 ? "checkout" : null
   );
+  const screenWidth = useWindowDimensions().width;
+  const screenHeight = useWindowDimensions().height;
 
   const RenderDetailsSection = () => {
     if (enterDetailsSection === "delivery") {
@@ -223,6 +230,7 @@ function OnlineOrderHome({
           setorderDetails={setorderDetails}
           orderDetails={orderDetails}
           setpage={setpage}
+          width={screenWidth > 1000 ? 380 : screenWidth * 0.9}
         />
       );
     } else if (enterDetailsSection === "pickup") {
@@ -257,9 +265,19 @@ function OnlineOrderHome({
   return (
     <Container>
       <BackgroundContainer>
-        <PlantImg src={require("./assets/images/image_JqcD..png")}></PlantImg>
-        <WingImg src={require("./assets/images/image_BSgk..png")} />
-        <PizzaImg src={require("./assets/images/image_DrUG..png")}></PizzaImg>
+        {screenWidth > 1000 ? (
+          <>
+            <PlantImg src={require("./assets/images/image_JqcD..png")} />
+            <WingImg src={require("./assets/images/image_BSgk..png")} />
+            <PizzaImg src={require("./assets/images/image_DrUG..png")} />
+          </>
+        ) : (
+          <>
+            <PlantImgMobile src={require("./assets/images/image_JqcD..png")} />
+            <WingImgMobile src={require("./assets/images/sidewings.png")} />
+            <PizzaImgMobile src={require("./assets/images/image_DrUG..png")} />
+          </>
+        )}
         <FrontContainer>
           <LogoGroup>
             {storeDetails.hasLogo ? (
@@ -294,83 +312,198 @@ function OnlineOrderHome({
                 }}
               >
                 <Text
-                  style={{ fontSize: 35, fontWeight: "700", color: "white" }}
+                  style={[
+                    { fontSize: 35, fontWeight: "700", color: "white" },
+                    screenWidth < 1000 && { fontSize: 30 },
+                  ]}
                 >
                   {storeDetails.name}
                 </Text>
               </TouchableOpacity>
             )}
-            <Dash src={require("./assets/images/image_ridw..png")}></Dash>
+            <Dash src={require("./assets/images/image_ridw..png")} />
           </LogoGroup>
           {!enterDetailsSection ? (
             <>
-              {storeDetails.acceptDelivery ? (
-                <BtnContainerRow>
-                  <PickupBtn onClick={() => setenterDetailsSection("pickup")}>
-                    <ButtonOverlay>
-                      <PickupBtnTxt>PICK UP</PickupBtnTxt>
-                    </ButtonOverlay>
-                  </PickupBtn>
-                  <DeliveryBtn
-                    onClick={() => {
-                      setorderDetails({ ...orderDetails, delivery: true });
-                      setenterDetailsSection("delivery");
-                    }}
-                  >
-                    <ButtonOverlay>
-                      <DeliveryBtnTxt>DELIVERY</DeliveryBtnTxt>
-                    </ButtonOverlay>
-                  </DeliveryBtn>
-                </BtnContainerRow>
+              {screenWidth > 1000 ? (
+                <>
+                  {storeDetails.acceptDelivery ? (
+                    <BtnContainerRow>
+                      <PickupBtn
+                        onClick={() => setenterDetailsSection("pickup")}
+                      >
+                        <ButtonOverlay>
+                          <PickupBtnTxt>PICK UP</PickupBtnTxt>
+                        </ButtonOverlay>
+                      </PickupBtn>
+                      <DeliveryBtn
+                        onClick={() => {
+                          setorderDetails({ ...orderDetails, delivery: true });
+                          setenterDetailsSection("delivery");
+                        }}
+                      >
+                        <ButtonOverlay>
+                          <DeliveryBtnTxt>DELIVERY</DeliveryBtnTxt>
+                        </ButtonOverlay>
+                      </DeliveryBtn>
+                    </BtnContainerRow>
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <PickupBtn
+                        onClick={() => setenterDetailsSection("pickup")}
+                      >
+                        <ButtonOverlay>
+                          <PickupBtnTxt>PICK UP</PickupBtnTxt>
+                        </ButtonOverlay>
+                      </PickupBtn>
+                    </div>
+                  )}
+                </>
               ) : (
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <PickupBtn onClick={() => setenterDetailsSection("pickup")}>
-                    <ButtonOverlay>
-                      <PickupBtnTxt>PICK UP</PickupBtnTxt>
-                    </ButtonOverlay>
-                  </PickupBtn>
-                </div>
+                <>
+                  {storeDetails.acceptDelivery ? (
+                    <View
+                      style={{
+                        width: "100%",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <PickupBtn
+                        onClick={() => setenterDetailsSection("pickup")}
+                      >
+                        <ButtonOverlay>
+                          <PickupBtnTxt>PICK UP</PickupBtnTxt>
+                        </ButtonOverlay>
+                      </PickupBtn>
+                      <div style={{ height: 30 }}></div>
+                      <DeliveryBtn
+                        onClick={() => {
+                          setorderDetails({ ...orderDetails, delivery: true });
+                          setenterDetailsSection("delivery");
+                        }}
+                      >
+                        <ButtonOverlay>
+                          <DeliveryBtnTxt>DELIVERY</DeliveryBtnTxt>
+                        </ButtonOverlay>
+                      </DeliveryBtn>
+                    </View>
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <PickupBtn
+                        onClick={() => setenterDetailsSection("pickup")}
+                      >
+                        <ButtonOverlay>
+                          <PickupBtnTxt>PICK UP</PickupBtnTxt>
+                        </ButtonOverlay>
+                      </PickupBtn>
+                    </div>
+                  )}
+                </>
               )}
             </>
           ) : (
-            <RenderDetailsSection />
+            <>
+              {screenWidth > 1000 ? (
+                <RenderDetailsSection />
+              ) : (
+                <View
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                >
+                  <RenderDetailsSection />
+                </View>
+              )}
+            </>
           )}
           <BottomRowGroup>
             <DetailsLocationGroup>
-              <PhoneNumberRow>
-                <FontAwesome
-                  name="phone"
-                  style={{
-                    color: "rgba(255,255,255,1)",
-                    fontSize: 50,
-                  }}
-                ></FontAwesome>
-                <PhoneNumberTxt>{storeDetails.phoneNumber}</PhoneNumberTxt>
-              </PhoneNumberRow>
-              <AddressRow>
-                <Entypo
-                  name="location-pin"
-                  style={{
-                    color: "rgba(255,255,255,1)",
-                    fontSize: 50,
-                  }}
-                ></Entypo>
-                <AddressTxt>
-                  {storeDetails.address?.value.structured_formatting.main_text}
-                  {"\n"}
-                  {
-                    storeDetails.address?.value.structured_formatting
-                      .secondary_text
-                  }
-                </AddressTxt>
-              </AddressRow>
+              {screenWidth > 1000 ? (
+                <>
+                  <PhoneNumberRow>
+                    <FontAwesome
+                      name="phone"
+                      style={{
+                        color: "rgba(255,255,255,1)",
+                        fontSize: 50,
+                      }}
+                    ></FontAwesome>
+                    <PhoneNumberTxt>{storeDetails.phoneNumber}</PhoneNumberTxt>
+                  </PhoneNumberRow>
+                  <AddressRow>
+                    <Entypo
+                      name="location-pin"
+                      style={{
+                        color: "rgba(255,255,255,1)",
+                        fontSize: 50,
+                      }}
+                    ></Entypo>
+                    <AddressTxt>
+                      {
+                        storeDetails.address?.value.structured_formatting
+                          .main_text
+                      }
+                      {"\n"}
+                      {
+                        storeDetails.address?.value.structured_formatting
+                          .secondary_text
+                      }
+                    </AddressTxt>
+                  </AddressRow>
+                </>
+              ) : (
+                <>
+                  <PhoneNumberRowMobile>
+                    <FontAwesome
+                      name="phone"
+                      style={{
+                        color: "rgba(255,255,255,1)",
+                        fontSize: 35,
+                      }}
+                    ></FontAwesome>
+                    <PhoneNumberTxtMobile>
+                      {storeDetails.phoneNumber}
+                    </PhoneNumberTxtMobile>
+                  </PhoneNumberRowMobile>
+                  <AddressRowMobile>
+                    <Entypo
+                      name="location-pin"
+                      style={{
+                        color: "rgba(255,255,255,1)",
+                        fontSize: 35,
+                      }}
+                    ></Entypo>
+                    <AddressTxtMobile>
+                      {
+                        storeDetails.address?.value.structured_formatting
+                          .main_text
+                      }
+                      {"\n"}
+                      {
+                        storeDetails.address?.value.structured_formatting
+                          .secondary_text
+                      }
+                    </AddressTxtMobile>
+                  </AddressRowMobile>
+                </>
+              )}
             </DetailsLocationGroup>
             {storeDetails.hasSocial && (
               <SocialIconsGroup>
@@ -417,6 +550,13 @@ const PlantImg = styled.img`
   bottom: 5vh;
   left: 0px;
 `;
+const PlantImgMobile = styled.img`
+  width: 20%;
+  object-fit: contain;
+  position: absolute;
+  bottom: 18vh;
+  left: 0px;
+`;
 
 const WingImg = styled.img`
   width: 40%;
@@ -428,12 +568,26 @@ const WingImg = styled.img`
   right: 0;
   text-align: center;
 `;
+const WingImgMobile = styled.img`
+  width: 40%;
+  object-fit: contain;
+  position: absolute;
+  bottom: 13vh;
+  right: 0px;
+`;
 
 const PizzaImg = styled.img`
   height: 600px;
   object-fit: contain;
   position: absolute;
   top: 0px;
+  right: 0px;
+`;
+const PizzaImgMobile = styled.img`
+  height: 40%;
+  object-fit: contain;
+  position: absolute;
+  top: 10vh;
   right: 0px;
 `;
 
@@ -467,7 +621,7 @@ const Logo = styled.img`
 
 const Dash = styled.img`
   height: 100%;
-  width: 673px;
+  width: 50vw;
   object-fit: contain;
 `;
 
@@ -541,6 +695,14 @@ const PhoneNumberRow = styled.div`
   align-items: center;
   display: flex;
 `;
+const PhoneNumberRowMobile = styled.div`
+  width: 180px;
+  height: 65px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+`;
 
 const PhoneNumberTxt = styled.span`
   font-style: normal;
@@ -548,9 +710,23 @@ const PhoneNumberTxt = styled.span`
   color: rgba(255, 255, 255, 1);
   font-size: 23px;
 `;
+const PhoneNumberTxtMobile = styled.span`
+  font-style: normal;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 1);
+  font-size: 20px;
+`;
 
 const AddressRow = styled.div`
   width: 250px;
+  height: 65px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+`;
+const AddressRowMobile = styled.div`
+  width: 200px;
   height: 65px;
   flex-direction: row;
   justify-content: space-between;
@@ -563,6 +739,12 @@ const AddressTxt = styled.span`
   font-weight: 400;
   color: rgba(255, 255, 255, 1);
   font-size: 20px;
+`;
+const AddressTxtMobile = styled.span`
+  font-style: normal;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  font-size: 16px;
 `;
 
 const SocialIconsGroup = styled.div`

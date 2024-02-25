@@ -60,17 +60,26 @@ function CartItem({
         onPress={() => cartItem.options.length > 0 && setisOpen(true)}
         activeOpacity={0.8}
       >
-        <Image
-          source={
-            cartItem.imageUrl
-              ? { uri: cartItem.imageUrl }
-              : require("../../assets/images/image_t93e..png")
-          }
-          resizeMode="contain"
-          style={styles.cartItemImg}
-        ></Image>
-        <View style={styles.group}>
-          <View style={styles.topRowTxt}>
+        {cartItem.imageUrl && (
+          <Image
+            source={
+              cartItem.imageUrl
+                ? { uri: cartItem.imageUrl }
+                : require("../../assets/images/image_t93e..png")
+            }
+            resizeMode="contain"
+            style={styles.cartItemImg}
+          />
+        )}
+        <View
+          style={[
+            styles.group,
+            !cartItem.imageUrl && {
+              width: "100%",
+            },
+          ]}
+        >
+          <View style={[styles.topRowTxt]}>
             <Text style={styles.cartItemQuantity}>
               {cartItem.quantity ? cartItem.quantity : 1}
             </Text>

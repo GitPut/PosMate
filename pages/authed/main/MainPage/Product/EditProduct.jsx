@@ -11,7 +11,7 @@ import { updateData } from "state/firebaseFunctions";
 import { useParams } from "react-router-dom";
 import { auth, db, storage } from "state/firebaseConfig";
 import { Switch } from "@react-native-material/core";
-import ProductImage from "pages/non-authed/OnlineOrderPages/components/cartOrder/ProductImage";
+import ProductImage from "components/ProductImage";
 
 const EditProduct = (props) => {
   const catalog = userStoreState.use();

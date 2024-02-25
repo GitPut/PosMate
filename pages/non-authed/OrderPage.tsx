@@ -1,31 +1,8 @@
-import {
-  Modal,
-  StyleSheet,
-  Text,
-  View,
-  useWindowDimensions,
-  Image,
-  ImageBackground,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-  Animated,
-  TextInput,
-} from "react-native";
+import { View, useWindowDimensions, Image, Animated } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { db, storage } from "state/firebaseConfig";
-import TemplateImage from "assets/template-background.jpg";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import { db } from "state/firebaseConfig";
 import { useHistory } from "react-router-dom";
-import Logo from "assets/dpos-logo.png";
-import CartItemEditable from "components/cart/CartItemEditable";
-import ProductListing from "components/product/ProductListing";
-import { addCartState, cartState, setCartState } from "state/state";
-const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
 import OnlineOrderHome from "./OnlineOrderPages/OnlineOrderHome";
 import OrderCartMain from "./OnlineOrderPages/OrderCartMain";
 
@@ -152,13 +129,13 @@ const OrderPage = () => {
   return (
     <View style={{ flex: 1 }}>
       {(page === 1 || page === 3 || page === 4) && (
-          <OnlineOrderHome
-            storeDetails={storeDetails}
-            setorderDetails={setorderDetails}
-            orderDetails={orderDetails}
-            setpage={setpage}
-            page={page}
-          />
+        <OnlineOrderHome
+          storeDetails={storeDetails}
+          setorderDetails={setorderDetails}
+          orderDetails={orderDetails}
+          setpage={setpage}
+          page={page}
+        />
       )}
       {page === 2 && (
         <OrderCartMain

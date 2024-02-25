@@ -14,7 +14,7 @@ import "react-select2-wrapper/css/select2.css";
 import { onlineStoreState, setStoreDetailState, setUserStoreState, userState, userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
 import { auth, db, storage } from "state/firebaseConfig";
-import ProductImage from "pages/non-authed/OnlineOrderPages/components/cartOrder/ProductImage";
+import ProductImage from "components/ProductImage";
 import { Text, TouchableOpacity, View } from "react-native";
 
 const ProductList = () => {

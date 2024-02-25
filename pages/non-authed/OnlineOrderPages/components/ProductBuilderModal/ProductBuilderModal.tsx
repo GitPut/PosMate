@@ -7,6 +7,7 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import GoBackBtn from "./GoBackBtn";
 import OneTimeSelectableOptionGroup from "./OneTimeSelectableOptionGroup";
@@ -25,6 +26,7 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
     myObj.extraDetails ? myObj.extraDetails : ""
   );
   const [openOptions, setopenOptions] = useState(null);
+  const screenWidth = useWindowDimensions().width;
 
   const DisplayOption = ({ e, index }) => {
     const checkCases = () => {
@@ -373,7 +375,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   productBuilderGroup: {
-    width: "80%",
+    width: "90%",
     height: "85%",
     justifyContent: "space-between",
   },
@@ -422,8 +424,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#121212",
     fontSize: 30,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: "3%",
+    paddingRight: "3%",
     textAlign: "center",
   },
   calorieDetails: {
@@ -465,7 +467,6 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
   oneTimeSelectableOptionGroup: {
-    height: 82,
     marginBottom: 20,
     alignSelf: "stretch",
   },
