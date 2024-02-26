@@ -9,7 +9,7 @@ import {
   Modal,
 } from "react-native";
 import { MaterialCommunityIcons, Entypo } from "@expo/vector-icons";
-import ProductBuilderModal from "../ProductBuilderModal/ProductBuilderModal";
+import ProductBuilderModal from "../ProductBuilderModal/ProductBuilderModalMobile";
 
 function CartItem({
   cartItem,

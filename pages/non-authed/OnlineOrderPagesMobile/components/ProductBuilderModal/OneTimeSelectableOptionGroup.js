@@ -24,7 +24,7 @@ function OneTimeSelectableOptionGroup({
   }, []);
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[style]}>
       <Text style={styles.lbl}>
         {label} {isRequired ? "*" : ""}
       </Text>
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   optionsRow: {
-    width: 352,
+    width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
   },
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   nonActiveOneTimeSelectableBtn: {
     height: 33,
-    width: 110,
+    width: 90,
     marginRight: 7,
     marginBottom: 15,
   },

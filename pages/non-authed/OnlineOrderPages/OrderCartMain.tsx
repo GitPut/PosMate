@@ -14,8 +14,6 @@ import CartItem from "./components/cartOrder/CartItem";
 import UntitledComponent from "./components/cartOrder/UntitledComponent";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { cartState, setCartState } from "state/state";
-import { storage } from "state/firebaseConfig";
-import ProductBuilderModal from "./components/ProductBuilderModal/ProductBuilderModal";
 import ItemContainerMobile from "../OnlineOrderPagesMobile/components/cartOrder/ItemContainerMobile";
 import Modal from "react-native-modal";
 
@@ -25,6 +23,8 @@ function OrderCartMain({
   orderDetails,
   setpage,
   catalog,
+  setshowProduct,
+  page,
 }) {
   const [section, setsection] = useState(
     catalog.categories.length > 0 ? catalog.categories[0] : ""
@@ -34,6 +34,12 @@ function OrderCartMain({
   const [cartOpen, setcartOpen] = useState(false);
   const screenWidth = useWindowDimensions().width;
   const screenHeight = useWindowDimensions().height;
+
+  useEffect(() => {
+    if (page === 4) {
+      setsection(catalog.categories.length > 0 ? catalog.categories[0] : "");
+    }
+  }, [page]);
 
   useEffect(() => {
     if (cart.length > 0) {
@@ -141,21 +147,27 @@ function OrderCartMain({
             </TouchableOpacity>
           </View>
         )}
-        <View
-          style={[
-            styles.bannerContainer,
-            screenWidth < 1000 && { height: 100 },
-          ]}
-        >
-          <Image
-            source={require("./assets/images/image_onW3..png")}
-            resizeMode="contain"
+        {screenWidth > 1000 && (
+          <View
             style={[
-              styles.logo,
-              screenWidth < 1000 && { height: 60, maxWidth: 250 },
+              styles.bannerContainer,
+              screenWidth < 1000 && {
+                height: 100,
+                justifyContent: "center",
+                alignItems: "center",
+              },
             ]}
-          ></Image>
-        </View>
+          >
+            <Image
+              source={require("./assets/images/image_onW3..png")}
+              resizeMode="contain"
+              style={[
+                styles.logo,
+                screenWidth < 1000 && { height: 60, maxWidth: 250 },
+              ]}
+            ></Image>
+          </View>
+        )}
         <View style={styles.categoryContainer}>
           <Text style={styles.lblTxt}>Menu Category</Text>
           <View style={styles.scrollArea}>
@@ -228,9 +240,10 @@ function OrderCartMain({
                   userUid={catalog.docID}
                   style={{
                     height: 220,
-                    width: 250, // Ensure this width accounts for any margins or padding
+                    width: 160, // Ensure this width accounts for any margins or padding
                     marginBottom: 30,
                   }}
+                  setshowProduct={setshowProduct}
                 />
               )
             )}
@@ -393,7 +406,7 @@ function OrderCartMain({
                   },
                 }));
               }
-              setpage(3);
+              setpage(5);
             }}
           >
             <Text style={styles.checkoutLbl}>Checkout</Text>
@@ -503,13 +516,8 @@ function OrderCartMain({
                 style={{ width: 200, height: "35%", resizeMode: "contain" }}
               />
             )}
-            <View style={styles.totalsContainer}>
+            <View style={[styles.totalsContainer, { height: 150 }]}>
               <View style={styles.topGroupTotalsContainer}>
-                <UntitledComponent
-                  amountValue="N/A"
-                  amountLbl="Discount"
-                  style={styles.discountRow}
-                />
                 {orderDetails.delivery &&
                   parseFloat(storeDetails.deliveryPrice) && (
                     <UntitledComponent
@@ -541,8 +549,6 @@ function OrderCartMain({
                   amountLbl="Tax"
                   style={styles.taxRow}
                 />
-              </View>
-              <View style={styles.totalRowGroup}>
                 <View style={styles.totalRow}>
                   <Text style={styles.total2}>Total</Text>
                   <Text style={styles.totalValue}>
@@ -558,13 +564,10 @@ function OrderCartMain({
                     ).toFixed(2)}
                   </Text>
                 </View>
-                <TouchableOpacity style={styles.discountCodeBtn}>
-                  <Text style={styles.discountCode}>Discount Code</Text>
-                </TouchableOpacity>
               </View>
             </View>
             <TouchableOpacity
-              style={styles.checkoutBtn}
+              style={[styles.checkoutBtn, { margin: 20 }]}
               disabled={cart.length < 1}
               onPress={() => {
                 const today = new Date();
@@ -591,6 +594,8 @@ function OrderCartMain({
                     },
                     address: prev.address,
                   }));
+                  setcartOpen(false);
+                  setpage(5);
                 } else {
                   setorderDetails((prev) => ({
                     date: today,
@@ -612,7 +617,8 @@ function OrderCartMain({
                     },
                   }));
                 }
-                setpage(3);
+                setcartOpen(false);
+                setpage(5);
               }}
             >
               <Text style={styles.checkoutLbl}>Checkout</Text>

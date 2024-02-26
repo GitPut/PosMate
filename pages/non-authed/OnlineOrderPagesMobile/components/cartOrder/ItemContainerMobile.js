@@ -12,43 +12,9 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { addCartState, cartState } from "state/state";
 import ProductImage from "components/ProductImage";
-import ProductBuilderModal from "../ProductBuilderModal/ProductBuilderModal";
 
-function ItemContainerMobile({ product, style }) {
-  const [showProductScreen, setshowProductScreen] = useState(false);
-  const xPos = useRef(new Animated.Value(-1000)).current;
-  const shadowOpacity = useRef(new Animated.Value(0)).current;
+function ItemContainerMobile({ product, style, setshowProduct }) {
   const cart = cartState.use();
-  const screenWidth = useWindowDimensions().width;
-
-  const fadeIn = () => {
-    // Will change xPos value to 0 in 3 seconds
-    setshowProductScreen(true);
-    Animated.timing(xPos, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-    Animated.timing(shadowOpacity, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const fadeOut = () => {
-    // Will change xPos value to 0 in 3 seconds
-    Animated.timing(shadowOpacity, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-    Animated.timing(xPos, {
-      toValue: -1000,
-      duration: 200,
-      useNativeDriver: false,
-    }).start(() => setshowProductScreen(false));
-  };
 
   return (
     <div id={product.id}>
@@ -65,11 +31,13 @@ function ItemContainerMobile({ product, style }) {
         ]}
       >
         {product.hasImage && (
-          <ProductImage
-            source={{ uri: product.imageUrl }}
-            resizeMode="contain"
-            style={styles?.itemImg}
-          />
+          <View>
+            <ProductImage
+              source={{ uri: product.imageUrl }}
+              resizeMode="contain"
+              style={styles?.itemImg}
+            />
+          </View>
         )}
         <Text style={styles?.familyCombo}>
           {product.name ? product.name : "Placeholder"}
@@ -97,7 +65,7 @@ function ItemContainerMobile({ product, style }) {
                 if (product.options.length > 0) {
                   // navigation.navigate("Product Listing", { product: product });
                   // setshowProductScreen(true);
-                  fadeIn();
+                  setshowProduct(product);
                 } else {
                   addCartState(
                     {
@@ -116,45 +84,6 @@ function ItemContainerMobile({ product, style }) {
           </TouchableOpacity>
         </View>
       </View>
-      {showProductScreen && (
-        <Modal transparent={true}>
-          <Animated.View
-            style={{
-              flex: 1,
-              justifyContent: "flex-end",
-              alignItems: "flex-start",
-              position: "absolute",
-              height: "100%",
-              width: "100%",
-              bottom: 0,
-              left: xPos,
-              zIndex: 0,
-            }}
-          >
-            <View
-              style={[
-                screenWidth > 1250
-                  ? {
-                      height: "100%",
-                      width: "72%",
-                      borderTopRightRadius: 3,
-                    }
-                  : {
-                      height: "100%",
-                      width: "100%",
-                      borderTopRightRadius: 3,
-                    },
-              ]}
-            >
-              <ProductBuilderModal
-                product={product}
-                goBack={() => fadeOut()}
-                imageUrl={product.imageUrl}
-              />
-            </View>
-          </Animated.View>
-        </Modal>
-      )}
     </div>
   );
 }
@@ -183,7 +112,8 @@ const styles = StyleSheet.create({
   familyCombo: {
     fontWeight: "700",
     color: "#121212",
-    fontSize: 18,
+    fontSize: 16,
+    textAlign: "center",
   },
   price: {
     fontWeight: "700",

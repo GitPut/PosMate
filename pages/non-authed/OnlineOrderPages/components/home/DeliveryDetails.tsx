@@ -148,6 +148,7 @@ function DeliveryDetails({
           style={styles.nameField}
           value={localName}
           onChangeText={(text) => setlocalName(text)}
+          textContentType="name"
         />
         <FieldInputWithLabel
           txtInput="(123) 456-7890"
@@ -155,6 +156,7 @@ function DeliveryDetails({
           style={styles.nameField}
           value={localPhoneNumber}
           onChangeText={(text) => setlocalPhoneNumber(text)}
+          textContentType="telephoneNumber"
         />
         <FieldInputWithLabel
           txtInput="Delivery Address"
@@ -201,6 +203,7 @@ function DeliveryDetails({
             style={styles.buzzCodeField}
             value={localBuzzCode}
             onChangeText={(text) => setlocalBuzzCode(text)}
+            textContentType="none"
           />
           <FieldInputWithLabel
             txtInput="#"
@@ -208,6 +211,7 @@ function DeliveryDetails({
             style={styles.phoneNumberField}
             value={localUnitNumber}
             onChangeText={(text) => setlocalUnitNumber(text)}
+            textContentType="none"
           />
         </View>
       </View>
@@ -243,7 +247,7 @@ function DeliveryDetails({
                       unitNumber: localUnitNumber,
                     },
                   }));
-                  setpage(2);
+                  setpage(4);
                 }
               } else {
                 setorderDetails((prev) => ({
@@ -257,7 +261,7 @@ function DeliveryDetails({
                     unitNumber: localUnitNumber,
                   },
                 }));
-                setpage(2);
+                setpage(4);
               }
             } else {
               alert(

@@ -45,15 +45,15 @@ const NonAuthRoute = (props) => {
         <>
             {location.pathname !== '/log-in' && location.pathname !== '/sign-up' && location.pathname !== '/reset-password' && !location.pathname.includes('/order/') && <WebHomeHeader />}
             <Switch>
-                <Route path="/home" component={WebHome} />
+                {/* <Route path="/home" component={WebHome} />
                 <Route path="/features" component={Features} />
                 <Route path="/about-us" component={AboutUs} />
                 <Route path="/pricing" component={Pricing} />
                 <Route path="/faqs" component={Faqs} />
                 <Route path="/contact" component={Contact} />
+                <Route path="/legal" component={Legal} /> */}
                 <Route path="/log-in" component={Login} />
                 <Route path="/sign-up" component={Signup} />
-                <Route path="/legal" component={Legal} />
                 <Route path="/reset-password" component={ResetPassword} />
                 <Route path="/order/:urlEnding" component={OrderPage} />
                 {/* <Route path="*" component={NotFound} /> */}

@@ -14,7 +14,7 @@ import UntitledComponent from "./components/cartOrder/UntitledComponent";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { cartState, setCartState } from "state/state";
 import { storage } from "state/firebaseConfig";
-import ProductBuilderModal from "./components/ProductBuilderModal/ProductBuilderModal";
+import ProductBuilderModal from "./components/ProductBuilderModal/ProductBuilderModalMobile";
 
 function OrderCartMain({
   storeDetails,

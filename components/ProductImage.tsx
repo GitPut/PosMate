@@ -28,9 +28,16 @@ const ProductImage = ({ source, style, resizeMode }) => {
       />
       <Animated.Image
         source={require("assets/product-loading.gif")}
+        resizeMode="cover"
         style={[
           style,
-          { position: "absolute", top: 0, left: 0, opacity: loadingImgAnim },
+          {
+            position: "absolute",
+            top: 0,
+            left: 0,
+            opacity: loadingImgAnim,
+            resizeMode: "cover",
+          },
         ]}
       />
     </>

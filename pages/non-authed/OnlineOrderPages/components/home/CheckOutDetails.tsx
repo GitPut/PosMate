@@ -15,16 +15,17 @@ function CheckOutDetails({
   setorderDetails,
   orderDetails,
   setpage,
+  width,
 }) {
   const [emailAddress, setEmailAddress] = useState("");
-  const [loading, setloading] = useState(false)
+  const [loading, setloading] = useState(false);
 
   const stripe = useStripe();
   const elements = useElements();
   const currency = "cad";
 
   const handleSubmit = async (event) => {
-    setloading(true)
+    setloading(true);
     event.preventDefault();
 
     if (!stripe || !elements) {
@@ -46,14 +47,6 @@ function CheckOutDetails({
         alert("Error please try again");
         return;
       }
-
-      console.log("Token:", token);
-
-      console.log("token ", token.id);
-      console.log("amount ", orderDetails.total);
-      console.log("storeUID ", storeDetails.docID);
-      console.log("orderDetails ", orderDetails);
-      console.log("newOrderDetails ", newOrderDetails);
 
       const response = await fetch(
         "https://us-central1-posmate-5fc0a.cloudfunctions.net/processPayment",
@@ -78,7 +71,7 @@ function CheckOutDetails({
           const responseData = await response.json();
           if (responseData.success) {
             console.log("Payment processed successfully!");
-            setpage(4);
+            setpage(6);
           } else {
             console.error(
               "Payment processing failed. Server message:",
@@ -124,17 +117,71 @@ function CheckOutDetails({
     hidePostalCode: true,
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      width: width,
+    },
+    fieldsGroup: {
+      width: width,
+      height: 250,
+      justifyContent: "space-between",
+    },
+    nameField: {
+      height: 70,
+      width: width,
+    },
+    addressField: {
+      height: 70,
+      width: width,
+    },
+    buzzCodeAndPhoneRow: {
+      width: width,
+      height: 70,
+      flexDirection: "row",
+      justifyContent: "space-between",
+    },
+    buzzCodeField: {
+      height: 70,
+      width: width === 380 ? 175 : "48%",
+    },
+    phoneNumberField: {
+      height: 70,
+      width: width === 380 ? 175 : "48%",
+    },
+    continueBtn: {
+      width: 219,
+      height: 60,
+      backgroundColor: "rgba(238,125,67,1)",
+      borderRadius: 60,
+      justifyContent: "center",
+      alignItems: "center",
+      shadowColor: "rgba(0,0,0,1)",
+      shadowOffset: {
+        width: 3,
+        height: 3,
+      },
+      elevation: 30,
+      shadowOpacity: 0.2,
+      shadowRadius: 10,
+      marginTop: 10,
+    },
+    continueBtnTxt: {
+      color: "rgba(255,255,255,1)",
+      fontSize: 18,
+      fontWeight: "700",
+    },
+  });
+
   return (
     <>
       <View style={styles.fieldsGroup}>
         <FieldInputWithLabel
           label="Email Address*"
           txtInput="Email Address"
-          style={[styles.nameField, loading && {opacity: 0.5}]}
+          style={[styles.nameField, loading && { opacity: 0.5 }]}
           value={emailAddress}
           onChangeText={(text) => setEmailAddress(text)}
-          customInput={null} // Should be a standard TextInput if needed
-          disabled={loading}
+          textContentType="emailAddress"
         />
         <FieldInputWithLabel
           label="Card Number*"
@@ -200,60 +247,5 @@ function CheckOutDetails({
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: 380,
-    height: 390,
-  },
-  fieldsGroup: {
-    width: 380,
-    height: 250,
-    justifyContent: "space-between",
-  },
-  nameField: {
-    height: 70,
-    width: 380,
-  },
-  addressField: {
-    height: 70,
-    width: 380,
-  },
-  buzzCodeAndPhoneRow: {
-    width: 380,
-    height: 70,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  buzzCodeField: {
-    height: 70,
-    width: 175,
-  },
-  phoneNumberField: {
-    height: 70,
-    width: 175,
-  },
-  continueBtn: {
-    width: 219,
-    height: 60,
-    backgroundColor: "rgba(238,125,67,1)",
-    borderRadius: 60,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "rgba(0,0,0,1)",
-    shadowOffset: {
-      width: 3,
-      height: 3,
-    },
-    elevation: 30,
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-  },
-  continueBtnTxt: {
-    color: "rgba(255,255,255,1)",
-    fontSize: 18,
-    fontWeight: "700",
-  },
-});
 
 export default CheckOutDetails;

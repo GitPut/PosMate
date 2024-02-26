@@ -14,9 +14,10 @@ import DropdownSelectableOption from "./DropdownSelectableOption";
 import AddToCartBtn from "./AddToCartBtn";
 import MultipleTimeSelectableOptionGroup from "./MultipleTimeSelectableOptionGroup";
 import { addCartState, cartState, setCartState } from "state/state";
-import { Ionicons } from "@expo/vector-icons/";
+import { Entypo, Feather } from "@expo/vector-icons";
+import ProductImage from "components/ProductImage";
 
-function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
+function ProductBuilderModalMobile({ product, itemIndex, goBack, imageUrl }) {
   const cart = cartState.use();
   const myObj = product;
   const [myObjProfile, setmyObjProfile] = useState(myObj);
@@ -70,33 +71,35 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
     if (!(e.selectedCaseList?.length > 0) || checkCases()) {
       if (e.optionType?.toLowerCase() === "dropdown") {
         return (
-          <DropdownSelectableOption
-            id={index}
-            style={styles.dropdownSelectableOption}
-            setopenDropdown={setopenOptions}
-            openDropdown={openOptions}
-            label={e.label}
-            isRequired={e.isRequired}
-            options={e.optionsList}
-            setValue={({ option, listIndex }) => {
-              const newMyObjProfile = structuredClone(myObjProfile);
-              newMyObjProfile.options[index].optionsList.forEach(
-                (element, indexOfOl) => {
-                  if (element.selected) {
-                    newMyObjProfile.options[index].optionsList[
-                      indexOfOl
-                    ].selected = false;
+          <View style={{ marginBottom: 5 }}>
+            <DropdownSelectableOption
+              id={index}
+              style={styles.dropdownSelectableOption}
+              setopenDropdown={setopenOptions}
+              openDropdown={openOptions}
+              label={e.label}
+              isRequired={e.isRequired}
+              options={e.optionsList}
+              setValue={({ option, listIndex }) => {
+                const newMyObjProfile = structuredClone(myObjProfile);
+                newMyObjProfile.options[index].optionsList.forEach(
+                  (element, indexOfOl) => {
+                    if (element.selected) {
+                      newMyObjProfile.options[index].optionsList[
+                        indexOfOl
+                      ].selected = false;
+                    }
                   }
-                }
-              );
+                );
 
-              newMyObjProfile.options[index].optionsList[listIndex].selected =
-                true;
-              setoptionVal(option);
-              setmyObjProfile(newMyObjProfile);
-            }}
-            value={optionVal}
-          />
+                newMyObjProfile.options[index].optionsList[listIndex].selected =
+                  true;
+                setoptionVal(option);
+                setmyObjProfile(newMyObjProfile);
+              }}
+              value={optionVal}
+            />
+          </View>
         );
       } else {
         if (e.numOfSelectable === "1") {
@@ -128,18 +131,20 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
           );
         } else {
           return (
-            <MultipleTimeSelectableOptionGroup
-              e={e}
-              index={index}
-              myObjProfile={myObjProfile}
-              setmyObjProfile={setmyObjProfile}
-              id={index}
-              style={styles.dropdownSelectableOption}
-              setopenDropdown={setopenOptions}
-              openDropdown={openOptions}
-              label={e.label}
-              isRequired={e.isRequired}
-            />
+            <View style={{ marginBottom: 5 }}>
+              <MultipleTimeSelectableOptionGroup
+                e={e}
+                index={index}
+                myObjProfile={myObjProfile}
+                setmyObjProfile={setmyObjProfile}
+                id={index}
+                style={styles.dropdownSelectableOption}
+                setopenDropdown={setopenOptions}
+                openDropdown={openOptions}
+                label={e.label}
+                isRequired={e.isRequired}
+              />
+            </View>
           );
         }
       }
@@ -280,30 +285,80 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.productBuilderGroup}>
+      <ScrollView
+        style={{ width: "100%" }}
+        contentContainerStyle={{
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <View
-          style={[
-            styles.goBackRow,
-            !myObj.description ? { marginBottom: 20 } : { marginBottom: 120 },
-          ]}
+          style={{
+            width: "90%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <GoBackBtn onPress={goBack} style={styles.goBackBtn} />
-        </View>
-        <View style={styles.leftRightGroup}>
-          <View style={styles.leftSideGroup}>
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 10,
+              marginTop: 10,
+            }}
+          >
+            <TouchableOpacity onPress={goBack}>
+              <Feather
+                name="chevron-left"
+                style={{ color: "grey" }}
+                size={40}
+              />
+            </TouchableOpacity>
+            <View
+              style={{
+                backgroundColor: "#1D294E",
+                borderRadius: 10,
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: 58,
+                height: 34,
+                flexDirection: "row",
+                padding: 5,
+              }}
+            >
+              <Feather
+                name="shopping-cart"
+                style={{ color: "white" }}
+                size={20}
+              />
+              <Text style={{ color: "white", fontSize: 20 }}>
+                {cart.length}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={[
+              styles.leftSideGroup,
+              myObj.description && { marginTop: 100 },
+            ]}
+          >
             <View style={styles.itemInfoContainer}>
-              <Image
-                source={
-                  imageUrl
-                    ? { uri: imageUrl }
-                    : require("../../assets/images/image_xJCw..png")
-                }
-                resizeMode="contain"
-                style={[
-                  styles.itemImg,
-                  myObj.description && { width: 200, height: 200 },
-                ]}
-              ></Image>
+              <View>
+                <ProductImage
+                  source={
+                    imageUrl
+                      ? { uri: imageUrl }
+                      : require("../../assets/images/image_xJCw..png")
+                  }
+                  resizeMode="contain"
+                  style={[
+                    styles.itemImg,
+                    myObj.description && { width: 200, height: 200 },
+                  ]}
+                />
+              </View>
               <View style={styles.itemInfoTxtGroup}>
                 <View style={styles.topTxtGroup}>
                   <Text style={styles.productName}>{myObj.name}</Text>
@@ -351,15 +406,15 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
               </Text>
             </View>
           </View>
+          <View style={styles.addToCartRow}>
+            <AddToCartBtn
+              style={styles.addToCartBtn}
+              title={itemIndex >= 0 ? "Save" : "Add To Cart"}
+              onPress={AddToCart}
+            />
+          </View>
         </View>
-        <View style={styles.addToCartRow}>
-          <AddToCartBtn
-            style={styles.addToCartBtn}
-            title={itemIndex >= 0 ? "Save" : "Add To Cart"}
-            onPress={AddToCart}
-          />
-        </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -371,11 +426,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#edf2ff",
     width: "100%",
     height: "100%",
+    flex: 1,
   },
   productBuilderGroup: {
-    width: "80%",
-    height: "85%",
+    width: "90%",
     justifyContent: "space-between",
+    padding: 20,
+    alignItems: "center",
   },
   goBackRow: {
     alignSelf: "stretch",
@@ -391,8 +448,8 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
   },
   leftSideGroup: {
-    width: "35%",
-    height: "100%",
+    width: "80%",
+    minHeight: 350,
     justifyContent: "space-between",
   },
   itemInfoContainer: {
@@ -457,21 +514,20 @@ const styles = StyleSheet.create({
     color: "#90949a",
   },
   rightSideGroup: {
-    width: "60%",
-    height: "100%",
+    width: "100%",
     justifyContent: "space-between",
     backgroundColor: "white",
     borderRadius: 10,
     zIndex: 999,
+    marginTop: 25,
   },
   oneTimeSelectableOptionGroup: {
     marginBottom: 20,
-    alignSelf: "stretch",
   },
   dropdownSelectableOption: {
     height: 44,
     marginBottom: 20,
-    alignSelf: "stretch",
+    width: "100%",
   },
   totalLblRow: {
     flexDirection: "row",
@@ -495,6 +551,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     height: 41,
     zIndex: -100,
+    marginBottom: 25,
   },
   addToCartBtn: {
     height: 41,
@@ -503,4 +560,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductBuilderModal;
+export default ProductBuilderModalMobile;

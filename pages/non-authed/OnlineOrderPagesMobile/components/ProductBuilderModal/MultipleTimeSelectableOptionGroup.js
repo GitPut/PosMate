@@ -92,9 +92,7 @@ function MultipleTimeSelectableOptionGroup({
   }, []);
 
   return (
-    <View
-      style={[styles.container, style, openDropdown === id && { zIndex: 1000 }]}
-    >
+    <View style={[style, openDropdown === id && { zIndex: 1000 }]}>
       <Text style={styles.lbl}>
         {label} {isRequired ? "*" : ""}
       </Text>
@@ -123,7 +121,7 @@ function MultipleTimeSelectableOptionGroup({
           <ScrollView
             scrollEventThrottle={16} // Adjust as needed for performance
             style={{
-              width: 352,
+              width: "100%",
               position: "absolute",
               backgroundColor: "white",
               bottom: options.length > 3 ? -44 * 3 : -44 * options.length,
@@ -208,113 +206,119 @@ function MultipleTimeSelectableOptionGroup({
             setmyObjProfile(localMyObjProfile); // Save the local changes
           }} // Hide modal when the background is pressed
         />
-        {dropdownLayout && <View
-          style={{
-            position: "absolute",
-            top: dropdownLayout.y,
-            left: dropdownLayout.x,
-          }}
-        >
-          <TouchableOpacity
-            style={styles.dropdown}
-            onPress={() => {
-              console.log("openDropdown", openDropdown, id);
-              if (openDropdown === id) {
-                setopenDropdown(null);
-                setmyObjProfile(localMyObjProfile); // Save the local changes
-              } else {
-                setopenDropdown(id);
-              }
+        {dropdownLayout && (
+          <View
+            style={{
+              position: "absolute",
+              top: dropdownLayout.y,
+              left: dropdownLayout.x,
+              width: dropdownLayout.width,
             }}
           >
-            <Text style={styles.placeholder}>Select {label}</Text>
-            <Icon
-              name={
-                openDropdown === id ? "chevron-small-up" : "chevron-small-down"
-              }
-              style={styles.downIcon}
-            ></Icon>
-          </TouchableOpacity>
-          {openDropdown === id && (
-            <ScrollView
-              scrollEventThrottle={16} // Adjust as needed for performance
-              style={{
-                width: 352,
-                position: "absolute",
-                backgroundColor: "white",
-                bottom: options.length > 3 ? -44 * 3 : -44 * options.length,
-                height: options.length > 3 ? 44 * 3 : 44 * options.length,
+            <TouchableOpacity
+              style={styles.dropdown}
+              onPress={() => {
+                console.log("openDropdown", openDropdown, id);
+                if (openDropdown === id) {
+                  setopenDropdown(null);
+                  setmyObjProfile(localMyObjProfile); // Save the local changes
+                } else {
+                  setopenDropdown(id);
+                }
               }}
             >
-              {options.map((option, listIndex) => (
-                <View
-                  key={listIndex}
-                  id={option.id}
-                  style={{
-                    width: "100%",
-                    height: 44,
-                    backgroundColor: "white",
-                    padding: 10,
-                    borderWidth: 1,
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexDirection: "row",
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() => onMinusPress({ option, listIndex })}
-                  >
-                    <Text>-</Text>
-                  </TouchableOpacity>
+              <Text style={styles.placeholder}>Select {label}</Text>
+              <Icon
+                name={
+                  openDropdown === id
+                    ? "chevron-small-up"
+                    : "chevron-small-down"
+                }
+                style={styles.downIcon}
+              ></Icon>
+            </TouchableOpacity>
+            {openDropdown === id && (
+              <ScrollView
+                scrollEventThrottle={16} // Adjust as needed for performance
+                style={{
+                  width: "100%",
+                  position: "absolute",
+                  backgroundColor: "white",
+                  bottom: options.length > 3 ? -44 * 3 : -44 * options.length,
+                  height: options.length > 3 ? 44 * 3 : 44 * options.length,
+                }}
+              >
+                {options.map((option, listIndex) => (
                   <View
+                    key={listIndex}
+                    id={option.id}
                     style={{
-                      flexDirection: "row",
-                      alignItems: "center",
+                      width: "100%",
+                      height: 44,
+                      backgroundColor: "white",
+                      padding: 10,
+                      borderWidth: 1,
                       justifyContent: "space-between",
-                      width: "80%",
+                      alignItems: "center",
+                      flexDirection: "row",
                     }}
                   >
-                    <Text>
-                      {`${option.label} ${
-                        option.priceIncrease
-                          ? `(+$${option.priceIncrease})`
-                          : ""
-                      }`}
-                    </Text>
-                    <TextInput
+                    <TouchableOpacity
+                      onPress={() => onMinusPress({ option, listIndex })}
+                    >
+                      <Text>-</Text>
+                    </TouchableOpacity>
+                    <View
                       style={{
-                        width: 40,
-                        height: 30,
-                        borderWidth: 1,
-                        borderColor: "black",
-                        margin: 10,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "80%",
                       }}
-                      value={
-                        localMyObjProfile.options[index].optionsList[listIndex]
-                          .selectedTimes > 0
-                          ? localMyObjProfile.options[index].optionsList[
-                              listIndex
-                            ].selectedTimes
-                          : 0
-                      }
-                      keyboardType="numeric"
-                      // onChangeText={(text) => {
-                      //   let newOptions = [...options];
-                      //   newOptions[index].selectedTimes = text;
-                      //   setoptions(newOptions);
-                      // }}
-                    />
+                    >
+                      <Text>
+                        {`${option.label} ${
+                          option.priceIncrease
+                            ? `(+$${option.priceIncrease})`
+                            : ""
+                        }`}
+                      </Text>
+                      <TextInput
+                        style={{
+                          width: 40,
+                          height: 30,
+                          borderWidth: 1,
+                          borderColor: "black",
+                          margin: 10,
+                        }}
+                        value={
+                          localMyObjProfile.options[index].optionsList[
+                            listIndex
+                          ].selectedTimes > 0
+                            ? localMyObjProfile.options[index].optionsList[
+                                listIndex
+                              ].selectedTimes
+                            : 0
+                        }
+                        keyboardType="numeric"
+                        // onChangeText={(text) => {
+                        //   let newOptions = [...options];
+                        //   newOptions[index].selectedTimes = text;
+                        //   setoptions(newOptions);
+                        // }}
+                      />
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => onPlusPress({ option, listIndex })}
+                    >
+                      <Text>+</Text>
+                    </TouchableOpacity>
                   </View>
-                  <TouchableOpacity
-                    onPress={() => onPlusPress({ option, listIndex })}
-                  >
-                    <Text>+</Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </ScrollView>
-          )}
-        </View>}
+                ))}
+              </ScrollView>
+            )}
+          </View>
+        )}
       </Modal>
     </View>
   );
@@ -331,7 +335,7 @@ const styles = StyleSheet.create({
     color: "#3e3f41",
   },
   dropdown: {
-    width: 352,
+    width: "100%",
     height: 44,
     backgroundColor: "rgba(255,255,255,1)",
     borderRadius: 10,

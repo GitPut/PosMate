@@ -243,7 +243,7 @@ function MultipleTimeSelectableOptionGroup({
               <ScrollView
                 scrollEventThrottle={16} // Adjust as needed for performance
                 style={{
-                  width: 352,
+                  width: "100%",
                   position: "absolute",
                   backgroundColor: "white",
                   bottom: options.length > 3 ? -44 * 3 : -44 * options.length,
