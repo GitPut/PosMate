@@ -36,6 +36,7 @@ import DiscountModal from "components/modalsNew/DiscountModal";
 import DeliveryScreen from "components/modalsNew/DeliveryScreen";
 import SaveCustomer from "components/modalsNew/SaveCustomer";
 import ClockinModal from "components/modalsNew/ClockInModal/ClockinModal";
+import "./custom.css";
 
 function OrderPagePosHome({ navigation }) {
   const { height, width } = useWindowDimensions();
@@ -718,7 +719,7 @@ function OrderPagePosHome({ navigation }) {
           <View
             style={{
               flexDirection: "row",
-              width: "88%",
+              width: "90%",
               justifyContent: "space-between",
               alignItems: "center",
               marginBottom: 10,
@@ -793,6 +794,7 @@ function OrderPagePosHome({ navigation }) {
             <ScrollView
               horizontal={true}
               contentContainerStyle={styles.scrollArea_contentContainerStyle}
+              nativeID="scroll"
             >
               {catalog.categories?.map((category, index) => {
                 if (
@@ -841,6 +843,7 @@ function OrderPagePosHome({ navigation }) {
             contentContainerStyle={
               styles.scrollAreaProducts_contentContainerStyle
             }
+            nativeID="scroll"
           >
             {catalog.products.map((product, index) =>
               width > 1250 ? (
@@ -877,6 +880,7 @@ function OrderPagePosHome({ navigation }) {
               <ScrollView
                 horizontal={false}
                 contentContainerStyle={styles.cartItems_contentContainerStyle}
+                nativeID="scroll"
               >
                 {cart?.map((cartItem, index) => (
                   <CartItem
@@ -1045,6 +1049,7 @@ function OrderPagePosHome({ navigation }) {
                 <ScrollView
                   horizontal={false}
                   contentContainerStyle={styles.cartItems_contentContainerStyle}
+                  nativeID="scroll"
                 >
                   {cart?.map((cartItem, index) => (
                     <CartItem
@@ -1407,7 +1412,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   bannerContainer: {
-    width: "88%",
+    width: "93%",
     height: 150,
     backgroundColor: "rgba(29,41,78,1)",
     borderRadius: 10,
@@ -1420,7 +1425,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   categoryContainer: {
-    width: "88%",
+    width: "93%",
     height: 178,
     justifyContent: "space-between",
   },
@@ -1431,12 +1436,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   scrollArea: {
-    height: 156,
     alignSelf: "stretch",
   },
   scrollArea_contentContainerStyle: {
-    width: "88%",
+    width: "93%",
     height: 156,
+    paddingBottom: 5,
   },
   activeCategoryBtn: {
     width: 125,
@@ -1449,7 +1454,7 @@ const styles = StyleSheet.create({
     height: 150,
   },
   scrollAreaProducts: {
-    width: "88%",
+    width: "95%",
     height: "45%",
     justifyContent: "center",
   },
@@ -1458,6 +1463,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between", // or 'space-between' if you want equal spacing
     flexDirection: "row",
     alignItems: "flex-start",
+    paddingRight: 10,
+    marginLeft: 10,
   },
   itemContainer: {
     height: 160,
@@ -1576,13 +1583,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   discountCodeBtn: {
-    minWidth: 120,
-    minHeight: 32,
+    minWidth: 140,
+    minHeight: 35,
     backgroundColor: "rgba(255,255,255,1)",
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    padding: 5,
   },
   discountCode: {
     fontWeight: "700",

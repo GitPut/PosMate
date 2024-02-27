@@ -76,20 +76,15 @@ const PendingOrdersModal = ({
                   contentContainerStyle={
                     styles.pendingOrderScrollView_contentContainerStyle
                   }
+                  nativeID="scroll"
                 >
-                  <PendingOrderItem style={styles.pendingOrderItem} />
+                  <PendingOrderItem style={styles.pendingOrderItem1} />
                   <PendingOrderItem style={styles.pendingOrderItem1} />
                   <PendingOrderItem style={styles.pendingOrderItem2} />
                   <PendingOrderItem style={styles.pendingOrderItem3} />
                   <PendingOrderItem style={styles.pendingOrderItem4} />
                   <PendingOrderItem style={styles.pendingOrderItem5} />
                   <PendingOrderItem style={styles.pendingOrderItem6} />
-                  <PendingOrderItem style={styles.pendingOrderItem7} />
-                  <PendingOrderItem style={styles.pendingOrderItem8} />
-                  <PendingOrderItem style={styles.pendingOrderItem9} />
-                  <PendingOrderItem style={styles.pendingOrderItem10} />
-                  <PendingOrderItem style={styles.pendingOrderItem11} />
-                  <PendingOrderItem style={styles.pendingOrderItem12} />
                 </ScrollView>
               </View>
             </View>
@@ -142,11 +137,11 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   pendingOrderScrollView_contentContainerStyle: {
-    height: 1219,
     width: 421,
     alignItems: "center",
     paddingTop: 3,
-    paddingRight: 10,
+    paddingRight: 25,
+    marginLeft: 25,
   },
   pendingOrderItem: {
     height: 84,

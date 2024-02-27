@@ -53,7 +53,28 @@ function ItemContainer({ product, style }) {
   return (
     <div id={product.id}>
       {product.hasImage ? (
-        <View style={[styles.container, style]}>
+        <TouchableOpacity
+          onPress={() => {
+            if (product.options.length > 0) {
+              // navigation.navigate("Product Listing", { product: product });
+              // setshowProductScreen(true);
+              fadeIn();
+            } else {
+              addCartState(
+                {
+                  name: product.name,
+                  price: product.price,
+                  description: product.description,
+                  options: [],
+                  extraDetails: null,
+                  imageUrl: null,
+                },
+                cart
+              );
+            }
+          }}
+          style={[styles.container, style]}
+        >
           <ProductImage
             source={{ uri: product.imageUrl }}
             resizeMode="contain"
@@ -67,7 +88,7 @@ function ItemContainer({ product, style }) {
               ${product.price ? product.price : "Placeholder"}
             </Text>
             <View style={styles?.openBtnRow}>
-              <TouchableOpacity style={styles?.openBtn}>
+              {/* <TouchableOpacity style={styles?.openBtn}>
                 <MaterialCommunityIcons
                   name="plus"
                   style={styles?.plusIcon}
@@ -91,12 +112,31 @@ function ItemContainer({ product, style }) {
                     }
                   }}
                 ></MaterialCommunityIcons>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       ) : (
-        <View
+        <TouchableOpacity
+          onPress={() => {
+            if (product.options.length > 0) {
+              // navigation.navigate("Product Listing", { product: product });
+              // setshowProductScreen(true);
+              fadeIn();
+            } else {
+              addCartState(
+                {
+                  name: product.name,
+                  price: product.price,
+                  description: product.description,
+                  options: [],
+                  extraDetails: null,
+                  imageUrl: null,
+                },
+                cart
+              );
+            }
+          }}
           style={[
             {
               backgroundColor: "#ffffff",
@@ -126,7 +166,7 @@ function ItemContainer({ product, style }) {
                 },
               ]}
             >
-              <TouchableOpacity style={styles?.openBtn}>
+              {/* <TouchableOpacity style={styles?.openBtn}>
                 <MaterialCommunityIcons
                   name="plus"
                   style={styles?.plusIcon}
@@ -150,10 +190,10 @@ function ItemContainer({ product, style }) {
                     }
                   }}
                 ></MaterialCommunityIcons>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       )}
       {showProductScreen && (
         <Modal transparent={true}>

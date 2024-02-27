@@ -48,6 +48,7 @@ const ClockinModal = ({ setclockinModal }) => {
                   contentContainerStyle={
                     styles.employeesScrollView_contentContainerStyle
                   }
+                  nativeID="scroll"
                 >
                   <EmployeeClockInItem style={styles.employeeClockInItem} />
                   <EmployeeClockInItem style={styles.employeeClockInItem1} />
@@ -105,7 +106,8 @@ const styles = StyleSheet.create({
     width: 421,
     alignItems: "center",
     paddingTop: 3,
-    paddingRight: 10,
+    paddingRight: 25,
+    marginLeft: 25,
   },
   employeeClockInItem: {
     height: 84,
