@@ -30,12 +30,12 @@ import ReceiptPrint from "components/functional/ReceiptPrint";
 import { logout } from "state/firebaseFunctions";
 import CashScreen from "components/modalsNew/CashScreen";
 import ChangeScreen from "components/modalsNew/ChangeScreen";
-import CompletePaymentPhoneOrder from "components/modalsNew/CompletePaymentPhoneOrder";
+import PendingOrderModal from "components/modalsNew/PendingOrdersModal/PendingOrdersModal";
 import SettingsPasswordModal from "components/modalsNew/SettingsPasswordModal";
 import DiscountModal from "components/modalsNew/DiscountModal";
 import DeliveryScreen from "components/modalsNew/DeliveryScreen";
 import SaveCustomer from "components/modalsNew/SaveCustomer";
-import ClockinModal from "components/modalsNew/ClockinModal";
+import ClockinModal from "components/modalsNew/ClockInModal/ClockinModal";
 
 function OrderPagePosHome({ navigation }) {
   const { height, width } = useWindowDimensions();
@@ -1152,7 +1152,7 @@ function OrderPagePosHome({ navigation }) {
             alignItems: "center",
           }}
         >
-          <CompletePaymentPhoneOrder
+          <PendingOrderModal
             setongoingOrderListModal={setongoingOrderListModal}
             updateOrderHandler={(order) => {
               setCartState(order.cart);

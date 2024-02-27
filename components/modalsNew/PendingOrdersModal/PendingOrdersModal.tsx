@@ -1,0 +1,216 @@
+import {
+  Modal,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import React, { useState } from "react";
+import { Text } from "@react-native-material/core";
+import { Ionicons } from "@expo/vector-icons";
+import useWindowDimensions from "components/functional/useWindowDimensions";
+import PendingOrderItem from "./components/PendingOrderItem";
+
+const PendingOrdersModal = ({
+  setongoingOrderListModal,
+  updateOrderHandler,
+  ongoingListState,
+  setongoingListState,
+}) => {
+  const { height, width } = useWindowDimensions();
+  const [changeModal, setChangeModal] = useState(false);
+  const [currentOrder, setcurrentOrder] = useState({
+    element: null,
+    index: null,
+  });
+
+  function parseDate(input) {
+    // Check if the input is a Date object
+    if (Object.prototype.toString.call(input) === "[object Date]") {
+      if (!isNaN(input.getTime())) {
+        // It's a valid Date object, return it
+        return input;
+      }
+    }
+
+    // Check if the input is a string
+    if (typeof input === "string") {
+      const dateObject = new Date(input);
+
+      // Check if the dateObject is a valid Date
+      if (!isNaN(dateObject.getTime())) {
+        // It's a valid Date object, return it
+        return dateObject;
+      }
+    }
+
+    // If neither a Date object nor a valid date string, return null or handle accordingly
+    return null;
+  }
+
+  return (
+    <TouchableOpacity
+      onPress={() => setongoingOrderListModal(false)}
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        height: height,
+        width: width,
+      }}
+      activeOpacity={1}
+    >
+      <TouchableWithoutFeedback>
+        <div style={{ cursor: "default" }}>
+          <View style={styles.pendingOrdersModalContainer}>
+            <View style={styles.closeIconContainer}>
+              <TouchableOpacity onPress={() => setongoingOrderListModal(false)}>
+                <Ionicons name="md-close" style={styles.closeIcon} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.secondAreaContainer}>
+              <Text style={styles.pendingOrderLabel}>Pending Orders</Text>
+              <View style={styles.pendingOrderScrollView}>
+                <ScrollView
+                  horizontal={false}
+                  contentContainerStyle={
+                    styles.pendingOrderScrollView_contentContainerStyle
+                  }
+                >
+                  <PendingOrderItem style={styles.pendingOrderItem} />
+                  <PendingOrderItem style={styles.pendingOrderItem1} />
+                  <PendingOrderItem style={styles.pendingOrderItem2} />
+                  <PendingOrderItem style={styles.pendingOrderItem3} />
+                  <PendingOrderItem style={styles.pendingOrderItem4} />
+                  <PendingOrderItem style={styles.pendingOrderItem5} />
+                  <PendingOrderItem style={styles.pendingOrderItem6} />
+                  <PendingOrderItem style={styles.pendingOrderItem7} />
+                  <PendingOrderItem style={styles.pendingOrderItem8} />
+                  <PendingOrderItem style={styles.pendingOrderItem9} />
+                  <PendingOrderItem style={styles.pendingOrderItem10} />
+                  <PendingOrderItem style={styles.pendingOrderItem11} />
+                  <PendingOrderItem style={styles.pendingOrderItem12} />
+                </ScrollView>
+              </View>
+            </View>
+          </View>
+        </div>
+      </TouchableWithoutFeedback>
+    </TouchableOpacity>
+  );
+};
+
+export default PendingOrdersModal;
+
+const styles = StyleSheet.create({
+  pendingOrdersModalContainer: {
+    width: 540,
+    height: 609,
+    backgroundColor: "rgba(255,255,255,1)",
+    borderRadius: 10,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    // position: "absolute",
+    // left: 270,
+    // top: 304,
+  },
+  closeIconContainer: {
+    width: 540,
+    height: 58,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "flex-start",
+  },
+  closeIcon: {
+    color: "rgba(0,0,0,1)",
+    fontSize: 40,
+    margin: 20,
+  },
+  secondAreaContainer: {
+    width: 421,
+    height: 523,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  pendingOrderLabel: {
+    fontWeight: "700",
+    color: "#121212",
+    fontSize: 20,
+  },
+  pendingOrderScrollView: {
+    height: 470,
+    margin: 0,
+  },
+  pendingOrderScrollView_contentContainerStyle: {
+    height: 1219,
+    width: 421,
+    alignItems: "center",
+    paddingTop: 3,
+    paddingRight: 10,
+  },
+  pendingOrderItem: {
+    height: 84,
+    width: "100%",
+    marginBottom: 10,
+  },
+  pendingOrderItem1: {
+    height: 84,
+    width: 415,
+    marginBottom: 10,
+  },
+  pendingOrderItem2: {
+    height: 84,
+    width: 415,
+    marginBottom: 10,
+  },
+  pendingOrderItem3: {
+    height: 84,
+    width: 415,
+    marginBottom: 10,
+  },
+  pendingOrderItem4: {
+    height: 84,
+    width: 415,
+    marginBottom: 10,
+  },
+  pendingOrderItem5: {
+    height: 84,
+    width: 415,
+    marginBottom: 10,
+  },
+  pendingOrderItem6: {
+    height: 84,
+    width: 415,
+    marginBottom: 10,
+  },
+  pendingOrderItem7: {
+    height: 84,
+    width: 415,
+    marginBottom: 10,
+  },
+  pendingOrderItem8: {
+    height: 84,
+    width: 415,
+    marginBottom: 10,
+  },
+  pendingOrderItem9: {
+    height: 84,
+    width: 415,
+    marginBottom: 10,
+  },
+  pendingOrderItem10: {
+    height: 84,
+    width: 415,
+    marginBottom: 10,
+  },
+  pendingOrderItem11: {
+    height: 84,
+    width: 415,
+    marginBottom: 10,
+  },
+  pendingOrderItem12: {
+    height: 84,
+    width: 415,
+    marginBottom: 10,
+  },
+});

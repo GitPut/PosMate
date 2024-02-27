@@ -1,0 +1,137 @@
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+  TextInput,
+  TouchableWithoutFeedback,
+} from "react-native";
+import React, { useState } from "react";
+import { Button } from "@react-native-material/core";
+import { employeesState, setEmployeesState } from "state/state";
+import { Ionicons } from "@expo/vector-icons";
+import { auth, db } from "state/firebaseConfig";
+import EmployeeClockInItem from "./components/EmployeeClockInItem";
+
+const ClockinModal = ({ setclockinModal }) => {
+  const { height, width } = useWindowDimensions();
+  const employees = employeesState.use();
+
+  return (
+    <TouchableOpacity
+      onPress={() => setclockinModal(false)}
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        height: height,
+        width: width,
+      }}
+      activeOpacity={1}
+    >
+      <TouchableWithoutFeedback>
+        <div style={{ cursor: "default" }}>
+          <View style={styles.container}>
+            <View style={styles.closeIconContainer}>
+              <TouchableOpacity onPress={() => setclockinModal(false)}>
+                <Ionicons name="md-close" style={styles.closeIcon} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.secondAreaContainer}>
+              <Text style={styles.employeesClockIn}>
+                Employee&#39;s Clock-In
+              </Text>
+              <View style={styles.employeesScrollView}>
+                <ScrollView
+                  horizontal={false}
+                  contentContainerStyle={
+                    styles.employeesScrollView_contentContainerStyle
+                  }
+                >
+                  <EmployeeClockInItem style={styles.employeeClockInItem} />
+                  <EmployeeClockInItem style={styles.employeeClockInItem1} />
+                  <EmployeeClockInItem style={styles.employeeClockInItem2} />
+                  <EmployeeClockInItem style={styles.employeeClockInItem3} />
+                  <EmployeeClockInItem style={styles.employeeClockInItem4} />
+                </ScrollView>
+              </View>
+            </View>
+          </View>
+        </div>
+      </TouchableWithoutFeedback>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "rgba(255,255,255,1)",
+    borderRadius: 10,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: 540,
+    height: 609,
+  },
+  closeIconContainer: {
+    width: 540,
+    height: 58,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "flex-start",
+  },
+  closeIcon: {
+    color: "rgba(0,0,0,1)",
+    fontSize: 40,
+    margin: 20,
+  },
+  secondAreaContainer: {
+    width: 421,
+    height: 523,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  employeesClockIn: {
+    fontWeight: "700",
+    color: "#121212",
+    fontSize: 20,
+  },
+  employeesScrollView: {
+    height: 460,
+    margin: 0,
+  },
+  employeesScrollView_contentContainerStyle: {
+    height: 544,
+    width: 421,
+    alignItems: "center",
+    paddingTop: 3,
+    paddingRight: 10,
+  },
+  employeeClockInItem: {
+    height: 84,
+    width: 415,
+    marginBottom: 30,
+  },
+  employeeClockInItem1: {
+    height: 84,
+    width: 415,
+    marginBottom: 30,
+  },
+  employeeClockInItem2: {
+    height: 84,
+    width: 415,
+    marginBottom: 30,
+  },
+  employeeClockInItem3: {
+    height: 84,
+    width: 415,
+    marginBottom: 30,
+  },
+  employeeClockInItem4: {
+    height: 84,
+    width: 415,
+    marginBottom: 30,
+  },
+});
+
+export default ClockinModal;
