@@ -36,7 +36,6 @@ import DiscountModal from "components/modalsNew/DiscountModal";
 import DeliveryScreen from "components/modalsNew/DeliveryScreen";
 import SaveCustomer from "components/modalsNew/SaveCustomer";
 import ClockinModal from "components/modalsNew/ClockInModal/ClockinModal";
-import "./custom.css";
 
 function OrderPagePosHome({ navigation }) {
   const { height, width } = useWindowDimensions();
@@ -159,7 +158,7 @@ function OrderPagePosHome({ navigation }) {
             newVal += parseFloat(cart[i].price) * cart[i].quantity;
             // console.log("Cart item quantity ", cart[i].quantity);
           } else {
-            newVal += parseFloat(cart[i].price);
+            newVal += parseFloat(cart[i].price); 
           }
         } catch (error) {
           console.log(error);
@@ -465,30 +464,30 @@ function OrderPagePosHome({ navigation }) {
     setChangeDue(null);
   };
 
-  useEffect(() => {
-    if (cart.length > 0) {
-      let newVal = 0;
-      for (let i = 0; i < cart.length; i++) {
-        try {
-          if (cart[i].quantity > 1) {
-            newVal += parseFloat(cart[i].price) * cart[i].quantity;
-            // console.log("Cart item quantity ", cart[i].quantity);
-          } else {
-            newVal += parseFloat(cart[i].price);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      if (deliveryChecked) {
-        setCartSub(newVal + parseFloat(storeDetails.deliveryPrice));
-      } else {
-        setCartSub(newVal);
-      }
-    } else {
-      setCartSub(0);
-    }
-  }, [cart]);
+  // useEffect(() => {
+  //   if (cart.length > 0) {
+  //     let newVal = 0;
+  //     for (let i = 0; i < cart.length; i++) {
+  //       try {
+  //         if (cart[i].quantity > 1) {
+  //           newVal += parseFloat(cart[i].price) * cart[i].quantity;
+  //           // console.log("Cart item quantity ", cart[i].quantity);
+  //         } else {
+  //           newVal += parseFloat(cart[i].price);
+  //         }
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //     }
+  //     if (deliveryChecked) {
+  //       setCartSub(newVal + parseFloat(storeDetails.deliveryPrice));
+  //     } else {
+  //       setCartSub(newVal);
+  //     }
+  //   } else {
+  //     setCartSub(0);
+  //   }
+  // }, [cart]);
 
   useEffect(() => {
     catalog.products.map((product, index) => {

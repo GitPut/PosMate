@@ -98,6 +98,15 @@ const RouteManager = () => {
     }
   }, [myDeviceDetails, userS]);
 
+  const customSort = (a, b) => {
+    // Handle cases where one or both items don't have a rank
+    const rankA = a.rank || Number.MAX_SAFE_INTEGER;
+    const rankB = b.rank || Number.MAX_SAFE_INTEGER;
+
+    // Compare based on ranks
+    return rankA - rankB;
+  };
+
   useEffect(() => {
     setUserState(savedUserState);
 
@@ -136,6 +145,7 @@ const RouteManager = () => {
                   docs.forEach((element) => {
                     products.push(element.data());
                   });
+                  products.sort(customSort);
                 }
               })
               .catch((e) =>
@@ -143,7 +153,7 @@ const RouteManager = () => {
               );
 
             setUserStoreState({
-              products: products,
+              products: products.sort(customSort),
               categories: doc.data().categories ? doc.data().categories : [],
             });
 
@@ -392,7 +402,7 @@ const RouteManager = () => {
               .doc(user.uid)
               .onSnapshot((doc) => {
                 setUserStoreState({
-                  products: products,
+                  products: products.sort(customSort),
                   categories: doc.data().categories
                     ? doc.data().categories
                     : [],

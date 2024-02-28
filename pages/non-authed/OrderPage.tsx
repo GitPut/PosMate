@@ -102,7 +102,7 @@ const OrderPage = () => {
                         ...product,
                         index: index + 1,
                       });
-                      return prev;
+                      return prev; 
                     }
 
                     return [
