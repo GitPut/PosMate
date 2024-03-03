@@ -67,7 +67,7 @@ function ItemContainer({ product, style }) {
                   description: product.description,
                   options: [],
                   extraDetails: null,
-                  imageUrl: null,
+                  imageUrl: product.imageUrl,
                 },
                 cart
               );

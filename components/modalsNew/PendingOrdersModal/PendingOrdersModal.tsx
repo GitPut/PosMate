@@ -1,4 +1,5 @@
 import {
+  Animated,
   Modal,
   ScrollView,
   StyleSheet,
@@ -6,11 +7,13 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Text } from "@react-native-material/core";
 import { Ionicons } from "@expo/vector-icons";
 import useWindowDimensions from "components/functional/useWindowDimensions";
 import PendingOrderItem from "./components/PendingOrderItem";
+import PendingOrderShowDetails from "./PendingOrderShowDetails";
+import FinishPaymentCash from "./FinishPaymentCash";
 
 const PendingOrdersModal = ({
   setongoingOrderListModal,
@@ -19,11 +22,33 @@ const PendingOrdersModal = ({
   setongoingListState,
 }) => {
   const { height, width } = useWindowDimensions();
-  const [changeModal, setChangeModal] = useState(false);
   const [currentOrder, setcurrentOrder] = useState({
     element: null,
     index: null,
   });
+  const xPos = useRef(new Animated.Value(0)).current;
+
+  const fadeIn = () => {
+    Animated.timing(xPos, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const fadeOut = (customFuncAfter) => {
+    Animated.timing(xPos, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: false,
+    }).start(() => {
+      if (customFuncAfter !== false) {
+        customFuncAfter();
+      } else {
+        setcurrentOrder({ element: null, index: null });
+      }
+    });
+  };
 
   function parseDate(input) {
     // Check if the input is a Date object
@@ -78,16 +103,110 @@ const PendingOrdersModal = ({
                   }
                   nativeID="scroll"
                 >
-                  <PendingOrderItem style={styles.pendingOrderItem1} />
-                  <PendingOrderItem style={styles.pendingOrderItem1} />
-                  <PendingOrderItem style={styles.pendingOrderItem2} />
-                  <PendingOrderItem style={styles.pendingOrderItem3} />
-                  <PendingOrderItem style={styles.pendingOrderItem4} />
-                  <PendingOrderItem style={styles.pendingOrderItem5} />
-                  <PendingOrderItem style={styles.pendingOrderItem6} />
+                  {ongoingListState?.length > 0 ? (
+                    ongoingListState?.map((element, index) => {
+                      let date = null;
+
+                      if (element.online) {
+                        date = parseDate(element.date);
+                      } else {
+                        date = element.date.toDate();
+                      }
+
+                      let cartString = "";
+
+                      element.cart.map((cartItem, index) => {
+                        cartString += `${index + 1}. Name: ${cartItem.name}\n`;
+
+                        if (cartItem.quantity > 1) {
+                          cartString += `     Quantity: ${cartItem.quantity}\n`;
+                          cartString += `     Price: $${
+                            cartItem.price * cartItem.quantity
+                          }`;
+                        } else {
+                          cartString += `     Price: $${cartItem.price}`;
+                        }
+
+                        if (cartItem.description) {
+                          cartString += `     \n${cartItem.description}`;
+                        }
+
+                        if (cartItem.options) {
+                          cartString += `\n`;
+                          cartItem.options.map((option) => {
+                            cartString += `     ${option}\n`;
+                          });
+                        }
+
+                        if (cartItem.extraDetails) {
+                          cartString += `     $cartItem.extraDetails}\n`;
+                        }
+                      });
+
+                      return (
+                        <PendingOrderItem
+                          style={styles.pendingOrderItem1}
+                          element={element}
+                          index={index}
+                          date={date}
+                          cartString={cartString}
+                          key={index}
+                          setcurrentOrder={setcurrentOrder}
+                          updateOrderHandler={updateOrderHandler}
+                          fadeIn={fadeIn}
+                        />
+                      );
+                    })
+                  ) : (
+                    <View
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text>No Orders Yet</Text>
+                    </View>
+                  )}
                 </ScrollView>
               </View>
             </View>
+            {currentOrder.element && (
+              <Animated.View
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  borderRadius: 10,
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  width: 540,
+                  height: 609,
+                  backgroundColor: "white",
+                  opacity: xPos,
+                }}
+              >
+                {currentOrder.type === "view" ? (
+                  <PendingOrderShowDetails
+                    currentOrder={currentOrder}
+                    updateOrderHandler={updateOrderHandler}
+                    fadeIn={fadeIn}
+                    fadeOut={fadeOut}
+                    setcurrentOrder={setcurrentOrder}
+                    setongoingOrderListModal={setongoingOrderListModal}
+                  />
+                ) : (
+                  <FinishPaymentCash
+                    currentOrder={currentOrder}
+                    updateOrderHandler={updateOrderHandler}
+                    fadeIn={fadeIn}
+                    fadeOut={fadeOut}
+                    setcurrentOrder={setcurrentOrder}
+                  />
+                )}
+              </Animated.View>
+            )}
           </View>
         </div>
       </TouchableWithoutFeedback>

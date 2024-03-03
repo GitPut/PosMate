@@ -430,7 +430,6 @@ const DeliveryScreen = ({
           {/* <Text>ADDRESS: {address}</Text> */}
           <Button
             title={ongoingDelivery ? "Update" : "Order"}
-            // onPress={GetTrans}
             onPress={() => {
               if (name && phone) {
                 setDeliveryModal(false);

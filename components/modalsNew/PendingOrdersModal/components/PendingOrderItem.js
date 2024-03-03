@@ -9,40 +9,124 @@ import {
 import FeatherIcon from "react-native-vector-icons/Feather";
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import EntypoIcon from "react-native-vector-icons/Entypo";
+import { auth, db } from "state/firebaseConfig";
+import { updateTransList } from "state/firebaseFunctions";
 
-function PendingOrderItem(props) {
+function PendingOrderItem({
+  element,
+  index,
+  updateOrderHandler,
+  style,
+  date,
+  setcurrentOrder,
+  cartString,
+  fadeIn,
+}) {
   return (
-    <View style={[styles.container, props.style]}>
+    <View style={[styles.container, style]}>
       <View style={styles.customerDetailsContainer}>
         <View style={styles.orderNameContainer}>
           <Text style={styles.orderNameLbl}>Order Name:</Text>
-          <Text style={styles.orderNameValue}>Peter</Text>
+          <Text style={styles.orderNameValue}>
+            {element.customer ? element.customer?.name?.toUpperCase() : "N/A"}
+          </Text>
         </View>
         <View style={styles.orderNumberContainer}>
           <Text style={styles.orderNumberLabel}>Order Number:</Text>
-          <Text style={styles.orderNumberValue}>12345</Text>
+          <Text style={styles.orderNumberValue}>
+            {element.transNum.toUpperCase()}
+          </Text>
         </View>
       </View>
       <View style={styles.divider}></View>
       <View style={styles.orderInfoContainer}>
         <View style={styles.orderInfoTextGroup}>
-          <Text style={styles.orderTypeLabel}>In-Store Order</Text>
-          <Text style={styles.orderTime}>10:35 am</Text>
-          <Text style={styles.orderDate}>15/02/24</Text>
+          {element.online && (
+            <Text style={[styles.orderTypeLabel, { color: "#01C550" }]}>
+              Online Order
+            </Text>
+          )}
+          {!element.online && element.customer && (
+            <Text style={[styles.orderTypeLabel, { color: "#FF0F00" }]}>
+              Phone Order
+            </Text>
+          )}
+          {!element.online && !element.customer && (
+            <Text style={[styles.orderTypeLabel]}>POS Order</Text>
+          )}
+          <Text style={styles.orderTime}>
+            {element.method === "pickupOrder" && "Pickup"}
+            {element.method === "deliveryOrder" && "Delivery"}
+          </Text>
+          <Text style={styles.orderDate}>{date?.toLocaleTimeString()}</Text>
         </View>
       </View>
       <View style={styles.orderOptionContainer}>
         <View style={styles.optionIconsRow}>
-          <TouchableOpacity>
+          {/* {element.method !== "inStoreOrder" && !element.online && ( */}
+          <TouchableOpacity
+            onPress={() => {
+              fadeIn();
+              setcurrentOrder({
+                element: element,
+                index: index,
+                type: "view",
+                cartString: cartString,
+                date: date,
+              });
+              // updateOrderHandler({
+              //   ...element,
+              //   index: index,
+              // });
+            }}
+          >
             <FeatherIcon name="edit" style={styles.editIcon}></FeatherIcon>
           </TouchableOpacity>
-          <TouchableOpacity>
+          {/* )} */}
+          <TouchableOpacity
+            onPress={() => {
+              db.collection("users")
+                .doc(auth.currentUser.uid)
+                .collection("pendingOrders")
+                .doc(element.id)
+                .delete();
+            }}
+          >
             <MaterialCommunityIconsIcon
               name="cancel"
               style={styles.cancelIcon}
             ></MaterialCommunityIconsIcon>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              if (element.online) {
+                db.collection("users")
+                  .doc(auth.currentUser.uid)
+                  .collection("pendingOrders")
+                  .doc(element.id)
+                  .delete();
+                updateTransList(element);
+              } else {
+                if (element.method === "pickupOrder") {
+                  setcurrentOrder({
+                    element: element,
+                    index: index,
+                    type: "pay",
+                    cartString: cartString,
+                    date: date,
+                  });
+                  fadeIn();
+                } else if (element.method === "deliveryOrder") {
+                  db.collection("users")
+                    .doc(auth.currentUser.uid)
+                    .collection("pendingOrders")
+                    .doc(element.id)
+                    .delete();
+                  updateTransList(element);
+                }
+              }
+            }}
+          >
             <EntypoIcon name="check" style={styles.finishIcon}></EntypoIcon>
           </TouchableOpacity>
         </View>
@@ -73,26 +157,27 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
   },
   orderNameContainer: {
-    width: 122,
+    width: "100%",
     height: 18,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginRight: 6,
+    justifyContent: "flex-start",
+    paddingLeft: 10,
   },
   orderNameLbl: {
     fontWeight: "700",
     color: "#121212",
     fontSize: 13,
+    marginRight: 5,
   },
   orderNameValue: {
     color: "#121212",
   },
   orderNumberContainer: {
-    width: 122,
+    width: "100%",
     height: 36,
     justifyContent: "flex-start",
-    marginRight: 6,
+    paddingLeft: 10,
   },
   orderNumberLabel: {
     fontWeight: "700",

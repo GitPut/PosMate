@@ -50,11 +50,20 @@ const ClockinModal = ({ setclockinModal }) => {
                   }
                   nativeID="scroll"
                 >
-                  <EmployeeClockInItem style={styles.employeeClockInItem} />
-                  <EmployeeClockInItem style={styles.employeeClockInItem1} />
-                  <EmployeeClockInItem style={styles.employeeClockInItem2} />
-                  <EmployeeClockInItem style={styles.employeeClockInItem3} />
-                  <EmployeeClockInItem style={styles.employeeClockInItem4} />
+                  {employees.map((employee) => {
+                    const isClockedIn = employee.clockedIn;
+
+                    return (
+                      <EmployeeClockInItem
+                        key={employee.id}
+                        style={styles.employeeClockInItem}
+                        employee={employee}
+                        employees={employees}
+                        setEmployeesState={setEmployeesState}
+                        isClockedIn={isClockedIn}
+                      />
+                    );
+                  })}
                 </ScrollView>
               </View>
             </View>

@@ -33,8 +33,8 @@ import ChangeScreen from "components/modalsNew/ChangeScreen";
 import PendingOrderModal from "components/modalsNew/PendingOrdersModal/PendingOrdersModal";
 import SettingsPasswordModal from "components/modalsNew/SettingsPasswordModal";
 import DiscountModal from "components/modalsNew/DiscountModal";
-import DeliveryScreen from "components/modalsNew/DeliveryScreen";
-import SaveCustomer from "components/modalsNew/SaveCustomer";
+import DeliveryScreen from "components/modalsNew/PhoneOrderModal/PhoneOrderModal";
+import SavedCustomersModal from "components/modalsNew/SavedCustomersModal/SavedCustomersModal";
 import ClockinModal from "components/modalsNew/ClockInModal/ClockinModal";
 
 function OrderPagePosHome({ navigation }) {
@@ -158,7 +158,7 @@ function OrderPagePosHome({ navigation }) {
             newVal += parseFloat(cart[i].price) * cart[i].quantity;
             // console.log("Cart item quantity ", cart[i].quantity);
           } else {
-            newVal += parseFloat(cart[i].price); 
+            newVal += parseFloat(cart[i].price);
           }
         } catch (error) {
           console.log(error);
@@ -502,27 +502,53 @@ function OrderPagePosHome({ navigation }) {
   const CheckoutBtn = () => {
     if (updatingOrder) {
       return (
-        <TouchableOpacity
-          style={styles.checkoutBtn}
-          disabled={cart.length < 1}
-          onPress={() => {
-            db.collection("users")
-              .doc(auth.currentUser?.uid)
-              .collection("pendingOrders")
-              .doc(updatingOrder.id)
-              .delete();
-
-            Print(deliveryChecked ? "deliveryOrder" : "pickupOrder", false);
-            setOngoingDelivery(null);
-            setName(null);
-            setPhone(null);
-            setAddress(null);
-            setDeliveryChecked(false);
-            setupdatingOrder(false);
+        <View
+          style={{
+            flexDirection: "row",
+            width: "90%",
+            alignSelf: "center",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 10,
           }}
         >
-          <Text style={styles.checkoutLbl}>Update Order</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.checkoutBtn}
+            disabled={cart.length < 1}
+            onPress={() => {
+              db.collection("users")
+                .doc(auth.currentUser?.uid)
+                .collection("pendingOrders")
+                .doc(updatingOrder.id)
+                .delete();
+
+              Print(deliveryChecked ? "deliveryOrder" : "pickupOrder", false);
+              setOngoingDelivery(null);
+              setName(null);
+              setPhone(null);
+              setAddress(null);
+              setDeliveryChecked(false);
+              setupdatingOrder(false);
+            }}
+          >
+            <Text style={styles.checkoutLbl}>Update</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.checkoutBtn, { backgroundColor: "red" }]}
+            disabled={cart.length < 1}
+            onPress={() => {
+              setCartState([]);
+              setName(null);
+              setPhone(null);
+              setAddress(null);
+              setDeliveryChecked(false);
+              setOngoingDelivery(null);
+              setupdatingOrder(false);
+            }}
+          >
+            <Text style={styles.checkoutLbl}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       );
     }
 
@@ -1258,6 +1284,7 @@ function OrderPagePosHome({ navigation }) {
         isVisible={saveCustomerModal}
         animationIn="fadeIn"
         animationOut="fadeOut"
+        backdropOpacity={0}
       >
         <View
           style={{
@@ -1271,7 +1298,7 @@ function OrderPagePosHome({ navigation }) {
             alignItems: "center",
           }}
         >
-          <SaveCustomer
+          <SavedCustomersModal
             setSaveCustomerModal={setSaveCustomerModal}
             setOngoingDelivery={setOngoingDelivery}
             setNameForDelivery={setName}
@@ -1281,6 +1308,7 @@ function OrderPagePosHome({ navigation }) {
             setUnitNumberForDelivery={setUnitNumber}
             setDeliveryChecked={setDeliveryChecked}
             setsavedCustomerDetails={setsavedCustomerDetails}
+            setDeliveryModal={setDeliveryModal}
           />
         </View>
       </Modal>

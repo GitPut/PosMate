@@ -74,7 +74,7 @@ function ItemContainerMobile({ product, style, setshowProduct }) {
                       description: product.description,
                       options: [],
                       extraDetails: null,
-                      imageUrl: null,
+                      imageUrl: product.imageUrl ? product.imageUrl : null,
                     },
                     cart
                   );
