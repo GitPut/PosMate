@@ -10,12 +10,12 @@ import {
   useWindowDimensions,
 } from "react-native";
 import GoBackBtn from "./GoBackBtn";
-import OneTimeSelectableOptionGroup from "./OneTimeSelectableOptionGroup";
-import DropdownSelectableOption from "./DropdownSelectableOption";
 import AddToCartBtn from "./AddToCartBtn";
-import MultipleTimeSelectableOptionGroup from "./MultipleTimeSelectableOptionGroup";
 import { addCartState, cartState, setCartState } from "state/state";
 import { Ionicons } from "@expo/vector-icons/";
+import MultipleTimeSelectableOptionGroup from "components/newCartScreen/components/ProductBuilderModal/MultipleTimeSelectableOptionGroup";
+import DropdownSelectableOption from "components/newCartScreen/components/ProductBuilderModal/DropdownSelectableOption";
+import OneTimeSelectableOptionGroup from "components/newCartScreen/components/ProductBuilderModal/OneTimeSelectableOptionGroup";
 
 function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
   const cart = cartState.use();
@@ -129,6 +129,17 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
             />
           );
         } else {
+          const optionsSelected = myObjProfile.options[
+            index
+          ].optionsList.filter((op) => op.selectedTimes > 0);
+          const optionsSelectedLabel =
+            optionsSelected.length > 0
+              ? optionsSelected.map((op, index) => {
+                  if (index > 0) return `, ${op.label} (${op.selectedTimes})`;
+                  return `${op.label} (${op.selectedTimes})`;
+                })
+              : "";
+
           return (
             <MultipleTimeSelectableOptionGroup
               e={e}
@@ -141,6 +152,7 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
               openDropdown={openOptions}
               label={e.label}
               isRequired={e.isRequired}
+              optionsSelectedLabel={optionsSelectedLabel}
             />
           );
         }

@@ -130,21 +130,31 @@ function ProductBuilderModalMobile({ product, itemIndex, goBack, imageUrl }) {
             />
           );
         } else {
+         const optionsSelected = myObjProfile.options[
+            index
+          ].optionsList.filter((op) => op.selectedTimes > 0);
+          const optionsSelectedLabel =
+            optionsSelected.length > 0
+              ? optionsSelected.map((op, index) => {
+                  if (index > 0) return `, ${op.label} (${op.selectedTimes})`;
+                  return `${op.label} (${op.selectedTimes})`;
+                })
+              : "";
+
           return (
-            <View style={{ marginBottom: 5 }}>
-              <MultipleTimeSelectableOptionGroup
-                e={e}
-                index={index}
-                myObjProfile={myObjProfile}
-                setmyObjProfile={setmyObjProfile}
-                id={index}
-                style={styles.dropdownSelectableOption}
-                setopenDropdown={setopenOptions}
-                openDropdown={openOptions}
-                label={e.label}
-                isRequired={e.isRequired}
-              />
-            </View>
+            <MultipleTimeSelectableOptionGroup
+              e={e}
+              index={index}
+              myObjProfile={myObjProfile}
+              setmyObjProfile={setmyObjProfile}
+              id={index}
+              style={styles.dropdownSelectableOption}
+              setopenDropdown={setopenOptions}
+              openDropdown={openOptions}
+              label={e.label}
+              isRequired={e.isRequired}
+              optionsSelectedLabel={optionsSelectedLabel}
+            />
           );
         }
       }

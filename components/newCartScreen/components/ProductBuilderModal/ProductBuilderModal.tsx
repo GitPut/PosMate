@@ -129,6 +129,17 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
             />
           );
         } else {
+          const optionsSelected = myObjProfile.options[
+            index
+          ].optionsList.filter((op) => op.selectedTimes > 0);
+          const optionsSelectedLabel =
+            optionsSelected.length > 0
+              ? optionsSelected.map((op, index) => {
+                  if (index > 0) return `, ${op.label} (${op.selectedTimes})`;
+                  return `${op.label} (${op.selectedTimes})`;
+                })
+              : "";
+
           return (
             <MultipleTimeSelectableOptionGroup
               e={e}
@@ -141,6 +152,7 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
               openDropdown={openOptions}
               label={e.label}
               isRequired={e.isRequired}
+              optionsSelectedLabel={optionsSelectedLabel}
             />
           );
         }
@@ -230,9 +242,9 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
           let opWVal = `${op.label}:\n`;
           selectedItems.map((e, index) => {
             if (index < selectedItems.length - 1) {
-              opWVal += e.selectedTimes + " X " + e.label + "\n";
+              opWVal += "   " + e.selectedTimes + " X " + e.label + "\n";
             } else {
-              opWVal += e.selectedTimes + " X " + e.label;
+              opWVal += "   " + e.selectedTimes + " X " + e.label;
             }
           });
           opsArray.push(opWVal);

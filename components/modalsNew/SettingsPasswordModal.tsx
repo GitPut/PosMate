@@ -24,6 +24,20 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const history = useHistory();
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      if (password == storeDetails.settingsPassword) {
+        setIsSignedInSettingsState(true);
+        history.push("/authed/dashboard");
+        setsettingsPasswordModalVis(false);
+        setinccorectPass(false);
+        localStorage.setItem("isAuthedBackend", true);
+      } else {
+        setinccorectPass(true);
+      }
+    }
+  };
+
   useFonts({
     Password: require("/assets/password.ttf"),
   });
@@ -84,6 +98,7 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
                 onChangeText={(val) => setpassword(val)}
                 textContentType="none"
                 autoCorrect={false}
+                onKeyPress={handleKeyDown}
               />
               <View
                 style={{

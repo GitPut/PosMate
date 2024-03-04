@@ -84,6 +84,7 @@ const DiscountModal = ({
           <View style={{ margin: 15 }}>
             <TextInput
               placeholder="Enter Custom Amount or Percentage"
+              onChangeText={(text) => setdiscountAmount(text)}
               style={{
                 height: 40,
                 borderColor: "gray",
@@ -93,7 +94,6 @@ const DiscountModal = ({
                 padding: 10,
                 marginBottom: 20,
               }}
-              onChangeText={(text) => setdiscountAmount(text)}
             />
             <View
               style={{
@@ -173,6 +173,7 @@ const DiscountModal = ({
             </View>
             <TextInput
               placeholder="Enter Code"
+              onChangeText={(text) => setcode(text)}
               style={{
                 height: 40,
                 borderColor: "gray",
@@ -183,7 +184,6 @@ const DiscountModal = ({
                 marginBottom: 20,
                 marginTop: 15,
               }}
-              onChangeText={(text) => setcode(text)}
             />
             <TouchableOpacity
               style={{

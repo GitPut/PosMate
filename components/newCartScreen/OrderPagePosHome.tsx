@@ -12,7 +12,7 @@ import CategoryBtn from "./components/cartOrder/CategoryBtn";
 import ItemContainer from "./components/cartOrder/ItemContainer";
 import CartItem from "./components/cartOrder/CartItem";
 import UntitledComponent from "./components/cartOrder/UntitledComponent";
-import { Entypo, Feather } from "@expo/vector-icons";
+import { Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
 import {
   cartState,
   customersList,
@@ -21,6 +21,7 @@ import {
   storeDetailState,
   userStoreState,
   setCustomersList,
+  addCartState,
 } from "state/state";
 import ItemContainerMobile from "./components/cartOrder/ItemContainerMobile";
 import Modal from "react-native-modal";
@@ -32,7 +33,7 @@ import CashScreen from "components/modalsNew/CashScreen";
 import ChangeScreen from "components/modalsNew/ChangeScreen";
 import PendingOrderModal from "components/modalsNew/PendingOrdersModal/PendingOrdersModal";
 import SettingsPasswordModal from "components/modalsNew/SettingsPasswordModal";
-import DiscountModal from "components/modalsNew/DiscountModal";
+import DiscountModal from "components/modalsNew/DiscountModal/DiscountModal";
 import PhoneOrderModal from "components/modalsNew/PhoneOrderModal/PhoneOrderModal";
 import SavedCustomersModal from "components/modalsNew/SavedCustomersModal/SavedCustomersModal";
 import ClockinModal from "components/modalsNew/ClockInModal/ClockinModal";
@@ -71,6 +72,7 @@ function OrderPagePosHome({ navigation }) {
   const myDeviceDetails = myDeviceDetailsState.use();
   const [clockinModal, setclockinModal] = useState(false);
   const [discountModal, setdiscountModal] = useState(false);
+  const [discountAmount, setDiscountAmount] = useState(null);
 
   function parseDate(input) {
     // Check if the input is a Date object
@@ -166,55 +168,72 @@ function OrderPagePosHome({ navigation }) {
         }
       }
       if (deliveryChecked) {
-        setCartSub(newVal + parseFloat(storeDetails.deliveryPrice));
+        newVal += parseFloat(storeDetails.deliveryPrice);
+      }
+
+      if (discountAmount) {
+        if (discountAmount.includes("%")) {
+          const discount = parseFloat(discountAmount.replace("%", "")) / 100;
+          setCartSub(parseFloat(newVal) - parseFloat(newVal) * discount);
+        } else {
+          setCartSub(parseFloat(newVal) - parseFloat(discountAmount));
+        }
       } else {
         setCartSub(newVal);
-      }
-      //check if there is a discount in the cart then move it the end of the cart
-      if (cart.length > 1) {
-        if (!cart[cart.length - 1].name.includes("Cart Discount")) {
-          for (let i = 0; i < cart.length; i++) {
-            if (cart[i].name.includes("Cart Discount")) {
-              console.log("In first if");
-              const discountItem = cart[i];
-              const newCart = structuredClone(cart);
-              newCart.splice(i, 1);
-
-              if (discountItem.percent) {
-                newCart.push({
-                  ...discountItem,
-                  price:
-                    (newVal + -discountItem.price) * discountItem.percent * -1,
-                });
-              } else {
-                newCart.push(discountItem);
-              }
-              setCartState(newCart);
-            }
-          }
-        } else if (cart[cart.length - 1].percent) {
-          console.log("In second if");
-          const discountItem = cart[cart.length - 1];
-          if (
-            (newVal + -discountItem.price) * discountItem.percent * -1 !==
-            discountItem.price
-          ) {
-            const newCart = structuredClone(cart);
-            newCart.pop();
-            newCart.push({
-              ...discountItem,
-              price: (newVal + -discountItem.price) * discountItem.percent * -1,
-            });
-            setCartState(newCart);
-          }
-        }
       }
     } else {
       setCartSub(0);
     }
-  }, [cart, deliveryChecked]);
+  }, [cart, deliveryChecked, discountAmount]);
 
   const Print = (method, dontAddToOngoing) => {
+    let newVal = 0;
+    for (let i = 0; i < cart.length; i++) {
+      try {
+        if (cart[i].quantity > 1) {
+          newVal += parseFloat(cart[i].price) * cart[i].quantity;
+          // console.log("Cart item quantity ", cart[i].quantity);
+        } else {
+          newVal += parseFloat(cart[i].price);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    if (deliveryChecked) {
+      newVal += parseFloat(storeDetails.deliveryPrice);
+    }
+
+    if (discountAmount) {
+      if (discountAmount.includes("%")) {
+        const discount = parseFloat(discountAmount.replace("%", "")) / 100;
+        addCartState(
+          {
+            name: "Cart Discount: " + discount * 100 + "%",
+            price: -(newVal * discount),
+            description: "Discount Applied to Cart",
+            options: [],
+            extraDetails: null,
+            quantityNotChangable: true,
+            percent: discount,
+          },
+          cart
+        );
+      } else {
+        addCartState(
+          {
+            name: "Cart Discount: " + discountAmount,
+            price: -parseFloat(discountAmount),
+            description: "Discount Applied to Cart",
+            options: [],
+            extraDetails: null,
+            quantityNotChangable: true,
+          },
+          cart
+        );
+      }
+    }
+
     if (!myDeviceDetails.id) {
       return alert("Please set up a device in Settings -> Devices");
     }
@@ -464,31 +483,6 @@ function OrderPagePosHome({ navigation }) {
     setDeliveryChecked(false);
     setChangeDue(null);
   };
-
-  // useEffect(() => {
-  //   if (cart.length > 0) {
-  //     let newVal = 0;
-  //     for (let i = 0; i < cart.length; i++) {
-  //       try {
-  //         if (cart[i].quantity > 1) {
-  //           newVal += parseFloat(cart[i].price) * cart[i].quantity;
-  //           // console.log("Cart item quantity ", cart[i].quantity);
-  //         } else {
-  //           newVal += parseFloat(cart[i].price);
-  //         }
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     }
-  //     if (deliveryChecked) {
-  //       setCartSub(newVal + parseFloat(storeDetails.deliveryPrice));
-  //     } else {
-  //       setCartSub(newVal);
-  //     }
-  //   } else {
-  //     setCartSub(0);
-  //   }
-  // }, [cart]);
 
   useEffect(() => {
     catalog.products.map((product, index) => {
@@ -901,7 +895,38 @@ function OrderPagePosHome({ navigation }) {
       </View>
       {width > 1000 ? (
         <View style={[styles.cartContainer, width < 1250 && { width: "38%" }]}>
-          <Text style={styles.myCartTxt}>My Cart</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "90%",
+            }}
+          >
+            <Text style={styles.myCartTxt}>My Cart</Text>
+            {cart.length > 0 && (
+              <TouchableOpacity
+                style={{
+                  borderRadius: 10,
+                  height: 40,
+                  width: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#1a2951",
+                }}
+                onPress={() => {
+                  setCartState([]);
+                  setDiscountAmount(null);
+                }}
+              >
+                <MaterialIcons
+                  name="clear"
+                  style={{ color: "white" }}
+                  size={30}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
           {cart.length > 0 ? (
             <View style={styles.cartItems}>
               <ScrollView
@@ -948,7 +973,13 @@ function OrderPagePosHome({ navigation }) {
           <View style={styles.totalsContainer}>
             <View style={styles.topGroupTotalsContainer}>
               <UntitledComponent
-                amountValue="N/A"
+                amountValue={
+                  discountAmount
+                    ? discountAmount.includes("%")
+                      ? discountAmount
+                      : `$${discountAmount}`
+                    : "N/A"
+                }
                 amountLbl="Discount"
                 style={styles.discountRow}
               />
@@ -1380,6 +1411,8 @@ function OrderPagePosHome({ navigation }) {
             cart={cart}
             deliveryChecked={deliveryChecked}
             storeDetails={storeDetails}
+            setDiscountAmount={setDiscountAmount}
+            discountAmount={discountAmount}
           />
         </View>
       </Modal>

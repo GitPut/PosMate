@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#121212",
     fontSize: 14,
-    width: "25%",
+    width: "25%", 
   },
   optionsRow: {
     width: "70%",

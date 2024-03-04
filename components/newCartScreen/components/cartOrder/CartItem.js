@@ -150,7 +150,7 @@ function CartItem({
             width: "90%",
             padding: 15,
             backgroundColor: "rgba(238,242,255,1)",
-            borderRadius: 20,
+            borderRadius: 20, 
           }}
         >
           {cartItem.options &&

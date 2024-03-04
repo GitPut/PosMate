@@ -30,7 +30,13 @@ function DropdownSelectableOption({
   }, []);
 
   return (
-    <View style={[style, openDropdown === id && { zIndex: 1000 }]}>
+    <View
+      style={[
+        style,
+        openDropdown === id && { zIndex: 1000 },
+        { marginTop: 15 },
+      ]}
+    >
       <Text style={styles.lbl}>
         {label} {isRequired ? "*" : ""}
       </Text>
@@ -45,6 +51,7 @@ function DropdownSelectableOption({
               setopenDropdown(id);
             }
           }}
+          activeOpacity={1}
         >
           <Text style={styles.placeholder}>
             {value
@@ -60,48 +67,6 @@ function DropdownSelectableOption({
             style={styles.downIcon}
           ></Icon>
         </TouchableOpacity>
-        {openDropdown === id && (
-          <ScrollView
-            style={{
-              width: "100%",
-              position: "absolute",
-              backgroundColor: "white",
-              bottom: options.length > 3 ? -44 * 3 : -44 * options.length,
-              height: options.length > 3 ? 44 * 3 : 44 * options.length,
-            }}
-          >
-            {options.map((option, listIndex) => (
-              <TouchableOpacity
-                key={listIndex}
-                id={option.id}
-                onPress={() => {
-                  setValue({
-                    option: {
-                      label: option.label,
-                      priceIncrease:
-                        option.priceIncrease !== null
-                          ? option.priceIncrease
-                          : 0,
-                    },
-                    listIndex: listIndex,
-                  });
-                  setopenDropdown(null);
-                }}
-                style={{
-                  width: "100%",
-                  height: 44,
-                  backgroundColor: "white",
-                  padding: 10,
-                  borderWidth: 1,
-                }}
-              >
-                <Text>{`${option.label}  (+$${
-                  option.priceIncrease !== null ? option.priceIncrease : 0
-                })`}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        )}
       </View>
       <Modal visible={openDropdown === id} transparent={true}>
         <TouchableOpacity
@@ -132,6 +97,7 @@ function DropdownSelectableOption({
                   setopenDropdown(id);
                 }
               }}
+              activeOpacity={1}
             >
               <Text style={styles.placeholder}>
                 {value
@@ -157,6 +123,8 @@ function DropdownSelectableOption({
                   backgroundColor: "white",
                   bottom: options.length > 3 ? -44 * 3 : -44 * options.length,
                   height: options.length > 3 ? 44 * 3 : 44 * options.length,
+                  borderRadius: 10,
+                  borderWidth: 1,
                 }}
               >
                 {options.map((option, listIndex) => (
@@ -181,8 +149,9 @@ function DropdownSelectableOption({
                       height: 44,
                       backgroundColor: "white",
                       padding: 10,
-                      borderWidth: 1,
+                      borderBottomWidth: 1,
                     }}
+                    activeOpacity={0.5}
                   >
                     <Text>{`${option.label}  (+$${
                       option.priceIncrease !== null ? option.priceIncrease : 0
