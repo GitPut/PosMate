@@ -1,5 +1,4 @@
 import {
-  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -23,6 +22,8 @@ import CartItem from "components/cart/CartItem";
 import { TouchableWithoutFeedback } from "react-native";
 import SavedCustomerItem from "./components/SavedCustomerItem";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
+import Modal from "react-native-modal";
+import CustomerDetailsModal from "./CustomerDetailsModal";
 
 const SavedCustomersModal = ({
   setSaveCustomerModal,
@@ -35,136 +36,12 @@ const SavedCustomersModal = ({
   setDeliveryChecked,
   setsavedCustomerDetails,
   setDeliveryModal,
+  setAddress,
 }) => {
   const [customerSelected, setcustomerSelected] = useState(null);
   const { height, width } = useWindowDimensions();
-  const [search, setsearch] = useState(null);
-  const [editModal, setEditModal] = useState(false);
-  const [name, setName] = useState(null);
-  const [phone, setPhone] = useState(null);
-  const [address, setaddress] = useState(null);
-  const [buzzCode, setBuzzCode] = useState(null);
-  const [unitNumber, setUnitNumber] = useState(null);
+  const [search, setsearch] = useState("");
   const customers = customersList.use();
-  const storeDetails = storeDetailState.use();
-
-  useEffect(() => {
-    setName(customerSelected?.name);
-    setPhone(customerSelected?.phone);
-    setaddress(customerSelected?.address);
-    setBuzzCode(customerSelected?.buzzCode);
-    setUnitNumber(customerSelected?.unitNumber);
-  }, [customerSelected]);
-
-  const removeCustomerOrder = (removeIndex) => {
-    const updatedOrderHistory = structuredClone(customerSelected.orders);
-    updatedOrderHistory.splice(removeIndex, 1);
-    db.collection("users")
-      .doc(auth.currentUser?.uid)
-      .collection("customers")
-      .doc(customerSelected.id)
-      .update({
-        orders: updatedOrderHistory,
-      });
-    setcustomerSelected((prev) => ({ ...prev, orders: updatedOrderHistory }));
-  };
-
-  const PrevOrderItem = ({ prevOrder, prevOrderIndex }) => {
-    return (
-      <View
-        style={{
-          borderBottomColor: "#F3F2F2",
-          borderBottomWidth: 2,
-          paddingTop: 20,
-          paddingBottom: 25,
-          marginBottom: 15,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 10,
-            paddingBottom: 10,
-          }}
-        >
-          <Text
-            style={{
-              marginBottom: 15,
-              fontSize: 16,
-              fontFamily: "archivo-600",
-            }}
-          >
-            Order #{prevOrderIndex + 1}
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Button
-              title="Pickup"
-              onPress={() => {
-                setCartState(prevOrder.cart);
-                setOngoingDelivery(true);
-                setNameForDelivery(customerSelected.name);
-                setPhoneForDelivery(customerSelected.phone);
-                setAddressForDelivery(customerSelected.address);
-                setBuzzCodeForDelivery(customerSelected.buzzCode);
-                setUnitNumberForDelivery(customerSelected.unitNumber);
-                setDeliveryChecked(false);
-                setSaveCustomerModal(false);
-              }}
-              style={{ backgroundColor: "#4050B5", marginRight: 10 }}
-              titleStyle={{ textTransform: "capitalize" }}
-            />
-            {storeDetails.acceptDelivery && (
-              <Button
-                disabled={!customerSelected.address}
-                title="Delivery"
-                onPress={() => {
-                  setCartState(prevOrder.cart);
-                  setOngoingDelivery(true);
-                  setNameForDelivery(customerSelected.name);
-                  setPhoneForDelivery(customerSelected.phone);
-                  setAddressForDelivery(customerSelected.address);
-                  setBuzzCodeForDelivery(customerSelected.buzzCode);
-                  setUnitNumberForDelivery(customerSelected.unitNumber);
-                  setDeliveryChecked(true);
-                  setSaveCustomerModal(false);
-                }}
-                style={[
-                  { backgroundColor: "#4050B5", marginRight: 10 },
-                  !customerSelected.address && { opacity: 0.5 },
-                ]}
-                titleStyle={{ textTransform: "capitalize" }}
-              />
-            )}
-            <TouchableOpacity
-              onPress={() => removeCustomerOrder(prevOrderIndex)}
-            >
-              <Ionicons
-                name="ios-add-circle"
-                style={[
-                  styles.productRemoveIcon,
-                  {
-                    transform: [{ rotate: "45deg" }],
-                  },
-                ]}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        {prevOrder.cart?.map((cartItem, index) => (
-          <CartItem cartItem={cartItem} index={index} isPrev={true} />
-        ))}
-      </View>
-    );
-  };
-
-  const [addPressed, setaddPressed] = useState(false);
 
   const closeAll = () => {
     setDeliveryModal(false);
@@ -187,7 +64,12 @@ const SavedCustomersModal = ({
           <View style={styles.container}>
             <View style={styles.topGroup}>
               <View style={styles.topRow}>
-                <TouchableOpacity onPress={() => setSaveCustomerModal(false)}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSaveCustomerModal(false);
+                    setDeliveryModal(true);
+                  }}
+                >
                   <Entypo name="chevron-left" style={styles.goBackIcon} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={closeAll}>
@@ -200,6 +82,8 @@ const SavedCustomersModal = ({
               <TextInput
                 style={styles.searchSavedCustomersBox}
                 placeholder="Enter Any Customer Details"
+                value={search}
+                onChangeText={(val) => setsearch(val)}
               />
               <View style={styles.scrollArea}>
                 <ScrollView
@@ -208,17 +92,76 @@ const SavedCustomersModal = ({
                     styles.scrollArea_contentContainerStyle
                   }
                 >
-                  <SavedCustomerItem style={styles.savedCustomerItem} />
-                  <SavedCustomerItem style={styles.savedCustomerItem1} />
-                  <SavedCustomerItem style={styles.savedCustomerItem2} />
-                  <SavedCustomerItem style={styles.savedCustomerItem3} />
-                  <SavedCustomerItem style={styles.savedCustomerItem4} />
-                  <SavedCustomerItem style={styles.savedCustomerItem5} />
-                  <SavedCustomerItem style={styles.savedCustomerItem6} />
+                  {customers.map((customer) => {
+                    const newAddress = customer.address?.label
+                      ? customer.address?.label.toLowerCase()
+                      : "";
+                    const newName = customer.name
+                      ? customer.name?.toLowerCase()
+                      : "";
+                    const lowerCaseSearch = search ? search?.toLowerCase() : "";
+                    if (
+                      search?.length > 0 &&
+                      !newName.includes(lowerCaseSearch) &&
+                      !customer.phone
+                        ?.toLowerCase()
+                        .includes(lowerCaseSearch) &&
+                      !newAddress.includes(lowerCaseSearch)
+                    )
+                      return;
+                    return (
+                      <TouchableOpacity
+                        key={customer.id}
+                        onPress={() => setcustomerSelected(customer)}
+                      >
+                        <SavedCustomerItem
+                          style={styles.savedCustomerItem}
+                          customerName={
+                            customer.name ? customer.name : "No Name"
+                          }
+                        />
+                      </TouchableOpacity>
+                    );
+                  })}
                 </ScrollView>
               </View>
             </View>
           </View>
+          <Modal
+            isVisible={customerSelected}
+            animationIn="fadeIn"
+            animationOut="fadeOut"
+            backdropOpacity={0}
+          >
+            <View
+              style={{
+                flex: 1,
+                height: "100%",
+                width: "100%",
+                position: "absolute",
+                left: 0,
+                top: 0,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {customerSelected && (
+                <CustomerDetailsModal
+                  setcustomerSelected={setcustomerSelected}
+                  customerSelected={customerSelected}
+                  setOngoingDelivery={setOngoingDelivery}
+                  setNameForDelivery={setNameForDelivery}
+                  setPhoneForDelivery={setPhoneForDelivery}
+                  setAddressForDelivery={setAddressForDelivery}
+                  setBuzzCodeForDelivery={setBuzzCodeForDelivery}
+                  setUnitNumberForDelivery={setUnitNumberForDelivery}
+                  setDeliveryChecked={setDeliveryChecked}
+                  setsavedCustomerDetails={setsavedCustomerDetails}
+                  closeAll={closeAll}
+                />
+              )}
+            </View>
+          </Modal>
         </div>
       </TouchableWithoutFeedback>
     </TouchableOpacity>
@@ -262,10 +205,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   bottomGroup: {
-    width: 439,
     height: 454,
     justifyContent: "space-around",
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   searchSavedCustomersBox: {
     width: 439,
@@ -277,12 +219,13 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   scrollArea: {
-    width: 439,
     height: 325,
+    width: 450,
   },
   scrollArea_contentContainerStyle: {
     height: 325,
     width: 439,
+    paddingRight: 10,
   },
   savedCustomerItem: {
     height: 50,

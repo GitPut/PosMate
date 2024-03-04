@@ -56,8 +56,13 @@ function CartItem({
   return (
     <View style={[styles.container, style]}>
       <TouchableOpacity
-        style={styles.topRowWithImgContainer}
-        onPress={() => cartItem.options.length > 0 && setisOpen(true)}
+        style={[
+          styles.topRowWithImgContainer,
+          isOpen && { paddingTop: 15, marginBottom: 20 },
+        ]}
+        onPress={() =>
+          cartItem.options.length > 0 && setisOpen((prev) => !prev)
+        }
         activeOpacity={0.8}
       >
         {cartItem.imageUrl && (
@@ -137,25 +142,35 @@ function CartItem({
               ></MaterialCommunityIcons>
             </TouchableOpacity>
           )}
-          {/* Drop down options */}
-          {/* <View style={styles.optionsContainer}>
-            {cartItem.options &&
-              cartItem.options.map((option) => (
-                <Text style={styles.optionTxt}>{option}</Text>
-              ))}
-            {cartItem.description && (
-              <Text style={styles.optionTxt}>
-                Description: {cartItem.description}
-              </Text>
-            )}
-            {cartItem.extraDetails && (
-              <Text style={styles.optionTxt}>
-                Written Note: {cartItem.extraDetails}
-              </Text>
-            )}
-          </View> */}
         </View>
       </TouchableOpacity>
+      {isOpen && (
+        <View
+          style={{
+            width: "90%",
+            padding: 15,
+            backgroundColor: "rgba(238,242,255,1)",
+            borderRadius: 20,
+          }}
+        >
+          {cartItem.options &&
+            cartItem.options.map((option, key) => (
+              <Text key={key} style={styles.optionTxt}>
+                {option}
+              </Text>
+            ))}
+          {cartItem.description && (
+            <Text style={styles.optionTxt}>
+              Description: {cartItem.description}
+            </Text>
+          )}
+          {cartItem.extraDetails && (
+            <Text style={styles.optionTxt}>
+              Written Note: {cartItem.extraDetails}
+            </Text>
+          )}
+        </View>
+      )}
       {showProductScreen && (
         <Modal transparent={true}>
           <Animated.View

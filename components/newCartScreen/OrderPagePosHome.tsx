@@ -33,9 +33,10 @@ import ChangeScreen from "components/modalsNew/ChangeScreen";
 import PendingOrderModal from "components/modalsNew/PendingOrdersModal/PendingOrdersModal";
 import SettingsPasswordModal from "components/modalsNew/SettingsPasswordModal";
 import DiscountModal from "components/modalsNew/DiscountModal";
-import DeliveryScreen from "components/modalsNew/PhoneOrderModal/PhoneOrderModal";
+import PhoneOrderModal from "components/modalsNew/PhoneOrderModal/PhoneOrderModal";
 import SavedCustomersModal from "components/modalsNew/SavedCustomersModal/SavedCustomersModal";
 import ClockinModal from "components/modalsNew/ClockInModal/ClockinModal";
+import CustomerDetailsModal from "components/modalsNew/SavedCustomersModal/CustomerDetailsModal";
 
 function OrderPagePosHome({ navigation }) {
   const { height, width } = useWindowDimensions();
@@ -544,6 +545,7 @@ function OrderPagePosHome({ navigation }) {
               setDeliveryChecked(false);
               setOngoingDelivery(null);
               setupdatingOrder(false);
+              setsavedCustomerDetails(null);
             }}
           >
             <Text style={styles.checkoutLbl}>Cancel</Text>
@@ -1236,7 +1238,7 @@ function OrderPagePosHome({ navigation }) {
             alignItems: "center",
           }}
         >
-          <DeliveryScreen
+          <PhoneOrderModal
             setsavedCustomerDetails={setsavedCustomerDetails}
             setDeliveryModal={setDeliveryModal}
             setOngoingDelivery={setOngoingDelivery}
@@ -1254,6 +1256,7 @@ function OrderPagePosHome({ navigation }) {
             setBuzzCode={setBuzzCode}
             unitNumber={unitNumber}
             buzzCode={buzzCode}
+            savedCustomerDetails={savedCustomerDetails}
           />
         </View>
       </Modal>
@@ -1284,7 +1287,7 @@ function OrderPagePosHome({ navigation }) {
         isVisible={saveCustomerModal}
         animationIn="fadeIn"
         animationOut="fadeOut"
-        backdropOpacity={0}
+        // backdropOpacity={0}
       >
         <View
           style={{
@@ -1309,6 +1312,7 @@ function OrderPagePosHome({ navigation }) {
             setDeliveryChecked={setDeliveryChecked}
             setsavedCustomerDetails={setsavedCustomerDetails}
             setDeliveryModal={setDeliveryModal}
+            setAddress={setAddress}
           />
         </View>
       </Modal>
@@ -1530,12 +1534,10 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   cartItem1: {
-    height: 86,
     width: "100%",
     marginBottom: 10,
   },
   cartItem2: {
-    height: 86,
     width: "100%",
     marginBottom: 10,
   },

@@ -768,17 +768,14 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   cartItem1: {
-    height: 86,
     width: "100%",
     marginBottom: 10,
   },
   cartItem2: {
-    height: 86,
     width: "100%",
     marginBottom: 10,
   },
   cartItem3: {
-    height: 86,
     width: "100%",
     marginBottom: 10,
   },

@@ -24,6 +24,7 @@ function MultipleTimeSelectableOptionGroup({
 }) {
   const options = e.optionsList;
   const [localMyObjProfile, setlocalMyObjProfile] = useState(myObjProfile);
+  const [optionsSelectedLabel, setoptionsSelectedLabel] = useState("");
 
   const onMinusPress = ({ option, listIndex }) => {
     const newMyObjProfile = structuredClone(localMyObjProfile);
@@ -91,6 +92,31 @@ function MultipleTimeSelectableOptionGroup({
     });
   }, []);
 
+  const handleKeyDown = (e, option, listIndex) => {
+    // Prevent manual editing
+    e.preventDefault();
+
+    if (e.key === "ArrowUp") {
+      onPlusPress({ option, listIndex });
+    } else if (e.key === "ArrowDown") {
+      onMinusPress({ option, listIndex });
+    }
+  };
+
+  useEffect(() => {
+    const optionsSelected = localMyObjProfile.options[index].optionsList.filter(
+      (op) => op.selectedTimes > 0
+    );
+    setoptionsSelectedLabel(
+      optionsSelected.length > 0
+        ? optionsSelected.map((op, index) => {
+            if (index > 0) return `, ${op.selectedTimes} X ${op.label}`;
+            return `${op.selectedTimes} X ${op.label}`;
+          })
+        : ""
+    );
+  }, [localMyObjProfile]);
+
   return (
     <View
       style={[styles.container, style, openDropdown === id && { zIndex: 1000 }]}
@@ -111,7 +137,11 @@ function MultipleTimeSelectableOptionGroup({
             }
           }}
         >
-          <Text style={styles.placeholder}>Select {label}</Text>
+          {optionsSelectedLabel !== "" ? (
+            <Text style={styles.placeholder}>{optionsSelectedLabel}</Text>
+          ) : (
+            <Text style={styles.placeholder}>Select {label}</Text>
+          )}
           <Icon
             name={
               openDropdown === id ? "chevron-small-up" : "chevron-small-down"
@@ -163,14 +193,18 @@ function MultipleTimeSelectableOptionGroup({
                       option.priceIncrease ? `(+$${option.priceIncrease})` : ""
                     }`}
                   </Text>
-                  <TextInput
+                  <input
                     style={{
+                      border: "none",
+                      textAlign: "center",
+                      justifyContent: "center",
+                      alignItems: "center",
                       width: 40,
                       height: 30,
                       borderWidth: 1,
                       borderColor: "black",
-                      margin: 10,
                     }}
+                    type="number"
                     value={
                       localMyObjProfile.options[index].optionsList[listIndex]
                         .selectedTimes > 0
@@ -179,12 +213,9 @@ function MultipleTimeSelectableOptionGroup({
                           ].selectedTimes
                         : 0
                     }
-                    keyboardType="numeric"
-                    // onChangeText={(text) => {
-                    //   let newOptions = [...options];
-                    //   newOptions[index].selectedTimes = text;
-                    //   setoptions(newOptions);
-                    // }}
+                    onKeyDown={(e) => handleKeyDown(e, option, listIndex)}
+                    onChange={() => {}}
+                    readOnly
                   />
                 </View>
                 <TouchableOpacity
@@ -229,7 +260,11 @@ function MultipleTimeSelectableOptionGroup({
                 }
               }}
             >
-              <Text style={styles.placeholder}>Select {label}</Text>
+              {optionsSelectedLabel !== "" ? (
+                <Text style={styles.placeholder}>{optionsSelectedLabel}</Text>
+              ) : (
+                <Text style={styles.placeholder}>Select {label}</Text>
+              )}
               <Icon
                 name={
                   openDropdown === id
@@ -285,14 +320,18 @@ function MultipleTimeSelectableOptionGroup({
                             : ""
                         }`}
                       </Text>
-                      <TextInput
+                      <input
                         style={{
+                          border: "none",
+                          textAlign: "center",
+                          justifyContent: "center",
+                          alignItems: "center",
                           width: 40,
                           height: 30,
                           borderWidth: 1,
                           borderColor: "black",
-                          margin: 10,
                         }}
+                        type="number"
                         value={
                           localMyObjProfile.options[index].optionsList[
                             listIndex
@@ -302,12 +341,9 @@ function MultipleTimeSelectableOptionGroup({
                               ].selectedTimes
                             : 0
                         }
-                        keyboardType="numeric"
-                        // onChangeText={(text) => {
-                        //   let newOptions = [...options];
-                        //   newOptions[index].selectedTimes = text;
-                        //   setoptions(newOptions);
-                        // }}
+                        onKeyDown={(e) => handleKeyDown(e, option, listIndex)}
+                        onChange={() => {}}
+                        readOnly
                       />
                     </View>
                     <TouchableOpacity

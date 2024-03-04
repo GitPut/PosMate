@@ -2,15 +2,15 @@ import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 
-function SavedCustomerItem(props) {
+function SavedCustomerItem({ style, customerName }) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]}>
+    <View style={[styles.container, style]}>
       <View style={styles.leftSide1}>
         <Ionicons name="md-person" style={styles.savedCustomerIcon1} />
-        <Text style={styles.savedCustomerName1}>Peter</Text>
+        <Text style={styles.savedCustomerName1}>{customerName}</Text>
       </View>
       <Entypo name="chevron-right" style={styles.onpressCustomerDetailsIcon2} />
-    </TouchableOpacity>
+    </View>
   );
 }
 

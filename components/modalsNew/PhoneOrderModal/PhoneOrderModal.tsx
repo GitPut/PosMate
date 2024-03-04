@@ -11,8 +11,8 @@ import React, { useState, useEffect } from "react";
 import { customersList, setCustomersList, storeDetailState } from "state/state";
 import { Switch } from "react-native-gesture-handler";
 import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { addCustomerDetailsToDb } from "state/firebaseFunctions";
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
@@ -34,6 +34,7 @@ const PhoneOrderModal = ({
   setBuzzCode,
   unitNumber,
   setUnitNumber,
+  savedCustomerDetails,
 }) => {
   const [localAddress, setlocalAddress] = useState(null);
   const [saveCustomerChecked, setsaveCustomerChecked] = useState(false);
@@ -241,20 +242,22 @@ const PhoneOrderModal = ({
                   onChangeText={(val) => setPhone(val)}
                 />
               </View>
-              <View style={styles.saveCustomerRow}>
-                <Text style={styles.savedCustomersTxt}>
-                  Would you like to save customer?
-                </Text>
-                <Switch
-                  value={saveCustomerChecked}
-                  onValueChange={(val) => {
-                    setsaveCustomerChecked(val);
-                    if (val) {
-                      SaveCustomer();
-                    }
-                  }}
-                />
-              </View>
+              {!savedCustomerDetails && (
+                <View style={styles.saveCustomerRow}>
+                  <Text style={styles.savedCustomersTxt}>
+                    Would you like to save customer?
+                  </Text>
+                  <Switch
+                    value={saveCustomerChecked}
+                    onValueChange={(val) => {
+                      setsaveCustomerChecked(val);
+                      if (val) {
+                        SaveCustomer();
+                      }
+                    }}
+                  />
+                </View>
+              )}
               <View style={styles.deliveryRow}>
                 <Text style={styles.delivery}>Delivery</Text>
                 <Switch
@@ -359,6 +362,7 @@ const PhoneOrderModal = ({
               <TouchableOpacity
                 style={styles.viewSavedCustomersRow}
                 onPress={() => {
+                  setDeliveryModal(false);
                   setsaveCustomerModal(true);
                 }}
                 disabled={ongoingDelivery}
@@ -366,7 +370,7 @@ const PhoneOrderModal = ({
                 <MaterialIcons
                   name="history"
                   style={styles.savedCustomersIcon}
-                ></MaterialIcons>
+                />
                 <Text style={styles.savedCustomers}>Saved Customers</Text>
               </TouchableOpacity>
             </View>
