@@ -2,7 +2,7 @@ import { Dimensions, View } from "react-native";
 import React, { useEffect } from "react";
 import MenuScreen from "components/menu/MenuScreen";
 import CartScreen from "components/cart/CartScreen";
-import OrderPagePosHome from "components/newCartScreen/OrderPagePosHome";
+import OrderPagePosHome from "components/MainPosPage/OrderPagePosHome";
 
 const HomeScreen = (props) => {
   const width = Dimensions.get("window").width;

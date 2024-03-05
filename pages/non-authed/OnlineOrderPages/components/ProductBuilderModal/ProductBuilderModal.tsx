@@ -13,9 +13,9 @@ import GoBackBtn from "./GoBackBtn";
 import AddToCartBtn from "./AddToCartBtn";
 import { addCartState, cartState, setCartState } from "state/state";
 import { Ionicons } from "@expo/vector-icons/";
-import MultipleTimeSelectableOptionGroup from "components/newCartScreen/components/ProductBuilderModal/MultipleTimeSelectableOptionGroup";
-import DropdownSelectableOption from "components/newCartScreen/components/ProductBuilderModal/DropdownSelectableOption";
-import OneTimeSelectableOptionGroup from "components/newCartScreen/components/ProductBuilderModal/OneTimeSelectableOptionGroup";
+import MultipleTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/MultipleTimeSelectableOptionGroup";
+import DropdownSelectableOption from "components/MainPosPage/components/ProductBuilderModal/DropdownSelectableOption";
+import OneTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/OneTimeSelectableOptionGroup";
 
 function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
   const cart = cartState.use();
