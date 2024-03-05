@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  useWindowDimensions
 } from "react-native";
 import React, { useRef, useState } from "react";
 import { Text } from "@react-native-material/core";
 import { Ionicons } from "@expo/vector-icons";
-import useWindowDimensions from "components/functional/useWindowDimensions";
 import PendingOrderItem from "./components/PendingOrderItem";
 import PendingOrderShowDetails from "./PendingOrderShowDetails";
 import FinishPaymentCash from "./FinishPaymentCash";

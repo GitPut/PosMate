@@ -5,10 +5,10 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  useWindowDimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import useWindowDimensions from "components/functional/useWindowDimensions";
 import { addCartState, setCartState } from "state/state";
 import PercentageBtn from "./components/PercentageBtn";
 

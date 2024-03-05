@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, TouchableOpacity, Text, Image, View } from "react-native";
-import ProductImage from "../../../../../components/ProductImage";
+import ProductImage from "components/ProductImage";
 
 function CategoryBtn({ style, isSelected, onPress, category, imageUrl }) {
   return (

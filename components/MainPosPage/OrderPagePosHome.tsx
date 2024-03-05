@@ -29,15 +29,13 @@ import { useHistory } from "react-router-dom";
 import { auth, db } from "state/firebaseConfig";
 import ReceiptPrint from "components/functional/ReceiptPrint";
 import { logout } from "state/firebaseFunctions";
-import CashScreen from "components/modals/CashScreen";
-import ChangeScreen from "components/modals/ChangeScreen";
+import CashScreen from "components/modals/PayByCashModal";
 import PendingOrderModal from "components/modals/PendingOrdersModal/PendingOrdersModal";
 import SettingsPasswordModal from "components/modals/SettingsPasswordModal";
 import DiscountModal from "components/modals/DiscountModal/DiscountModal";
 import PhoneOrderModal from "components/modals/PhoneOrderModal/PhoneOrderModal";
 import SavedCustomersModal from "components/modals/SavedCustomersModal/SavedCustomersModal";
 import ClockinModal from "components/modals/ClockInModal/ClockinModal";
-import CustomerDetailsModal from "components/modals/SavedCustomersModal/CustomerDetailsModal";
 
 function OrderPagePosHome({ navigation }) {
   const { height, width } = useWindowDimensions();
@@ -48,7 +46,6 @@ function OrderPagePosHome({ navigation }) {
   const [cartOpen, setcartOpen] = useState(false);
   const [deliveryModal, setDeliveryModal] = useState(false);
   const [cashModal, setCashModal] = useState(false);
-  const [changeModal, setChangeModal] = useState(false);
   const [ongoingDelivery, setOngoingDelivery] = useState(null);
   const [name, setName] = useState(null);
   const [phone, setPhone] = useState(null);
@@ -1366,26 +1363,6 @@ function OrderPagePosHome({ navigation }) {
             total={(cartSub * 1.13).toFixed(2)}
             setChangeDue={setChangeDue}
           />
-        </View>
-      </Modal>
-      <Modal
-        isVisible={changeModal}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-      >
-        <View
-          style={{
-            flex: 1,
-            height: "100%",
-            width: "100%",
-            position: "absolute",
-            left: 0,
-            top: 0,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ChangeScreen setChangeModal={setChangeModal} />
         </View>
       </Modal>
       <Modal
