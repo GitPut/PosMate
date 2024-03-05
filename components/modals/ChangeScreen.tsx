@@ -17,10 +17,10 @@ const ChangeScreen = ({
   setcurrentOrder,
   setongoingOrderListModal,
 }) => {
-  const { height, width } = useWindowDimensions();
   const total = order?.total ? order?.total : 0;
   const [cash, setCash] = useState("");
   const storeDetails = storeDetailState.use();
+  const { height, width } = useWindowDimensions();
   const myDeviceDetails = myDeviceDetailsState.use();
 
   const openCash = () => {

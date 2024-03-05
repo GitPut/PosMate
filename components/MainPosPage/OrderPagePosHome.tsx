@@ -29,15 +29,15 @@ import { useHistory } from "react-router-dom";
 import { auth, db } from "state/firebaseConfig";
 import ReceiptPrint from "components/functional/ReceiptPrint";
 import { logout } from "state/firebaseFunctions";
-import CashScreen from "components/modalsNew/CashScreen";
-import ChangeScreen from "components/modalsNew/ChangeScreen";
-import PendingOrderModal from "components/modalsNew/PendingOrdersModal/PendingOrdersModal";
-import SettingsPasswordModal from "components/modalsNew/SettingsPasswordModal";
-import DiscountModal from "components/modalsNew/DiscountModal/DiscountModal";
-import PhoneOrderModal from "components/modalsNew/PhoneOrderModal/PhoneOrderModal";
-import SavedCustomersModal from "components/modalsNew/SavedCustomersModal/SavedCustomersModal";
-import ClockinModal from "components/modalsNew/ClockInModal/ClockinModal";
-import CustomerDetailsModal from "components/modalsNew/SavedCustomersModal/CustomerDetailsModal";
+import CashScreen from "components/modals/CashScreen";
+import ChangeScreen from "components/modals/ChangeScreen";
+import PendingOrderModal from "components/modals/PendingOrdersModal/PendingOrdersModal";
+import SettingsPasswordModal from "components/modals/SettingsPasswordModal";
+import DiscountModal from "components/modals/DiscountModal/DiscountModal";
+import PhoneOrderModal from "components/modals/PhoneOrderModal/PhoneOrderModal";
+import SavedCustomersModal from "components/modals/SavedCustomersModal/SavedCustomersModal";
+import ClockinModal from "components/modals/ClockInModal/ClockinModal";
+import CustomerDetailsModal from "components/modals/SavedCustomersModal/CustomerDetailsModal";
 
 function OrderPagePosHome({ navigation }) {
   const { height, width } = useWindowDimensions();

@@ -1,14 +1,13 @@
 import {
   StyleSheet,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
+  TextInput,
+  Text,
 } from "react-native";
 import React, { useState } from "react";
-import { Text, TextInput } from "@react-native-material/core";
-import {
-  setIsSignedInSettingsState,
-  storeDetailState,
-} from "state/state";
+import { setIsSignedInSettingsState, storeDetailState } from "state/state";
 import Feather from "@expo/vector-icons/Feather";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import useWindowDimensions from "components/functional/useWindowDimensions";
@@ -24,6 +23,20 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
   const [inccorectPass, setinccorectPass] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const history = useHistory();
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      if (password == storeDetails.settingsPassword) {
+        setIsSignedInSettingsState(true);
+        history.push("/authed/dashboard");
+        setsettingsPasswordModalVis(false);
+        setinccorectPass(false);
+        localStorage.setItem("isAuthedBackend", true);
+      } else {
+        setinccorectPass(true);
+      }
+    }
+  };
 
   useFonts({
     Password: require("/assets/password.ttf"),
@@ -56,185 +69,153 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
   };
 
   return (
-    <>
-      <TouchableOpacity
-        onPress={() => setsettingsPasswordModalVis(false)}
-        style={{
-          backgroundColor: "rgba(0, 0, 0, 0.3)",
-          justifyContent: "center",
-          alignItems: "center",
-          height: height,
-          width: width,
-        }}
-      />
-      <View
-        style={{
-          backgroundColor: "white",
-          height: 300,
-          width: 350,
-          borderRadius: 30,
-          shadowColor: "rgba(0,0,0,1)",
-          shadowOffset: {
-            width: 3,
-            height: 3,
-          },
-          elevation: 30,
-          shadowOpacity: 0.57,
-          shadowRadius: 10,
-          position: "absolute",
-          marginLeft: "auto",
-          marginRight: "auto",
-          marginTop: "auto",
-          marginBottom: "auto",
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
-          alignItems: "center",
-        }}
-      >
-        <Text
-          style={{
-            marginTop: 20,
-            fontSize: 20,
-            fontWeight: "600",
-            width: "50%",
-            textAlign: "center",
-            marginBottom: 5,
-          }}
-        >
-          Settings
-        </Text>
-        <Text
-          style={{
-            marginBottom: 25,
-            color: "rgba(74,74,74,1)",
-            fontWeight: "600",
-            width: "50%",
-            textAlign: "center",
-          }}
-        >
-          Authorization
-        </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "rgba(241,241,241,1)",
-            borderRadius: 30,
-            height: 60,
-            marginBottom: 25,
-          }}
-        >
-          <View
-            style={{
-              width: 60,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "rgba(218,216,216,1)",
-              borderRadius: 30,
-              height: 60,
-            }}
-          >
-            <Ionicons
-              name="finger-print"
-              size={32}
-              color="rgba(71,106,229,1)"
-            />
-          </View>
-          <TextInput
-            color="black"
-            placeholder="Enter Password"
-            inputStyle={[
-              { width: 200 },
-              { backgroundColor: "rgba(241,241,241,1)" },
-              !showPassword &&
-                password.length !== 0 && { fontFamily: "Password" },
-            ]}
-            value={password}
-            onChangeText={(val) => setpassword(val)}
-            textContentType="none"
-            autoCorrect={false}
-          />
-          {/* <input
-            type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={(event) => setpassword(event.target.value)}
-            onFocus={() => setShowPassword(false)}
-          /> */}
-          <View
-            style={{
-              width: 60,
-              alignItems: "center",
-              justifyContent: "center",
-              height: 60,
-            }}
-          >
-            {!showPassword ? (
-              <Ionicons
-                name="eye"
-                size={32}
-                color="rgba(74,74,74,1)"
-                onPress={() => setShowPassword((prev) => !prev)}
+    <TouchableOpacity
+      onPress={() => setsettingsPasswordModalVis(false)}
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        height: height,
+        width: width,
+      }}
+      activeOpacity={1}
+    >
+      <TouchableWithoutFeedback>
+        <div style={{ cursor: "default" }}>
+          <View style={styles.container}>
+            <View style={styles.topLabelSectionContainer}>
+              <Text style={styles.settingsLabel}>Settings</Text>
+              <Text style={styles.authorizationLabel}>Authorization</Text>
+            </View>
+            <View>
+              <TextInput
+                placeholder="Enter Password"
+                style={[
+                  styles.passwordTxtInput,
+                  !showPassword &&
+                    password.length !== 0 && { fontFamily: "Password" },
+                ]}
+                value={password}
+                onChangeText={(val) => setpassword(val)}
+                textContentType="none"
+                autoCorrect={false}
+                onKeyPress={handleKeyDown}
               />
-            ) : (
-              <Ionicons
-                name="eye-off"
-                size={32}
-                color="rgba(74,74,74,1)"
-                onPress={() => setShowPassword((prev) => !prev)}
-              />
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "absolute",
+                  right: 5,
+                  top: 0,
+                }}
+              >
+                {!showPassword ? (
+                  <Ionicons
+                    name="eye"
+                    size={32}
+                    color="rgba(74,74,74,1)"
+                    onPress={() => setShowPassword((prev) => !prev)}
+                  />
+                ) : (
+                  <Ionicons
+                    name="eye-off"
+                    size={32}
+                    color="rgba(74,74,74,1)"
+                    onPress={() => setShowPassword((prev) => !prev)}
+                  />
+                )}
+              </View>
+            </View>
+            {inccorectPass && (
+              <Text style={{ marginBottom: 10 }}>Password is inccorect!</Text>
             )}
+            <View style={styles.bottomSectionContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  if (password == storeDetails.settingsPassword) {
+                    setIsSignedInSettingsState(true);
+                    history.push("/authed/dashboard");
+                    setsettingsPasswordModalVis(false);
+                    setinccorectPass(false);
+                    localStorage.setItem("isAuthedBackend", true);
+                  } else {
+                    setinccorectPass(true);
+                  }
+                }}
+                style={styles.goBtn}
+              >
+                <Text style={styles.goBtnTxt}>Go</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={SendEmail}>
+                <Text style={styles.forgotPasswordTxt}>Forgot Password?</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        {inccorectPass && (
-          <Text style={{ marginBottom: 10 }}>Password is inccorect!</Text>
-        )}
-        <TouchableOpacity
-          style={{
-            backgroundColor: "rgba(155,155,155,1)",
-            borderRadius: 30,
-            width: 150,
-            height: 61,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={() => {
-            if (password == storeDetails.settingsPassword) {
-              setIsSignedInSettingsState(true);
-              history.push("/authed/dashboard");
-              setsettingsPasswordModalVis(false);
-              setinccorectPass(false);
-              localStorage.setItem("isAuthedBackend", true);
-            } else {
-              setinccorectPass(true);
-            }
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 20, paddingRight: 10 }}>
-            Go
-          </Text>
-          <Feather name="arrow-up-right" size={32} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={SendEmail} style={{ marginTop: 10 }}>
-          <Text style={{ color: "blue", fontSize: 14 }}>Forgot Password?</Text>
-        </TouchableOpacity>
-      </View>
-    </>
+        </div>
+      </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 
 export default SettingsPasswordModal;
 
 const styles = StyleSheet.create({
-  contentContainer: {
-    justifyContent: "space-between",
-    paddingLeft: 50,
-    paddingRight: 50,
-    paddingBottom: 50,
-    height: "95%",
-    width: "100%",
+  container: {
+    borderRadius: 10,
     alignItems: "center",
+    backgroundColor: "rgba(255,255,255,1)",
+    justifyContent: "space-between",
+    width: 366,
+    height: 288,
+  },
+  topLabelSectionContainer: {
+    width: 87,
+    height: 51,
+    alignItems: "center",
+    justifyContent: "space-between",
+    margin: "",
+    marginTop: 29,
+  },
+  settingsLabel: {
+    fontWeight: "700",
+    color: "#121212",
+    fontSize: 24,
+  },
+  authorizationLabel: {
+    color: "#5f5f5f",
+  },
+  passwordTxtInput: {
+    width: 294,
+    height: 36,
+    backgroundColor: "rgba(255,255,255,1)",
+    borderWidth: 1,
+    borderColor: "#a4a4a4",
+    borderRadius: 10,
+    padding: 10,
+  },
+  bottomSectionContainer: {
+    width: 132,
+    height: 65,
+    justifyContent: "space-between",
+    alignItems: "center",
+    margin: "",
+    marginBottom: 16,
+  },
+  goBtn: {
+    width: 132,
+    height: 36,
+    backgroundColor: "#1d284e",
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  goBtnTxt: {
+    fontWeight: "700",
+    color: "rgba(255,255,255,1)",
+    fontSize: 20,
+  },
+  forgotPasswordTxt: {
+    color: "#8b8484",
+    textDecorationLine: "underline",
   },
 });

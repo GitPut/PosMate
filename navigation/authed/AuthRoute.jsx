@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import HomeScreen from 'pages/authed/pos/HomeScreen';
-import DefaultLayout from 'pages/authed/main/InitialPage/Sidebar/DefaultLayout';
+import DefaultLayout from 'pages/authed/backendPos/InitialPage/Sidebar/DefaultLayout';
 import { useHistory } from "react-router-dom";
 
 const AuthRoute = (props) => {
