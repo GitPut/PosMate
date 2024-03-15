@@ -19,8 +19,6 @@ function OptionIfStatementItem({
   sete,
   ifOptionOptions,
   newProduct,
-  testMap,
-  settestMap,
 }) {
   const local = newProduct.options.filter(
     (localE) => localE.label == ifStatement.selectedCaseKey
@@ -33,7 +31,9 @@ function OptionIfStatementItem({
       : [];
 
   return (
-    <View style={[styles.container, style]}>
+    <View
+      style={[styles.container, style]}
+    >
       <View style={styles.optionSelectionNameInputGroup}>
         <Text style={styles.selectionNameInputLbl}>If Option</Text>
         <GeneralDropdown

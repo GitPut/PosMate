@@ -18,15 +18,7 @@ function OptionsItem({
   scrollViewRef,
 }) {
   const [e, sete] = useState(structuredClone(item));
-  const [firstTurnOn, setfirstTurnOn] = useState(false);
-
-  useEffect(() => {
-    if (indexOn === index && !firstTurnOn) {
-      setfirstTurnOn(true);
-    } else if (firstTurnOn && !(indexOn === index)) {
-      setfirstTurnOn(false);
-    }
-  }, [indexOn]);
+  const [addOptionClicked, setaddOptionClicked] = useState(true);
 
   return (
     <>
@@ -40,7 +32,16 @@ function OptionsItem({
           const { y, height } = event.nativeEvent.layout;
           if (indexOn === index) {
             // Calculate the bottom position of the element within the ScrollView
-            const elementBottomPosition = y + height;
+            let elementBottomPosition = y + height;
+
+            if (
+              addOptionClicked &&
+              newProductOptions[index].selectedCaseList?.length > 0
+            ) {
+              elementBottomPosition -=
+                95 * newProductOptions[index].selectedCaseList.length;
+              setaddOptionClicked(false);
+            }
 
             // Get the ScrollView's height and the current scroll position
             scrollViewRef.current.measure(
@@ -188,6 +189,7 @@ function OptionsItem({
             e={e}
             sete={sete}
             scrollY={scrollY}
+            setaddOptionClicked={setaddOptionClicked}
           />
         )}
       </View>

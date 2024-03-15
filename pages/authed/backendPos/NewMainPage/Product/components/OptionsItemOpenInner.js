@@ -21,6 +21,7 @@ function OptionsItemOpenInner({
   e,
   sete,
   scrollY,
+  setaddOptionClicked,
 }) {
   const [testMap, settestMap] = useState(structuredClone(item.optionsList));
 
@@ -187,6 +188,7 @@ function OptionsItemOpenInner({
               return clone;
             });
             settestMap(cloneOuter);
+            setaddOptionClicked(true);
           }}
           disabled={
             testMap.length > 0 && testMap[testMap.length - 1].label === null
@@ -221,40 +223,6 @@ function OptionsItemOpenInner({
           <TouchableOpacity
             style={styles.addAnotherSelectionBtn2}
             onPress={() => {
-              // if (newProductOptions[index].selectedCaseList > 0) {
-              //   console.log("Added new if statement");
-              //   let clone;
-              //   setnewProductOptions((prev) => {
-              //     clone = structuredClone(prev);
-              //     clone[index].selectedCaseList.push({
-              //       selectedCaseKey: null,
-              //       selectedCaseValue: null,
-              //     });
-              //     return clone;
-              //   });
-              //   sete((prev) => ({
-              //     ...prev,
-              //     selectedCaseList: clone[index].selectedCaseList,
-              //   }));
-              // } else {
-              //   console.log("Added new if statement list");
-              //   setnewProductOptions((prev) => {
-              //     const clone = structuredClone(prev);
-              //     clone[index].selectedCaseList = [
-              //       {
-              //         selectedCaseKey: null,
-              //         selectedCaseValue: null,
-              //       },
-              //     ];
-              //     return clone;
-              //   });
-              //   sete((prev) => ({
-              //     ...prev,
-              //     selectedCaseList: [
-              //       { selectedCaseKey: null, selectedCaseValue: null },
-              //     ],
-              //   }));
-              // }
               if (!newProductOptions[index].selectedCaseList) {
                 console.log("Added new if statement list");
                 setnewProductOptions((prev) => {
