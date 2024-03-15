@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import HomeScreen from 'pages/authed/pos/HomeScreen';
 import DefaultLayout from 'pages/authed/backendPos/InitialPage/Sidebar/DefaultLayout';
 import { useHistory } from "react-router-dom";
+import BackendPosContainer from 'pages/authed/newBackendPos/BackendPosContainer';
 
 const AuthRoute = (props) => {
     const { location } = props;
@@ -29,17 +30,17 @@ const AuthRoute = (props) => {
     // }
     //     , [location.pathname])
 
-    useEffect(() => {
-        const handleBeforeUnload = (event) => {
-            event.preventDefault();
-            // Chrome requires returnValue to be set
-            event.returnValue = '';
-        };
+    // useEffect(() => {
+    //     const handleBeforeUnload = (event) => {
+    //         event.preventDefault();
+    //         // Chrome requires returnValue to be set
+    //         event.returnValue = '';
+    //     };
 
-        window.addEventListener('beforeunload', handleBeforeUnload);
+    //     window.addEventListener('beforeunload', handleBeforeUnload);
 
-        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-    }, []);
+    //     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    // }, []);
 
 
 
@@ -49,7 +50,8 @@ const AuthRoute = (props) => {
                 <Route path="/forgetPassword" component={ForgetPassword} />
                 <Route path="/signUp" component={SignUp} /> */}
             <Route path="/pos" component={HomeScreen} />
-            <Route path="/authed" component={DefaultLayout} />
+            {/* <Route path="/authed" component={DefaultLayout} /> */}
+            <Route path="/authed" component={BackendPosContainer} />
 
             {/* <Route path="/error-404" component={Error404} />
                 <Route path="/error-500" component={Error500} />

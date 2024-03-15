@@ -24,7 +24,6 @@ import firebase from "firebase/app";
 
 const Sidebar = (props) => {
   const [isSideMenu, setSideMenu] = useState("");
-  const [path, setPath] = useState("");
   const history = useHistory();
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -99,7 +98,7 @@ const Sidebar = (props) => {
             style={{ height: '100%' }}
           >
             <ul>
-              <li className={pathname.includes("dashboard") ? "active" : ""}>
+              <li className={pathname.includes("dashboard") ? "active" : ""}> 
                 <Link style={{ textDecoration: 'none' }}
                   to="/authed/dashboard"
                   onClick={() => toggleSidebar(isSideMenu == "" ? "" : "")}

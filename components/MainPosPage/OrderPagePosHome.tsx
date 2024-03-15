@@ -37,7 +37,11 @@ import PhoneOrderModal from "components/modals/PhoneOrderModal/PhoneOrderModal";
 import SavedCustomersModal from "components/modals/SavedCustomersModal/SavedCustomersModal";
 import ClockinModal from "components/modals/ClockInModal/ClockinModal";
 
-function OrderPagePosHome({ navigation }) {
+interface OrderPagePosHomeProps {
+  navigation: any; // Replace 'any' with the appropriate type for the 'navigation' prop
+}
+
+function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
   const { height, width } = useWindowDimensions();
   const catalog = userStoreState.use();
   const [section, setsection] = useState(

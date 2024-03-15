@@ -67,7 +67,7 @@ function DropdownSelectableOption({
       <Modal visible={openDropdown === id} transparent={true}>
         <TouchableOpacity
           style={{
-            width: "100%",
+            width: "100%", 
             height: "100%",
           }}
           onPress={() => {

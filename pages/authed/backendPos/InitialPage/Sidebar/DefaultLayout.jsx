@@ -133,7 +133,6 @@ const DefaultLayout = (props) => {
     setTransListTableOrgState(transListTableOrg)
   }, [transList, transListTableOrg])
 
-
   return (
     <>
       <div className="main-wrapper">

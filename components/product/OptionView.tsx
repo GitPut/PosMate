@@ -28,16 +28,6 @@ const InnerOn = ({
   );
 
   if (e.selectedCaseKey || e.selectedCaseValue) {
-    // newProductOptions.current[index].selectedCaseList = [
-    //   {
-    //     selectedCaseKey: e.selectedCaseKey,
-    //     selectedCaseValue: e.selectedCaseValue,
-    //   },
-    // ];
-    // newProductOptions.current[index].selectedCaseKey = null;
-    // newProductOptions.current[index].selectedCaseValue = null;
-
-    //convert to usestate
     setnewProductOptions((prev) => {
       const clone = structuredClone(prev);
       clone[index].selectedCaseList = [
@@ -208,14 +198,6 @@ const InnerOn = ({
             alignItems: "center",
           }}
           onPress={() => {
-            //  cloneOuter.splice(indexInnerList, 1);
-            //  setnewProductOptions((prev) => {
-            //    const clone = structuredClone(prev);
-            //    clone[index].optionsList = cloneOuter;
-            //    return clone;
-            //  });
-            // settestMap(cloneOuter);
-
             if (testMap.length > 1 && indexInnerList !== 0) {
               setnewProductOptions((prev) => {
                 const clone = structuredClone(prev);
@@ -655,14 +637,15 @@ const InnerOn = ({
           });
           settestMap(cloneOuter);
         }}
+        
+        disabled={
+          testMap.length > 0 && testMap[testMap.length - 1].label === null
+        }
         style={{
           marginBottom: 25,
           marginTop: 25,
           backgroundColor: "#4050B5",
         }}
-        disabled={
-          testMap.length > 0 && testMap[testMap.length - 1].label === null
-        }
       />
       {e.selectedCaseList?.length > 0 && (
         <View
@@ -853,11 +836,6 @@ const OptionView = ({
               alignItems: "center",
             }}
             onPress={() => {
-              // newProductOptions.current.push({
-              //   ...item,
-              //   label: item.label + " Copy",
-              // });
-
               setnewProductOptions((prev) => {
                 const clone = structuredClone(prev);
                 clone.push({
@@ -868,19 +846,11 @@ const OptionView = ({
                 return clone;
               });
 
-              // setnewProduct((prevState) => ({
-              //   ...prevState,
-              //   options: newProductOptions.current,
-              // }));
-              // setindexOn(null);
-
-              //
               setnewProduct((prevState) => ({
                 ...prevState,
                 options: newProductOptions,
               }));
               setindexOn(newProductOptions.length);
-              //
             }}
           >
             <Feather name="copy" size={32} color="white" />
@@ -954,8 +924,8 @@ const OptionView = ({
             // }));
             setindexOn(newProductOptions.length);
           }}
-          style={{ marginBottom: 25, backgroundColor: "#4050B5" }}
           disabled={e.label === null}
+          style={{ marginBottom: 25, backgroundColor: "#4050B5" }}
         />
       )}
     </View>
