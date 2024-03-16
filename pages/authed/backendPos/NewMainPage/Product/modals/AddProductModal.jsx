@@ -234,7 +234,7 @@ function AddProductModal({
                                     <Text style={styles.productImageUploadTxt}>
                                         Product Image Upload
                                     </Text>
-                                    <TouchableOpacity activeOpacity={0.8} onPress={handleClick} style={[styles.productImageUpContainer,]}>
+                                    <TouchableOpacity activeOpacity={0.8} onPress={handleClick} style={[styles.productImageUpContainer]}>
                                         {selectedFile ?
                                             <>
                                                 <Image source={{ uri: URL.createObjectURL(selectedFile) }} style={{ width: 150, height: 150, resizeMode: 'contain' }} />
@@ -519,16 +519,16 @@ const styles = StyleSheet.create({
     productImageUploadTxt: {
         color: "#121212",
         fontSize: 17,
-        marginBottom: 0
+        marginBottom: 5
     },
     productImageUpContainer: {
         width: '100%',
-        height: 150,
+        height: 180,
         backgroundColor: "#ffffff",
         borderWidth: 1,
         borderColor: "#a8a8a8",
         alignItems: "center",
-        justifyContent: "flex-start",
+        justifyContent: "center",
         marginBottom: 0
     },
     uploadImageInner: {
@@ -536,7 +536,6 @@ const styles = StyleSheet.create({
         height: 98,
         alignItems: "center",
         justifyContent: "space-between",
-        marginTop: 13
     },
     upProductImageIcon: {
         color: "rgba(0,0,0,1)",

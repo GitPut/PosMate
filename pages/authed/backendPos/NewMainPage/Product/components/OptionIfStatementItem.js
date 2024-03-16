@@ -31,9 +31,7 @@ function OptionIfStatementItem({
       : [];
 
   return (
-    <View
-      style={[styles.container, style]}
-    >
+    <View style={[styles.container, style]}>
       <View style={styles.optionSelectionNameInputGroup}>
         <Text style={styles.selectionNameInputLbl}>If Option</Text>
         <GeneralDropdown
@@ -57,6 +55,9 @@ function OptionIfStatementItem({
           )}
           scrollY={scrollY}
         />
+      </View>
+      <View style={{ alignItems: "center", justifyContent: "center" }}>
+        <MaterialCommunityIcons name="equal" color="black" size={30} />
       </View>
       <View style={styles.selectionPriceIncreaseInputGroup}>
         <Text style={styles.selectionPriceIncreaseLbl}>Value Of Option</Text>
@@ -112,7 +113,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   optionSelectionNameInputGroup: {
-    width: 351,
     height: 84,
     justifyContent: "space-between",
   },
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   selectionNameInput: {
-    width: "100%",
+    width: 200,
     height: 50,
     backgroundColor: "#ffffff",
     borderWidth: 1,
