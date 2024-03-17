@@ -7,7 +7,7 @@ import Invoices from './invoices'
 import Purchase from './purchase'
 import Supplier from './supplier'
 import Customer from './customer'
-import EmployeesReport from './EmployeesReport';
+import EmployeesReport from './EmployeesList';
 import AddEmployee from './AddEmployee';
 import EditEmployee from './EditEmployee';
 

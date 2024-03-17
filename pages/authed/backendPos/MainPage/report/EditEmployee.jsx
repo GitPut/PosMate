@@ -1,16 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Upload } from '../../EntryFile/imagePath';
-import Select2 from 'react-select2-wrapper';
+import React, { useEffect, useState } from 'react'
 import 'react-select2-wrapper/css/select2.css';
-import { employeesState, setEmployeesState, setUserStoreState, userState, userStoreState } from 'state/state';
-import { updateData } from 'state/firebaseFunctions';
-import { FlatList, Image, Modal, TouchableOpacity, View } from 'react-native';
-import OptionView from 'components/product/OptionView';
-import { Button } from 'react-native';
-import { Link, useHistory, useParams } from 'react-router-dom';
-import { auth, db, storage } from 'state/firebaseConfig';
-
-import DatePicker from "react-datepicker";
+import { employeesState, setEmployeesState } from 'state/state';
+import { Modal, TouchableOpacity, View } from 'react-native';
+import { useHistory, useParams } from 'react-router-dom';
+import { auth, db } from 'state/firebaseConfig';
 import { Text } from '@react-native-material/core';
 import { Entypo } from '@expo/vector-icons';
 import tw from 'twrnc';
@@ -121,22 +114,14 @@ const EditEmployee = () => {
                                         </div>
                                     </View>
 
-                                    {/* <Button title='Remove Employee' onPress={() => {
-                                        db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).delete()
-                                        const newEmployeesList = [...employees]
-                                        const filteredEmployeesList = newEmployeesList.filter(e => e.id !== employee.id)
-                                        setEmployeesState(filteredEmployeesList)
-                                        history.push("/authed/report/employeesreport")
-                                    }}
-                                        color={'red'}
-                                    /> */}
-                                    <TouchableOpacity onPress={() => {
-                                        db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).delete()
-                                        const newEmployeesList = [...employees]
-                                        const filteredEmployeesList = newEmployeesList.filter(e => e.id !== employee.id)
-                                        setEmployeesState(filteredEmployeesList)
-                                        history.push("/authed/report/employeesreport")
-                                    }}
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).delete()
+                                            const newEmployeesList = [...employees]
+                                            const filteredEmployeesList = newEmployeesList.filter(e => e.id !== employee.id)
+                                            setEmployeesState(filteredEmployeesList)
+                                            history.push("/authed/report/employeesreport")
+                                        }}
                                         style={tw.style(['bg-red-500', 'p-2', 'rounded-md'])}
                                     >
                                         <Text style={tw.style(['text-white'])}>Remove Employee</Text>
@@ -173,52 +158,31 @@ const EditEmployee = () => {
                                                 <input id='endTime' aria-label="Time" type="time" onChange={event => setendTime(event.target.value)} />
                                             </div>
                                         </View>
-                                        {/* <Button title="Add" onPress={() => {
-                                            if (!dateSelected || !startTime || !endTime) return
-                                            console.log('dateSelected in add button: ', dateSelected)
-                                            db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").add({
-                                                date: dateSelected,
-                                                startTime: startTime,
-                                                endTime: endTime
-                                            }).then((docRef) => {
-                                                setallHours([...allHours, {
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                if (!dateSelected || !startTime || !endTime) return
+                                                console.log('dateSelected in add button: ', dateSelected)
+                                                db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").add({
                                                     date: dateSelected,
                                                     startTime: startTime,
                                                     endTime: endTime,
-                                                    id: docRef.id
-                                                }])
-                                            })
-                                            setdateSelected(null)
-                                            setstartTime(null)
-                                            setendTime(null)
-                                            document.getElementById('dateSelected').value = null
-                                            document.getElementById('startTime').value = null
-                                            document.getElementById('endTime').value = null
-                                        }} /> */}
-                                        <TouchableOpacity onPress={() => {
-                                            if (!dateSelected || !startTime || !endTime) return
-                                            console.log('dateSelected in add button: ', dateSelected)
-                                            db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").add({
-                                                date: dateSelected,
-                                                startTime: startTime,
-                                                endTime: endTime,
-                                                paid: false
-                                            }).then((docRef) => {
-                                                setallHours([...allHours, {
-                                                    date: dateSelected,
-                                                    startTime: startTime,
-                                                    endTime: endTime,
-                                                    id: docRef.id,
                                                     paid: false
-                                                }])
-                                            })
-                                            setdateSelected(null)
-                                            setstartTime(null)
-                                            setendTime(null)
-                                            document.getElementById('dateSelected').value = null
-                                            document.getElementById('startTime').value = null
-                                            document.getElementById('endTime').value = null
-                                        }}
+                                                }).then((docRef) => {
+                                                    setallHours([...allHours, {
+                                                        date: dateSelected,
+                                                        startTime: startTime,
+                                                        endTime: endTime,
+                                                        id: docRef.id,
+                                                        paid: false
+                                                    }])
+                                                })
+                                                setdateSelected(null)
+                                                setstartTime(null)
+                                                setendTime(null)
+                                                document.getElementById('dateSelected').value = null
+                                                document.getElementById('startTime').value = null
+                                                document.getElementById('endTime').value = null
+                                            }}
                                             style={tw.style(['bg-blue-500', 'p-2', 'rounded-md'])}
                                         >
                                             <Text style={tw.style(['text-white'])}>Add</Text>
@@ -227,29 +191,19 @@ const EditEmployee = () => {
                                     <View style={{ marginTop: 50 }}>
                                         <Text>Unpaid</Text>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-                                            <View style={{ alignItems: 'center', flex: 1 }}> <input id="unPaidCheckAll" value={unPaidSelected.length === allHours.filter(e => !e.paid).length ? true : false} aria-label="Checkbox" type="checkbox" onChange={(event) => {
-                                                if (unPaidSelected.length === allHours.filter(e => !e.paid).length) {
-                                                    setunPaidSelected([])
-                                                } else {
-                                                    setunPaidSelected(allHours.filter(e => !e.paid))
-                                                }
-                                            }} /></View>
+                                            <View style={{ alignItems: 'center', flex: 1 }}>
+                                                <input id="unPaidCheckAll" value={unPaidSelected.length === allHours.filter(e => !e.paid).length ? true : false} aria-label="Checkbox" type="checkbox" onChange={(event) => {
+                                                    if (unPaidSelected.length === allHours.filter(e => !e.paid).length) {
+                                                        setunPaidSelected([])
+                                                    } else {
+                                                        setunPaidSelected(allHours.filter(e => !e.paid))
+                                                    }
+                                                }} />
+                                            </View>
                                             <View style={{ alignItems: 'center', flex: 2 }}> <Text>Date</Text> </View>
                                             <View style={{ alignItems: 'center', flex: 1 }}> <Text>Clock In</Text></View>
                                             <View style={{ alignItems: 'center', flex: 1 }}> <Text>Clock Out</Text></View>
                                             <View style={{ alignItems: 'center', flex: 2, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                                {/* <Button title="Delete" onPress={() => {
-                                                    const newHours = [...allHours]
-                                                    unPaidSelected.forEach(hour => {
-                                                        db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).delete()
-                                                        newHours.splice(allHours.indexOf(hour), 1)
-                                                    }
-                                                    )
-                                                    setallHours(prev => prev.filter(e => !unPaidSelected.includes(e)))
-                                                    setunPaidSelected([])
-                                                    document.getElementById('unPaidCheckAll').checked = false;
-                                                }
-                                                } /> */}
                                                 <TouchableOpacity onPress={() => {
                                                     const newHours = [...allHours]
                                                     unPaidSelected.forEach(hour => {
@@ -335,12 +289,13 @@ const EditEmployee = () => {
                                                             setallHours(newHours)
                                                         }
                                                         } /> */}
-                                                        <TouchableOpacity onPress={() => {
-                                                            db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).delete()
-                                                            const newHours = [...allHours]
-                                                            newHours.splice(index, 1)
-                                                            setallHours(newHours)
-                                                        }}
+                                                        <TouchableOpacity
+                                                            onPress={() => {
+                                                                db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).delete()
+                                                                const newHours = [...allHours]
+                                                                newHours.splice(index, 1)
+                                                                setallHours(newHours)
+                                                            }}
                                                             style={tw.style(['bg-red-500', 'p-2', 'rounded-md'])}
                                                         >
                                                             <Text style={tw.style(['text-white'])}>Delete</Text>
@@ -429,7 +384,8 @@ const EditEmployee = () => {
                                                     document.getElementById('paidCheckAll').checked = false;
                                                 }
                                                 } /> */}
-                                                <TouchableOpacity onPress={() => {
+                                                <TouchableOpacity
+                                                    onPress={() => {
                                                     const newHours = [...allHours]
                                                     paidSelected.forEach(hour => {
                                                         db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).update({
@@ -504,7 +460,8 @@ const EditEmployee = () => {
                                                             setallHours(newHours)
                                                         }
                                                         } /> */}
-                                                        <TouchableOpacity onPress={() => {
+                                                        <TouchableOpacity
+                                                            onPress={() => {
                                                             db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).collection("hours").doc(hour.id.toString()).update({
                                                                 paid: false
                                                             })

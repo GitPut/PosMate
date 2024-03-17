@@ -354,7 +354,13 @@ function BackendPosContainer(props) {
         </View>
         <View style={styles.rightSide}>
           <View style={{ height: "100%" }}>
-            <View style={[styles.page]}>
+            <View
+              style={[
+                !pathname.includes("employeesreport") &&
+                  !pathname.includes("editemployee") &&
+                  styles.page,
+              ]}
+            >
               {index &&
                 index.map((route, key) => (
                   <Route
