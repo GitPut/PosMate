@@ -358,6 +358,7 @@ function BackendPosContainer(props) {
               style={[
                 !pathname.includes("employeesreport") &&
                   !pathname.includes("editemployee") &&
+                  !pathname.includes("onlinestoresettings") &&
                   styles.page,
               ]}
             >

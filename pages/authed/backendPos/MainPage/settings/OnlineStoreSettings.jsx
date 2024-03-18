@@ -1,43 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import Select2 from "react-select2-wrapper";
+import React, { useRef, useState } from "react";
 import "react-select2-wrapper/css/select2.css";
-import { Upload } from "../../EntryFile/imagePath";
 import {
     View,
     Text,
-    ScrollView,
-    useWindowDimensions,
     StyleSheet,
     Image,
     TouchableOpacity,
     Animated,
     Modal,
 } from "react-native";
-import { Button, Switch, TextInput } from "@react-native-material/core";
+import { Switch, TextInput } from "@react-native-material/core";
 import {
     onlineStoreState,
     setOnlineStoreState,
-    setStoreDetailState,
-    setWoocommerceState,
     storeDetailState,
-    trialDetailsState,
     userStoreState,
-    woocommerceState,
 } from "state/state";
-import {
-    updateStoreDetails,
-    updateWooCredentials,
-} from "state/firebaseFunctions";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import Foundation from "@expo/vector-icons/Foundation";
 import { auth, db } from "state/firebaseConfig";
 import { loadStripe } from "@stripe/stripe-js";
-import firebase from "firebase/app";
-import EditStoreDetails from "pages/authed/backendPos/MainPage/settings/EditStoreDetails";
-import ReactSelect from "react-select";
-
-const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 import tw from 'twrnc'
 
 const OnlineStoreSettings = () => {

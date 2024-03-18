@@ -14,7 +14,7 @@ import { employeesState, setEmployeesState } from 'state/state';
 import { useHistory, useParams } from 'react-router-dom';
 import { auth, db } from 'state/firebaseConfig';
 
-function EditEmployee(props) {
+function EditEmployee() {
     const { height, width } = Dimensions.get('window');
     const { employeeId } = useParams()
     const employees = employeesState.use()

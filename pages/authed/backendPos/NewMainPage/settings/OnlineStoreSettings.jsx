@@ -1,46 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import Select2 from "react-select2-wrapper";
-import "react-select2-wrapper/css/select2.css";
-import { Upload } from "../../EntryFile/imagePath";
-import {
-    View,
-    Text,
-    ScrollView,
-    useWindowDimensions,
-    StyleSheet,
-    Image,
-    TouchableOpacity,
-    Animated,
-    Modal,
-} from "react-native";
-import { Button, Switch, TextInput } from "@react-native-material/core";
+import React, { useRef, useState } from "react";
+import { StyleSheet, View, Text, Animated, TextInput, TouchableOpacity, Modal, Image } from "react-native";
 import {
     onlineStoreState,
     setOnlineStoreState,
-    setStoreDetailState,
-    setWoocommerceState,
     storeDetailState,
-    trialDetailsState,
     userStoreState,
-    woocommerceState,
 } from "state/state";
-import {
-    updateStoreDetails,
-    updateWooCredentials,
-} from "state/firebaseFunctions";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import Foundation from "@expo/vector-icons/Foundation";
 import { auth, db } from "state/firebaseConfig";
 import { loadStripe } from "@stripe/stripe-js";
-import firebase from "firebase/app";
-import EditStoreDetails from "pages/authed/backendPos/MainPage/settings/EditStoreDetails";
-import ReactSelect from "react-select";
+import GeneralSwitch from "components/GeneralSwitch";
+import PayForOnlineStore from "./components/PayForOnlineStore";
 
-const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
-import tw from 'twrnc'
-
-const OnlineStoreSettings = () => {
+function OnlineStoreSettings() {
     const onlineStoreDetails = onlineStoreState.use()
     const storeDetails = storeDetailState.use()
     const catalog = userStoreState.use()
@@ -73,6 +44,7 @@ const OnlineStoreSettings = () => {
                         storeDetails: storeDetails,
                         categories: catalog.categories,
                         urlEnding: urlEnding,
+                        stripePublicKey: stripePublicKey,
                     }).then(() => {
                         catalog.products.forEach((product) => {
                             db.collection("public").doc(auth.currentUser.uid).collection("products").doc(product.id).set(product)
@@ -80,12 +52,16 @@ const OnlineStoreSettings = () => {
                         db.collection('users').doc(auth.currentUser.uid).update({
                             onlineStoreActive: true,
                             onlineStoreSetUp: true,
-                            urlEnding: urlEnding
+                            urlEnding: urlEnding,
+                            stripePublicKey: stripePublicKey,
+                            stripeSecretKey: stripeSecretKey
                         })
                         setOnlineStoreState({
                             onlineStoreActive: true,
                             onlineStoreSetUp: true,
-                            urlEnding: urlEnding
+                            urlEnding: urlEnding,
+                            stripePublicKey: stripePublicKey,
+                            stripeSecretKey: stripeSecretKey
                         })
                     })
                 } else {
@@ -187,231 +163,199 @@ const OnlineStoreSettings = () => {
             });
     }
 
-    //update styling of the page
-
-
     return (
-        <div className="page-wrapper">
-            <div className="content">
-                <View style={styles.container}>
-                    <View style={styles.headerRowContainer}>
-                        <Text style={styles.headerTxt}>Online Store Settings</Text>
-                    </View>
-                    <View style={styles.detailInputContainer}>
-                        {onlineStoreDetails.paidStatus === 'active' ?
-                            <View style={tw.style([
-                                'flex-row',
-                                'justify-between',
-                                'items-center',
-                                'mb-5',
-                            ])}>
-                                <Text style={tw.style('text-base')}>Online Store Active?</Text>
-                                <Switch value={onlineStoreDetails.onlineStoreActive} onValueChange={makeOnlineStoreActive} />
-                            </View> :
-                            <TouchableOpacity onPress={payOnlineStore} style={tw.style('bg-blue-500 p-2 rounded-md')}>
-                                <Text style={tw.style('text-white')}>Pay for online store</Text>
-                            </TouchableOpacity>
-                        }
-                        <View style={tw.style('mb-5')}>
-                            <Text style={tw.style('text-base')}>Order Url Ending: </Text>
-                            <TextInput
-                                placeholder="Enter Url Ending"
-                                value={onlineStoreDetails.urlEnding ? onlineStoreDetails.urlEnding : urlEnding}
-                                onChangeText={(text) => { if (!onlineStoreDetails.onlineStoreSetUp) { seturlEnding(text.replace(/[^a-zA-Z-]/g, '').toLowerCase()) } }}
-                            />
-                            {!onlineStoreDetails.onlineStoreSetUp && <TouchableOpacity onPress={startOnlineStore} disabled={onlineStoreDetails.onlineStoreSetUp} style={tw.style('bg-blue-500 p-2 rounded-md')}>
-                                <Text style={tw.style('text-white')}>Start Online Store</Text>
-                            </TouchableOpacity>}
-                            <View style={tw.style('mt-5')}>
-                                <View >
-                                    <Text style={tw.style('text-base')}>Stripe Public Key</Text>
-                                    <TextInput placeholder="Enter Stripe Public Key" value={onlineStoreDetails.stripePublicKey ? onlineStoreDetails.stripePublicKey : stripePublicKey} onChangeText={(text) => { setstripePublicKey(text) }} />
-                                </View>
-                                <View style={tw.style('mt-5')}>
-                                    <Text style={tw.style('text-base')}>Stripe Secret Key</Text>
-                                    <TextInput placeholder="Enter Stripe Secret Key" value={onlineStoreDetails.stripeSecretKey ? onlineStoreDetails.stripeSecretKey : stripeSecretKey} onChangeText={(text) => { setstripeSecretKey(text) }} />
-                                </View>
-                                <TouchableOpacity onPress={() => { updateStripeDetails() }} style={tw.style([
-                                    'bg-blue-500',
-                                    'p-5',
-                                    'rounded-md',
-                                    'mt-5',
-
-                                ])}>
-                                    <Text style={tw.style(['text-white',
-                                        'text-center',
-                                        'text-base'
-                                    ])}>Update Billing Details</Text>
-                                </TouchableOpacity>
+        <View style={styles.container}>
+            <View style={styles.headerContainer}>
+                <Text style={styles.onlineStoreSettingsHeader}>
+                    Online Store Settings
+                </Text>
+            </View>
+            <View style={styles.onlineStoreInnerContainer}>
+                {
+                    onlineStoreDetails.paidStatus === 'active' ? <View style={styles.innerGroup}>
+                        <View style={styles.inputsGroup}>
+                            <View style={styles.urlEndingInputGroup}>
+                                <Text style={styles.onlineUrlEndingTxt}>Online URL Ending</Text>
+                                {onlineStoreDetails.onlineStoreSetUp ? <TouchableOpacity activeOpacity={1} style={[styles.uRLBox, { justifyContent: 'center' }]}><Text>{onlineStoreDetails.urlEnding}</Text></TouchableOpacity> : <TextInput style={styles.uRLBox} placeholder="EX: https://auth.divinepos.com/order/yoururlname" value={onlineStoreDetails.urlEnding ? onlineStoreDetails.urlEnding : urlEnding}
+                                    onChangeText={(text) => { if (!onlineStoreDetails.onlineStoreSetUp) { seturlEnding(text.replace(/[^a-zA-Z-]/g, '').toLowerCase()) } }} />}
+                            </View>
+                            <View style={styles.stripePublicKeyInputGroup}>
+                                <Text style={styles.stripePublicKeyTxt}>Stripe Public Key</Text>
+                                <TextInput style={styles.stripeKeyBox} placeholder="Enter Public Key" value={onlineStoreDetails.stripePublicKey ? onlineStoreDetails.stripePublicKey : stripePublicKey} onChangeText={(text) => { setstripePublicKey(text) }} />
+                            </View>
+                            <View style={styles.stripePrivateKeyInputGroup}>
+                                <Text style={styles.stripePrivateKeyTxt}>Stripe Private Key</Text>
+                                <TextInput style={styles.stripePrivateKeyBox} placeholder="Enter Private Key" value={onlineStoreDetails.stripeSecretKey ? onlineStoreDetails.stripeSecretKey : stripeSecretKey} onChangeText={(text) => { setstripeSecretKey(text) }} />
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Text style={{ fontWeight: '700', marginRight: 10, }}>Online Store Active Status:</Text>
+                                <GeneralSwitch isActive={onlineStoreDetails.onlineStoreActive} toggleSwitch={makeOnlineStoreActive} />
                             </View>
                         </View>
+                        <View style={styles.bottomBtnGroup}>
+                            <Text style={styles.readInfo}>
+                                {onlineStoreDetails.onlineStoreSetUp ? '*Your Store Url Has Already Been Set' : '*Once Confirmed Your Url CAN NOT BE CHANGED'}
+                            </Text>
+                            {onlineStoreDetails.onlineStoreSetUp ? <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7} onPress={updateStripeDetails}>
+                                <Text style={styles.confirmTxtBtn}>Update</Text>
+                            </TouchableOpacity> : <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7} onPress={startOnlineStore}>
+                                <Text style={styles.confirmTxtBtn}>Confirm</Text>
+                            </TouchableOpacity>}
+                        </View>
                     </View>
-                    {viewVisible && (
-                        <Modal visible={true}>
-                            <Animated.View
-                                style={{
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    backgroundColor: "white",
-                                    position: "absolute",
-                                    opacity: fadeAnim,
-                                    height: "100%",
-                                    width: "100%",
-                                }}
-                            >
-                                <Image
-                                    source={require("assets/loading.gif")}
-                                    style={{ width: 450, height: 450, resizeMode: "contain" }}
-                                />
-                            </Animated.View>
-                        </Modal>
-                    )}
-                </View>
-            </div>
-        </div >
+                        :
+                        <PayForOnlineStore payOnlineStore={payOnlineStore} />
+                }
+            </View>
+            {viewVisible && (
+                <Modal visible={true}>
+                    <Animated.View
+                        style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: "white",
+                            position: "absolute",
+                            opacity: fadeAnim,
+                            height: "100%",
+                            width: "100%",
+                        }}
+                    >
+                        <Image
+                            source={require("assets/loading.gif")}
+                            style={{ width: 450, height: 450, resizeMode: "contain" }}
+                        />
+                    </Animated.View>
+                </Modal>
+            )}
+        </View>
     );
-
-
-};
+}
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "rgba(255,255,255,1)",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        height: "100%",
-    },
-    headerRowContainer: {
-        width: "90%",
-        height: 60,
-        flexDirection: "row",
-        alignItems: "center",
+        alignItems: "flex-end",
         justifyContent: "space-between",
-        marginBottom: 20,
+        width: 691,
+        height: 562
     },
-    headerTxt: {
-        fontFamily: "archivo-600",
-        color: "rgba(98,96,96,1)",
-        fontSize: 20,
+    headerContainer: {
+        height: 19,
+        alignSelf: "stretch"
     },
-    billingBtn: {
-        width: 60,
-        height: 60,
-        backgroundColor: "#E6E6E6",
-        borderRadius: 30,
-        alignItems: "center",
-        justifyContent: "center",
+    onlineStoreSettingsHeader: {
+        fontWeight: '700',
+        color: "#121212",
+        fontSize: 16
     },
-    billingIcon: {
-        color: "rgba(128,128,128,1)",
-        fontSize: 30,
-    },
-    detailInputContainer: {
-        width: "90%",
-        borderRadius: 8,
+    onlineStoreInnerContainer: {
+        width: 499,
+        height: 485,
+        backgroundColor: "#ffffff",
         borderWidth: 1,
-        borderColor: "rgba(155,152,152,1)",
-        shadowColor: "rgba(0,0,0,1)",
+        borderColor: "#bfc1cb",
+        shadowColor: "#b6b8c2",
         shadowOffset: {
             width: 3,
-            height: 3,
+            height: 3
         },
-        elevation: 45,
-        shadowOpacity: 0.2,
-        shadowRadius: 15,
-        padding: 30,
-        minHeight: "75%",
-        marginTop: 15,
+        elevation: 600,
+        shadowOpacity: 1,
+        shadowRadius: 10,
+        justifyContent: "center",
+        alignItems: "center"
     },
-    materialStackedLabelTextbox1: {
-        height: 60,
-        width: 483,
-    },
-    materialStackedLabelTextbox2: {
-        height: 60,
-        width: 483,
-        marginLeft: 43,
-    },
-    materialStackedLabelTextbox1Row: {
-        height: 60,
-        flexDirection: "row",
-        marginTop: 23,
-        marginLeft: 36,
-        marginRight: 32,
-    },
-    materialStackedLabelTextbox3: {
-        height: 60,
-        width: 483,
-    },
-    materialStackedLabelTextbox5: {
-        height: 60,
-        width: 483,
-        marginLeft: 43,
-    },
-    materialStackedLabelTextbox3Row: {
-        height: 60,
-        flexDirection: "row",
-        marginTop: 30,
-        marginLeft: 36,
-        marginRight: 32,
-    },
-    materialStackedLabelTextbox4: {
-        height: 60,
-        width: 483,
-    },
-    materialStackedLabelTextbox6: {
-        height: 60,
-        width: 483,
-        marginLeft: 43,
-    },
-    materialStackedLabelTextbox4Row: {
-        height: 60,
-        flexDirection: "row",
-        marginTop: 29,
-        marginLeft: 36,
-        marginRight: 32,
-    },
-    materialStackedLabelTextbox7: {
-        height: 60,
-        width: 483,
-    },
-    materialButtonViolet2: {
-        height: 48,
-        width: 483,
-        marginLeft: 43,
-        marginTop: 12,
-    },
-    materialStackedLabelTextbox7Row: {
-        height: 60,
-        flexDirection: "row",
-        marginTop: 14,
-        marginLeft: 36,
-        marginRight: 32,
-    },
-    helperDownloadContainer: {
-        width: "100%",
-        height: 79,
-        flexDirection: "row",
-        alignItems: "center",
+    innerGroup: {
+        width: 358,
+        height: 419,
         justifyContent: "space-between",
-        padding: 10,
+        alignItems: "center"
     },
-    helperTxt: {
-        fontFamily: "archivo-500",
+    inputsGroup: {
+        width: 358,
+        height: 300,
+        justifyContent: "space-between"
+    },
+    urlEndingInputGroup: {
+        width: 358,
+        height: 86,
+        justifyContent: "space-between"
+    },
+    onlineUrlEndingTxt: {
+        fontWeight: '700',
         color: "#121212",
-        fontSize: 19,
-        width: 483,
-        height: 52,
+        fontSize: 17
     },
-    badgeWindows: {
-        width: 200,
-        height: 79,
+    uRLBox: {
+        width: 358,
+        height: 50,
+        backgroundColor: "#ffffff",
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: "#9b9b9b",
+        padding: 10
     },
-    badgeMac: {
-        width: 200,
-        height: 79,
+    stripePublicKeyInputGroup: {
+        width: 358,
+        height: 87,
+        justifyContent: "space-between"
     },
+    stripePublicKeyTxt: {
+        fontWeight: '700',
+        color: "#121212",
+        fontSize: 17
+    },
+    stripeKeyBox: {
+        width: 358,
+        height: 50,
+        backgroundColor: "#ffffff",
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: "#9b9b9b",
+        padding: 10
+    },
+    stripePrivateKeyInputGroup: {
+        width: 358,
+        height: 86,
+        justifyContent: "space-between"
+    },
+    stripePrivateKeyTxt: {
+        fontWeight: '700',
+        color: "#121212",
+        fontSize: 17
+    },
+    stripePrivateKeyBox: {
+        width: 358,
+        height: 50,
+        backgroundColor: "#ffffff",
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: "#9b9b9b",
+        padding: 10
+    },
+    bottomBtnGroup: {
+        width: '100%',
+        height: 69,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    readInfo: {
+        color: "rgba(0,0,0,1)",
+        fontSize: 12
+    },
+    confirmBtn: {
+        width: 173,
+        height: 46,
+        backgroundColor: "#1c294e",
+        borderRadius: 20,
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 22,
+    },
+    confirmTxtBtn: {
+        fontWeight: '700',
+        color: "rgba(255,245,245,1)",
+        fontSize: 14
+    }
 });
 
 export default OnlineStoreSettings;

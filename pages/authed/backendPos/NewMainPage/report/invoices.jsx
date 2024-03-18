@@ -1,89 +1,61 @@
-import React, { useEffect, useState } from "react";
-import Table from "../../EntryFile/datatable";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import {
-  ClosesIcon,
-  Excel,
-  Filter,
-  Calendar,
-  Printer,
-  search_whites,
-} from "../../EntryFile/imagePath";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Text, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import InvoiceItem from "./components/InvoiceItem";
 import { myDeviceDetailsState, storeDetailState, transListState, transListTableOrgState } from "state/state";
-import { auth, db } from "state/firebaseConfig";
-const tz = require("moment-timezone");
-import ReceiptPrint from "components/functional/ReceiptPrint";
 import { Excel as ExcelDownload } from "antd-table-saveas-excel";
+import { auth, db } from "state/firebaseConfig";
+import ReceiptPrint from "components/functional/ReceiptPrint";
 
-const Sales = () => {
-  const [startDate, setStartDate] = useState(new Date());
-  const [startDate1, setStartDate1] = useState(new Date());
-  const [inputfilter, setInputfilter] = useState(false);
+function InvoiceReport() {
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [search, setSearch] = useState('');
+  const transListTableOrg = transListTableOrgState.use(); // Assumed this is your original transactions list
+  const [filteredTransList, setFilteredTransList] = useState(transListTableOrg);
   const storeDetails = storeDetailState.use();
-  const [baseSelectedRows, setbaseSelectedRows] = useState(null)
+  const [baseSelectedRows, setbaseSelectedRows] = useState([])
   const [updateBaseSelectedRows, setupdateBaseSelectedRows] = useState(false)
-  const [filteredTranLlist, setfilteredTransList] = useState([])
-  const [search, setsearch] = useState(null)
   const transList = transListState.use()
-  const transListTableOrg = transListTableOrgState.use()
-
   const myDeviceDetails = myDeviceDetailsState.use();
-
-  const togglefilter = (value) => {
-    setInputfilter(value);
-  };
 
   const columns = [
     {
       title: "Order ID",
       dataIndex: "id",
       key: "id",
-      // sorter: (a, b) => a.number.length - b.number.length,
-      // //make text uppercase
-      // render: (text, record) => (<>{text?.toUpperCase()}</>)
     },
     {
       title: "Customer name",
       dataIndex: "name",
       key: "name",
-      // sorter: (a, b) => a.Category.length - b.Category.length,
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      // sorter: (a, b) => a.Brand.length - b.Brand.length,
     },
     {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      // sorter: (a, b) => a.Price.length - b.Price.length,
     },
     {
       title: "System Type",
       dataIndex: "system",
       key: "system",
-      // sorter: (a, b) => a.System.length - b.System.length,
     },
     {
       title: "Type",
       dataIndex: "type",
       key: "type",
-      // render: (text, record) => (
-      //   <>
-      //     {text === "Delivery" && (
-      //       <span className="badges bg-lightgreen">{text}</span>
-      //     )}
-      //     {text === "Pickup" && (
-      //       <span className="badges bg-lightgrey">{text}</span>
-      //     )}
-      //   </>
-      // ),
-      // sorter: (a, b) => a.Name.length - b.Name.length,
     },
   ];
+
+  useEffect(() => {
+    setFilteredTransList(transListTableOrg)
+  }, [transListTableOrg])
+
 
   useEffect(() => {
     console.log('Selected rows from base: ', baseSelectedRows)
@@ -139,248 +111,414 @@ const Sales = () => {
     }
   }, [baseSelectedRows])
 
-  useEffect(() => {
-    if (search) {
-      const filtered = transListTableOrg.filter((item) => {
-        return item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())
-      })
-      setfilteredTransList(filtered)
-    } else {
-      setfilteredTransList([])
-    }
-  }
-    , [search])
+  // useEffect(() => {
+  //   if (search) {
+  //     const filtered = transListTableOrg.filter((item) => {
+  //       return item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())
+  //     })
+  //     setFilteredTransList(filtered)
+  //   } else {
+  //     setFilteredTransList(transListTableOrg)
+  //   }
+  // }
+  //   , [search])
 
   const SearchDate = () => {
-    console.log('Searching date')
-    if (search) {
-      const filtered = filteredTranLlist.filter((item) => {
-        const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-        let itemDateFormatted;
-
-        if (item.originalData.date_created) {
-          const dateString = item.originalData.date_created;
-
-          const newDate = new Date(dateString + "Z");
-
-          const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-          const result = tz(newDate)
-            .tz(targetTimezone, true)
-
-          itemDateFormatted = result;
-        } else if (item.originalData.date) {
-          const newDate = new Date(item.originalData.date.seconds * 1000);
-          const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-          const result = tz(newDate)
-            .tz(targetTimezone, true)
-
-          itemDateFormatted = result;
-        }
-
-        const startFormatted = tz(startDate)
-          .tz(targetTimezone, true)
-
-        const endFormatted = tz(startDate1)
-          .tz(targetTimezone, true)
-
-        startFormatted.hour(0)
-        startFormatted.minute(0)
-
-        endFormatted.hour(23)
-        endFormatted.minute(59)
-
-        let bool1 = itemDateFormatted.isBetween(startFormatted, endFormatted)
-
-        console.log('Date: ', itemDateFormatted, ' Start Date: ', startFormatted, ' End Date: ', endFormatted, ' Bool: ', bool1)
-        return bool1
-      })
-      setfilteredTransList(filtered)
-    } else {
-      const filtered = transListTableOrg.filter((item) => {
-        const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-        let itemDateFormatted;
-
-        if (item.originalData.date_created) {
-          const dateString = item.originalData.date_created;
-
-          const newDate = new Date(dateString + "Z");
-
-          const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-          const result = tz(newDate)
-            .tz(targetTimezone, true)
-
-          itemDateFormatted = result;
-        } else if (item.originalData.date) {
-          const newDate = new Date(item.originalData.date.seconds * 1000);
-          const targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-          const result = tz(newDate)
-            .tz(targetTimezone, true)
-
-          itemDateFormatted = result;
-        }
-
-        const startFormatted = tz(startDate)
-          .tz(targetTimezone, true)
-
-        const endFormatted = tz(startDate1)
-          .tz(targetTimezone, true)
-
-        startFormatted.hour(0)
-        startFormatted.minute(0)
-
-        endFormatted.hour(23)
-        endFormatted.minute(59)
-
-        let bool1 = itemDateFormatted.isBetween(startFormatted, endFormatted)
-
-        console.log('Date: ', itemDateFormatted, ' Start Date: ', startFormatted, ' End Date: ', endFormatted, ' Bool: ', bool1)
-        return bool1
-      })
-      setfilteredTransList(filtered)
+    if (!startDate || !endDate) {
+      console.log('Start or end date not provided');
+      return;
     }
-  }
+
+    const startDateConverted = new Date(startDate);
+    startDateConverted.setHours(0, 0, 0, 0); // Set to start of the day
+    const endDateConverted = new Date(endDate);
+    endDateConverted.setHours(23, 59, 59, 999); // Set to end of the day
+
+    // Filter the list based on the date range
+    const filtered = transListTableOrg.filter((item) => {
+      let itemDate = item.originalData.date_created
+        ? new Date(item.originalData.date_created)
+        : new Date(item.originalData.date.seconds * 1000);
+
+      // const isCorrectFilter = search.length > 0 ? (item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())) : true
+
+      // Check if the item's date is within the start and end dates
+      return (
+        itemDate >= startDateConverted &&
+        itemDate <= endDateConverted
+      );
+    });
+
+    // Update the state with the filtered list
+    setFilteredTransList(filtered);
+  };
 
   //Printing function
   const DownloadExcel = () => {
+    const invoicesToDownload = []
+
+    baseSelectedRows.forEach((idx) => {
+      const orderIndex = transListTableOrg.findIndex((item) => item.id === idx)
+      const element = transList[orderIndex];
+      invoicesToDownload.push(element)
+    });
+
     const excelDownload = new ExcelDownload();
     excelDownload
       .addSheet("history")
       .addColumns(columns)
-      .addDataSource(filteredTranLlist.length > 0 ? filteredTranLlist : transListTableOrg, {
+      .addDataSource(invoicesToDownload, {
         str2Percent: true
       })
       .saveAs("StoreReceipts.xlsx");
   };
 
-
   return (
-    <div className="page-wrapper">
-      <div className="content">
-        <div className="page-header">
-          <div className="page-title">
-            <h4>Invoices Report</h4>
-            <h6>Manage your Invoices Report</h6>
-          </div>
-        </div>
-        {/* /product list */}
-        <div className="card">
-          <div className="card-body">
-            <div className="table-top">
-              <div className="search-set">
-                <div className="search-path">
-                  <a
-                    className={` btn ${inputfilter ? "btn-filter setclose" : "btn-filter"
-                      } `}
-                    id="filter_search"
-                    onClick={() => togglefilter(!inputfilter)}
-                  >
-                    <img src={Filter} alt="img" />
-                    <span>
-                      <img src={ClosesIcon} alt="img" />
-                    </span>
-                  </a>
-                </div>
-                <div className="search-input">
-                  <input
-                    className="form-control form-control-sm search-icon"
-                    type="text"
-                    placeholder="Search..."
-                    onChange={(e) => setsearch(e.target.value)}
-                  />
-                  {/* <a className="btn btn-searchset">
-                    <img src={Search} alt="img" />
-                  </a> */}
-                </div>
-              </div>
-              <div className="wordset">
-                <ul>
-                  <li>
-                    <a
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title="excel"
-                      onClick={DownloadExcel}
-                    >
-                      <img src={Excel} alt="img" />
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title="print"
-                      onClick={() => {
-                        setupdateBaseSelectedRows(!updateBaseSelectedRows)
-                      }}
-                    >
-                      <img src={Printer} alt="img" />
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            {/* /Filter */}
-            <div
-              className={`card mb-0 ${inputfilter ? "toggleCls" : ""}`}
-              id="filter_inputs"
-              style={{ display: inputfilter ? "block" : "none" }}
-            >
-              <div className="card-body pb-0">
-                <div className="row">
-                  <div className="col-lg-2 col-sm-6 col-12">
-                    <div className="form-group">
-                      <div className="input-groupicon">
-                        <DatePicker
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
-                        />
-                        <div className="addonset">
-                          <img src={Calendar} alt="img" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-lg-2 col-sm-6 col-12">
-                    <div className="form-group">
-                      <div className="input-groupicon">
-                        <DatePicker
-                          selected={startDate1}
-                          onChange={(date) => setStartDate1(date)}
-                        />
-                        <div className="addonset">
-                          <img src={Calendar} alt="img" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-lg-1 col-sm-6 col-12 ms-auto">
-                    <div className="form-group">
-                      <a className="btn btn-filters ms-auto" onClick={SearchDate}>
-                        <img src={search_whites} alt="img" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* /Filter */}
-            <div className="table-responsive">
-              <Table columns={columns} dataSource={filteredTranLlist.length > 0 ? filteredTranLlist : transListTableOrg} updateBaseSelectedRows={updateBaseSelectedRows} setbaseSelectedRows={setbaseSelectedRows}
-              // noPagnation={true}
+    <View style={styles.container}>
+      <View style={styles.topRow}>
+        <Text style={styles.invoiceReportLbl}>Invoices Report</Text>
+        <View style={styles.centerGroup}>
+          <TextInput style={styles.searchInvoiceInput} placeholder="Enter search filter" value={search} onChangeText={val => setSearch(val)} />
+          <View style={styles.dateSelectorGroup}>
+            <View>
+              <Text>From</Text>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                style={{
+                  width: 120,
+                  height: 34,
+                }}
               />
-            </div>
-          </div>
-        </div>
-        {/* /product list */}
-      </div>
-    </div>
-  );
-};
+            </View>
+            <View>
+              <Text>To</Text>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                style={{
+                  width: 120,
+                  height: 34,
+                }}
+                min={startDate} // Ensures that the end date is not before the start date
+              />
+            </View>
+          </View>
+          <View style={styles.clearAndSearchBtnGroup}>
+            <TouchableOpacity style={styles.resetFilterBtn}
+              onPress={() => {
+                setStartDate('')
+                setEndDate('')
+                setSearch('')
+                setFilteredTransList(transListTableOrg)
+              }}
+            >
+              <Ionicons
+                name="md-close"
+                style={styles.clearIcon}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={SearchDate} style={styles.searchFilterBtn}>
+              <Ionicons
+                name="ios-search"
+                style={styles.searchIcon}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.downloadAndPrintBtnsGroup}>
+          <TouchableOpacity
+            onPress={DownloadExcel}
+          >
+            <Feather
+              name="download"
+              style={styles.downloadIcon}
+            />
+          </TouchableOpacity>
+          <Feather name="printer" style={styles.printIcon} />
+        </View>
+      </View>
+      <View style={styles.bottomGroup}>
+        <View style={styles.invoiceReportHeader}>
+          <View style={styles.checkboxCont}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.checkbox}
+              onPress={() => {
+                if (baseSelectedRows.length === filteredTransList.filter(e => search.length > 0 ? (e.id.toLowerCase().includes(search.toLowerCase()) || e.name.toLowerCase().includes(search.toLowerCase())) : true).length) {
+                  setbaseSelectedRows([])
+                } else {
+                  const newSelectedRows = []
+                  filteredTransList.forEach((item) => {
+                    if (search.length > 0 && (item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())) === false) {
+                      return
+                    }
+                    newSelectedRows.push(item.id)
+                  })
+                  setbaseSelectedRows(newSelectedRows)
+                }
+              }}
+            >
+              {(baseSelectedRows.length === filteredTransList.filter(e => search.length > 0 ? (e.id.toLowerCase().includes(search.toLowerCase()) || e.name.toLowerCase().includes(search.toLowerCase())) : true).length && filteredTransList.filter(e => search.length > 0 ? (e.id.toLowerCase().includes(search.toLowerCase()) || e.name.toLowerCase().includes(search.toLowerCase())) : true).length > 0) && "X"}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.orderIdCont}>
+            <Text style={styles.orderId}>Order ID</Text>
+          </View>
+          <View style={styles.customerNameCont}>
+            <Text style={styles.customerName}>Customer Name</Text>
+          </View>
+          <View style={styles.dateCont}>
+            <Text style={styles.date}>Date</Text>
+          </View>
+          <View style={styles.totalCont}>
+            <Text style={styles.total}>Total</Text>
+          </View>
+          <View style={styles.systemTypeCont}>
+            <Text style={styles.systemType}>System Type</Text>
+          </View>
+          <View style={styles.orderTypeCont}>
+            <Text style={styles.orderType}>Order Type</Text>
+          </View>
+        </View>
+        <View style={styles.scrollArea}>
+          <ScrollView
+            horizontal={false}
+            contentContainerStyle={styles.scrollArea_contentContainerStyle}
+          >
+            {filteredTransList.map((item, index) => {
+              if (search.length > 0 && (item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())) === false) {
+                return null
+              }
 
-export default Sales;
+              return (
+                <InvoiceItem
+                  key={index}
+                  style={styles.invoiceItem}
+                  item={item}
+                  setbaseSelectedRows={setbaseSelectedRows}
+                  baseSelectedRows={baseSelectedRows}
+                />
+              )
+            })}
+          </ScrollView>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "flex-start", // Align items to the start to avoid stretching
+    width: '100%',
+  },
+  topRow: {
+    width: '95%',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: 110,
+  },
+  invoiceReportLbl: {
+    fontWeight: '700',
+    color: "#121212",
+    fontSize: 16,
+  },
+  centerGroup: {
+    flexDirection: "row",
+    width: 649,
+    height: 34,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  searchInvoiceInput: {
+    width: 240,
+    height: 34,
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "grey",
+    borderRadius: 6,
+    padding: 10
+  },
+  dateSelectorGroup: {
+    flexDirection: "row",
+    width: 245,
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: -20
+  },
+  startDateInput: {
+    width: 100,
+    height: 34,
+    backgroundColor: "#f6f6fb",
+    borderWidth: 1,
+    borderColor: "#000000",
+    borderRadius: 10
+  },
+  endDateInput: {
+    width: 100,
+    height: 34,
+    backgroundColor: "#f6f6fb",
+    borderWidth: 1,
+    borderColor: "#000000",
+    borderRadius: 10
+  },
+  clearAndSearchBtnGroup: {
+    flexDirection: "row",
+    width: 89,
+    height: 34,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  resetFilterBtn: {
+    width: 34,
+    height: 34,
+    backgroundColor: "rgba(208,2,27,1)",
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  clearIcon: {
+    color: "rgba(255,255,255,1)",
+    fontSize: 30
+  },
+  searchFilterBtn: {
+    width: 34,
+    height: 34,
+    backgroundColor: "rgba(65,117,5,1)",
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  searchIcon: {
+    color: "rgba(255,255,255,1)",
+    fontSize: 30
+  },
+  downloadAndPrintBtnsGroup: {
+    flexDirection: "row",
+    width: 89,
+    height: 34,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  downloadIcon: {
+    color: "rgba(74,74,74,1)",
+    fontSize: 30
+  },
+  printIcon: {
+    color: "rgba(74,74,74,1)",
+    fontSize: 30
+  },
+  bottomGroup: {
+    flex: 1, // Take up remaining space
+    justifyContent: "flex-start",
+    width: '95%',
+    marginTop: 15
+  },
+  invoiceReportHeader: {
+    height: 40,
+    backgroundColor: "#E6E6E6",
+    alignSelf: "stretch",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  checkboxCont: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 50,
+    alignSelf: "stretch"
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    backgroundColor: "rgba(255,255,255,1)",
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#000000",
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  orderIdCont: {
+    width: 120,
+    alignItems: "flex-start",
+    justifyContent: "center",
+    alignSelf: "stretch"
+  },
+  orderId: {
+    fontWeight: '700',
+    color: "#121212",
+    fontSize: 15
+  },
+  customerNameCont: {
+    width: 180,
+    justifyContent: "center",
+    alignSelf: "stretch"
+  },
+  customerName: {
+    fontWeight: '700',
+    color: "#121212",
+    fontSize: 15
+  },
+  dateCont: {
+    width: 180,
+    justifyContent: "center",
+    alignSelf: "stretch"
+  },
+  date: {
+    fontWeight: '700',
+    color: "#121212",
+    fontSize: 15
+  },
+  totalCont: {
+    width: 120,
+    justifyContent: "center",
+    alignSelf: "stretch"
+  },
+  total: {
+    fontWeight: '700',
+    color: "#121212",
+    fontSize: 15
+  },
+  systemTypeCont: {
+    width: 120,
+    justifyContent: "center",
+    alignSelf: "stretch"
+  },
+  systemType: {
+    fontWeight: '700',
+    color: "#121212",
+    fontSize: 15
+  },
+  orderTypeCont: {
+    width: 120,
+    justifyContent: "center",
+    alignSelf: "stretch"
+  },
+  orderType: {
+    fontWeight: '700',
+    color: "#121212",
+    fontSize: 15
+  },
+  scrollArea: {
+    flex: 1, // Take up remaining space
+    width: '100%',
+  },
+  scrollArea_contentContainerStyle: {
+    flexGrow: 1, // Allow the container to grow as needed
+    justifyContent: "flex-start", // Align items to the start
+    width: '100%',
+  },
+  invoiceItem: {
+    height: 50,
+    alignSelf: "stretch"
+  },
+});
+
+export default InvoiceReport;

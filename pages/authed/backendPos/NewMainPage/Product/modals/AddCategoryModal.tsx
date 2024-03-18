@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   useWindowDimensions,
-  Switch,
   TextInput,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { updateData } from "state/firebaseFunctions";
 import { setUserStoreState, userStoreState } from "state/state";
+import GeneralSwitch from "components/GeneralSwitch";
 
 function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
   const { height, width } = useWindowDimensions();
@@ -113,9 +113,11 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
                 <Text style={styles.displayOnlineStoreTxt}>
                   Display On online store?:
                 </Text>
-                <Switch
-                  //   value={true}
-                  trackColor={{ false: "#767577", true: "#1D294E" }}
+                <GeneralSwitch
+                  isActive={true}
+                  toggleSwitch={() => {
+                    console.log("toggle");
+                  }}
                 />
               </View>
               <View style={styles.btnsRow}>

@@ -1,0 +1,136 @@
+import React, { Component } from "react";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+
+function InvoiceItem({ style, item, setbaseSelectedRows, baseSelectedRows }) {
+  return (
+    <View style={[styles.container, style]}>
+      <View style={styles.checkboxCont1}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.checkbox2}
+          onPress={() => {
+            setbaseSelectedRows((prev) => {
+              if (prev.includes(item.id)) {
+                return prev.filter((id) => id !== item.id);
+              } else {
+                return [...prev, item.id];
+              }
+            });
+          }}
+        >
+          {baseSelectedRows?.includes(item.id) && "X"}
+        </TouchableOpacity>
+      </View>
+      <View style={styles.orderIdCont1}>
+        <Text style={styles.orderId3}>{item.id}</Text>
+      </View>
+      <View style={styles.customerNameCont1}>
+        <Text style={styles.peterPutros}>{item.name ? item.name : "N/A"}</Text>
+      </View>
+      <View style={styles.dateCont1}>
+        <Text style={styles.may252025}>{item.date}</Text>
+      </View>
+      <View style={styles.totalCont1}>
+        <Text style={styles.total3}>${item.amount}</Text>
+      </View>
+      <View style={styles.systemTypeCont1}>
+        <Text style={styles.pos}>{item.system}</Text>
+      </View>
+      <View style={styles.orderTypeCont1}>
+        <Text style={styles.pickUp}>{item.type}</Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 0,
+    borderColor: "rgba(133,127,127,1)",
+    borderBottomWidth: 1,
+    paddingBottom: 0,
+  },
+  checkboxCont1: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 50,
+    alignSelf: "stretch",
+    marginBottom: 5,
+  },
+  checkbox2: {
+    width: 20,
+    height: 20,
+    backgroundColor: "rgba(255,255,255,1)",
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#000000",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  orderIdCont1: {
+    width: 120,
+    alignItems: "flex-start",
+    justifyContent: "center",
+    alignSelf: "stretch",
+    marginBottom: 5,
+  },
+  orderId3: {
+    color: "#121212",
+    fontSize: 15,
+  },
+  customerNameCont1: {
+    width: 180,
+    justifyContent: "center",
+    alignSelf: "stretch",
+    marginBottom: 5,
+  },
+  peterPutros: {
+    color: "#121212",
+    fontSize: 15,
+  },
+  dateCont1: {
+    width: 180,
+    justifyContent: "center",
+    alignSelf: "stretch",
+    marginBottom: 5,
+  },
+  may252025: {
+    color: "#121212",
+    fontSize: 15,
+  },
+  totalCont1: {
+    width: 120,
+    justifyContent: "center",
+    alignSelf: "stretch",
+    marginBottom: 5,
+  },
+  total3: {
+    color: "#121212",
+    fontSize: 15,
+  },
+  systemTypeCont1: {
+    width: 120,
+    justifyContent: "center",
+    alignSelf: "stretch",
+    marginBottom: 5,
+  },
+  pos: {
+    color: "#121212",
+    fontSize: 15,
+  },
+  orderTypeCont1: {
+    width: 120,
+    justifyContent: "center",
+    alignSelf: "stretch",
+    marginBottom: 5,
+  },
+  pickUp: {
+    color: "#121212",
+    fontSize: 15,
+  },
+});
+
+export default InvoiceItem;

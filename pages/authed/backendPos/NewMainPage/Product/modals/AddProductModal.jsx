@@ -8,7 +8,6 @@ import {
     TouchableWithoutFeedback,
     useWindowDimensions,
     TextInput,
-    Switch,
     Image
 } from "react-native";
 import OptionsItem from "../components/OptionsItem";
@@ -19,6 +18,7 @@ import { auth, db, storage } from "state/firebaseConfig";
 import Select2 from "assets/plugins/select2/js/select2";
 import GeneralDropdown from "components/GeneralDropdown";
 import { Button } from "react-native";
+import GeneralSwitch from "components/GeneralSwitch";
 
 function AddProductModal({
     addProductModal,
@@ -375,10 +375,10 @@ function AddProductModal({
                                         Dont display on online store?:
                                     </Text>
                                     {/* <View style={styles.onlineStoreSwitch}></View> */}
-                                    <Switch value={newProduct?.dontDisplayOnOnlineStore} onValueChange={(event) => {
+                                    <GeneralSwitch isActive={newProduct?.dontDisplayOnOnlineStore} toggleSwitch={() => {
                                         setnewProduct((prevState) => ({
                                             ...prevState,
-                                            dontDisplayOnOnlineStore: event,
+                                            dontDisplayOnOnlineStore: !prevState.dontDisplayOnOnlineStore,
                                         }))
                                     }}
                                         trackColor={{ false: "grey", true: "#1c294e" }}
