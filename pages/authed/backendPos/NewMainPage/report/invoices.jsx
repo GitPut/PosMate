@@ -231,13 +231,23 @@ function InvoiceReport() {
         <View style={styles.downloadAndPrintBtnsGroup}>
           <TouchableOpacity
             onPress={DownloadExcel}
+            activeOpacity={0.8}
+            disabled={baseSelectedRows.length === 0}
           >
             <Feather
               name="download"
               style={styles.downloadIcon}
             />
           </TouchableOpacity>
-          <Feather name="printer" style={styles.printIcon} />
+          <TouchableOpacity
+            onPress={() => {
+              setupdateBaseSelectedRows(true)
+            }}
+            activeOpacity={0.8}
+            disabled={baseSelectedRows.length === 0}
+          >
+            <Feather name="printer" style={styles.printIcon} />
+          </TouchableOpacity>
         </View>
       </View>
       <View style={styles.bottomGroup}>

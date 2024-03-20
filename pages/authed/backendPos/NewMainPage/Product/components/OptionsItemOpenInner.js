@@ -22,6 +22,7 @@ function OptionsItemOpenInner({
   sete,
   scrollY,
   setaddOptionClicked,
+  setmoveToOptionPos,
 }) {
   const [testMap, settestMap] = useState(structuredClone(item.optionsList));
 
@@ -161,7 +162,7 @@ function OptionsItemOpenInner({
       <View style={styles.spacer6}></View>
       {testMap.map((e, indexInnerList) => (
         <OptionSelectionItem
-          key={indexInnerList}
+          key={e.label + indexInnerList}
           style={styles.optionSelectionItem1}
           eInnerListStart={e}
           indexInnerList={indexInnerList}
@@ -170,6 +171,10 @@ function OptionsItemOpenInner({
           newProductOptions={newProductOptions}
           setnewProductOptions={setnewProductOptions}
           index={index}
+          setmoveToOptionPos={(pos) => {
+            setmoveToOptionPos(pos);
+            setaddOptionClicked(true);
+          }}
         />
       ))}
       {testMap.length > 0 && <View style={styles.spacer7}></View>}

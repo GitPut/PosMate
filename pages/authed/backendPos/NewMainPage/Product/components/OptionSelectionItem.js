@@ -17,6 +17,7 @@ function OptionSelectionItem({
   newProductOptions,
   setnewProductOptions,
   index,
+  setmoveToOptionPos,
 }) {
   const eInnerList = structuredClone(eInnerListStart);
 
@@ -92,6 +93,7 @@ function OptionSelectionItem({
                 const f = clone[index].optionsList.splice(indexInnerList, 1)[0];
                 clone[index].optionsList.splice(indexInnerList + 1, 0, f);
                 settestMap(clone[index].optionsList);
+                // setmoveToOptionPos(indexInnerList + 1);
                 return clone;
               });
             }
@@ -108,6 +110,7 @@ function OptionSelectionItem({
                 const f = clone[index].optionsList.splice(indexInnerList, 1)[0];
                 clone[index].optionsList.splice(indexInnerList - 1, 0, f);
                 settestMap(clone[index].optionsList);
+                // setmoveToOptionPos(indexInnerList - 1);
                 return clone;
               });
             }
@@ -127,6 +130,9 @@ function OptionSelectionItem({
               return clone;
             });
             settestMap(cloneOuter);
+            if (indexInnerList !== 0) {
+              setmoveToOptionPos(indexInnerList - 1);
+            }
           }}
         >
           <MaterialCommunityIcons

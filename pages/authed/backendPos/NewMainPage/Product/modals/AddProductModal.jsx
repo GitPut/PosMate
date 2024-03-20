@@ -8,7 +8,8 @@ import {
     TouchableWithoutFeedback,
     useWindowDimensions,
     TextInput,
-    Image
+    Image,
+    FlatList
 } from "react-native";
 import OptionsItem from "../components/OptionsItem";
 import { Ionicons as IoniconsIcon, MaterialCommunityIcons as MaterialCommunityIconsIcon } from "@expo/vector-icons";
@@ -405,10 +406,31 @@ function AddProductModal({
                                 <View style={styles.spacer4}></View>
                                 <Text style={styles.optionsTxt}>Options</Text>
                                 <View style={styles.spacer5}></View>
+                                {/* <FlatList
+                                    data={newProduct.options}
+                                    keyExtractor={(item) => item.id?.toString()}
+                                    renderItem={({ item, index }) => (
+                                        <OptionsItem key={index} style={styles.optionsItem}
+                                            item={item}
+                                            index={index}
+                                            setnewProduct={setnewProduct}
+                                            newProduct={newProduct}
+                                            newProductOptions={newProductOptions}
+                                            setnewProductOptions={setnewProductOptions}
+                                            indexOn={indexOn}
+                                            setindexOn={setindexOn}
+                                            scrollY={scrollY}
+                                            scrollViewRef={scrollViewRef}
+                                            ref={targetViewRef}
+                                        />
+                                    )}
+                                /> */}
                                 {
                                     newProduct.options.map((option, index) => {
                                         return (
-                                            <OptionsItem key={index} style={styles.optionsItem}
+                                            <OptionsItem
+                                                key={option.id}
+                                                style={styles.optionsItem}
                                                 item={option}
                                                 index={index}
                                                 setnewProduct={setnewProduct}

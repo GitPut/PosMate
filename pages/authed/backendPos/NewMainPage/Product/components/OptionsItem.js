@@ -19,6 +19,7 @@ function OptionsItem({
 }) {
   const [e, sete] = useState(structuredClone(item));
   const [addOptionClicked, setaddOptionClicked] = useState(true);
+  const [moveToOptionPos, setmoveToOptionPos] = useState(null);
 
   return (
     <>
@@ -41,6 +42,13 @@ function OptionsItem({
               elementBottomPosition -=
                 95 * newProductOptions[index].selectedCaseList.length;
               setaddOptionClicked(false);
+              if (moveToOptionPos !== null) {
+                elementBottomPosition -=
+                  (newProductOptions[index].optionsList?.length -
+                    moveToOptionPos) *
+                  95;
+                setmoveToOptionPos(null);
+              }
             }
 
             // Get the ScrollView's height and the current scroll position
@@ -190,6 +198,7 @@ function OptionsItem({
             sete={sete}
             scrollY={scrollY}
             setaddOptionClicked={setaddOptionClicked}
+            setmoveToOptionPos={setmoveToOptionPos}
           />
         )}
       </View>
