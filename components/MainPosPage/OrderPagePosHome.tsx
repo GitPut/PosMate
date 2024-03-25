@@ -789,7 +789,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             </TouchableOpacity>
           </View>
         )}
-        {width > 1000 && (
+        {/* {width > 1000 && (
           <View
             style={[
               styles.bannerContainer,
@@ -809,7 +809,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
               ]}
             ></Image>
           </View>
-        )}
+        )} */}
         <View style={styles.categoryContainer}>
           <Text style={styles.lblTxt}>Menu Category</Text>
           <View style={styles.scrollArea}>
@@ -1335,7 +1335,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
         >
           <SavedCustomersModal
             setSaveCustomerModal={setSaveCustomerModal}
-            setOngoingDelivery={setOngoingDelivery} 
+            setOngoingDelivery={setOngoingDelivery}
             setNameForDelivery={setName}
             setPhoneForDelivery={setPhone}
             setAddressForDelivery={setAddress}
@@ -1500,7 +1500,8 @@ const styles = StyleSheet.create({
   },
   scrollAreaProducts: {
     width: "95%",
-    height: "45%",
+    // height: "45%",
+    height: "60%",
     justifyContent: "center",
   },
   scrollAreaProducts_contentContainerStyle: {
