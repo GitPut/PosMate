@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import Axios from "axios";
 import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
+import "./css/divine-pos.webflow.css";
+import "./css/normalize.css";
+import "./css/webflow.css";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState("");

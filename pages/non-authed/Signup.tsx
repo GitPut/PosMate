@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import { signUp } from "state/firebaseFunctions";
 import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
+import "./css/divine-pos.webflow.css";
+import "./css/normalize.css";
+import "./css/webflow.css";
 
 const Signup = () => {
   const [email, setEmail] = useState();
@@ -210,20 +213,10 @@ const Signup = () => {
                       value={password}
                     />
                   </div>
-                  <div className="padding-bottom padding-large" />
-                  <label className="w-checkbox signup-form-checkbox is-2-lines">
-                    <input
-                      type="checkbox"
-                      name="Checkbox"
-                      id="wf-sign-up-accept-privacy"
-                      data-name="Checkbox"
-                      required
-                      data-wf-user-field="wf-user-field-accept-privacy"
-                      style={{ opacity: 0, position: "absolute", zIndex: -1 }}
-                    />
+                  <label className="w-checkbox signup-form-checkbox">
                     <span
                       className="signup-checkbox-label w-form-label"
-                      htmlFor="Checkbox"
+                      style={{ marginTop: 10 }}
                     >
                       By creating an account, I agree to Divine Pos's{" "}
                       <a
@@ -236,7 +229,6 @@ const Signup = () => {
                     </span>
                   </label>
                   <div className="padding-bottom padding-small" />
-                  <div className="padding-bottom padding-large" />
                   <Button
                     title="Sign Up"
                     className="w-users-userformbutton button w-button"

@@ -19,6 +19,7 @@ import Swal from "sweetalert2";
 import { AvocatImage } from "../../EntryFile/imagePath";
 import AddProductModal from "./modals/AddProductModal";
 import Modal from "react-native-modal";
+import generateRandomKey from "../../../../../components/functional/GenerateRandomKey";
 
 function ProductList(props) {
   const catalog = userStoreState.use()
@@ -107,6 +108,31 @@ function ProductList(props) {
     });
   }, [searchFilterValue, selectedCategory,]);
 
+  // const AddIdToOptions = () => {
+  //   catalog.products.map((product, index) => {
+  //     if (product.options) {
+  //       const newOptions = structuredClone(product.options)
+  //       product.options.map((option, optionIndex) => {
+  //         option.optionsList.map((optionItem, optionItemIndex) => {
+  //           if (!optionItem.id) {
+  //             const newId = generateRandomKey(10);
+  //             newOptions[optionIndex].optionsList[optionItemIndex].id = newId;
+  //           }
+  //         }
+  //         )
+  //         db.collection("users")
+  //           .doc(userS.uid)
+  //           .collection("products")
+  //           .doc(product.id.toString())
+  //           .update({
+  //             options: newOptions
+  //           })
+  //       });
+  //     }
+  //   }
+  //   )
+  // }
+
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
@@ -115,7 +141,12 @@ function ProductList(props) {
           <TextInput style={styles.searchProductBox} placeholder="Search" value={searchFilterValue} onChangeText={(val) => setsearchFilterValue(val)} />
           <Feather name="search" style={{ color: 'grey', fontSize: 20, position: 'absolute', top: 5, right: 5 }} />
         </View>
-        <TouchableOpacity style={styles.manageProductsBtn} onPress={() => seteditMode(prev => !prev)}>
+        <TouchableOpacity style={styles.manageProductsBtn}
+          onPress={() => seteditMode(prev => !prev)}
+          // onPress={() => {
+          //   AddIdToOptions()
+          // }}
+        >
           <MaterialCommunityIcons
             name="format-list-checks"
             style={styles.manageProductIcon}

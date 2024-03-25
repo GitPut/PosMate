@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import "react-select2-wrapper/css/select2.css";
 import {
     View,
     Text,
@@ -8,9 +7,9 @@ import {
     Animated,
     Modal,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    TextInput,
 } from "react-native";
-import { Button, Switch, TextInput } from "@react-native-material/core";
 import {
     deviceIdState,
     deviceTreeState,
@@ -18,17 +17,21 @@ import {
     setMyDeviceDetailsState,
 } from "state/state";
 import { auth, db } from "state/firebaseConfig";
-import ReactSelect from "react-select";
 import { loadStripe } from "@stripe/stripe-js";
 import { Image } from "react-native";
-import tw from 'twrnc';
+import GeneralSwitch from "components/GeneralSwitch";
+import { Entypo, Ionicons } from "@expo/vector-icons";
+import "react-select2-wrapper/css/select2.css";
+import ReactSelect from "react-select";
 
-const DeviceSettings = () => {
+function Index(props) {
     const deviceTree = deviceTreeState.use()
     const myDeviceID = deviceIdState.use()
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const [viewVisible, setviewVisible] = useState(false);
     const { width, height } = Dimensions.get('window');
+    const [selectedDevice, setselectedDevice] = useState(0)
+    const [otherDeviceOptions, setOtherDeviceOptions] = useState([])
 
     const fadeIn = () => {
         // Will change fadeAnim value to 0 in 3 seconds
@@ -78,537 +81,462 @@ const DeviceSettings = () => {
             });
     }
 
-    //Make style better
+    useEffect(() => {
+        if (deviceTree.devices.length > 0) {
+            setOtherDeviceOptions([])
+            deviceTree.devices.map((deviceSearch, index) => {
+                if (deviceSearch.id !== deviceTree.devices[selectedDevice].id) {
+                    setOtherDeviceOptions(prev => [...prev, { value: deviceSearch.docID, label: deviceSearch.name }])
+                }
+            })
+        }
+    }, [selectedDevice])
+
+    useEffect(() => {
+        if (deviceTree.devices.length > 1) {
+            const newDeviceTreeDevices = [];
+            for (let index = 0; index < deviceTree.devices.length; index++) {
+                const element = deviceTree.devices[index];
+
+                if (element.id === myDeviceID) {
+                    // Put element to the beginning of newDeviceTreeDevices
+                    newDeviceTreeDevices.unshift(element);
+                } else {
+                    newDeviceTreeDevices.push(element);
+                }
+            }
+            setDeviceTreeState({ ...deviceTree, devices: newDeviceTreeDevices });
+        }
+    }, [deviceTree, myDeviceID]);
+
 
     return (
-        <div className="page-wrapper">
-            <div className="content">
-                <View style={styles.container}>
-                    <View style={styles.headerRowContainer}>
-                        <Text style={styles.headerTxt}>Device Settings</Text>
-                        {deviceTree.devices.length < 2 + deviceTree.extraDevicesPayingFor ?
-                            <TouchableOpacity
-                                onPress={() => {
-
-                                    db.collection('users').doc(auth.currentUser.uid).collection('devices').add({ name: `Device${deviceTree.devices.length}`, id: null, printToPrinter: null }).then((docRef) => {
+        <View style={styles.container}>
+            <Text style={styles.pageLbl}>Device Settings</Text>
+            <View style={styles.group}>
+                <View style={styles.deviceScrollContainer}>
+                    {selectedDevice > 0 ?
+                        <TouchableOpacity style={styles.nextDeviceBtn} activeOpacity={0.8} onPress={() => setselectedDevice(prev => prev - 1)}>
+                            <Entypo name="chevron-left" style={styles.icon} />
+                        </TouchableOpacity>
+                        :
+                        <View style={styles.backBtn} />
+                    }
+                    {deviceTree.devices.length > 0 ? <View style={styles.deviceContainer}>
+                        <View style={styles.topGroup}>
+                            <View style={styles.deviceNameInputGroup}>
+                                <Text style={styles.deviceName}>Device Name</Text>
+                                <TextInput
+                                    style={styles.deviceNameInput}
+                                    placeholder="Enter device name"
+                                    value={deviceTree.devices[selectedDevice].name}
+                                    onChangeText={val => {
                                         const clone = { ...deviceTree }
-                                        clone.devices.push({ name: "Device", id: null, printToPrinter: null, sendPrintToUserID: null, docID: docRef.id })
+                                        clone.devices[selectedDevice].name = val
                                         setDeviceTreeState(clone)
-                                    })
-                                }}
-                                style={tw.style([
-                                    'bg-green-500',
-                                    'rounded-md',
-                                    'p-3',
-                                    'mt-2',
-                                    'mb-2'
-                                ])}
-                            >
-                                <Text style={tw.style([
-                                    'text-white',
-                                    'text-center',
-                                    'text-base'
-                                ])} >Add Device</Text>
-                            </TouchableOpacity>
-                            :
-                            <TouchableOpacity
-                                onPress={() => {
-                                    resetLoader()
-                                    AddNewDevice()
-                                }}
-                                style={tw.style([
-                                    'bg-green-500',
-                                    'rounded-md',
-                                    'p-3',
-                                    'mt-2',
-                                    'mb-2'
-                                ])}
-                            >
-                                <Text style={tw.style([
-                                    'text-white',
-                                    'text-center',
-                                    'text-base'
-                                ])} >Pay For Another Device</Text>
-                            </TouchableOpacity>
-                        }
-                    </View>
-                    <ScrollView style={[{ width: '90%', height: height / 1.4 }, tw.style([
-                        'p-5',
-                        'border',
-                        'border-gray-200',
-                        'rounded-md',
-                        'bg-white',
-                        'shadow-md',
-                    ])]}
-                        contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}
-                    >
-                        {deviceTree.devices.map((device, index) => {
-
-                            const otherDeviceOptions = []
-                            deviceTree.devices.map((deviceSearch, index) => {
-                                if (deviceSearch.id !== device.id) {
-                                    otherDeviceOptions.push({ value: deviceSearch.docID, label: deviceSearch.name })
-                                }
-                            })
-
-                            return (
-                                <View key={index} style={tw.style([
-                                    'flex-1',
-                                    'p-5',
-                                    'border',
-                                    'border-gray-200',
-                                    'rounded-md',
-                                    'mb-5',
-                                    'bg-white',
-                                    'shadow-md',
-                                    'w-11/12',
-                                    'items-center'
-                                ])}>
-                                    <View style={tw.style('w-1/2')}>
-                                        <Text style={tw.style([
-                                            'text-sm',
-                                            'mb-2',
-
-                                        ])} >Device Name</Text>
-                                        <TextInput placeholder='Enter device name' value={device.name} onChangeText={val => {
-                                            const clone = { ...deviceTree }
-                                            clone.devices[index].name = val
-                                            setDeviceTreeState(clone)
-                                        }}
-                                            style={tw.style(['w-full', 'p-2', 'border', 'border-gray-300', 'rounded-md', 'mb-2'])}
-                                        />
-                                    </View>
-                                    <View
-                                        style={tw.style([
-                                            'flex',
-                                            'flex-row',
-                                            'items-center',
-                                            'mb-2',
-                                            'mt-2',
-                                            'w-1/2',
-                                            'justify-between',
-                                            'border-b'
-                                        ])}
-                                    >
-                                        <Text style={tw.style([
-                                            'text-sm',
-                                            'mb-2',
-                                            'font-medium'
-                                        ])} >Device Id: </Text>
-                                        <Text style={tw.style([
-                                            'text-sm',
-                                            'mb-2',
-                                        ])} >{device.id ? device.id.toUpperCase() : 'No Id set to this device'}</Text>
-                                    </View>
-                                    <View style={tw.style([
-                                        'flex',
-                                        'flex-row',
-                                        'items-center',
-                                        'mb-2',
-                                        'mt-2',
-                                        'justify-between',
-                                        'w-1/2',
-                                        'border-b'
-                                    ])}>
-                                        <Text style={tw.style([
-                                            'text-sm',
-                                            'mb-2',
-                                            'font-medium'
-                                        ])} >Print Online Orders: </Text>
-                                        <Switch value={device.printOnlineOrders} onValueChange={val => {
-                                            const clone = { ...deviceTree }
-                                            clone.devices[index].printOnlineOrders = val
-                                            setDeviceTreeState(clone)
-                                        }} />
-                                    </View>
-                                    <View style={tw.style([
-                                        'flex',
-                                        'flex-row',
-                                        'items-center',
-                                        'mb-2',
-                                        'mt-2',
-                                        'justify-between',
-                                        'w-1/2',
-                                        'border-b'
-                                    ])}>
-                                        <Text style={tw.style([
-                                            'text-sm',
-                                            'mb-2',
-                                            'font-medium'
-                                        ])} >Use Different Device To Print: </Text>
-                                        <Switch value={device.useDifferentDeviceToPrint} onValueChange={val => {
-                                            const clone = { ...deviceTree }
-                                            clone.devices[index].useDifferentDeviceToPrint = val
-                                            setDeviceTreeState(clone)
-                                        }} />
-                                    </View>
-                                    {!device.useDifferentDeviceToPrint ? <View style={
-                                        tw.style([
-                                            'flex',
-                                            'flex-col',
-                                            'items-center',
-                                            'mb-2',
-                                            'mt-2',
-                                            'w-1/2',
-                                        ])
-                                    }>
-                                        <Text style={[tw.style([
-                                            'text-sm',
-                                            'mb-2',
-                                        ]), { width: '100%' }]} >Print To Printer</Text>
-                                        <TextInput placeholder='Enter printer name' value={device.printToPrinter} onChangeText={val => {
-                                            const clone = { ...deviceTree }
-                                            clone.devices[index].printToPrinter = val
-                                            setDeviceTreeState(clone)
-                                        }}
-                                            style={[tw.style(['p-2', 'border', 'border-gray-300', 'rounded-md', 'mb-2']), { width: '100%' }]}
-                                        />
-                                    </View> :
-                                        <View style={
-                                            tw.style([
-                                                'flex',
-                                                'flex-col',
-                                                'items-center',
-                                                'mb-2',
-                                                'mt-2',
-                                                'w-1/2',
-                                            ])
-                                        }>
-                                            <Text style={tw.style([
-                                                'text-sm',
-                                                'mb-2',
-                                            ])} >Choose Device To Send Print To</Text>
-                                            {/* <select
-                                                style={tw.style([
-                                                    'w-1/2',
-                                                    'p-2',
-                                                    'border',
-                                                    'border-gray-300',
-                                                    'rounded-md',
-                                                    'mb-2'
-                                                ])}
-                                                value={device.sendPrintToUserID}
-                                            // onChange={(e) => {
-                                            //     const clone = { ...deviceTree }
-                                            //     clone.devices[index].sendPrintToUserID = e.target.value
-                                            //     setDeviceTreeState(clone)
-                                            //     console.log('Device to send to updated to: ', ' Label: ', e.target.label, ' Value: ', e.target.value)
-                                            // }
-                                            // }
-                                            >
-                                                <option value={null}>Select Device</option>
-                                                {otherDeviceOptions.map((device, index) => {
-                                                    return (
-                                                        <option key={index} label={device.label} value={device.value} onClick={() => {
-                                                            const clone = { ...deviceTree }
-                                                            clone.devices[index].sendPrintToUserID = { value: device.value, label: device.label }
-                                                            setDeviceTreeState(clone)
-                                                            console.log('Device to send to updated to: ', ' Label: ', device.label, ' Value: ', device.value)
-                                                        }}>{device.label}</option>
-                                                    )
-                                                })}
-                                            </select> */}
-                                            <ReactSelect
-                                                options={otherDeviceOptions}
-                                                value={
-                                                    device.sendPrintToUserID
-                                                }
-                                                onChange={(val) => {
-                                                    const clone = { ...deviceTree }
-                                                    clone.devices[index].sendPrintToUserID = val
-                                                    setDeviceTreeState(clone)
-                                                }}
-                                                placeholder={"Choose Device To Send Print To"}
-                                                menuPortalTarget={document.body}
-                                                styles={{
-                                                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                                                    control: (provided, state) => ({
-                                                        ...provided,
-                                                        background: "#fff",
-                                                        borderColor: "#9e9e9e",
-                                                        minHeight: "52px",
-                                                        height: "52px",
-                                                        boxShadow: state.isFocused ? null : null,
-                                                    }),
-
-                                                    valueContainer: (provided, state) => ({
-                                                        ...provided,
-                                                        height: "52px",
-                                                        padding: "0 6px",
-                                                    }),
-
-                                                    input: (provided, state) => ({
-                                                        ...provided,
-                                                        margin: "0px",
-                                                    }),
-                                                    indicatorSeparator: (state) => ({
-                                                        display: "none",
-                                                    }),
-                                                    indicatorsContainer: (provided, state) => ({
-                                                        ...provided,
-                                                        height: "52px",
-                                                    }),
-                                                    container: (provided, state) => ({
-                                                        ...provided,
-                                                        width: "100%",
-                                                    }),
-                                                }}
-                                                menuPlacement="auto"
-                                                menuPosition="fixed"
-                                            />
-                                        </View>
-                                    }
-                                    <View style={[{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, justifyContent: 'space-between' }, tw.style('w-1/2')]}>
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(device.docID).update(device)
-                                                const clone = { ...deviceTree }
-                                                clone.devices[index] = device
-                                                setDeviceTreeState(clone
-                                                )
-                                                console.log('Updated Device')
-                                                setMyDeviceDetailsState(device)
-                                                console.log('Updated My Device Details: ', device)
-                                            }}
-                                            style={tw.style([
-                                                'bg-blue-500',
-                                                'rounded-md',
-                                                'p-3',
-                                                'w-2/5',
-                                                'mt-2',
-                                                'mb-2'
-                                            ])}
-                                        >
-                                            <Text style={tw.style([
-                                                'text-white',
-                                                'text-center',
-                                                'text-base'
-                                            ])} >Update Device</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                if (deviceTree.devices.filter(deviceSearch => deviceSearch.id === myDeviceID).length > 0) {
-                                                    db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(deviceTree.devices.filter(deviceSearch => deviceSearch.id === myDeviceID)[0].docID).update({ id: null })
-                                                    const clone = { ...deviceTree }
-                                                    clone.devices.filter(deviceSearch => deviceSearch.id === myDeviceID)[0].id = null
-                                                    setDeviceTreeState(clone)
-                                                }
-                                                db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(device.docID).update({ id: myDeviceID })
-                                                const clone = { ...deviceTree }
-                                                clone.devices[index].id = myDeviceID
-                                                setDeviceTreeState(clone)
-                                                setMyDeviceDetailsState(device)
-                                            }}
-                                            style={tw.style([
-                                                'bg-blue-500',
-                                                'rounded-md',
-                                                'p-3',
-                                                'w-2/5',
-                                                'mt-2',
-                                                'mb-2'
-                                            ])}
-                                        >
-                                            <Text style={tw.style([
-                                                'text-white',
-                                                'text-center',
-                                                'text-base'
-                                            ])} >Set To My ID</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(device.docID).delete()
-                                            let clone = { ...deviceTree }
-                                            clone = { ...clone, devices: clone.devices.filter(deviceSearch => deviceSearch.docID !== device.docID) }
-                                            setDeviceTreeState(clone)
+                                    }}
+                                />
+                            </View>
+                            <View style={styles.deviceIDRow}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text style={styles.deviceIdLbl}>Device ID:</Text>
+                                    <Text style={styles.deviceId}>
+                                        {
+                                            deviceTree.devices[selectedDevice].id ?
+                                                deviceTree.devices[selectedDevice].id.toUpperCase()
+                                                :
+                                                'No device ID set'
                                         }
-                                        }
-                                        style={tw.style([
-                                            'bg-red-500',
-                                            'rounded-md',
-                                            'p-3',
-                                            'w-1/2',
-                                            'mt-2',
-                                            'mb-4',
-                                        ])}
-                                    >
-                                        <Text style={tw.style([
-                                            'text-white',
-                                            'text-center',
-                                            'text-base'
-                                        ])} >Delete Device</Text>
-                                    </TouchableOpacity>
+                                    </Text>
                                 </View>
-                            )
-                        })}
-                    </ScrollView>
-                </View>
-                {viewVisible && (
-                    <Modal visible={true}>
-                        <Animated.View
-                            style={{
-                                alignItems: "center",
-                                justifyContent: "center",
-                                backgroundColor: "white",
-                                position: "absolute",
-                                opacity: fadeAnim,
-                                height: "100%",
-                                width: "100%",
-                            }}
+                                <TouchableOpacity
+                                    style={styles.setToMyIDBtn}
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        if (deviceTree.devices.filter(deviceSearch => deviceSearch.id === myDeviceID).length > 0) {
+                                            db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(deviceTree.devices.filter(deviceSearch => deviceSearch.id === myDeviceID)[0].docID).update({ id: null })
+                                            const clone = { ...deviceTree }
+                                            clone.devices.filter(deviceSearch => deviceSearch.id === myDeviceID)[0].id = null
+                                            setDeviceTreeState(clone)
+                                        }
+                                        db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(deviceTree.devices[selectedDevice].docID).update({ id: myDeviceID })
+                                        const clone = { ...deviceTree }
+                                        clone.devices[selectedDevice].id = myDeviceID
+                                        setDeviceTreeState(clone)
+                                        setMyDeviceDetailsState(deviceTree.devices[selectedDevice])
+                                    }}
+                                >
+                                    <Ionicons
+                                        name="md-key"
+                                        style={styles.setToMyIDIcon}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.printOnlineOrderRow}>
+                                <Text style={styles.printOnlineOrdersLbl}>
+                                    Print Online Orders:
+                                </Text>
+                                <GeneralSwitch
+                                    isActive={deviceTree.devices[selectedDevice].printOnlineOrders}
+                                    toggleSwitch={() => {
+                                        const clone = { ...deviceTree }
+                                        clone.devices[selectedDevice].printOnlineOrders = !deviceTree.devices[selectedDevice].printOnlineOrders
+                                        setDeviceTreeState(clone)
+                                    }}
+                                />
+                            </View>
+                            <View style={styles.useDifferentDeviceRow}>
+                                <Text style={styles.useDifferentDeviceLbl}>
+                                    Use Different Device To Print:
+                                </Text>
+                                <GeneralSwitch
+                                    isActive={deviceTree.devices[selectedDevice].useDifferentDeviceToPrint}
+                                    toggleSwitch={() => {
+                                        const clone = { ...deviceTree }
+                                        clone.devices[selectedDevice].useDifferentDeviceToPrint = !deviceTree.devices[selectedDevice].useDifferentDeviceToPrint
+                                        setDeviceTreeState(clone)
+                                    }}
+                                />
+                            </View>
+                            <View style={styles.printerToPrinterInputGroup}>
+                                <Text style={styles.printToPrinterLbl}>Print to Printer</Text>
+                                {!deviceTree.devices[selectedDevice].useDifferentDeviceToPrint ?
+                                    <TextInput
+                                        style={styles.printToPrintInput}
+                                        placeholder="Enter printer name"
+                                        value={deviceTree.devices[selectedDevice].printToPrinter ? deviceTree.devices[selectedDevice].printToPrinter : ''}
+                                        onChangeText={val => {
+                                            const clone = { ...deviceTree }
+                                            clone.devices[selectedDevice].printToPrinter = val
+                                            setDeviceTreeState(clone)
+                                        }}
+                                    />
+                                    :
+                                    <ReactSelect
+                                        options={otherDeviceOptions}
+                                        value={
+                                            deviceTree.devices[selectedDevice].sendPrintToUserID
+                                        }
+                                        onChange={(val) => {
+                                            const clone = { ...deviceTree }
+                                            clone.devices[selectedDevice].sendPrintToUserID = val
+                                            setDeviceTreeState(clone)
+                                        }}
+                                        placeholder={"Choose Device To Send Print To"}
+                                        menuPortalTarget={document.body}
+                                        styles={{
+                                            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                                            control: (provided, state) => ({
+                                                ...provided,
+                                                background: "#fff",
+                                                borderColor: "#9e9e9e",
+                                                minHeight: "52px",
+                                                height: "52px",
+                                                boxShadow: state.isFocused ? null : null,
+                                            }),
+
+                                            valueContainer: (provided, state) => ({
+                                                ...provided,
+                                                height: "52px",
+                                                padding: "0 6px",
+                                            }),
+
+                                            input: (provided, state) => ({
+                                                ...provided,
+                                                margin: "0px",
+                                            }),
+                                            indicatorSeparator: (state) => ({
+                                                display: "none",
+                                            }),
+                                            indicatorsContainer: (provided, state) => ({
+                                                ...provided,
+                                                height: "52px",
+                                            }),
+                                            container: (provided, state) => ({
+                                                ...provided,
+                                                width: "100%",
+                                            }),
+                                        }}
+                                        menuPlacement="auto"
+                                        menuPosition="fixed"
+                                    />
+                                }
+                            </View>
+                        </View>
+                        <View style={styles.btnsRow}>
+                            <TouchableOpacity style={styles.updateDeviceBtn} activeOpacity={0.8}
+                                onPress={() => {
+                                    db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(deviceTree.devices[selectedDevice].docID).update(deviceTree.devices[selectedDevice])
+                                }}
+                            >
+                                <Text style={styles.saveDevice}>Save Device</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.deleteDeviceBtn} activeOpacity={0.8}
+                                onPress={() => {
+                                    db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(deviceTree.devices[selectedDevice].docID).delete()
+                                    let clone = { ...deviceTree }
+                                    clone = { ...clone, devices: clone.devices.filter(deviceSearch => deviceSearch.docID !== deviceTree.devices[selectedDevice].docID) }
+                                    setDeviceTreeState(clone)
+                                    setselectedDevice(prev => prev > 0 ? prev - 1 : 0)
+                                }}
+                            >
+                                <Text style={styles.deleteDevice}>Delete Device</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                        :
+                        <View>
+                            <Text>No Devices Found</Text>
+                        </View>
+                    }
+                    {selectedDevice < deviceTree.devices.length - 1 + deviceTree.extraDevicesPayingFor ?
+                        <TouchableOpacity style={styles.nextDeviceBtn} activeOpacity={0.8} onPress={() => setselectedDevice(prev => prev + 1)}>
+                            <Entypo name="chevron-right" style={styles.icon} />
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity style={styles.nextDeviceBtn} activeOpacity={0.8}
+                            onPress={
+                                () => {
+                                    if (deviceTree.devices.length < 2 + deviceTree.extraDevicesPayingFor) {
+                                        db.collection('users').doc(auth.currentUser.uid).collection('devices').add({ name: `Device${deviceTree.devices.length}`, id: null, printToPrinter: null }).then((docRef) => {
+                                            const clone = { ...deviceTree }
+                                            clone.devices.push({ name: "", id: null, printToPrinter: null, sendPrintToUserID: null, docID: docRef.id })
+                                            setDeviceTreeState(clone)
+                                        })
+                                    } else {
+                                        resetLoader()
+                                        AddNewDevice()
+                                    }
+                                }
+                            }
                         >
-                            <Image
-                                source={require("assets/loading.gif")}
-                                style={{ width: 450, height: 450, resizeMode: "contain" }}
-                            />
-                        </Animated.View>
-                    </Modal>
-                )}
-            </div>
-        </div >
+                            <Entypo name="plus" style={styles.icon} />
+                        </TouchableOpacity>
+                    }
+                </View>
+            </View>
+            {viewVisible && (
+                <Modal visible={true}>
+                    <Animated.View
+                        style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: "white",
+                            position: "absolute",
+                            opacity: fadeAnim,
+                            height: "100%",
+                            width: "100%",
+                        }}
+                    >
+                        <Image
+                            source={require("assets/loading.gif")}
+                            style={{ width: 450, height: 450, resizeMode: "contain" }}
+                        />
+                    </Animated.View>
+                </Modal>
+            )}
+        </View>
     );
-
-
-};
+}
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "rgba(255,255,255,1)",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        height: "100%",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        width: '100%',
+        height: '100%'
     },
-    headerRowContainer: {
-        width: "90%",
-        height: 60,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: 20,
-        marginTop: 20
-    },
-    headerTxt: {
-        fontFamily: "archivo-600",
-        color: "rgba(98,96,96,1)",
-        fontSize: 20,
-    },
-    billingBtn: {
-        width: 60,
-        height: 60,
-        backgroundColor: "#E6E6E6",
-        borderRadius: 30,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    billingIcon: {
-        color: "rgba(128,128,128,1)",
-        fontSize: 30,
-    },
-    detailInputContainer: {
-        width: "90%",
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: "rgba(155,152,152,1)",
-        shadowColor: "rgba(0,0,0,1)",
-        shadowOffset: {
-            width: 3,
-            height: 3,
-        },
-        elevation: 45,
-        shadowOpacity: 0.2,
-        shadowRadius: 15,
-        padding: 30,
-        minHeight: "75%",
-        marginTop: 15,
-    },
-    materialStackedLabelTextbox1: {
-        height: 60,
-        width: 483,
-    },
-    materialStackedLabelTextbox2: {
-        height: 60,
-        width: 483,
-        marginLeft: 43,
-    },
-    materialStackedLabelTextbox1Row: {
-        height: 60,
-        flexDirection: "row",
-        marginTop: 23,
-        marginLeft: 36,
-        marginRight: 32,
-    },
-    materialStackedLabelTextbox3: {
-        height: 60,
-        width: 483,
-    },
-    materialStackedLabelTextbox5: {
-        height: 60,
-        width: 483,
-        marginLeft: 43,
-    },
-    materialStackedLabelTextbox3Row: {
-        height: 60,
-        flexDirection: "row",
-        marginTop: 30,
-        marginLeft: 36,
-        marginRight: 32,
-    },
-    materialStackedLabelTextbox4: {
-        height: 60,
-        width: 483,
-    },
-    materialStackedLabelTextbox6: {
-        height: 60,
-        width: 483,
-        marginLeft: 43,
-    },
-    materialStackedLabelTextbox4Row: {
-        height: 60,
-        flexDirection: "row",
-        marginTop: 29,
-        marginLeft: 36,
-        marginRight: 32,
-    },
-    materialStackedLabelTextbox7: {
-        height: 60,
-        width: 483,
-    },
-    materialButtonViolet2: {
-        height: 48,
-        width: 483,
-        marginLeft: 43,
-        marginTop: 12,
-    },
-    materialStackedLabelTextbox7Row: {
-        height: 60,
-        flexDirection: "row",
-        marginTop: 14,
-        marginLeft: 36,
-        marginRight: 32,
-    },
-    helperDownloadContainer: {
-        width: "100%",
-        height: 79,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: 10,
-    },
-    helperTxt: {
-        fontFamily: "archivo-500",
+    pageLbl: {
+        fontWeight: '700',
         color: "#121212",
-        fontSize: 19,
-        width: 483,
-        height: 52,
+        fontSize: 16,
+        margin: 20
     },
-    badgeWindows: {
-        width: 200,
-        height: 79,
+    group: {
+        alignSelf: "stretch",
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
     },
-    badgeMac: {
-        width: 200,
-        height: 79,
+    deviceScrollContainer: {
+        width: 639,
+        // height: 591,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        margin: 20
     },
+    backBtn: {
+        width: 50,
+        height: 50,
+        borderRadius: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    deviceContainer: {
+        width: 358,
+        height: 468,
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+    topGroup: {
+        width: 358,
+        height: 360,
+        justifyContent: "space-between"
+    },
+    deviceNameInputGroup: {
+        width: 358,
+        height: 88,
+        justifyContent: "space-between"
+    },
+    deviceName: {
+        fontWeight: '700',
+        color: "#121212",
+        fontSize: 17
+    },
+    deviceNameInput: {
+        width: 358,
+        height: 51,
+        backgroundColor: "#ffffff",
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: "#a0a0a0",
+        padding: 10
+    },
+    deviceIDRow: {
+        width: 354,
+        height: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between"
+    },
+    deviceIdLbl: {
+        fontWeight: '700',
+        color: "#121212",
+        fontSize: 17,
+        marginRight: 10
+    },
+    deviceId: {
+        fontWeight: '300',
+        color: "#121212",
+        fontSize: 14
+    },
+    setToMyIDBtn: {
+        width: 30,
+        height: 30,
+        backgroundColor: "#1c294e",
+        borderRadius: 10,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    setToMyIDIcon: {
+        color: "rgba(255,255,255,1)",
+        fontSize: 25
+    },
+    printOnlineOrderRow: {
+        width: 356,
+        height: 21,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+    printOnlineOrdersLbl: {
+        fontWeight: '700',
+        color: "#121212",
+        fontSize: 17
+    },
+    printOnlineSwitch: {
+        width: 40,
+        height: 20,
+        backgroundColor: "#E6E6E6"
+    },
+    useDifferentDeviceRow: {
+        width: 356,
+        height: 20,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+    useDifferentDeviceLbl: {
+        fontWeight: '700',
+        color: "#111111",
+        fontSize: 17
+    },
+    useDiffrentDeviceSwitch: {
+        width: 40,
+        height: 20,
+        backgroundColor: "#E6E6E6"
+    },
+    printerToPrinterInputGroup: {
+        width: 358,
+        height: 88,
+        justifyContent: "space-between"
+    },
+    printToPrinterLbl: {
+        fontWeight: '700',
+        color: "#111111",
+        fontSize: 17
+    },
+    printToPrintInput: {
+        width: 358,
+        height: 51,
+        backgroundColor: "#ffffff",
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: "#a0a0a0",
+        padding: 10
+    },
+    btnsRow: {
+        width: 356,
+        height: 49,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+    updateDeviceBtn: {
+        width: 170,
+        height: 48,
+        backgroundColor: "rgba(76,175,80,1)",
+        borderRadius: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    saveDevice: {
+        fontWeight: '700',
+        color: "rgba(255,255,255,1)",
+        fontSize: 16
+    },
+    deleteDeviceBtn: {
+        width: 170,
+        height: 48,
+        backgroundColor: "rgba(244,67,54,1)",
+        borderRadius: 20,
+        opacity: 0.61,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    deleteDevice: {
+        fontWeight: '700',
+        color: "rgba(255,255,255,1)",
+        fontSize: 16
+    },
+    nextDeviceBtn: {
+        width: 50,
+        height: 50,
+        backgroundColor: "#1c294e",
+        borderRadius: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    icon: {
+        color: "rgba(255,255,255,1)",
+        fontSize: 40
+    }
 });
 
-export default DeviceSettings;
+export default Index;

@@ -18,11 +18,32 @@ function OptionSelectionItem({
   setnewProductOptions,
   index,
   setmoveToOptionPos,
+  highlightedOptionID,
+  sethighlightedOptionID,
+  scrollToPositionIncluding,
 }) {
   const eInnerList = structuredClone(eInnerListStart);
 
   return (
-    <View style={[styles.container, style]}>
+    <View
+      style={[
+        styles.container,
+        style,
+        highlightedOptionID === eInnerList.id
+          ? {
+              borderBottomColor: "#4CAF50",
+              borderBottomWidth: 2,
+              paddingBottom: 20,
+              paddingTop: 20,
+            }
+          : {
+              borderBottomColor: "#d3d3d3",
+              borderBottomWidth: 2,
+              paddingBottom: 20,
+              paddingTop: 20,
+            },
+      ]}
+    >
       <View
         style={
           newProductOptions[index]?.numOfSelectable > 0
@@ -80,11 +101,32 @@ function OptionSelectionItem({
       {newProductOptions[index].numOfSelectable > 0 && (
         <View style={styles.selectionLimitInputGroupLimit}>
           <Text style={styles.limit}>Limit</Text>
-          <View style={styles.selectionLimitInput}></View>
+          <TextInput
+            style={styles.selectionLimitInput}
+            placeholder="Enter limit"
+            value={eInnerList.numOfSelectable ? eInnerList.numOfSelectable : ""}
+            onChangeText={(val) => {
+              const re = /^-?\d*\.?\d*$/;
+
+              // if value is not blank, then test the regex
+
+              if (val === "" || re.test(val)) {
+                const cloneOuter = structuredClone(testMap);
+                cloneOuter[indexInnerList].numOfSelectable = val;
+                setnewProductOptions((prev) => {
+                  const clone = structuredClone(prev);
+                  clone[index].optionsList = cloneOuter;
+                  return clone;
+                });
+                settestMap(cloneOuter);
+              }
+            }}
+          />
         </View>
       )}
       <View style={styles.btnsRow}>
         <TouchableOpacity
+          activeOpacity={0.8}
           style={styles.moveDownBtn}
           onPress={() => {
             if (testMap.length > 1 && indexInnerList !== testMap.length - 1) {
@@ -93,7 +135,9 @@ function OptionSelectionItem({
                 const f = clone[index].optionsList.splice(indexInnerList, 1)[0];
                 clone[index].optionsList.splice(indexInnerList + 1, 0, f);
                 settestMap(clone[index].optionsList);
+                sethighlightedOptionID(eInnerList.id);
                 // setmoveToOptionPos(indexInnerList + 1);
+                scrollToPositionIncluding(135);
                 return clone;
               });
             }
@@ -102,6 +146,7 @@ function OptionSelectionItem({
           <Entypo name="chevron-down" style={styles.chevronDown} />
         </TouchableOpacity>
         <TouchableOpacity
+          activeOpacity={0.8}
           style={styles.moveUpBtn}
           onPress={() => {
             if (testMap.length > 1 && indexInnerList !== 0) {
@@ -110,7 +155,9 @@ function OptionSelectionItem({
                 const f = clone[index].optionsList.splice(indexInnerList, 1)[0];
                 clone[index].optionsList.splice(indexInnerList - 1, 0, f);
                 settestMap(clone[index].optionsList);
+                sethighlightedOptionID(eInnerList.id);
                 // setmoveToOptionPos(indexInnerList - 1);
+                scrollToPositionIncluding(-135);
                 return clone;
               });
             }
@@ -133,6 +180,7 @@ function OptionSelectionItem({
             if (indexInnerList !== 0) {
               setmoveToOptionPos(indexInnerList - 1);
             }
+            sethighlightedOptionID(eInnerList.id);
           }}
         >
           <MaterialCommunityIcons
@@ -259,6 +307,7 @@ const styles = StyleSheet.create({
     borderColor: "#9b9b9b",
     borderRadius: 5,
     alignSelf: "stretch",
+    padding: 10,
   },
 });
 

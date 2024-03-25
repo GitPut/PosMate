@@ -4,6 +4,9 @@ import { signIn } from "state/firebaseFunctions";
 import { Button } from "@react-native-material/core";
 import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
+import "./css/divine-pos.webflow.css";
+import "./css/normalize.css";
+import "./css/webflow.css";
 
 const Login = () => {
   const [email, setEmail] = useState();

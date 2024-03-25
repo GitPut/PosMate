@@ -51,6 +51,7 @@ function AddProductModal({
     const [scrollY, setScrollY] = useState(0);
     const scrollViewRef = useRef();
     const targetViewRef = useRef(null);
+    const [selectedID, setselectedID] = useState(null)
 
     useEffect(() => {
         if (existingProduct) {
@@ -187,6 +188,16 @@ function AddProductModal({
         }
     };
 
+    //       const scrollToPositionIncluding = (position) => {
+    //     //get the current scroll position and scroll to it plus the position passed in
+    //     console.log("scrollY", scrollY);
+    //     console.log("scrolling to position", position);
+    //     scrollViewRef.current.scrollTo({
+    //       y: position,
+    //       animated: true,
+    //     });
+    //   };
+
     return (
         <TouchableOpacity
             onPress={() => {
@@ -206,13 +217,33 @@ function AddProductModal({
                     <View style={[styles.container, { height: height * 0.9, width: width * 0.7 }]}>
                         <View style={styles.topRow}>
                             <Text style={styles.productAdd}>Product {existingProduct ? 'Update' : 'Add'}</Text>
-                            <TouchableOpacity style={styles.templateBtn}>
-                                <Text style={styles.templatesBtnLbl}>Templates</Text>
+                            {existingProduct && <TouchableOpacity style={styles.templateBtn} onPress={() => {
+                                let copy = { ...existingProduct }
+                                copy.name = copy.name + " Copy";
+                                copy.imageUrl = "";
+                                copy.hasImage = false;
+                                copy.id = Math.random().toString(36).substr(2, 9);
+                                db.collection("users")
+                                    .doc(userS.uid)
+                                    .collection("products")
+                                    .doc(copy.id.toString())
+                                    .set(copy)
+                                if (onlineStoreDetails.onlineStoreSetUp) {
+                                    db.collection("public")
+                                        .doc(userS.uid)
+                                        .collection("products")
+                                        .doc(copy.id.toString())
+                                        .set(copy)
+                                }
+                                setUserStoreState({ categories: catalog.categories, products: [...catalog.products, copy] })
+                                setexistingProduct(copy)
+                            }}>
+                                <Text style={styles.templatesBtnLbl}>Duplicate</Text>
                                 <IoniconsIcon
-                                    name="chevron-down"
+                                    name="copy"
                                     style={styles.chevronDownIcon}
-                                ></IoniconsIcon>
-                            </TouchableOpacity>
+                                />
+                            </TouchableOpacity>}
                         </View>
                         <View style={[styles.innerScrollArea, { height: height * 0.6 }]}>
                             <ScrollView
@@ -382,8 +413,6 @@ function AddProductModal({
                                             dontDisplayOnOnlineStore: !prevState.dontDisplayOnOnlineStore,
                                         }))
                                     }}
-                                        trackColor={{ false: "grey", true: "#1c294e" }}
-                                        thumbColor='#FFF'
                                     />
                                 </View>
                                 <View style={styles.spacer3}></View>
@@ -442,6 +471,8 @@ function AddProductModal({
                                                 scrollY={scrollY}
                                                 scrollViewRef={scrollViewRef}
                                                 ref={targetViewRef}
+                                                selectedID={selectedID}
+                                                setselectedID={setselectedID}
                                             />
                                         )
                                     })

@@ -42,8 +42,6 @@ const PhoneOrderModal = ({
   const storeDetails = storeDetailState.use();
   const { height, width } = useWindowDimensions();
 
-  //
-
   // Function to calculate distance between two points using Haversine formula
   function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371; // Radius of the Earth in km
@@ -102,7 +100,39 @@ const PhoneOrderModal = ({
     }
   }
 
-  //
+  const SaveCustomer = () => {
+    addCustomerDetailsToDb({
+      name: name,
+      phone: phone,
+      address: address ? address : null,
+      buzzCode: buzzCode ? buzzCode : null,
+      unitNumber: unitNumber ? unitNumber : null,
+      orders: [],
+    }).then((docRef) => {
+      setsavedCustomerDetails({
+        name: name,
+        phone: phone,
+        address: address ? address : null,
+        buzzCode: buzzCode ? buzzCode : null,
+        unitNumber: unitNumber ? unitNumber : null,
+        orders: [],
+        id: docRef.id,
+      });
+
+      setCustomersList([
+        ...customers,
+        {
+          name: name,
+          phone: phone,
+          address: address ? address : null,
+          buzzCode: buzzCode ? buzzCode : null,
+          unitNumber: unitNumber ? unitNumber : null,
+          orders: [],
+          id: docRef.id,
+        },
+      ]);
+    });
+  };
 
   useEffect(() => {
     if (address) {
@@ -161,40 +191,6 @@ const PhoneOrderModal = ({
     }
   }, [localAddress]);
 
-  const SaveCustomer = () => {
-    addCustomerDetailsToDb({
-      name: name,
-      phone: phone,
-      address: address ? address : null,
-      buzzCode: buzzCode ? buzzCode : null,
-      unitNumber: unitNumber ? unitNumber : null,
-      orders: [],
-    }).then((docRef) => {
-      setsavedCustomerDetails({
-        name: name,
-        phone: phone,
-        address: address ? address : null,
-        buzzCode: buzzCode ? buzzCode : null,
-        unitNumber: unitNumber ? unitNumber : null,
-        orders: [],
-        id: docRef.id,
-      });
-
-      setCustomersList([
-        ...customers,
-        {
-          name: name,
-          phone: phone,
-          address: address ? address : null,
-          buzzCode: buzzCode ? buzzCode : null,
-          unitNumber: unitNumber ? unitNumber : null,
-          orders: [],
-          id: docRef.id,
-        },
-      ]);
-    });
-  };
-
   return (
     <TouchableOpacity
       onPress={() => setDeliveryModal(false)}
@@ -211,7 +207,17 @@ const PhoneOrderModal = ({
           <View style={styles.container}>
             <View style={styles.topHeaderAndCloseGroup}>
               <View style={styles.closeRow}>
-                <TouchableOpacity onPress={() => setDeliveryModal(false)}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setDeliveryModal(false);
+                    setOngoingDelivery(false);
+                    setName("");
+                    setPhone("");
+                    setAddress(null);
+                    setBuzzCode("");
+                    setUnitNumber("");
+                  }}
+                >
                   <Ionicons name="md-close" style={styles.escapeIcon} />
                 </TouchableOpacity>
               </View>
@@ -251,9 +257,6 @@ const PhoneOrderModal = ({
                     value={saveCustomerChecked}
                     onValueChange={(val) => {
                       setsaveCustomerChecked(val);
-                      if (val) {
-                        SaveCustomer();
-                      }
                     }}
                   />
                 </View>
@@ -264,11 +267,6 @@ const PhoneOrderModal = ({
                   value={deliveryChecked}
                   onValueChange={(val) => {
                     setDeliveryChecked(val);
-                    if (val) {
-                      setOngoingDelivery(true);
-                    } else {
-                      setOngoingDelivery(false);
-                    }
                   }}
                 />
               </View>

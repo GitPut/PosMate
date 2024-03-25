@@ -170,11 +170,13 @@ const DeviceSettings = () => {
                                             'mb-2',
 
                                         ])} >Device Name</Text>
-                                        <TextInput placeholder='Enter device name' value={device.name} onChangeText={val => {
-                                            const clone = { ...deviceTree }
-                                            clone.devices[index].name = val
-                                            setDeviceTreeState(clone)
-                                        }}
+                                        <TextInput placeholder='Enter device name'
+                                            value={device.name}
+                                            onChangeText={val => {
+                                                const clone = { ...deviceTree }
+                                                clone.devices[index].name = val
+                                                setDeviceTreeState(clone)
+                                            }}
                                             style={tw.style(['w-full', 'p-2', 'border', 'border-gray-300', 'rounded-md', 'mb-2'])}
                                         />
                                     </View>
@@ -256,11 +258,13 @@ const DeviceSettings = () => {
                                             'text-sm',
                                             'mb-2',
                                         ]), { width: '100%' }]} >Print To Printer</Text>
-                                        <TextInput placeholder='Enter printer name' value={device.printToPrinter} onChangeText={val => {
-                                            const clone = { ...deviceTree }
-                                            clone.devices[index].printToPrinter = val
-                                            setDeviceTreeState(clone)
-                                        }}
+                                        <TextInput placeholder='Enter printer name'
+                                            value={device.printToPrinter}
+                                            onChangeText={val => {
+                                                const clone = { ...deviceTree }
+                                                clone.devices[index].printToPrinter = val
+                                                setDeviceTreeState(clone)
+                                            }}
                                             style={[tw.style(['p-2', 'border', 'border-gray-300', 'rounded-md', 'mb-2']), { width: '100%' }]}
                                         />
                                     </View> :
@@ -421,8 +425,7 @@ const DeviceSettings = () => {
                                             let clone = { ...deviceTree }
                                             clone = { ...clone, devices: clone.devices.filter(deviceSearch => deviceSearch.docID !== device.docID) }
                                             setDeviceTreeState(clone)
-                                        }
-                                        }
+                                        }}
                                         style={tw.style([
                                             'bg-red-500',
                                             'rounded-md',

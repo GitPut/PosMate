@@ -1335,7 +1335,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
         >
           <SavedCustomersModal
             setSaveCustomerModal={setSaveCustomerModal}
-            setOngoingDelivery={setOngoingDelivery}
+            setOngoingDelivery={setOngoingDelivery} 
             setNameForDelivery={setName}
             setPhoneForDelivery={setPhone}
             setAddressForDelivery={setAddress}

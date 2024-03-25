@@ -16,10 +16,21 @@ function OptionsItem({
   style,
   scrollY,
   scrollViewRef,
+  selectedID,
+  setselectedID,
 }) {
   const [e, sete] = useState(structuredClone(item));
   const [addOptionClicked, setaddOptionClicked] = useState(true);
   const [moveToOptionPos, setmoveToOptionPos] = useState(null);
+
+  const scrollToPositionIncluding = (position) => {
+    scrollViewRef.current.measure((fx, fy, width, scrollViewHeight, px, py) => {
+      scrollViewRef.current.scrollTo({
+        y: scrollY + position,
+        animated: true,
+      });
+    });
+  };
 
   return (
     <>
@@ -28,6 +39,9 @@ function OptionsItem({
           styles.container,
           style,
           indexOn === index && { paddingBottom: 20 },
+          selectedID === item.id
+            ? { borderColor: "#4CAF50", borderWidth: 2 }
+            : { borderColor: "#000000" },
         ]}
         onLayout={(event) => {
           const { y, height } = event.nativeEvent.layout;
@@ -40,13 +54,13 @@ function OptionsItem({
               newProductOptions[index].selectedCaseList?.length > 0
             ) {
               elementBottomPosition -=
-                95 * newProductOptions[index].selectedCaseList.length;
+                135 * newProductOptions[index].selectedCaseList.length;
               setaddOptionClicked(false);
               if (moveToOptionPos !== null) {
                 elementBottomPosition -=
                   (newProductOptions[index].optionsList?.length -
                     moveToOptionPos) *
-                  95;
+                  135;
                 setmoveToOptionPos(null);
               }
             }
@@ -81,9 +95,14 @@ function OptionsItem({
             styles.closedOptionContainer,
             index === indexOn && { borderBottomWidth: 1 },
           ]}
-          onPress={() =>
-            indexOn !== index ? setindexOn(index) : setindexOn(null)
-          }
+          onPress={() => {
+            if (indexOn !== index) {
+              setindexOn(index);
+              setselectedID(null);
+            } else {
+              setindexOn(null);
+            }
+          }}
           activeOpacity={0.8}
         >
           <Text style={styles.optionNameLbl}>
@@ -91,6 +110,7 @@ function OptionsItem({
           </Text>
           <View style={styles.btnsRow}>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={styles.moveDownBtn}
               onPress={() => {
                 if (
@@ -109,12 +129,15 @@ function OptionsItem({
                     options: newProductOptions,
                   }));
                   setindexOn(null);
+                  scrollToPositionIncluding(100);
+                  setselectedID(item.id);
                 }
               }}
             >
               <Entypo name="chevron-down" style={styles.chevronDown} />
             </TouchableOpacity>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={styles.moveUpBtn}
               onPress={() => {
                 if (newProductOptions.length > 1 && index !== 0) {
@@ -130,12 +153,15 @@ function OptionsItem({
                     options: newProductOptions,
                   }));
                   setindexOn(null);
+                  scrollToPositionIncluding(-100);
+                  setselectedID(item.id);
                 }
               }}
             >
               <Entypo name="chevron-up" style={styles.chevronUp} />
             </TouchableOpacity>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={styles.duplicateBtn}
               onPress={() => {
                 setnewProductOptions((prev) => {
@@ -153,6 +179,7 @@ function OptionsItem({
                   options: newProductOptions,
                 }));
                 setindexOn(newProductOptions.length);
+                setselectedID(null);
               }}
             >
               <MaterialCommunityIcons
@@ -161,6 +188,7 @@ function OptionsItem({
               />
             </TouchableOpacity>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={styles.deleteBtn}
               onPress={() => {
                 const newProductOptionsUpdated = newProduct.options.filter(
@@ -178,6 +206,7 @@ function OptionsItem({
                   options: newProductOptionsUpdated,
                 }));
                 setindexOn(null);
+                setselectedID(null);
               }}
             >
               <MaterialCommunityIcons
@@ -199,6 +228,7 @@ function OptionsItem({
             scrollY={scrollY}
             setaddOptionClicked={setaddOptionClicked}
             setmoveToOptionPos={setmoveToOptionPos}
+            scrollToPositionIncluding={scrollToPositionIncluding}
           />
         )}
       </View>
@@ -233,7 +263,6 @@ function OptionsItem({
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: "#000000",
     backgroundColor: "rgba(255,255,255,1)",
     justifyContent: "flex-start",
     marginBottom: 30,

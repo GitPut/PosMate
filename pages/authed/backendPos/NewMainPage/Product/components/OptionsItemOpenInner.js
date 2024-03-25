@@ -11,6 +11,8 @@ import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Switch } from "react-native";
 import GeneralDropdown from "components/GeneralDropdown";
 import OptionIfStatementItem from "./OptionIfStatementItem";
+import generateRandomKey from "components/functional/GenerateRandomKey";
+import GeneralSwitch from "components/GeneralSwitch";
 
 function OptionsItemOpenInner({
   item,
@@ -23,8 +25,10 @@ function OptionsItemOpenInner({
   scrollY,
   setaddOptionClicked,
   setmoveToOptionPos,
+  scrollToPositionIncluding,
 }) {
   const [testMap, settestMap] = useState(structuredClone(item.optionsList));
+  const [highlightedOptionID, sethighlightedOptionID] = useState(null);
 
   const optionLbls = newProduct.options.map(function (el) {
     if (el.label !== e.label && el.label) {
@@ -61,20 +65,7 @@ function OptionsItemOpenInner({
           <Text style={styles.optionNameInputLbl1}>Option Name</Text>
           <TextInput
             style={styles.optionNameInput2}
-            // onBlur={() => {
-            //   sete((prevState) => ({
-            //     ...prevState,
-            //     label: optionLabelBeforeBlur,
-            //   }));
-            //   // newProductOptions.current[index].label = optionLabelBeforeBlur;
-            //   setnewProductOptions((prev) => {
-            //     const clone = structuredClone(prev);
-            //     clone[index].label = optionLabelBeforeBlur;
-            //     return clone;
-            //   });
-            // }}
             onChangeText={(val) => {
-              // setoptionLabelBeforeBlur(val);
               sete((prevState) => ({
                 ...prevState,
                 label: val,
@@ -146,14 +137,14 @@ function OptionsItemOpenInner({
       <View style={styles.spacer5}></View>
       <View style={styles.optionRequiredRow1}>
         <Text style={styles.isOptionTxt1}>Is Option Required?:</Text>
-        <Switch
-          value={e.isRequired}
-          onValueChange={(val) => {
-            sete((prevState) => ({ ...prevState, isRequired: val }));
+        <GeneralSwitch
+          isActive={e.isRequired}
+          toggleSwitch={() => {
+            sete((prevState) => ({ ...prevState, isRequired: !e.isRequired }));
             // newProductOptions.current[index].isRequired = val;
             setnewProductOptions((prev) => {
               const clone = structuredClone(prev);
-              clone[index].isRequired = val;
+              clone[index].isRequired = !e.isRequired;
               return clone;
             });
           }}
@@ -162,7 +153,7 @@ function OptionsItemOpenInner({
       <View style={styles.spacer6}></View>
       {testMap.map((e, indexInnerList) => (
         <OptionSelectionItem
-          key={e.label + indexInnerList}
+          key={e.id}
           style={styles.optionSelectionItem1}
           eInnerListStart={e}
           indexInnerList={indexInnerList}
@@ -175,6 +166,9 @@ function OptionsItemOpenInner({
             setmoveToOptionPos(pos);
             setaddOptionClicked(true);
           }}
+          highlightedOptionID={highlightedOptionID}
+          sethighlightedOptionID={sethighlightedOptionID}
+          scrollToPositionIncluding={scrollToPositionIncluding}
         />
       ))}
       {testMap.length > 0 && <View style={styles.spacer7}></View>}
@@ -186,6 +180,7 @@ function OptionsItemOpenInner({
             cloneOuter.push({
               label: null,
               priceIncrease: null,
+              id: generateRandomKey(10),
             });
             setnewProductOptions((prev) => {
               const clone = structuredClone(prev);
@@ -228,14 +223,15 @@ function OptionsItemOpenInner({
           <TouchableOpacity
             style={styles.addAnotherSelectionBtn2}
             onPress={() => {
+              const id = generateRandomKey(10);
               if (!newProductOptions[index].selectedCaseList) {
-                console.log("Added new if statement list");
                 setnewProductOptions((prev) => {
                   const clone = structuredClone(prev);
                   clone[index].selectedCaseList = [
                     {
                       selectedCaseKey: null,
                       selectedCaseValue: null,
+                      id: id,
                     },
                   ];
                   return clone;
@@ -243,7 +239,11 @@ function OptionsItemOpenInner({
                 sete((prev) => ({
                   ...prev,
                   selectedCaseList: [
-                    { selectedCaseKey: null, selectedCaseValue: null },
+                    {
+                      selectedCaseKey: null,
+                      selectedCaseValue: null,
+                      id: id,
+                    },
                   ],
                 }));
               } else {
@@ -254,6 +254,7 @@ function OptionsItemOpenInner({
                   clone[index].selectedCaseList.push({
                     selectedCaseKey: null,
                     selectedCaseValue: null,
+                    id: id,
                   });
                   return clone;
                 });
@@ -377,7 +378,6 @@ const styles = StyleSheet.create({
     height: 53,
   },
   optionSelectionItem1: {
-    height: 84,
     width: "100%",
   },
   spacer7: {

@@ -352,9 +352,9 @@ function OrderCartMain({
                   ).toFixed(2)}
                 </Text>
               </View>
-              <TouchableOpacity style={styles.discountCodeBtn}>
+              {/* <TouchableOpacity style={styles.discountCodeBtn}>
                 <Text style={styles.discountCode}>Discount Code</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
           <TouchableOpacity

@@ -24,15 +24,9 @@ import {
   updateWooCredentials,
 } from "state/firebaseFunctions";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import Foundation from "@expo/vector-icons/Foundation";
-import { auth, db } from "state/firebaseConfig";
-import { loadStripe } from "@stripe/stripe-js";
-import firebase from "firebase/app";
-
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
 const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
-  const { width, height } = useWindowDimensions();
   const storeDetails = storeDetailState.use();
   const [name, setname] = useState(storeDetails.name);
   const [phoneNumber, setphoneNumber] = useState(storeDetails.phoneNumber);
@@ -61,7 +55,6 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
   const [useWoocommerce, setuseWoocommerce] = useState(
     wooCredentials.useWoocommerce
   );
-  const trialDetails = trialDetailsState.use();
 
   const handleWooDataUpdate = () => {
     if (apiUrl !== null && ck !== null && cs !== null) {
@@ -163,8 +156,8 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                 variant="outlined"
                 placeholder="Enter Store Name"
                 label="Enter Store Name"
-                onChangeText={(val) => setname(val)}
                 style={{ margin: 10, width: "48%" }}
+                onChangeText={(val) => setname(val)}
                 value={name}
               />
               <TextInput
@@ -172,8 +165,8 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                 variant="outlined"
                 placeholder="Enter Store Website Url"
                 label="Enter Store Website Url"
-                onChangeText={(val) => setwebsite(val)}
                 style={{ margin: 10, width: "48%" }}
+                onChangeText={(val) => setwebsite(val)}
                 value={website}
               />
               <TextInput
@@ -181,8 +174,8 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                 variant="outlined"
                 placeholder="Enter Store Phone Number"
                 label="Enter Store Phone Number"
-                onChangeText={(val) => setphoneNumber(val)}
                 style={{ margin: 10, width: "48%" }}
+                onChangeText={(val) => setphoneNumber(val)}
                 value={phoneNumber}
               />
               <View style={{ margin: 10, width: "48%" }}>
@@ -242,8 +235,8 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                   variant="outlined"
                   placeholder="Enter Delivery Price"
                   label="Enter Delivery Price"
-                  onChangeText={(val) => setdeliveryPrice(val)}
                   style={{ marginTop: 15, width: "100%" }}
+                  onChangeText={(val) => setdeliveryPrice(val)}
                   value={deliveryPrice}
                 />
                 <TextInput
@@ -251,8 +244,8 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                   variant="outlined"
                   placeholder="Enter Delivery Range In KM"
                   label="Enter Delivery Range In KM"
-                  onChangeText={(val) => setdeliveryRange(val)}
                   style={{ marginTop: 15, width: "100%" }}
+                  onChangeText={(val) => setdeliveryRange(val)}
                   value={deliveryRange}
                 />
               </View>
@@ -272,16 +265,16 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                     settaxRate("0");
                   }
                 }}
-                style={{ margin: 10, width: "48%" }}
                 value={taxRate ? taxRate.toString() : "0"}
+                style={{ margin: 10, width: "48%" }}
               />
               <TextInput
                 color="black"
                 variant="outlined"
                 placeholder="Enter Settings Page Password"
                 label="Enter Settings Page Password"
-                onChangeText={(val) => setsettingsPassword(val)}
                 style={{ margin: 10, width: "48%" }}
+                onChangeText={(val) => setsettingsPassword(val)}
                 value={settingsPassword}
               />
               <View style={{ margin: 10, width: "48%", height: 55 }}>

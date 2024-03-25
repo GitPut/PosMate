@@ -1600,8 +1600,7 @@ textarea.w-select {
   clear: none;
 }
 .w-nav {
-  position: relative;
-  background: #dddddd;
+  position: absolute;
   z-index: 1000;
 }
 .w-nav:before,

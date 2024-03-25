@@ -9,7 +9,7 @@ import {
   useWindowDimensions,
   ScrollView,
 } from "react-native";
-import Icon from "react-native-vector-icons/Entypo";
+import { Entypo, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import DropDownMenuBtn from "./components/DropDownMenuBtn";
 import React, { useEffect, useRef, useState } from "react";
 import { Route, useHistory, useLocation, withRouter } from "react-router-dom";
@@ -23,6 +23,7 @@ import {
 import firebase from "firebase/app";
 import MenuBtn from "./components/MenuBtn";
 import index from "../backendPos/Router/newAuthIndex";
+import HeaderLogoutDropdown from "components/HeaderLogoutDropdown";
 
 const tz = require("moment-timezone");
 
@@ -39,6 +40,8 @@ function BackendPosContainer(props) {
   let pathname = location.pathname;
   const { height, width } = useWindowDimensions();
   const storeDetails = storeDetailState.use();
+  const [logoutDropdown, setlogoutDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
   const fadeIn = () => {
     // Will change fadeAnim value to 0 in 3 seconds
@@ -211,7 +214,7 @@ function BackendPosContainer(props) {
           source={require("./assets/images/image_nrJg..png")}
           resizeMode="contain"
           style={styles.logo}
-        ></Image>
+        />
         <View style={styles.rightSideRow}>
           <TouchableOpacity
             onPress={() => history.push("/pos")}
@@ -220,20 +223,51 @@ function BackendPosContainer(props) {
           >
             <Text style={styles.pos}>POS</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.userBtn} activeOpacity={0.8}>
+          {/* <TouchableOpacity
+            style={styles.userBtn}
+            activeOpacity={0.8}
+            onPress={() => setlogoutDropdown(true)}
+          >
             <View style={styles.iconWithNameGroup}>
               <Image
                 source={require("./assets/images/image_bTyU..png")}
                 resizeMode="contain"
                 style={styles.userIcon}
-              ></Image>
+              />
               <Text style={styles.username}>{storeDetails.name}</Text>
             </View>
-            <Icon
-              name="chevron-small-down"
-              style={styles.chevronDownIcon}
-            ></Icon>
-          </TouchableOpacity>
+            <Entypo name="chevron-small-down" style={styles.chevronDownIcon} />
+            <Modal visible={logoutDropdown} transparent={true}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "rgba(255,255,255,1)",
+                  borderRadius: 10,
+                  shadowColor: "rgba(0,0,0,1)",
+                  shadowOffset: {
+                    width: 3,
+                    height: 3,
+                  },
+                  elevation: 30,
+                  shadowOpacity: 0.2,
+                  shadowRadius: 10,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-around",
+                  width: "100%",
+                  height: 43,
+                  position: "absolute",
+                  bottom: -46,
+                  left: 0,
+                }}
+              >
+                <Text style={styles.logoutFromAccount}>
+                  Logout From Account
+                </Text>
+                <Feather name="log-out" style={styles.logoutIcon} />
+              </TouchableOpacity>
+            </Modal>
+          </TouchableOpacity> */}
+          <HeaderLogoutDropdown styles={styles} storeDetails={storeDetails} />
         </View>
       </View>
       <View style={[styles.bottom, { height: height - 75, paddingTop: 50 }]}>
@@ -359,6 +393,7 @@ function BackendPosContainer(props) {
                 !pathname.includes("employeesreport") &&
                   !pathname.includes("editemployee") &&
                   !pathname.includes("onlinestoresettings") &&
+                  // !pathname.includes("general") &&
                   styles.page,
               ]}
             >
@@ -444,7 +479,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   userBtn: {
-    width: 182,
+
     height: 39,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -500,6 +535,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 15,
     height: "100%",
+  },
+  logoutFromAccount: {
+    fontWeight: "700",
+    color: "#121212",
+  },
+  logoutIcon: {
+    color: "rgba(0,0,0,1)",
+    fontSize: 26,
   },
 });
 
