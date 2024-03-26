@@ -32,6 +32,10 @@ function OptionsItem({
     });
   };
 
+  const copyEToClipboard = () => {
+    navigator.clipboard.writeText(JSON.stringify(e));
+  };
+
   return (
     <>
       <View
@@ -109,6 +113,13 @@ function OptionsItem({
             {e.label ? e.label : "New Option"}
           </Text>
           <View style={styles.btnsRow}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.moveDownBtn}
+              onPress={copyEToClipboard}
+            >
+              <Entypo name="clipboard" size={20} color="white" />
+            </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={0.8}
               style={styles.moveDownBtn}
@@ -233,28 +244,59 @@ function OptionsItem({
         )}
       </View>
       {index === newProduct.options.length - 1 && (
-        <TouchableOpacity
-          onPress={() => {
-            setnewProductOptions((prev) => {
-              const clone = structuredClone(prev);
-              clone.push({
-                label: null,
-                optionsList: [],
-                selectedCaseKey: null,
-                selectedCaseValue: null,
-                numOfSelectable: null,
-                id: Math.random().toString(36).substr(2, 9),
-                optionType: null,
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity
+            onPress={() => {
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone.push({
+                  label: null,
+                  optionsList: [],
+                  selectedCaseKey: null,
+                  selectedCaseValue: null,
+                  numOfSelectable: null,
+                  id: Math.random().toString(36).substr(2, 9),
+                  optionType: null,
+                });
+                return clone;
               });
-              return clone;
-            });
-            setindexOn(newProductOptions.length);
-          }}
-          disabled={e.label === null}
-          style={styles.createOptionBtn}
-        >
-          <Text style={styles.createOptionTxt}>Create Option</Text>
-        </TouchableOpacity>
+              setindexOn(newProductOptions.length);
+            }}
+            disabled={e.label === null}
+            style={styles.createOptionBtn}
+          >
+            <Text style={styles.createOptionTxt}>Create Option</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.createOptionBtn, { marginLeft: 20 }]}
+            onPress={() => {
+              navigator.clipboard.readText().then((text) => {
+                try {
+                  const parsed = JSON.parse(text);
+                  setnewProductOptions((prev) => {
+                    const clone = structuredClone(prev);
+                    if (prev.findIndex((e) => e.id === parsed.id) > -1) {
+                      const newCopy = {
+                        ...parsed,
+                        id: Math.random().toString(36).substr(2, 9),
+                        name: parsed.name + " Copy",
+                      };
+                      clone.push(newCopy);
+                    } else {
+                      clone.push(parsed);
+                    }
+                    return clone;
+                  });
+                  setindexOn(newProductOptions.length);
+                } catch (e) {
+                  alert("Invalid JSON");
+                }
+              });
+            }}
+          >
+            <Text style={styles.createOptionTxt}>Paste Option</Text>
+          </TouchableOpacity>
+        </View>
       )}
     </>
   );

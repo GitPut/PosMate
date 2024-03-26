@@ -62,7 +62,7 @@ const DefaultLayout = (props) => {
               orderType = "In Store";
             }
 
-            setTransList((prevState) => [...prevState, doc.data()]);
+            setTransList((prevState) => [...prevState, { ...doc.data(), docID: doc.id }]);
             setTransListTableOrg((prevState) => [...prevState,
             {
               ...doc.data(),
@@ -71,6 +71,7 @@ const DefaultLayout = (props) => {
               name: doc.data().customer?.name ? doc.data().customer?.name : "N/A",
               date: getDate(doc.data()),
               originalData: doc.data(),
+              docID: doc.id,
               amount: doc.data().total,
               system: 'POS',
               type: orderType,

@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-function InvoiceItem({ style, item, setbaseSelectedRows, baseSelectedRows }) {
+function InvoiceItem({
+  style,
+  item,
+  setbaseSelectedRows,
+  baseSelectedRows,
+  deleteTransaction,
+}) {
   return (
     <View style={[styles.container, style]}>
       <View style={styles.checkboxCont1}>
@@ -39,6 +46,22 @@ function InvoiceItem({ style, item, setbaseSelectedRows, baseSelectedRows }) {
       <View style={styles.orderTypeCont1}>
         <Text style={styles.pickUp}>{item.type}</Text>
       </View>
+      <TouchableOpacity
+        onPress={deleteTransaction}
+        style={{
+          height: 30,
+          width: 30,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "red",
+          borderRadius: 5,
+          position: "absolute",
+          right: 10,
+          top: 10,
+        }}
+      >
+        <Ionicons name="md-close" size={24} color="white" />
+      </TouchableOpacity>
     </View>
   );
 }

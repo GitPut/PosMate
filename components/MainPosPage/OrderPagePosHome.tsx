@@ -123,10 +123,18 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
               })
               .then(qz.websocket.disconnect)
               .catch(function (err) {
-                // console.error(err);
-                alert(
-                  "An error occured while trying to print. Try refreshing the page and trying again."
-                );
+                console.error("error printing: ", err);
+                if (
+                  err.message.includes(
+                    "A printer must be specified before printing"
+                  )
+                ) {
+                  alert("You must specify a printer in device settings");
+                } else {
+                  alert(
+                    "An error occured while trying to print. Try refreshing the page and trying again."
+                  );
+                }
               });
             db.collection("users")
               .doc(auth.currentUser?.uid)
@@ -336,10 +344,18 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
-            // console.error(err);
-            alert(
-              "An error occured while trying to print. Try refreshing the page and trying again."
-            );
+            console.error("error printing: ", err);
+            if (
+              err.message.includes(
+                "A printer must be specified before printing"
+              )
+            ) {
+              alert("You must specify a printer in device settings");
+            } else {
+              alert(
+                "An error occured while trying to print. Try refreshing the page and trying again."
+              );
+            }
           });
       }
 
@@ -404,10 +420,18 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
-            // console.error(err);
-            alert(
-              "An error occured while trying to print. Try refreshing the page and trying again."
-            );
+            console.error("error printing: ", err);
+            if (
+              err.message.includes(
+                "A printer must be specified before printing"
+              )
+            ) {
+              alert("You must specify a printer in device settings");
+            } else {
+              alert(
+                "An error occured while trying to print. Try refreshing the page and trying again."
+              );
+            }
           });
       }
 
@@ -469,10 +493,18 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
-            // console.error(err);
-            alert(
-              "An error occured while trying to print. Try refreshing the page and trying again."
-            );
+            console.error("error printing: ", err);
+            if (
+              err.message.includes(
+                "A printer must be specified before printing"
+              )
+            ) {
+              alert("You must specify a printer in device settings");
+            } else {
+              alert(
+                "An error occured while trying to print. Try refreshing the page and trying again."
+              );
+            }
           });
       }
     }
@@ -483,6 +515,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
     setAddress(null);
     setDeliveryChecked(false);
     setChangeDue(null);
+    setDiscountAmount(null);
   };
 
   useEffect(() => {
@@ -525,6 +558,8 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
               setAddress(null);
               setDeliveryChecked(false);
               setupdatingOrder(false);
+              setsavedCustomerDetails(null);
+              setDiscountAmount(null);
             }}
           >
             <Text style={styles.checkoutLbl}>Update</Text>
@@ -541,6 +576,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
               setOngoingDelivery(null);
               setupdatingOrder(false);
               setsavedCustomerDetails(null);
+              setDiscountAmount(null);
             }}
           >
             <Text style={styles.checkoutLbl}>Cancel</Text>
@@ -572,6 +608,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             style={styles.checkoutBtn}
             onPress={() => {
               Print("Card");
+              setDiscountAmount(null);
             }}
             disabled={cart.length < 1 || ongoingDelivery}
           >
@@ -590,6 +627,8 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             setName(null);
             setPhone(null);
             setAddress(null);
+            setDeliveryChecked(false);
+            setDiscountAmount(null);
           }}
         >
           <Text style={styles.checkoutLbl}>Checkout</Text>
@@ -606,6 +645,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             setPhone(null);
             setAddress(null);
             setChangeDue(null);
+            setDiscountAmount(null);
           }}
         >
           <Text style={styles.checkoutLbl}>Cancel</Text>
@@ -887,7 +927,6 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                     width: 160, // Ensure this width accounts for any margins or padding
                     marginBottom: 30,
                   }}
-                  setshowProduct={setshowProduct}
                 />
               )
             )}

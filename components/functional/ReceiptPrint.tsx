@@ -292,7 +292,7 @@ const ReceiptPrint = (element, storeDetails) => {
         }
 
         if (cartItem.extraDetails) {
-          data.push(cartItem.extraDetails);
+          data.push('Note: ' + cartItem.extraDetails);
           data.push("\x0A");
         }
 
@@ -416,7 +416,7 @@ const ReceiptPrint = (element, storeDetails) => {
         }
 
         if (cartItem.extraDetails) {
-          data.push(cartItem.extraDetails);
+          data.push("Note: " + cartItem.extraDetails);
           data.push("\x0A");
         }
 
@@ -516,7 +516,7 @@ const ReceiptPrint = (element, storeDetails) => {
         }
 
         if (cartItem.extraDetails) {
-          data.push(cartItem.extraDetails);
+          data.push("Note: " + cartItem.extraDetails);
           data.push("\x0A");
         }
 

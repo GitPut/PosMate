@@ -16,7 +16,8 @@ export const addCartState = (val: any, currentState: any[]): void => {
   const doesExist = currentState.findIndex(
     (item: any) =>
       item.name === val.name &&
-      JSON.stringify(item.options) === JSON.stringify(val.options)
+      JSON.stringify(item.options) === JSON.stringify(val.options) &&
+      item.extraDetails === val.extraDetails
   );
 
   if (doesExist !== -1) {
@@ -191,15 +192,15 @@ export const deviceTreeState = entity<{
 export const setDeviceTreeState = (val: any): void => {
   deviceTreeState.set(val);
 };
-  
+
 export const transListState = entity<any[]>([]);
 
 export const setTransListState = (val: any[]): void => {
   transListState.set(val);
-}
+};
 
 export const transListTableOrgState = entity<any[]>([]);
 
 export const setTransListTableOrgState = (val: any[]): void => {
   transListTableOrgState.set(val);
-}
+};

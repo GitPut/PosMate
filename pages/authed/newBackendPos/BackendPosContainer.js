@@ -132,6 +132,7 @@ function BackendPosContainer(props) {
                   : "N/A",
                 date: getDate(doc.data()),
                 originalData: doc.data(),
+                docID: doc.id,
                 amount: doc.data().total,
                 system: "POS",
                 type: orderType,
@@ -479,7 +480,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   userBtn: {
-
     height: 39,
     flexDirection: "row",
     justifyContent: "space-between",

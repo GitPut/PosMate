@@ -262,7 +262,7 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
         const copyCart = structuredClone(cart);
         copyCart[itemIndex] = {
           name: myObjProfile.name,
-          price: total,
+          price: total, 
           description: myObj.description,
           options: opsArray,
           extraDetails: extraInput,

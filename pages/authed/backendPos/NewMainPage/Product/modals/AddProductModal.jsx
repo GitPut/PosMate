@@ -478,26 +478,67 @@ function AddProductModal({
                                     })
                                 }
                                 {newProduct.options.length === 0 && (
-                                    <TouchableOpacity onPress={() => {
-                                        setnewProductOptions([
-                                            {
-                                                label: null,
-                                                optionsList: [],
-                                                selectedCaseKey: null,
-                                                selectedCaseValue: null,
-                                                numOfSelectable: null,
-                                                id: Math.random().toString(36).substr(2, 9),
-                                                optionType: null,
-                                            },
-                                        ],
-                                        );
-                                        setindexOn(0);
-                                    }} disabled={
-                                        newProduct?.options.length > 0 &&
-                                        newProduct?.options[newProduct?.options.length - 1].label === null
-                                    } style={styles.createOptionBtn}>
-                                        <Text style={styles.createOptionTxt}>Create Option</Text>
-                                    </TouchableOpacity>
+                                    // <TouchableOpacity onPress={() => {
+                                    //     setnewProductOptions([
+                                    //         {
+                                    //             label: null,
+                                    //             optionsList: [],
+                                    //             selectedCaseKey: null,
+                                    //             selectedCaseValue: null,
+                                    //             numOfSelectable: null,
+                                    //             id: Math.random().toString(36).substr(2, 9),
+                                    //             optionType: null,
+                                    //         },
+                                    //     ],
+                                    //     );
+                                    //     setindexOn(0);
+                                    // }} disabled={
+                                    //     newProduct?.options.length > 0 &&
+                                    //     newProduct?.options[newProduct?.options.length - 1].label === null
+                                    // } style={styles.createOptionBtn}>
+                                    //     <Text style={styles.createOptionTxt}>Create Option</Text>
+                                    // </TouchableOpacity>
+                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                setnewProductOptions([
+                                                    {
+                                                        label: null,
+                                                        optionsList: [],
+                                                        selectedCaseKey: null,
+                                                        selectedCaseValue: null,
+                                                        numOfSelectable: null,
+                                                        id: Math.random().toString(36).substr(2, 9),
+                                                        optionType: null,
+                                                    },
+                                                ],
+                                                );
+                                                setindexOn(0);
+                                            }}
+                                            disabled={
+                                                newProduct?.options.length > 0 &&
+                                                newProduct?.options[newProduct?.options.length - 1].label === null}
+                                            style={styles.createOptionBtn}
+                                        >
+                                            <Text style={styles.createOptionTxt}>Create Option</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={[styles.createOptionBtn, { marginLeft: 20 }]}
+                                            onPress={() => {
+                                                navigator.clipboard.readText().then((text) => {
+                                                    try {
+                                                        const parsed = JSON.parse(text);
+                                                        setnewProductOptions([parsed]);
+                                                        setindexOn(0);
+                                                    } catch (e) {
+                                                        alert("Invalid JSON");
+                                                    }
+                                                });
+                                            }}
+                                        >
+                                            <Text style={styles.createOptionTxt}>Paste Option</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 )}
                             </ScrollView>
                         </View>

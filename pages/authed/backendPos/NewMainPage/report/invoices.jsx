@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ScrollView, TextInput, TouchableOpacity } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import InvoiceItem from "./components/InvoiceItem";
-import { myDeviceDetailsState, storeDetailState, transListState, transListTableOrgState } from "state/state";
+import { myDeviceDetailsState, setTransListTableOrgState, storeDetailState, transListState, transListTableOrgState } from "state/state";
 import { Excel as ExcelDownload } from "antd-table-saveas-excel";
 import { auth, db } from "state/firebaseConfig";
 import ReceiptPrint from "components/functional/ReceiptPrint";
@@ -70,7 +70,6 @@ function InvoiceReport() {
             transList[
             orderIndex
             ];
-          console.log('THIS IS ELEMENT: ', element, ' This is Index: ', orderIndex)
           const formatedData = ReceiptPrint(element, storeDetails);
           data = data.concat(formatedData.data);
         });
@@ -110,18 +109,6 @@ function InvoiceReport() {
       setbaseSelectedRows(null)
     }
   }, [baseSelectedRows])
-
-  // useEffect(() => {
-  //   if (search) {
-  //     const filtered = transListTableOrg.filter((item) => {
-  //       return item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())
-  //     })
-  //     setFilteredTransList(filtered)
-  //   } else {
-  //     setFilteredTransList(transListTableOrg)
-  //   }
-  // }
-  //   , [search])
 
   const SearchDate = () => {
     if (!startDate || !endDate) {
@@ -172,6 +159,98 @@ function InvoiceReport() {
       })
       .saveAs("StoreReceipts.xlsx");
   };
+
+  const PrintTodaysTotal = () => {
+    const today = new Date();
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+    const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+
+    const filtered = transListTableOrg.filter((item) => {
+      let itemDate = item.date
+        ? new Date(item.date) : null
+
+      return (
+        itemDate >= todayStart &&
+        itemDate <= todayEnd
+      );
+    }
+    );
+
+    if (filtered.length === 0) {
+      alert("No sales today");
+      return;
+    }
+
+    let todayTotal = 0;
+    let salesTotal = filtered.length;
+
+    filtered.forEach((item) => {
+      todayTotal += item.amount;
+    });
+
+    const data = [
+      "\x1B" + "\x40", // init
+      "                                                                              ", // line break
+      "\x0A",
+      "\x1B" + "\x61" + "\x31", // center align
+      storeDetails.name,
+      "\x0A",
+      storeDetails.address?.label + "\x0A",
+      storeDetails.website + "\x0A", // text and line break
+      storeDetails.phoneNumber + "\x0A", // text and line break
+      today.toDateString() + "\x0A",
+      "\x0A",
+      "Todays Report" + "\x0A", // text and line break
+      "\x0A",
+      "\x0A",
+      "\x0A",
+      "\x1B" + "\x61" + "\x30", // left align
+      `Todays Total Revenue: $${todayTotal}`,
+      "\x0A",
+      `Todays Total Sales: ${salesTotal}`,
+      "\x0A",
+      "\x0A",
+      "\x0A",
+      "------------------------------------------" + "\x0A",
+      "\x0A", // line break
+      "\x0A", // line break
+      "\x0A", // line break
+      "\x0A", // line break
+      "\x0A", // line break
+      "\x0A", // line break
+      "\x1D" + "\x56" + "\x00"
+    ]
+
+    if (
+      myDeviceDetails.sendPrintToUserID &&
+      myDeviceDetails.useDifferentDeviceToPrint
+    ) {
+      console.log("Sending print to different user");
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .collection("devices")
+        .doc(myDeviceDetails.sendPrintToUserID.value)
+        .collection("printRequests")
+        .add({
+          printData: data,
+        });
+    } else {
+      const qz = require("qz-tray");
+      qz.websocket
+        .connect()
+        .then(function () {
+          const config = qz.configs.create(myDeviceDetails.printToPrinter);
+          return qz.print(config, data);
+        })
+        .then(qz.websocket.disconnect)
+        .catch(function (err) {
+          // console.error(err);
+          alert(
+            "An error occured while trying to print. Try refreshing the page and trying again."
+          );
+        });
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -249,6 +328,17 @@ function InvoiceReport() {
             <Feather name="printer" style={styles.printIcon} />
           </TouchableOpacity>
         </View>
+        <TouchableOpacity style={{
+          padding: 10,
+          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          borderRadius: 5,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+          onPress={PrintTodaysTotal}
+        >
+          <Text>Print Today</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.bottomGroup}>
         <View style={styles.invoiceReportHeader}>
@@ -310,6 +400,25 @@ function InvoiceReport() {
                   item={item}
                   setbaseSelectedRows={setbaseSelectedRows}
                   baseSelectedRows={baseSelectedRows}
+                  deleteTransaction={() => {
+                    console.log("Deleting transaction: ", item)
+                    db.collection("users")
+                      .doc(auth.currentUser?.uid)
+                      .collection("transList")
+                      .doc(item.docID)
+                      .delete()
+                      .then(() => {
+                        console.log("Document successfully deleted!");
+                      })
+                      .catch((error) => {
+                        console.error("Error removing document: ", error);
+                      });
+
+                    setTransListTableOrgState(
+                      transListTableOrg.filter((e) => e.id !== item.id)
+                    )
+
+                  }}
                 />
               )
             })}
