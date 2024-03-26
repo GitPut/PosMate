@@ -6,9 +6,8 @@ import {
   TouchableOpacity,
   Touchable,
 } from "react-native";
-import FeatherIcon from "react-native-vector-icons/Feather";
-import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import EntypoIcon from "react-native-vector-icons/Entypo";
+import { Feather } from "@expo/vector-icons";
+import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
 import { updateTransList } from "state/firebaseFunctions";
 
@@ -80,7 +79,7 @@ function PendingOrderItem({
               // });
             }}
           >
-            <FeatherIcon name="edit" style={styles.editIcon}></FeatherIcon>
+            <Feather name="edit" style={styles.editIcon}></Feather>
           </TouchableOpacity>
           {/* )} */}
           <TouchableOpacity
@@ -92,7 +91,7 @@ function PendingOrderItem({
                 .delete();
             }}
           >
-            <MaterialCommunityIconsIcon
+            <MaterialCommunityIcons
               name="cancel"
               style={styles.cancelIcon}
             />
@@ -129,7 +128,7 @@ function PendingOrderItem({
               }
             }}
           >
-            <EntypoIcon name="check" style={styles.finishIcon}></EntypoIcon>
+            <Entypo name="check" style={styles.finishIcon}></Entypo>
           </TouchableOpacity>
         </View>
       </View>

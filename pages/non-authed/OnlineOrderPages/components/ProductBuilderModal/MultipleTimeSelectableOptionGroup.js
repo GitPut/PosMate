@@ -8,7 +8,7 @@ import {
   TextInput,
   Modal,
 } from "react-native";
-import Icon from "react-native-vector-icons/Entypo";
+import { Entypo } from "@expo/vector-icons";
 
 function MultipleTimeSelectableOptionGroup({
   style,
@@ -112,12 +112,12 @@ function MultipleTimeSelectableOptionGroup({
           }}
         >
           <Text style={styles.placeholder}>Select {label}</Text>
-          <Icon
+          <Entypo
             name={
               openDropdown === id ? "chevron-small-up" : "chevron-small-down"
             }
             style={styles.downIcon}
-          ></Icon>
+          ></Entypo>
         </TouchableOpacity>
         {openDropdown === id && (
           <ScrollView
@@ -230,14 +230,14 @@ function MultipleTimeSelectableOptionGroup({
               }}
             >
               <Text style={styles.placeholder}>Select {label}</Text>
-              <Icon
+              <Entypo
                 name={
                   openDropdown === id
                     ? "chevron-small-up"
                     : "chevron-small-down"
                 }
                 style={styles.downIcon}
-              ></Icon>
+              ></Entypo>
             </TouchableOpacity>
             {openDropdown === id && (
               <ScrollView

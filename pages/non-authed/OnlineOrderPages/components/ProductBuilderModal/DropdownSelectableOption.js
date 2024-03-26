@@ -7,7 +7,7 @@ import {
   ScrollView,
   Modal,
 } from "react-native";
-import Icon from "react-native-vector-icons/Entypo";
+import { Entypo } from "@expo/vector-icons";
 
 function DropdownSelectableOption({
   style,
@@ -55,12 +55,12 @@ function DropdownSelectableOption({
                 })`
               : label}
           </Text>
-          <Icon
+          <Entypo
             name={
               openDropdown === id ? "chevron-small-up" : "chevron-small-down"
             }
             style={styles.downIcon}
-          ></Icon>
+          ></Entypo>
         </TouchableOpacity>
         {openDropdown === id && (
           <ScrollView
@@ -142,14 +142,14 @@ function DropdownSelectableOption({
                     })`
                   : label}
               </Text>
-              <Icon
+              <Entypo
                 name={
                   openDropdown === id
                     ? "chevron-small-up"
                     : "chevron-small-down"
                 }
                 style={styles.downIcon}
-              ></Icon>
+              ></Entypo>
             </TouchableOpacity>
             {openDropdown === id && (
               <ScrollView

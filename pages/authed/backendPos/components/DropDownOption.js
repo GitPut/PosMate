@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import Icon from "react-native-vector-icons/Entypo";
+import { Entypo } from "@expo/vector-icons";
 import { useHistory } from "react-router-dom";
 
 function DropDownOption({ option }) {
@@ -13,7 +13,7 @@ function DropDownOption({ option }) {
         option.link.length > 0 ? history.push(option.link) : option.link()
       }
     >
-      <Icon name="chevron-right" style={styles.chevronRight1} />
+      <Entypo name="chevron-right" style={styles.chevronRight1} />
       <Text style={[styles.label, option.active && { color: "#121212" }]}>
         {option.label}
       </Text>
