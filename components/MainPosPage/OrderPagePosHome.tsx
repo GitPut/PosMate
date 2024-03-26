@@ -655,7 +655,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { maxHeight: height, maxWidth: width }]}>
       {width > 1250 && (
         <View style={styles.leftMenuBarContainer}>
           <View>

@@ -360,10 +360,17 @@ const PhoneOrderModal = ({
               <TouchableOpacity
                 style={styles.viewSavedCustomersRow}
                 onPress={() => {
+                  setOngoingDelivery(false);
+                  setName("");
+                  setPhone("");
+                  setAddress(null);
+                  setBuzzCode("");
+                  setUnitNumber("");
+                  setsaveCustomerChecked(false);
+                  setDeliveryChecked(false);
                   setDeliveryModal(false);
                   setsaveCustomerModal(true);
                 }}
-                disabled={ongoingDelivery}
               >
                 <MaterialIcons
                   name="history"

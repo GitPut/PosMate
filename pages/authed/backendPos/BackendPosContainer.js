@@ -210,11 +210,19 @@ function BackendPosContainer(props) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={require("./assets/images/image_nrJg..png")}
-          resizeMode="contain"
-          style={styles.logo}
-        />
+        <TouchableOpacity
+          onPress={() => {
+            history.push("/authed/dashboard");
+            setSideMenu("");
+          }}
+          activeOpacity={0.8}
+        >
+          <Image
+            source={require("./assets/images/image_nrJg..png")}
+            resizeMode="contain"
+            style={styles.logo}
+          />
+        </TouchableOpacity>
         <View style={styles.rightSideRow}>
           <TouchableOpacity
             onPress={() => history.push("/pos")}
@@ -402,7 +410,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   bottom: {
-
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "rgba(238,242,255,1)",

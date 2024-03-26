@@ -95,7 +95,7 @@ function PendingOrderItem({
             <MaterialCommunityIconsIcon
               name="cancel"
               style={styles.cancelIcon}
-            ></MaterialCommunityIconsIcon>
+            />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -116,7 +116,9 @@ function PendingOrderItem({
                     date: date,
                   });
                   fadeIn();
-                } else if (element.method === "deliveryOrder") {
+                }
+                // if (element.method === "deliveryOrder")
+                else {
                   db.collection("users")
                     .doc(auth.currentUser.uid)
                     .collection("pendingOrders")
