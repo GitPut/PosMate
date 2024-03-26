@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import HomeScreen from 'pages/authed/pos/HomeScreen';
-import DefaultLayout from 'pages/authed/backendPos/InitialPage/Sidebar/DefaultLayout';
 import { useHistory } from "react-router-dom";
-import BackendPosContainer from 'pages/authed/newBackendPos/BackendPosContainer';
+import BackendPosContainer from 'pages/authed/backendPos/BackendPosContainer';
 
 const AuthRoute = (props) => {
     const { location } = props;
