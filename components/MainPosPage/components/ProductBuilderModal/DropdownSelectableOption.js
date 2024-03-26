@@ -101,14 +101,14 @@ function DropdownSelectableOption({
                     })`
                   : label}
               </Text>
-              <Icon
+              <Entypo
                 name={
                   openDropdown === id
                     ? "chevron-small-up"
                     : "chevron-small-down"
                 }
                 style={styles.downIcon}
-              ></Icon>
+              ></Entypo>
             </TouchableOpacity>
             {openDropdown === id && (
               <ScrollView
