@@ -13,6 +13,7 @@ import { Switch } from "react-native-gesture-handler";
 import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
 import { addCustomerDetailsToDb } from "state/firebaseFunctions";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import GeneralSwitch from "components/GeneralSwitch";
 
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
@@ -253,21 +254,19 @@ const PhoneOrderModal = ({
                   <Text style={styles.savedCustomersTxt}>
                     Would you like to save customer?
                   </Text>
-                  <Switch
-                    value={saveCustomerChecked}
-                    onValueChange={(val) => {
-                      setsaveCustomerChecked(val);
-                    }}
+                  <GeneralSwitch
+                    isActive={saveCustomerChecked}
+                    toggleSwitch={() =>
+                      setsaveCustomerChecked(!saveCustomerChecked)
+                    }
                   />
                 </View>
               )}
               <View style={styles.deliveryRow}>
                 <Text style={styles.delivery}>Delivery</Text>
-                <Switch
-                  value={deliveryChecked}
-                  onValueChange={(val) => {
-                    setDeliveryChecked(val);
-                  }}
+                <GeneralSwitch
+                  isActive={deliveryChecked}
+                  toggleSwitch={() => setDeliveryChecked(!deliveryChecked)}
                 />
               </View>
               {storeDetails.acceptDelivery && deliveryChecked && (
@@ -279,7 +278,6 @@ const PhoneOrderModal = ({
                       }}
                       debounce={800}
                       apiKey={GOOGLE_API_KEY}
-                      // onSelect={handleAddress}
                       selectProps={{
                         localAddress,
                         onChange: setlocalAddress,
@@ -299,8 +297,9 @@ const PhoneOrderModal = ({
                         onSelectSuggestion
                       ) => (
                         <div style={{ width: "80%" }}>
-                          {suggestions.map((suggestion) => (
+                          {suggestions.map((suggestion, index) => (
                             <div
+                              key={index}
                               className="suggestion"
                               onClick={(event) => {
                                 onSelectSuggestion(suggestion, event);
