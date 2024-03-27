@@ -22,6 +22,7 @@ import {
   userStoreState,
   setCustomersList,
   addCartState,
+  setIsSignedInSettingsState,
 } from "state/state";
 import ItemContainerMobile from "./components/cartOrder/ItemContainerMobile";
 import Modal from "react-native-modal";
@@ -748,7 +749,13 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                   : styles.notActiveBtn,
               ]}
               onPress={() => {
-                setsettingsPasswordModalVis(true);
+                if (storeDetails.settingsPassword?.length > 0) {
+                  setsettingsPasswordModalVis(true);
+                } else {
+                  setIsSignedInSettingsState(true);
+                  history.push("/authed/dashboard");
+                  localStorage.setItem("isAuthedBackend", true);
+                }
               }}
             >
               <img

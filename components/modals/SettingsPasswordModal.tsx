@@ -29,9 +29,9 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
       if (password == storeDetails.settingsPassword) {
         setIsSignedInSettingsState(true);
         history.push("/authed/dashboard");
+        localStorage.setItem("isAuthedBackend", true);
         setsettingsPasswordModalVis(false);
         setinccorectPass(false);
-        localStorage.setItem("isAuthedBackend", true);
       } else {
         setinccorectPass(true);
       }
