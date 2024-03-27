@@ -16,7 +16,6 @@ import { Ionicons as IoniconsIcon, MaterialCommunityIcons as MaterialCommunityIc
 import { onlineStoreState, setUserStoreState, userState, userStoreState } from "state/state";
 import { useHistory } from "react-router-dom";
 import { auth, db, storage } from "state/firebaseConfig";
-import Select2 from "assets/plugins/select2/js/select2";
 import GeneralDropdown from "components/GeneralDropdown";
 import { Button } from "react-native";
 import GeneralSwitch from "components/GeneralSwitch";

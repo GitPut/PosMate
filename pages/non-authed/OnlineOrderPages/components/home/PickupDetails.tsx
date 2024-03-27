@@ -75,7 +75,7 @@ function PickupDetails({
           style={styles.nameField}
           value={localName}
           onChangeText={(text) => setlocalName(text)}
-          textContentType='name'
+          textContentType="name"
         />
         <FieldInputWithLabel
           txtInput="(123) 456-7890"

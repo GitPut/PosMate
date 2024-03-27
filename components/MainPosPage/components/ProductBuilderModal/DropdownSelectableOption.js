@@ -7,7 +7,7 @@ import {
   ScrollView,
   Modal,
 } from "react-native";
-import {Entypo} from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 
 function DropdownSelectableOption({
   style,
@@ -67,7 +67,7 @@ function DropdownSelectableOption({
       <Modal visible={openDropdown === id} transparent={true}>
         <TouchableOpacity
           style={{
-            width: "100%", 
+            width: "100%",
             height: "100%",
           }}
           onPress={() => {

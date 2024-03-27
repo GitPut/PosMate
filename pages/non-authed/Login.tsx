@@ -197,19 +197,19 @@ const styles = StyleSheet.create({
     fontSize: 36,
   },
   bottomContainer: {
-    width: '100%',
+    width: "100%",
     height: 318,
     alignItems: "center",
     justifyContent: "space-between",
   },
   inputsContainer: {
-    width: '100%',
+    width: "100%",
     height: 177,
     justifyContent: "space-between",
     alignItems: "center",
   },
   emailInputGroup: {
-    width: '100%',
+    width: "100%",
     height: 80,
     justifyContent: "space-between",
   },
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   passwordInput: {
-    width: '100%',
+    width: "100%",
     height: 51,
     backgroundColor: "rgba(255,255,255,1)",
     borderRadius: 10,
@@ -247,13 +247,13 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   btnBottomContainer: {
-    width: '100%',
+    width: "100%",
     height: 109,
     justifyContent: "space-between",
     alignItems: "center",
   },
   loginBtn: {
-    width: '100%',
+    width: "100%",
     height: 44,
     backgroundColor: "#1c294e",
     borderRadius: 10,

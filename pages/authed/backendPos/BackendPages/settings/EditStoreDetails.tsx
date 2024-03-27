@@ -281,7 +281,10 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                 <Button
                   title="Save"
                   onPress={handleDataUpdate}
-                  pressableContainerStyle={{ width: "100%", height: "100%" }}
+                  TouchableOpacityContainerStyle={{
+                    width: "100%",
+                    height: "100%",
+                  }}
                   contentContainerStyle={{ width: "100%", height: "100%" }}
                   style={{
                     width: "100%",
@@ -368,7 +371,10 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                 <Button
                   title="Save"
                   onPress={handleWooDataUpdate}
-                  pressableContainerStyle={{ width: "100%", height: "100%" }}
+                  TouchableOpacityContainerStyle={{
+                    width: "100%",
+                    height: "100%",
+                  }}
                   contentContainerStyle={{ width: "100%", height: "100%" }}
                   style={{
                     width: "100%",

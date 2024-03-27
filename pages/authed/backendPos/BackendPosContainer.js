@@ -19,7 +19,7 @@ import {
   storeDetailState,
   woocommerceState,
 } from "state/state";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import MenuBtn from "./components/MenuBtn";
 import index from "./authIndex";
 import HeaderLogoutDropdown from "components/HeaderLogoutDropdown";

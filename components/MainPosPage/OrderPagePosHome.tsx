@@ -863,7 +863,6 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             <ScrollView
               horizontal={true}
               contentContainerStyle={styles.scrollArea_contentContainerStyle}
-              nativeID="scroll"
             >
               {catalog.categories?.map((category, index) => {
                 if (
@@ -912,7 +911,6 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             contentContainerStyle={
               styles.scrollAreaProducts_contentContainerStyle
             }
-            nativeID="scroll"
           >
             {catalog.products.map((product, index) =>
               width > 1250 ? (
@@ -979,7 +977,6 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
               <ScrollView
                 horizontal={false}
                 contentContainerStyle={styles.cartItems_contentContainerStyle}
-                nativeID="scroll"
               >
                 {cart?.map((cartItem, index) => (
                   <CartItem
@@ -1154,7 +1151,6 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                 <ScrollView
                   horizontal={false}
                   contentContainerStyle={styles.cartItems_contentContainerStyle}
-                  nativeID="scroll"
                 >
                   {cart?.map((cartItem, index) => (
                     <CartItem

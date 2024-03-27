@@ -48,7 +48,6 @@ const ClockinModal = ({ setclockinModal }) => {
                   contentContainerStyle={
                     styles.employeesScrollView_contentContainerStyle
                   }
-                  nativeID="scroll"
                 >
                   {employees.map((employee) => {
                     const isClockedIn = employee.clockedIn;

@@ -91,10 +91,7 @@ function PendingOrderItem({
                 .delete();
             }}
           >
-            <MaterialCommunityIcons
-              name="cancel"
-              style={styles.cancelIcon}
-            />
+            <MaterialCommunityIcons name="cancel" style={styles.cancelIcon} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {

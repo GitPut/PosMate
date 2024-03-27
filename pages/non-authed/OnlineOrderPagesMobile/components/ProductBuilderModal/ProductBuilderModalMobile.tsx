@@ -130,7 +130,7 @@ function ProductBuilderModalMobile({ product, itemIndex, goBack, imageUrl }) {
             />
           );
         } else {
-         const optionsSelected = myObjProfile.options[
+          const optionsSelected = myObjProfile.options[
             index
           ].optionsList.filter((op) => op.selectedTimes > 0);
           const optionsSelectedLabel =

@@ -17,14 +17,14 @@ function CheckOutDetails({
   setpage,
 }) {
   const [emailAddress, setEmailAddress] = useState("");
-  const [loading, setloading] = useState(false)
+  const [loading, setloading] = useState(false);
 
   const stripe = useStripe();
   const elements = useElements();
   const currency = "cad";
 
   const handleSubmit = async (event) => {
-    setloading(true)
+    setloading(true);
     event.preventDefault();
 
     if (!stripe || !elements) {
@@ -130,7 +130,7 @@ function CheckOutDetails({
         <FieldInputWithLabel
           label="Email Address*"
           txtInput="Email Address"
-          style={[styles.nameField, loading && {opacity: 0.5}]}
+          style={[styles.nameField, loading && { opacity: 0.5 }]}
           value={emailAddress}
           onChangeText={(text) => setEmailAddress(text)}
           customInput={null} // Should be a standard TextInput if needed

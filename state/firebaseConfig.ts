@@ -1,8 +1,8 @@
-import firebase from "firebase/app";
-import "firebase/firestore";
-import "firebase/auth";
-import "firebase/functions";
-import "firebase/storage";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+import "firebase/compat/auth";
+import "firebase/compat/functions";
+import "firebase/compat/storage";
 
 // Initialize Firebase
 const firebaseConfig = {

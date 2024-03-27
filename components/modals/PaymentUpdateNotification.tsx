@@ -2,7 +2,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import { auth, db } from "state/firebaseConfig";
 import { loadStripe } from "@stripe/stripe-js";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import Logo from "assets/dpos-logo-black.png";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { logout } from "state/firebaseFunctions";

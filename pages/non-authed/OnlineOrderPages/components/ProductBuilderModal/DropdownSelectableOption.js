@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   lbl: {
     fontWeight: "700",
     color: "#3e3f41",
-    width: '25%'
+    width: "25%",
   },
   dropdown: {
     width: "100%",

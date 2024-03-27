@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-  useWindowDimensions
+  useWindowDimensions,
 } from "react-native";
 import React, { useRef, useState } from "react";
 import { Text } from "@react-native-material/core";
@@ -101,7 +101,6 @@ const PendingOrdersModal = ({
                   contentContainerStyle={
                     styles.pendingOrderScrollView_contentContainerStyle
                   }
-                  nativeID="scroll"
                 >
                   {ongoingListState?.length > 0 ? (
                     ongoingListState?.map((element, index) => {
