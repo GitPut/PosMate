@@ -1,9 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import IoniconsIcon from "@expo/vector-icons/Ionicons";
 import React, { useState } from "react";
 import { auth, db } from "state/firebaseConfig";
@@ -196,7 +191,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   storeDetails: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(0,0,0,1)",
     fontSize: 35,
     width: 280,
@@ -241,12 +236,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   standard: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(0,0,0,1)",
     fontSize: 30,
   },
   plan2: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(31,35,48,1)",
     fontSize: 25,
   },
@@ -263,7 +258,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   allYearPayment: {
-    fontFamily: "archivo-500",
+    fontWeight: "500",
     color: "rgba(155,155,155,1)",
     fontSize: 20,
     marginBottom: 20,
@@ -276,12 +271,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   overview1: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(0,0,0,1)",
     fontSize: 40,
   },
   monthly5: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(31,35,48,1)",
     fontSize: 35,
   },
@@ -295,7 +290,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   monthly6: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(255,255,255,1)",
     fontSize: 19,
   },
@@ -311,7 +306,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   cloudBased: {
-    fontFamily: "archivo-500",
+    fontWeight: "500",
     color: "rgba(0,0,0,1)",
     fontSize: 20,
   },
@@ -327,7 +322,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   easyToUse: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(0,0,0,1)",
     fontSize: 25,
   },
@@ -345,7 +340,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   easyToUse2: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(0,0,0,1)",
     fontSize: 25,
   },
@@ -363,7 +358,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   text9: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(0,0,0,1)",
     fontSize: 25,
   },
@@ -566,7 +561,7 @@ const styles = StyleSheet.create({
   },
   onH1Txt: {
     position: "absolute",
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(255,255,255,1)",
     fontSize: 25,
     width: 246,
@@ -603,7 +598,7 @@ const styles = StyleSheet.create({
     top: 38,
     left: 0,
     position: "absolute",
-    fontFamily: "archivo-500",
+    fontWeight: "500",
     color: "rgba(155,155,155,1)",
     fontSize: 23,
   },
@@ -613,7 +608,7 @@ const styles = StyleSheet.create({
     marginLeft: 42,
   },
   onNumTxt: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(255,255,255,1)",
     fontSize: 30,
     width: 22,
@@ -627,14 +622,14 @@ const styles = StyleSheet.create({
     marginRight: 21,
   },
   storeSetup1: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(255,255,255,1)",
     fontSize: 30,
     width: 246,
     height: 38,
   },
   storeInfo1: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(155,155,155,1)",
     fontSize: 25,
   },
@@ -644,7 +639,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   text10: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(255,255,255,1)",
     fontSize: 30,
     width: 22,
@@ -684,7 +679,7 @@ const styles = StyleSheet.create({
     marginLeft: -18,
   },
   connectShop1: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(255,255,255,1)",
     fontSize: 25,
     width: 246,
@@ -692,7 +687,7 @@ const styles = StyleSheet.create({
     opacity: 0.44,
   },
   link1: {
-    fontFamily: "archivo-500",
+    fontWeight: "500",
     color: "rgba(155,155,155,1)",
     fontSize: 22,
     opacity: 0.44,
@@ -703,7 +698,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   offNumTxt: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(255,255,255,0.5)",
     fontSize: 30,
     width: 22,
@@ -728,12 +723,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   planPrice1: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(74,74,74,1)",
     fontSize: 23,
   },
   wooCommerce1: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(255,255,255,1)",
     fontSize: 25,
     opacity: 0.44,
@@ -761,7 +756,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   checkOut1: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(0,0,0,1)",
     fontSize: 26,
     opacity: 0.26,
@@ -779,7 +774,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   helperTxt: {
-    fontFamily: "archivo-500",
+    fontWeight: "500",
     color: "#121212",
     fontSize: 16,
     marginTop: 25,

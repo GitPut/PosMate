@@ -49,11 +49,6 @@ const RouteManager = () => {
   const [isWooError, setisWooError] = useState(false);
   const myDeviceDetails = myDeviceDetailsState.use();
 
-  const [fontsLoaded] = Font.useFonts({
-    "archivo-600": require("assets/fonts/Archivo-SemiBold.ttf"),
-    "archivo-500": require("assets/fonts/Archivo-Regular.ttf"),
-  });
-
   useEffect(() => {
     if (myDeviceDetails.docID && userS) {
       console.log("Listening for print requests");

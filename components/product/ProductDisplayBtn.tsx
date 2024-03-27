@@ -19,7 +19,7 @@ const ProductDisplayBtn = ({ product, productIndex }) => {
   const shadowOpacity = useRef(new Animated.Value(0)).current;
   const [productImage, setproductImage] = useState();
   const cart = cartState.use();
-const {height, width} = useWindowDimensions()
+  const { height, width } = useWindowDimensions();
 
   useEffect(() => {
     if (product.hasImage) {
@@ -121,7 +121,7 @@ const {height, width} = useWindowDimensions()
         >
           <Text
             style={{
-              fontFamily: "archivo-500",
+              fontWeight: "500",
               color: "rgba(255,255,255,1)",
               fontSize: 15,
               textAlign: "center",

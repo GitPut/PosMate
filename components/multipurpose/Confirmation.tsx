@@ -4,7 +4,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import React, {  } from "react";
+import React from "react";
 import { Button } from "@react-native-material/core";
 
 const Confirmation = ({ confirmLbl, yesAction, noAction }) => {
@@ -48,7 +48,7 @@ const Confirmation = ({ confirmLbl, yesAction, noAction }) => {
       >
         <Text
           style={{
-            fontFamily: "archivo-500",
+            fontWeight: "500",
             fontSize: 22,
             textAlign: "center",
             marginBottom: 25,

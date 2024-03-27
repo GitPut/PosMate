@@ -718,8 +718,10 @@ const InnerOn = ({
                         const newShareSelectionWith = [
                           ...prevState.shareSelectionWith,
                         ];
-                        newShareSelectionWith[sharedSelectionIndex].value = val.value;
-                        newShareSelectionWith[sharedSelectionIndex].label = val.label;
+                        newShareSelectionWith[sharedSelectionIndex].value =
+                          val.value;
+                        newShareSelectionWith[sharedSelectionIndex].label =
+                          val.label;
                         return {
                           ...prevState,
                           shareSelectionWith: newShareSelectionWith,
@@ -728,9 +730,12 @@ const InnerOn = ({
                       // newProductOptions.current[index].sharedSelectionLimitOption = val.value;
                       setnewProductOptions((prev) => {
                         const clone = structuredClone(prev);
-                        clone[index].shareSelectionWith[sharedSelectionIndex].value =
-                          val.value;
-                        clone[index].shareSelectionWith[sharedSelectionIndex].label = val.label;
+                        clone[index].shareSelectionWith[
+                          sharedSelectionIndex
+                        ].value = val.value;
+                        clone[index].shareSelectionWith[
+                          sharedSelectionIndex
+                        ].label = val.label;
                         return clone;
                       });
                     }}
@@ -922,7 +927,7 @@ const OptionView = ({
               paddingLeft: 5,
               fontSize: 16,
               color: "white",
-              fontFamily: "archivo-600",
+              fontWeight: "600",
             }}
           >
             {item.label ? item.label : "New Option"}

@@ -386,7 +386,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
           />
           <Text
             style={{
-              fontFamily: "archivo-600",
+              fontWeight: "600",
               fontSize: 22,
               color: "#4A4A4A",
             }}
@@ -394,12 +394,8 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
             Dashboard
           </Text>
         </TouchableOpacity>
-        <Text style={{ fontFamily: "archivo-600", fontSize: 24 }}>
-          {myObj.name}
-        </Text>
-        <Text
-          style={{ fontFamily: "archivo-600", fontSize: 22, color: "#4A4A4A" }}
-        >
+        <Text style={{ fontWeight: "600", fontSize: 24 }}>{myObj.name}</Text>
+        <Text style={{ fontWeight: "600", fontSize: 22, color: "#4A4A4A" }}>
           Total: ${parseFloat(total).toFixed(2)}
         </Text>
       </View>
@@ -530,11 +526,11 @@ const styles = StyleSheet.create({
     minWidth: 150,
   },
   optionNameTxt: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     fontSize: 18,
   },
   optionPriceTxt: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     fontSize: 16,
     padding: 10,
   },

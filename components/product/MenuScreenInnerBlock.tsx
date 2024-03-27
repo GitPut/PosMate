@@ -83,7 +83,7 @@ const MenuScreenInnerBlock = ({ visible, height, category }) => {
       >
         <Text
           style={{
-            fontFamily: "archivo-500",
+            fontWeight: "500",
             color: "rgba(74,74,74,1)",
             fontSize: 20,
           }}

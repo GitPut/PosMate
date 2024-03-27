@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerTxt: {
-    fontFamily: "archivo-600",
+    fontWeight: "600",
     color: "rgba(98,96,96,1)",
     fontSize: 20,
   },
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   helperTxt: {
-    fontFamily: "archivo-500",
+    fontWeight: "500",
     color: "#121212",
     fontSize: 19,
     width: 483,

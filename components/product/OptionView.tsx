@@ -637,7 +637,6 @@ const InnerOn = ({
           });
           settestMap(cloneOuter);
         }}
-        
         disabled={
           testMap.length > 0 && testMap[testMap.length - 1].label === null
         }
@@ -758,7 +757,7 @@ const OptionView = ({
               paddingLeft: 5,
               fontSize: 16,
               color: "white",
-              fontFamily: "archivo-600",
+              fontWeight: "600",
             }}
           >
             {item.label ? item.label : "New Option"}

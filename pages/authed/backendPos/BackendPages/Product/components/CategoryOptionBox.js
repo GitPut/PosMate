@@ -1,5 +1,5 @@
 import ProductImage from "components/ProductImage";
-import AvocatImage from "assets/img/product/product5.jpg";
+import AvocatImage from "assets/AvocatImage.jpg";
 import React, { Component } from "react";
 import { StyleSheet, TouchableOpacity, Image, Text, View } from "react-native";
 import { useHistory } from "react-router-dom";
