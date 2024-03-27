@@ -106,7 +106,7 @@ function Index(props) {
             }
             setDeviceTreeState({ ...deviceTree, devices: newDeviceTreeDevices });
         }
-    }, [deviceTree, myDeviceID]);
+    }, []);
 
 
     return (
