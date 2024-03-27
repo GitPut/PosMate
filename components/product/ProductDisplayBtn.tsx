@@ -6,6 +6,7 @@ import {
   View,
   Animated,
   Dimensions,
+  useWindowDimensions,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { addCartState, cartState } from "state/state";
@@ -18,7 +19,7 @@ const ProductDisplayBtn = ({ product, productIndex }) => {
   const shadowOpacity = useRef(new Animated.Value(0)).current;
   const [productImage, setproductImage] = useState();
   const cart = cartState.use();
-  const width = Dimensions.get("window").width;
+const {height, width} = useWindowDimensions()
 
   useEffect(() => {
     if (product.hasImage) {

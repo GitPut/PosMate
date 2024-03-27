@@ -29,7 +29,6 @@ function Index(props) {
     const myDeviceID = deviceIdState.use()
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const [viewVisible, setviewVisible] = useState(false);
-    const { width, height } = Dimensions.get('window');
     const [selectedDevice, setselectedDevice] = useState(0)
     const [otherDeviceOptions, setOtherDeviceOptions] = useState([])
 

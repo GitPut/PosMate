@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { signUp } from "state/firebaseFunctions";
 import { useHistory } from "react-router-dom";
 import {
@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  useWindowDimensions,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
@@ -21,6 +22,17 @@ function Signup() {
   const [phoneNumber, setphoneNumber] = useState("");
   const [error, seterror] = useState(false);
   const history = useHistory();
+  const { height, width } = useWindowDimensions();
+  const [useSmallDesign, setuseSmallDesign] = useState(width < 1024);
+
+  useEffect(() => {
+    const third = width / 3;
+    if (third < 200) {
+      setuseSmallDesign(true);
+    } else {
+      setuseSmallDesign(false);
+    }
+  }, [width]);
 
   const attemptSignUp = () => {
     if (email && password) {
@@ -34,6 +46,12 @@ function Signup() {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      attemptSignUp();
+    }
+  };
+
   return (
     <ImageBackground
       style={styles.container}
@@ -42,12 +60,30 @@ function Signup() {
         resizeMode: "cover",
       }}
     >
-      <View style={styles.headerContainer}>
-        <View style={styles.headerInnerContainer}>
-          <TouchableOpacity onPress={() => history.push("/log-in")}>
+      <ScrollView
+        style={{ height: "100%", width: "100%" }}
+        contentContainerStyle={{
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <View
+          style={[
+            styles.headerContainer,
+            useSmallDesign && { width: "90%" },
+            { height: 110 },
+          ]}
+        >
+          <TouchableOpacity
+            onPress={() => history.push("/log-in")}
+            style={{ position: "absolute", left: 0, bottom: 24 }}
+          >
             <View style={styles.backBtn}>
-              <Feather name="arrow-left" style={styles.leftIcon} />
-              <Text style={styles.backTxt}>Back</Text>
+              <Feather
+                name={useSmallDesign ? "chevron-left" : "arrow-left"}
+                style={styles.leftIcon}
+              />
+              {!useSmallDesign && <Text style={styles.backTxt}>Back</Text>}
             </View>
           </TouchableOpacity>
           <a href="https://divinepos.com" style={{ textDecoration: "none" }}>
@@ -57,16 +93,10 @@ function Signup() {
             />
           </a>
         </View>
-      </View>
-      <View style={styles.mainPageContainer}>
-        <ScrollView
-          style={{ height: "100%", width: "100%" }}
-          contentContainerStyle={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <View style={styles.logInContainer}>
+        <View style={styles.mainPageContainer}>
+          <View
+            style={[styles.logInContainer, useSmallDesign && { width: "90%" }]}
+          >
             <Text style={styles.logIn}>Sign Up</Text>
             <View style={styles.bottomContainer}>
               <View style={styles.inputsContainer}>
@@ -75,8 +105,10 @@ function Signup() {
                   <TextInput
                     style={styles.emailInput}
                     placeholder="Enter name"
+                    textContentType="name"
                     value={name}
                     onChangeText={(val) => setname(val)}
+                    onKeyPress={handleKeyDown}
                   />
                 </View>
                 <View style={styles.emailInputGroup}>
@@ -84,8 +116,10 @@ function Signup() {
                   <TextInput
                     style={styles.emailInput}
                     placeholder="Enter phone number"
+                    textContentType="telephoneNumber"
                     value={email}
                     onChangeText={(val) => setphoneNumber(val)}
+                    onKeyPress={handleKeyDown}
                   />
                 </View>
                 <View style={styles.emailInputGroup}>
@@ -93,8 +127,10 @@ function Signup() {
                   <TextInput
                     style={styles.emailInput}
                     placeholder="Enter email"
+                    textContentType="emailAddress"
                     value={email}
                     onChangeText={(val) => setEmail(val)}
+                    onKeyPress={handleKeyDown}
                   />
                 </View>
                 <View style={styles.emailInputGroup}>
@@ -102,8 +138,11 @@ function Signup() {
                   <TextInput
                     style={styles.passwordInput}
                     placeholder="Enter password"
+                    secureTextEntry={true}
+                    textContentType="password"
                     value={password}
                     onChangeText={(val) => setPassword(val)}
+                    onKeyPress={handleKeyDown}
                   />
                 </View>
               </View>
@@ -126,8 +165,8 @@ function Signup() {
               </View>
             </View>
           </View>
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 }
@@ -141,27 +180,20 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   mainPageContainer: {
+    width: "100%",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingTop: 60,
-    height: "85%",
-    width: "100%",
-  },
-  topContainer: {
-    width: 1020,
-    height: 575,
-    justifyContent: "space-between",
-    alignItems: "center",
+    paddingTop: 50,
   },
   headerContainer: {
-    width: 1020,
-    height: "15%",
+    width: "70%",
+    // height: "15%",
     flexDirection: "row",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     alignItems: "flex-end",
   },
   headerInnerContainer: {
-    width: 601,
+    width: "60%",
     height: 68,
     flexDirection: "row",
     alignItems: "center",
@@ -200,17 +232,17 @@ const styles = StyleSheet.create({
     fontSize: 36,
   },
   bottomContainer: {
-    width: 423,
+    width: "100%",
     alignItems: "center",
     justifyContent: "space-between",
   },
   inputsContainer: {
-    width: 423,
+    width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
   },
   emailInputGroup: {
-    width: 423,
+    width: "100%",
     height: 80,
     justifyContent: "space-between",
     marginBottom: 25,
@@ -221,7 +253,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   emailInput: {
-    width: 423,
+    width: "100%",
     height: 51,
     backgroundColor: "rgba(255,255,255,1)",
     borderRadius: 10,
@@ -230,7 +262,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   passwordInputGroup: {
-    width: 423,
+    width: "100%",
     height: 80,
     justifyContent: "space-between",
   },
@@ -240,7 +272,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   passwordInput: {
-    width: 423,
+    width: "100%",
     height: 51,
     backgroundColor: "rgba(255,255,255,1)",
     borderRadius: 10,
@@ -249,13 +281,13 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   btnBottomContainer: {
-    width: 422,
+    width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
     paddingBottom: 25,
   },
   loginBtn: {
-    width: 422,
+    width: "100%",
     height: 44,
     backgroundColor: "#1c294e",
     borderRadius: 10,

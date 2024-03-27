@@ -6,7 +6,8 @@ import {
     TouchableOpacity,
     ScrollView,
     Dimensions,
-    TextInput
+    TextInput,
+    useWindowDimensions
 } from "react-native";
 import { Entypo } from '@expo/vector-icons';
 import HoursItem from "./components/HoursItem";
@@ -15,7 +16,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { auth, db } from 'state/firebaseConfig';
 
 function EditEmployee() {
-    const { height, width } = Dimensions.get('window');
+    const { height, width } = useWindowDimensions()
     const { employeeId } = useParams()
     const employees = employeesState.use()
     const [employee, setemployee] = useState(null);
