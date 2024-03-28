@@ -1,4 +1,4 @@
-import Dashboard from "./BackendPages/Dashboard";
+import Dashboard from "./BackendPages/Dashboard/Dashboard";
 import Product from './BackendPages/Product/index'
 import Report from './BackendPages/report'
 import Settings from './BackendPages/settings'

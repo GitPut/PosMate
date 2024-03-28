@@ -39,8 +39,6 @@ function BackendPosContainer(props) {
   let pathname = location.pathname;
   const { height, width } = useWindowDimensions();
   const storeDetails = storeDetailState.use();
-  const [logoutDropdown, setlogoutDropdown] = useState(false);
-  const dropdownRef = useRef(null);
 
   const fadeIn = () => {
     // Will change fadeAnim value to 0 in 3 seconds
@@ -350,15 +348,29 @@ function BackendPosContainer(props) {
             />
           </View>
         </View>
-        <View style={styles.rightSide}>
+        <View
+          style={[
+            styles.rightSide,
+            pathname.includes("dashboard") && {
+              width: "80%",
+              backgroundColor: "grey",
+              marginRight: 20,
+            },
+          ]}
+        >
           <View style={{ height: "100%" }}>
             <View
               style={[
                 !pathname.includes("employeesreport") &&
                   !pathname.includes("editemployee") &&
                   !pathname.includes("onlinestoresettings") &&
-                  // !pathname.includes("general") &&
+                  !pathname.includes("dashboard") &&
                   styles.page,
+                pathname.includes("dashboard") && {
+                  backgroundColor: "rgba(238, 242, 255, 1)",
+                  height: "100%",
+                  width: "100%",
+                },
               ]}
             >
               {index &&
@@ -486,7 +498,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   page: {
-    width: 1123,
+    width: "100%",
     backgroundColor: "#ffffff",
     shadowColor: "rgba(0,0,0,1)",
     shadowOffset: {
