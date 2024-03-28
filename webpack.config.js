@@ -33,7 +33,8 @@ module.exports = async function (env, argv) {
   };
 
   // Use the React refresh plugin in development mode
-  if (env.mode === "development" || argv.mode === "development") {
+  // if (env.mode === "development" || argv.mode === "development") {
+  if (env.mode === "development") {
     config.plugins.push(new ReactRefreshWebpackPlugin());
   }
 
