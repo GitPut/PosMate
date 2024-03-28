@@ -4,7 +4,6 @@ import { useHistory } from "react-router-dom";
 import Login from "pages/non-authed/Login";
 import Signup from "pages/non-authed/Signup";
 import ResetPassword from "pages/non-authed/ResetPassword";
-import WebHomeHeader from 'components/non-authed/WebHomeHeader';
 import OrderPage from 'pages/non-authed/OrderPage';
 
 const NonAuthRoute = (props) => {
