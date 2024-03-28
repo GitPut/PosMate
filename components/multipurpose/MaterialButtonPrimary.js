@@ -1,11 +1,11 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, Pressable, Text } from "react-native";
 
 function MaterialButtonPrimary(props) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]}>
+    <Pressable style={[styles.container, props.style]}>
       <Text style={styles.caption}>{props.caption || "BUTTON"}</Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

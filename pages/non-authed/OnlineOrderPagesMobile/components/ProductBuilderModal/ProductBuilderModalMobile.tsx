@@ -6,7 +6,7 @@ import {
   Text,
   TextInput,
   ScrollView,
-  TouchableOpacity,
+  Pressable,
 } from "react-native";
 import GoBackBtn from "./GoBackBtn";
 import OneTimeSelectableOptionGroup from "./OneTimeSelectableOptionGroup";
@@ -174,7 +174,6 @@ function ProductBuilderModalMobile({ product, itemIndex, goBack, imageUrl }) {
 
   useEffect(() => {
     settotal(getPrice());
-    console.log("myObjProfile: ", myObjProfile);
   }, [myObjProfile]);
 
   const getPrice = () => {
@@ -319,13 +318,13 @@ function ProductBuilderModalMobile({ product, itemIndex, goBack, imageUrl }) {
               marginTop: 10,
             }}
           >
-            <TouchableOpacity onPress={goBack}>
+            <Pressable onPress={goBack}>
               <Feather
                 name="chevron-left"
                 style={{ color: "grey" }}
                 size={40}
               />
-            </TouchableOpacity>
+            </Pressable>
             <View
               style={{
                 backgroundColor: "#1D294E",

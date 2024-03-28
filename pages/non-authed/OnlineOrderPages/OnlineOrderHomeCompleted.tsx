@@ -4,7 +4,7 @@ import DeliveryDetails from "./components/home/DeliveryDetails";
 import PickupDetails from "./components/home/PickupDetails";
 import {
   Text,
-  TouchableOpacity,
+  Pressable,
   View,
   useWindowDimensions,
   Image,
@@ -65,7 +65,7 @@ function OnlineOrderHomeCompleted({
               <View style={styles.frontContainer}>
                 <View style={styles.logoGroup}>
                   {storeDetails.hasLogo ? (
-                    <TouchableOpacity
+                    <Pressable
                       onPress={() => {
                         if (page === 5) {
                           setpage(4);
@@ -84,9 +84,9 @@ function OnlineOrderHomeCompleted({
                         resizeMode="contain"
                         style={styles.logo}
                       />
-                    </TouchableOpacity>
+                    </Pressable>
                   ) : (
-                    <TouchableOpacity
+                    <Pressable
                       onPress={() => {
                         if (page === 5) {
                           setpage(4);
@@ -108,7 +108,7 @@ function OnlineOrderHomeCompleted({
                       >
                         {storeDetails.name}
                       </Text>
-                    </TouchableOpacity>
+                    </Pressable>
                   )}
                   <Image
                     source={require("./assets/images/image_ridw..png")}

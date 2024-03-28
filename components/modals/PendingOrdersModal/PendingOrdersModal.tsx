@@ -3,8 +3,7 @@ import {
   Modal,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  Pressable,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -75,7 +74,7 @@ const PendingOrdersModal = ({
   }
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={() => setongoingOrderListModal(false)}
       style={{
         justifyContent: "center",
@@ -85,13 +84,13 @@ const PendingOrdersModal = ({
       }}
       activeOpacity={1}
     >
-      <TouchableWithoutFeedback>
+      <Pressable>
         <div style={{ cursor: "default" }}>
           <View style={styles.pendingOrdersModalContainer}>
             <View style={styles.closeIconContainer}>
-              <TouchableOpacity onPress={() => setongoingOrderListModal(false)}>
+              <Pressable onPress={() => setongoingOrderListModal(false)}>
                 <Ionicons name="md-close" style={styles.closeIcon} />
-              </TouchableOpacity>
+              </Pressable>
             </View>
             <View style={styles.secondAreaContainer}>
               <Text style={styles.pendingOrderLabel}>Pending Orders</Text>
@@ -123,7 +122,7 @@ const PendingOrdersModal = ({
                             cartItem.price * cartItem.quantity
                           }`;
                         } else {
-                          cartString += `     Price: $${cartItem.price}`;
+                          cartString += `    Price: $${cartItem.price}`;
                         }
 
                         if (cartItem.description) {
@@ -133,12 +132,12 @@ const PendingOrdersModal = ({
                         if (cartItem.options) {
                           cartString += `\n`;
                           cartItem.options.map((option) => {
-                            cartString += `     ${option}\n`;
+                            cartString += `    ${option}\n`;
                           });
                         }
 
                         if (cartItem.extraDetails) {
-                          cartString += `     $cartItem.extraDetails}\n`;
+                          cartString += `     Note: ${cartItem.extraDetails}\n`;
                         }
                       });
 
@@ -208,8 +207,8 @@ const PendingOrdersModal = ({
             )}
           </View>
         </div>
-      </TouchableWithoutFeedback>
-    </TouchableOpacity>
+      </Pressable>
+    </Pressable>
   );
 };
 

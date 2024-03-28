@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import IoniconsIcon from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIconsIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import React, { useState } from "react";
@@ -14,6 +14,7 @@ import { TextInput } from "@react-native-material/core";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { storeDetailState, woocommerceState } from "state/state";
 import Select from "react-select";
+import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
 const NewUserPayment = ({ resetLoader }) => {
@@ -144,15 +145,15 @@ const NewUserPayment = ({ resetLoader }) => {
                     width: "65%",
                   }}
                 >
-                  <TouchableOpacity style={styles.group5} onPress={logout}>
+                  <Pressable style={styles.group5} onPress={logout}>
                     <Text style={styles.monthly6}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
+                  </Pressable>
+                  <Pressable
                     style={styles.group5}
                     onPress={() => setstageNum((prev) => prev + 1)}
                   >
                     <Text style={styles.monthly6}>Next</Text>
-                  </TouchableOpacity>
+                  </Pressable>
                 </View>
               </>
             );
@@ -296,9 +297,7 @@ const NewUserPayment = ({ resetLoader }) => {
                         defaultValue: address,
                         placeholder: "Enter store address",
                         menuPortalTarget: document.body,
-                        styles: {
-                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                        },
+                        styles: GooglePlacesStyles,
                       }}
                       renderSuggestions={(
                         active,
@@ -333,18 +332,18 @@ const NewUserPayment = ({ resetLoader }) => {
                     width: "65%",
                   }}
                 >
-                  <TouchableOpacity
+                  <Pressable
                     style={styles.group5}
                     onPress={() => setstageNum((prev) => prev - 1)}
                   >
                     <Text style={styles.monthly6}>Back</Text>
-                  </TouchableOpacity>
-                  {/* <TouchableOpacity
+                  </Pressable>
+                  {/* <Pressable
                     style={[styles.group5, { opacity: 0.5 }]}
                     disabled={true}
                   >
                     <Text style={styles.monthly6}>Next</Text>
-                  </TouchableOpacity> */}
+                  </Pressable> */}
                 </View>
               </>
             );

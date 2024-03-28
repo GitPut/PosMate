@@ -2,14 +2,12 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   useWindowDimensions,
   View,
   TextInput,
-  TouchableWithoutFeedback,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
-import { Button } from "@react-native-material/core";
 import { employeesState, setEmployeesState } from "state/state";
 import { Ionicons } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
@@ -20,7 +18,7 @@ const ClockinModal = ({ setclockinModal }) => {
   const employees = employeesState.use();
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={() => setclockinModal(false)}
       style={{
         justifyContent: "center",
@@ -30,13 +28,13 @@ const ClockinModal = ({ setclockinModal }) => {
       }}
       activeOpacity={1}
     >
-      <TouchableWithoutFeedback>
+      <Pressable>
         <div style={{ cursor: "default" }}>
           <View style={styles.container}>
             <View style={styles.closeIconContainer}>
-              <TouchableOpacity onPress={() => setclockinModal(false)}>
+              <Pressable onPress={() => setclockinModal(false)}>
                 <Ionicons name="md-close" style={styles.closeIcon} />
-              </TouchableOpacity>
+              </Pressable>
             </View>
             <View style={styles.secondAreaContainer}>
               <Text style={styles.employeesClockIn}>
@@ -68,8 +66,8 @@ const ClockinModal = ({ setclockinModal }) => {
             </View>
           </View>
         </div>
-      </TouchableWithoutFeedback>
-    </TouchableOpacity>
+      </Pressable>
+    </Pressable>
   );
 };
 

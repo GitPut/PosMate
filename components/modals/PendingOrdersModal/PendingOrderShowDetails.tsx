@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Pressable, ScrollView } from "react-native";
 import { Entypo, Ionicons, Feather } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
 import { updateTransList } from "state/firebaseFunctions";
@@ -19,7 +19,7 @@ function PendingOrderShowDetails({
       <View style={styles.innerContainer}>
         <View style={styles.topRowContainer}>
           <View style={styles.backIconContainer}>
-            <TouchableOpacity
+            <Pressable
               onPress={() => {
                 fadeOut(false);
               }}
@@ -28,15 +28,15 @@ function PendingOrderShowDetails({
                 name="chevron-small-left"
                 style={styles.backIcon}
               ></Entypo>
-            </TouchableOpacity>
+            </Pressable>
           </View>
           <Text style={styles.pendingOrdersLabel}>Pending Orders</Text>
-          <TouchableOpacity
+          <Pressable
             onPress={() => setongoingOrderListModal(false)}
             style={styles.closeIconContainer}
           >
             <Ionicons name="md-close" style={styles.closeIcon}></Ionicons>
-          </TouchableOpacity>
+          </Pressable>
         </View>
         <View style={styles.orderDetailsContainer}>
           <View style={styles.orderNameRow}>
@@ -78,31 +78,33 @@ function PendingOrderShowDetails({
           </View>
         </View>
         <View style={styles.cartDetailsContainer}>
-          <Text style={styles.cartDetailsOrderLabel}>Order:</Text>
-          <TouchableOpacity
-            disabled={!(element.method !== "inStoreOrder" && !element.online)}
-            onPress={() => {
-              updateOrderHandler({
-                ...element,
-                index: index,
-              });
-            }}
-            style={{ marginLeft: 370 }}
-          >
-            <Feather
-              name="edit"
-              style={[
-                styles.editIcon,
-                element.method !== "inStoreOrder" && !element.online
-                  ? { color: "black" }
-                  : { color: "grey" },
-              ]}
-            ></Feather>
-          </TouchableOpacity>
-          <Text style={styles.cartDetails}>{cartString}</Text>
+          <ScrollView contentContainerStyle={{ padding: 10 }}>
+            <Text style={styles.cartDetailsOrderLabel}>Order:</Text>
+            <Pressable
+              disabled={!(element.method !== "inStoreOrder" && !element.online)}
+              onPress={() => {
+                updateOrderHandler({
+                  ...element,
+                  index: index,
+                });
+              }}
+              style={{ marginLeft: 370 }}
+            >
+              <Feather
+                name="edit"
+                style={[
+                  styles.editIcon,
+                  element.method !== "inStoreOrder" && !element.online
+                    ? { color: "black" }
+                    : { color: "grey" },
+                ]}
+              ></Feather>
+            </Pressable>
+            <Text style={styles.cartDetails}>{cartString}</Text>
+          </ScrollView>
         </View>
         <View style={styles.bottomBtnRow}>
-          <TouchableOpacity
+          <Pressable
             style={styles.cancelBtn}
             onPress={() => {
               db.collection("users")
@@ -113,8 +115,8 @@ function PendingOrderShowDetails({
             }}
           >
             <Text style={styles.cancelOrder}>Cancel Order</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             style={styles.completeBtn}
             onPress={() => {
               if (element.online) {
@@ -148,7 +150,7 @@ function PendingOrderShowDetails({
             }}
           >
             <Text style={styles.completeOrder}>Complete Order</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     </View>
@@ -165,7 +167,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     width: 496,
-    height: 490,
+    height: 550,
     alignItems: "center",
     justifyContent: "space-between",
     marginTop: 20,
@@ -266,8 +268,8 @@ const styles = StyleSheet.create({
     color: "#121212",
   },
   cartDetailsContainer: {
-    width: 400,
-    height: 203,
+    width: 420,
+    height: 300,
   },
   cartDetailsOrderLabel: {
     color: "#121212",

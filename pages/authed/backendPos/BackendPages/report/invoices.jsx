@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, ScrollView, TextInput, Pressable } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import InvoiceItem from "./components/InvoiceItem";
 import { myDeviceDetailsState, setTransListTableOrgState, storeDetailState, transListState, transListTableOrgState } from "state/state";
@@ -286,7 +286,7 @@ function InvoiceReport() {
             </View>
           </View>
           <View style={styles.clearAndSearchBtnGroup}>
-            <TouchableOpacity style={styles.resetFilterBtn}
+            <Pressable style={styles.resetFilterBtn}
               onPress={() => {
                 setStartDate('')
                 setEndDate('')
@@ -298,17 +298,17 @@ function InvoiceReport() {
                 name="md-close"
                 style={styles.clearIcon}
               />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={SearchDate} style={styles.searchFilterBtn}>
+            </Pressable>
+            <Pressable onPress={SearchDate} style={styles.searchFilterBtn}>
               <Ionicons
                 name="ios-search"
                 style={styles.searchIcon}
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
         <View style={styles.downloadAndPrintBtnsGroup}>
-          <TouchableOpacity
+          <Pressable
             onPress={DownloadExcel}
             activeOpacity={0.8}
             disabled={baseSelectedRows.length === 0}
@@ -317,8 +317,8 @@ function InvoiceReport() {
               name="download"
               style={styles.downloadIcon}
             />
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             onPress={() => {
               setupdateBaseSelectedRows(true)
             }}
@@ -326,9 +326,9 @@ function InvoiceReport() {
             disabled={baseSelectedRows.length === 0}
           >
             <Feather name="printer" style={styles.printIcon} />
-          </TouchableOpacity>
+          </Pressable>
         </View>
-        <TouchableOpacity style={{
+        <Pressable style={{
           padding: 10,
           backgroundColor: 'rgba(0, 0, 0, 0.1)',
           borderRadius: 5,
@@ -338,12 +338,12 @@ function InvoiceReport() {
           onPress={PrintTodaysTotal}
         >
           <Text>Print Today</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View style={styles.bottomGroup}>
         <View style={styles.invoiceReportHeader}>
           <View style={styles.checkboxCont}>
-            <TouchableOpacity
+            <Pressable
               activeOpacity={0.8}
               style={styles.checkbox}
               onPress={() => {
@@ -362,7 +362,7 @@ function InvoiceReport() {
               }}
             >
               {(baseSelectedRows.length === filteredTransList.filter(e => search.length > 0 ? (e.id.toLowerCase().includes(search.toLowerCase()) || e.name.toLowerCase().includes(search.toLowerCase())) : true).length && filteredTransList.filter(e => search.length > 0 ? (e.id.toLowerCase().includes(search.toLowerCase()) || e.name.toLowerCase().includes(search.toLowerCase())) : true).length > 0) && "X"}
-            </TouchableOpacity>
+            </Pressable>
           </View>
           <View style={styles.orderIdCont}>
             <Text style={styles.orderId}>Order ID</Text>

@@ -1,10 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, Pressable, View } from "react-native";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 const HoverButton = ({ title, onPress, isSelected }) => {
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={onPress}
       style={[
         styles.multiOption,
@@ -22,7 +22,7 @@ const HoverButton = ({ title, onPress, isSelected }) => {
       ]}
     >
       {title}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

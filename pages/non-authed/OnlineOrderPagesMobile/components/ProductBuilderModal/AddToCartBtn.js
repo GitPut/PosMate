@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { StyleSheet, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, Pressable, Text } from "react-native";
 
 function AddToCartBtn({ style, onPress, title }) {
   return (
-    <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
+    <Pressable style={[styles.container, style]} onPress={onPress}>
       <Text style={styles.lbl}>{title}</Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

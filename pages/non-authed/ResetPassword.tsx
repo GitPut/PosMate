@@ -7,7 +7,7 @@ import {
   Text,
   ImageBackground,
   Modal,
-  TouchableOpacity,
+  Pressable,
   TextInput,
   useWindowDimensions,
 } from "react-native";
@@ -83,7 +83,7 @@ function ResetPassword() {
       <View
         style={[styles.headerContainer, useSmallDesign && { width: "90%" }]}
       >
-        <TouchableOpacity
+        <Pressable
           onPress={() => history.push("/log-in")}
           style={{ position: "absolute", left: 0, bottom: 24 }}
         >
@@ -94,7 +94,7 @@ function ResetPassword() {
             />
             {!useSmallDesign && <Text style={styles.backTxt}>Back</Text>}
           </View>
-        </TouchableOpacity>
+        </Pressable>
         <a href="https://divinepos.com" style={{ textDecoration: "none" }}>
           <img
             src={require("assets/dpos-logo-black.png")}
@@ -129,9 +129,9 @@ function ResetPassword() {
               </View>
             </View>
             <View style={styles.btnBottomContainer}>
-              <TouchableOpacity style={styles.submitBtn} onPress={submit}>
+              <Pressable style={styles.submitBtn} onPress={submit}>
                 <Text style={styles.submit}>Submit</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </View>

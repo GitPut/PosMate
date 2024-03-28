@@ -3,7 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   TextInput,
   Modal,
@@ -99,7 +99,7 @@ function MultipleTimeSelectableOptionGroup({
         {label} {isRequired ? "*" : ""}
       </Text>
       <View ref={dropdownRef} style={{ width: "70%" }}>
-        <TouchableOpacity
+        <Pressable
           style={styles.dropdown}
           onPress={() => {
             console.log("openDropdown", openDropdown, id);
@@ -118,7 +118,7 @@ function MultipleTimeSelectableOptionGroup({
             }
             style={styles.downIcon}
           ></Entypo>
-        </TouchableOpacity>
+        </Pressable>
         {openDropdown === id && (
           <ScrollView
             scrollEventThrottle={16} // Adjust as needed for performance
@@ -145,11 +145,9 @@ function MultipleTimeSelectableOptionGroup({
                   flexDirection: "row",
                 }}
               >
-                <TouchableOpacity
-                  onPress={() => onMinusPress({ option, listIndex })}
-                >
+                <Pressable onPress={() => onMinusPress({ option, listIndex })}>
                   <Text>-</Text>
-                </TouchableOpacity>
+                </Pressable>
                 <View
                   style={{
                     flexDirection: "row",
@@ -187,18 +185,16 @@ function MultipleTimeSelectableOptionGroup({
                     // }}
                   />
                 </View>
-                <TouchableOpacity
-                  onPress={() => onPlusPress({ option, listIndex })}
-                >
+                <Pressable onPress={() => onPlusPress({ option, listIndex })}>
                   <Text>+</Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             ))}
           </ScrollView>
         )}
       </View>
       <Modal visible={openDropdown === id} transparent={true}>
-        <TouchableOpacity
+        <Pressable
           style={{
             width: "100%",
             height: "100%",
@@ -217,7 +213,7 @@ function MultipleTimeSelectableOptionGroup({
               width: dropdownLayout.width,
             }}
           >
-            <TouchableOpacity
+            <Pressable
               style={styles.dropdown}
               onPress={() => {
                 console.log("openDropdown", openDropdown, id);
@@ -238,7 +234,7 @@ function MultipleTimeSelectableOptionGroup({
                 }
                 style={styles.downIcon}
               ></Entypo>
-            </TouchableOpacity>
+            </Pressable>
             {openDropdown === id && (
               <ScrollView
                 scrollEventThrottle={16} // Adjust as needed for performance
@@ -265,11 +261,11 @@ function MultipleTimeSelectableOptionGroup({
                       flexDirection: "row",
                     }}
                   >
-                    <TouchableOpacity
+                    <Pressable
                       onPress={() => onMinusPress({ option, listIndex })}
                     >
                       <Text>-</Text>
-                    </TouchableOpacity>
+                    </Pressable>
                     <View
                       style={{
                         flexDirection: "row",
@@ -310,11 +306,11 @@ function MultipleTimeSelectableOptionGroup({
                         // }}
                       />
                     </View>
-                    <TouchableOpacity
+                    <Pressable
                       onPress={() => onPlusPress({ option, listIndex })}
                     >
                       <Text>+</Text>
-                    </TouchableOpacity>
+                    </Pressable>
                   </View>
                 ))}
               </ScrollView>

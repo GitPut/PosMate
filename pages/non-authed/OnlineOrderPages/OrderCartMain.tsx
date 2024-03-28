@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
-  TouchableOpacity,
+  Pressable,
   Image,
   Text,
   ScrollView,
@@ -80,12 +80,12 @@ function OrderCartMain({
     <View style={styles.container}>
       {screenWidth > 1250 && (
         <View style={styles.leftMenuBarContainer}>
-          <TouchableOpacity style={styles.menuBtn}>
+          <Pressable style={styles.menuBtn}>
             <Entypo name="menu" style={styles.menuIcon}></Entypo>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setpage(1)}>
+          </Pressable>
+          <Pressable onPress={() => setpage(1)}>
             <Feather name="log-out" style={styles.icon}></Feather>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       )}
       <View
@@ -106,7 +106,7 @@ function OrderCartMain({
               marginTop: 10,
             }}
           >
-            <TouchableOpacity
+            <Pressable
               onPress={() => {
                 setpage(1);
               }}
@@ -120,8 +120,8 @@ function OrderCartMain({
               }}
             >
               <Feather name="log-out" style={{ color: "white" }} size={20} />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               onPress={() => {
                 setcartOpen(true);
               }}
@@ -144,7 +144,7 @@ function OrderCartMain({
               <Text style={{ color: "white", fontSize: 20 }}>
                 {cart.length}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         )}
         {screenWidth > 1000 && (
@@ -352,12 +352,12 @@ function OrderCartMain({
                   ).toFixed(2)}
                 </Text>
               </View>
-              {/* <TouchableOpacity style={styles.discountCodeBtn}>
+              {/* <Pressable style={styles.discountCodeBtn}>
                 <Text style={styles.discountCode}>Discount Code</Text>
-              </TouchableOpacity> */}
+              </Pressable> */}
             </View>
           </View>
-          <TouchableOpacity
+          <Pressable
             style={styles.checkoutBtn}
             disabled={cart.length < 1}
             onPress={() => {
@@ -410,7 +410,7 @@ function OrderCartMain({
             }}
           >
             <Text style={styles.checkoutLbl}>Checkout</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       ) : (
         <Modal
@@ -437,7 +437,7 @@ function OrderCartMain({
                 marginBottom: 10,
               }}
             >
-              <TouchableOpacity
+              <Pressable
                 onPress={() => {
                   setcartOpen(false);
                 }}
@@ -450,7 +450,7 @@ function OrderCartMain({
                   style={{ color: "grey" }}
                   size={40}
                 />
-              </TouchableOpacity>
+              </Pressable>
               <View
                 style={{
                   backgroundColor: "#1D294E",
@@ -566,7 +566,7 @@ function OrderCartMain({
                 </View>
               </View>
             </View>
-            <TouchableOpacity
+            <Pressable
               style={[styles.checkoutBtn, { margin: 20 }]}
               disabled={cart.length < 1}
               onPress={() => {
@@ -622,7 +622,7 @@ function OrderCartMain({
               }}
             >
               <Text style={styles.checkoutLbl}>Checkout</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </Modal>
       )}

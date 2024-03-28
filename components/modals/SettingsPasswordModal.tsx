@@ -1,7 +1,6 @@
 import {
   StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  Pressable,
   View,
   TextInput,
   Text,
@@ -69,7 +68,7 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
   };
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={() => setsettingsPasswordModalVis(false)}
       style={{
         justifyContent: "center",
@@ -79,7 +78,7 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
       }}
       activeOpacity={1}
     >
-      <TouchableWithoutFeedback>
+      <Pressable>
         <div style={{ cursor: "default" }}>
           <View style={styles.container}>
             <View style={styles.topLabelSectionContainer}>
@@ -130,7 +129,7 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
               <Text style={{ marginBottom: 10 }}>Password is inccorect!</Text>
             )}
             <View style={styles.bottomSectionContainer}>
-              <TouchableOpacity
+              <Pressable
                 onPress={() => {
                   if (password == storeDetails.settingsPassword) {
                     setIsSignedInSettingsState(true);
@@ -145,15 +144,15 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
                 style={styles.goBtn}
               >
                 <Text style={styles.goBtnTxt}>Go</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={SendEmail}>
+              </Pressable>
+              <Pressable onPress={SendEmail}>
                 <Text style={styles.forgotPasswordTxt}>Forgot Password?</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </div>
-      </TouchableWithoutFeedback>
-    </TouchableOpacity>
+      </Pressable>
+    </Pressable>
   );
 };
 

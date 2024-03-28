@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import EntypoIcon from "@expo/vector-icons/Entypo";
 import IoniconsIcon from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIconsIcon from "@expo/vector-icons/MaterialCommunityIcons";
@@ -156,7 +156,7 @@ function NewUserPaymentUpdate({
             </View>
           </View>
           <View style={styles.group17}>
-            <TouchableOpacity
+            <Pressable
               style={[
                 styles.rect34,
                 currentStageNum === 2 && {
@@ -174,7 +174,7 @@ function NewUserPaymentUpdate({
               >
                 Check Out
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
       </View>

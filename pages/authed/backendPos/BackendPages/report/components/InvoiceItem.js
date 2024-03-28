@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 function InvoiceItem({
@@ -12,7 +12,7 @@ function InvoiceItem({
   return (
     <View style={[styles.container, style]}>
       <View style={styles.checkboxCont1}>
-        <TouchableOpacity
+        <Pressable
           activeOpacity={0.8}
           style={styles.checkbox2}
           onPress={() => {
@@ -26,7 +26,7 @@ function InvoiceItem({
           }}
         >
           {baseSelectedRows?.includes(item.id) && "X"}
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View style={styles.orderIdCont1}>
         <Text style={styles.orderId3}>{item.id}</Text>
@@ -46,7 +46,7 @@ function InvoiceItem({
       <View style={styles.orderTypeCont1}>
         <Text style={styles.pickUp}>{item.type}</Text>
       </View>
-      <TouchableOpacity
+      <Pressable
         onPress={deleteTransaction}
         style={{
           height: 30,
@@ -61,7 +61,7 @@ function InvoiceItem({
         }}
       >
         <Ionicons name="md-close" size={24} color="white" />
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 }

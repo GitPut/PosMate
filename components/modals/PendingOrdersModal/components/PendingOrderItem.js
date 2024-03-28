@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  Touchable,
-} from "react-native";
+import { StyleSheet, View, Text, Pressable, Touchable } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
@@ -63,7 +57,7 @@ function PendingOrderItem({
       <View style={styles.orderOptionContainer}>
         <View style={styles.optionIconsRow}>
           {/* {element.method !== "inStoreOrder" && !element.online && ( */}
-          <TouchableOpacity
+          <Pressable
             onPress={() => {
               fadeIn();
               setcurrentOrder({
@@ -80,9 +74,9 @@ function PendingOrderItem({
             }}
           >
             <Feather name="edit" style={styles.editIcon}></Feather>
-          </TouchableOpacity>
+          </Pressable>
           {/* )} */}
-          <TouchableOpacity
+          <Pressable
             onPress={() => {
               db.collection("users")
                 .doc(auth.currentUser.uid)
@@ -92,8 +86,8 @@ function PendingOrderItem({
             }}
           >
             <MaterialCommunityIcons name="cancel" style={styles.cancelIcon} />
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             onPress={() => {
               if (element.online) {
                 db.collection("users")
@@ -126,7 +120,7 @@ function PendingOrderItem({
             }}
           >
             <Entypo name="check" style={styles.finishIcon}></Entypo>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     </View>

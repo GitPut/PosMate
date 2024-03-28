@@ -3,7 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   TextInput,
   Modal,
@@ -135,7 +135,7 @@ function MultipleTimeSelectableOptionGroup({
         {label} {isRequired ? "*" : ""}
       </Text>
       <View ref={dropdownRef}>
-        <TouchableOpacity
+        <Pressable
           style={styles.dropdown}
           onPress={() => {
             console.log("openDropdown", openDropdown, id);
@@ -154,12 +154,12 @@ function MultipleTimeSelectableOptionGroup({
             <Text style={styles.placeholder}>Select {label}</Text>
           )}
           {localOptionsSelectedLabel.length > 0 ? (
-            <TouchableOpacity
+            <Pressable
               style={[styles.downIcon, { marginTop: 5, marginRight: 5 }]}
               onPress={clearOptionsMain}
             >
               <MaterialIcons name="clear" size={24} color="red" />
-            </TouchableOpacity>
+            </Pressable>
           ) : (
             <Entypo
               name={
@@ -168,10 +168,10 @@ function MultipleTimeSelectableOptionGroup({
               style={styles.downIcon}
             />
           )}
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <Modal visible={openDropdown === id} transparent={true}>
-        <TouchableOpacity
+        <Pressable
           style={{
             width: "100%",
             height: "100%",
@@ -191,7 +191,7 @@ function MultipleTimeSelectableOptionGroup({
               width: dropdownLayout.width,
             }}
           >
-            <TouchableOpacity
+            <Pressable
               style={styles.dropdown}
               onPress={() => {
                 console.log("openDropdown", openDropdown, id);
@@ -211,12 +211,12 @@ function MultipleTimeSelectableOptionGroup({
                 <Text style={styles.placeholder}>Select {label}</Text>
               )}
               {localOptionsSelectedLabel.length > 0 ? (
-                <TouchableOpacity
+                <Pressable
                   style={[styles.downIcon, { marginTop: 5, marginRight: 5 }]}
                   onPress={clearOptions}
                 >
                   <MaterialIcons name="clear" size={24} color="red" />
-                </TouchableOpacity>
+                </Pressable>
               ) : (
                 <Entypo
                   name={
@@ -227,7 +227,7 @@ function MultipleTimeSelectableOptionGroup({
                   style={styles.downIcon}
                 />
               )}
-            </TouchableOpacity>
+            </Pressable>
             {openDropdown === id && (
               <ScrollView
                 scrollEventThrottle={16} // Adjust as needed for performance
@@ -242,7 +242,7 @@ function MultipleTimeSelectableOptionGroup({
                 }}
               >
                 {options.map((option, listIndex) => (
-                  <TouchableOpacity
+                  <Pressable
                     key={listIndex}
                     id={option.id}
                     style={{
@@ -258,12 +258,12 @@ function MultipleTimeSelectableOptionGroup({
                     onPress={() => onPlusPress({ option, listIndex })}
                     activeOpacity={0.5}
                   >
-                    <TouchableOpacity
+                    <Pressable
                       onPress={() => onMinusPress({ option, listIndex })}
                       activeOpacity={0.5}
                     >
                       <Entypo name="squared-minus" size={24} color="black" />
-                    </TouchableOpacity>
+                    </Pressable>
                     <View
                       style={{
                         flexDirection: "row",
@@ -298,13 +298,13 @@ function MultipleTimeSelectableOptionGroup({
                           : 0}
                       </Text>
                     </View>
-                    <TouchableOpacity
+                    <Pressable
                       onPress={() => onPlusPress({ option, listIndex })}
                       activeOpacity={0.5}
                     >
                       <Entypo name="squared-plus" size={24} color="black" />
-                    </TouchableOpacity>
-                  </TouchableOpacity>
+                    </Pressable>
+                  </Pressable>
                 ))}
               </ScrollView>
             )}

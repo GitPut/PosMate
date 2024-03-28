@@ -1,8 +1,7 @@
 import {
   StyleSheet,
   Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  Pressable,
   useWindowDimensions,
   View,
   TextInput,
@@ -14,7 +13,7 @@ const CashScreen = ({ setCashModal, GetTrans, total, setChangeDue }) => {
   const { height, width } = useWindowDimensions();
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={() => setCashModal(false)}
       style={{
         justifyContent: "center",
@@ -24,7 +23,7 @@ const CashScreen = ({ setCashModal, GetTrans, total, setChangeDue }) => {
       }}
       activeOpacity={1}
     >
-      <TouchableWithoutFeedback>
+      <Pressable>
         <div style={{ cursor: "default" }}>
           <View style={styles.container}>
             <Text style={styles.paymentDetailsLabel}>Payment Details</Text>
@@ -57,7 +56,7 @@ const CashScreen = ({ setCashModal, GetTrans, total, setChangeDue }) => {
               </View>
             </View>
             <View style={styles.btnsGroup}>
-              <TouchableOpacity
+              <Pressable
                 style={styles.finishPaymentBtn}
                 onPress={() => {
                   GetTrans("Cash");
@@ -65,18 +64,18 @@ const CashScreen = ({ setCashModal, GetTrans, total, setChangeDue }) => {
                 }}
               >
                 <Text style={styles.finishPayment}>Finish Payment</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 style={styles.cancelBtn}
                 onPress={() => setCashModal(false)}
               >
                 <Text style={styles.cancel}>Cancel</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </div>
-      </TouchableWithoutFeedback>
-    </TouchableOpacity>
+      </Pressable>
+    </Pressable>
   );
 };
 

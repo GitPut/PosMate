@@ -3,7 +3,7 @@ import {
     StyleSheet,
     View,
     Text,
-    TouchableOpacity,
+    Pressable,
     ScrollView,
     Dimensions,
     TextInput,
@@ -75,13 +75,13 @@ function EditEmployee() {
     return (
         <View style={styles.container}>
             <View style={[styles.headerContainer, { height: height * 0.12 }]}>
-                <TouchableOpacity style={{ flexDirection: 'row' }} activeOpacity={0.7} onPress={() => history.push("/authed/report/employeesreport")}>
+                <Pressable style={{ flexDirection: 'row' }} activeOpacity={0.7} onPress={() => history.push("/authed/report/employeesreport")}>
                     <Entypo name="chevron-left" style={styles.chevronLeftIcon} />
                     <View style={styles.topHeaderGroup}>
                         <Text style={styles.employeeReportHeaderTxt}>Employee Report</Text>
                         <Text style={styles.employeeName}>{employee?.name}</Text>
                     </View>
-                </TouchableOpacity>
+                </Pressable>
             </View>
             {employee && <View style={{ height: height * 0.709 }}>
                 <ScrollView style={styles.userEmployeeReport}
@@ -115,7 +115,7 @@ function EditEmployee() {
                                 }))} onBlur={handleDataUpdate} />
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.removeEmployeeBtn}
+                        <Pressable style={styles.removeEmployeeBtn}
                             activeOpacity={0.7}
                             onPress={() => {
                                 db.collection("users").doc(auth.currentUser.uid).collection("employees").doc(employee.id.toString()).delete()
@@ -126,7 +126,7 @@ function EditEmployee() {
                             }}
                         >
                             <Text style={styles.removeEmployeeTxt}>Remove Employee</Text>
-                        </TouchableOpacity>
+                        </Pressable>
                     </View>
                     <View style={styles.addHoursContainer}>
                         <Text style={styles.addHoursSectionHeader}>Add hours</Text>
@@ -163,7 +163,7 @@ function EditEmployee() {
                                     </div>
                                 </View>
                             </View>
-                            <TouchableOpacity style={styles.addBtn}
+                            <Pressable style={styles.addBtn}
                                 activeOpacity={0.7}
                                 onPress={() => {
                                     if (!dateSelected || !startTime || !endTime) return
@@ -190,7 +190,7 @@ function EditEmployee() {
                                     document.getElementById('endTime').value = null
                                 }}>
                                 <Text style={styles.addBtnTxt}>Add</Text>
-                            </TouchableOpacity>
+                            </Pressable>
                         </View>
                     </View>
                     <View style={styles.unpaidAndPaidDetails}>

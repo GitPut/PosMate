@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { StyleSheet, Pressable, View, Text } from "react-native";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useHistory } from "react-router-dom";
 
@@ -7,7 +7,7 @@ function EmployeeItem({ employee, style }) {
   const history = useHistory();
 
   return (
-    <TouchableOpacity
+    <Pressable
       style={[styles.container, style]}
       activeOpacity={0.5}
       onPress={() => history.push(`/authed/report/editemployee/${employee.id}`)}
@@ -19,7 +19,7 @@ function EmployeeItem({ employee, style }) {
         <Text style={styles.employeeNameLbl}>{employee.name}</Text>
       </View>
       <Ionicons name="chevron-forward" style={styles.chevronRight} />
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

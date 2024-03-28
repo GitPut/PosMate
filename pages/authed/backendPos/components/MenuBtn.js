@@ -1,10 +1,10 @@
 import React, { Component, useState } from "react";
-import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Image, Pressable } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
 function MenuBtn({ active, labelImg, labelImgStyle, onPress }) {
   return (
-    <TouchableOpacity
+    <Pressable
       style={[
         styles.container,
         active && {
@@ -28,7 +28,7 @@ function MenuBtn({ active, labelImg, labelImgStyle, onPress }) {
         resizeMode="contain"
         style={[styles.btnLblImg, labelImgStyle]}
       />
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

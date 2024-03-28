@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useRef, useState } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import OptionSelectionItem from "./OptionSelectionItem";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import OptionsItemOpenInner from "./OptionsItemOpenInner";
@@ -94,7 +94,7 @@ function OptionsItem({
           }
         }}
       >
-        <TouchableOpacity
+        <Pressable
           style={[
             styles.closedOptionContainer,
             index === indexOn && { borderBottomWidth: 1 },
@@ -113,14 +113,14 @@ function OptionsItem({
             {e.label ? e.label : "New Option"}
           </Text>
           <View style={styles.btnsRow}>
-            <TouchableOpacity
+            <Pressable
               activeOpacity={0.8}
               style={styles.moveDownBtn}
               onPress={copyEToClipboard}
             >
               <Entypo name="clipboard" size={20} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               activeOpacity={0.8}
               style={styles.moveDownBtn}
               onPress={() => {
@@ -146,8 +146,8 @@ function OptionsItem({
               }}
             >
               <Entypo name="chevron-down" style={styles.chevronDown} />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               activeOpacity={0.8}
               style={styles.moveUpBtn}
               onPress={() => {
@@ -170,8 +170,8 @@ function OptionsItem({
               }}
             >
               <Entypo name="chevron-up" style={styles.chevronUp} />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               activeOpacity={0.8}
               style={styles.duplicateBtn}
               onPress={() => {
@@ -197,8 +197,8 @@ function OptionsItem({
                 name="content-copy"
                 style={styles.duplicateIcon}
               />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               activeOpacity={0.8}
               style={styles.deleteBtn}
               onPress={() => {
@@ -224,9 +224,9 @@ function OptionsItem({
                 name="delete-outline"
                 style={styles.deleteIcon}
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
-        </TouchableOpacity>
+        </Pressable>
         {indexOn === index && (
           <OptionsItemOpenInner
             item={item}
@@ -245,7 +245,7 @@ function OptionsItem({
       </View>
       {index === newProduct.options.length - 1 && (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity
+          <Pressable
             onPress={() => {
               setnewProductOptions((prev) => {
                 const clone = structuredClone(prev);
@@ -266,8 +266,8 @@ function OptionsItem({
             style={styles.createOptionBtn}
           >
             <Text style={styles.createOptionTxt}>Create Option</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             style={[styles.createOptionBtn, { marginLeft: 20 }]}
             onPress={() => {
               navigator.clipboard.readText().then((text) => {
@@ -295,7 +295,7 @@ function OptionsItem({
             }}
           >
             <Text style={styles.createOptionTxt}>Paste Option</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       )}
     </>

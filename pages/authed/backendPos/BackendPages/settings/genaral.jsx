@@ -6,7 +6,7 @@ import {
   useWindowDimensions,
   StyleSheet,
   Image,
-  TouchableOpacity,
+  Pressable,
   Animated,
   Modal,
 } from "react-native";
@@ -25,6 +25,7 @@ import {
 } from "state/firebaseFunctions";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import GeneralSwitch from "components/GeneralSwitch";
+import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
 function GeneralSettings() {
@@ -188,25 +189,8 @@ function GeneralSettings() {
                 onChange: setaddress,
                 defaultValue: address,
                 menuPortalTarget: document.body,
-                styles: {
-                  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                  input: (base) => ({
-                    ...base,
-                    width: "100%",
-                    height: 40,
-                    backgroundColor: "#ffffff",
-                    borderRadius: 5,
-                    padding: 10,
-                  }),
-                  control: (base) => ({
-                    ...base,
-                    width: "100%",
-                    borderWidth: 1,
-                    borderColor: "#9b9b9b",
-                  })
-                }
-              }
-              }
+                styles: GooglePlacesStyles
+              }}
               renderSuggestions={(
                 active,
                 suggestions,
@@ -263,9 +247,9 @@ function GeneralSettings() {
         </View>
       </View>
       <View style={styles.btnContainer}>
-        <TouchableOpacity activeOpacity={0.8} style={styles.saveBtn} onPress={handleDataUpdate}>
+        <Pressable activeOpacity={0.8} style={styles.saveBtn} onPress={handleDataUpdate}>
           <Text style={styles.saveBtnTxt}>Save</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View style={styles.downloadRow}>
         <View style={styles.downloadGroup}>

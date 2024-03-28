@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
@@ -17,29 +17,23 @@ const OrderItem = ({
       <View style={styles.topOrderRow}>
         <Text style={styles.orderNumber}>Order #{prevOrderIndex + 1}</Text>
         <View style={styles.deliveryOrPickupRow}>
-          <TouchableOpacity style={styles.pickupBtn} onPress={setOrderPickUp}>
+          <Pressable style={styles.pickupBtn} onPress={setOrderPickUp}>
             <MaterialIcons
               name="store-mall-directory"
               style={styles.pickupIcon}
             />
-          </TouchableOpacity>
+          </Pressable>
           {isDeliverable && (
-            <TouchableOpacity
-              style={styles.deliveryBtn}
-              onPress={setOrderDelivery}
-            >
+            <Pressable style={styles.deliveryBtn} onPress={setOrderDelivery}>
               <MaterialIcons
                 name="directions-car"
                 style={styles.deliveryIcon}
               />
-            </TouchableOpacity>
+            </Pressable>
           )}
-          <TouchableOpacity
-            style={styles.deleteBtn}
-            onPress={removeCustomerOrder}
-          >
+          <Pressable style={styles.deleteBtn} onPress={removeCustomerOrder}>
             <MaterialIcons name="close" style={styles.deleteIcon} />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
       {prevOrder.cart?.map((cartItem, index) => (

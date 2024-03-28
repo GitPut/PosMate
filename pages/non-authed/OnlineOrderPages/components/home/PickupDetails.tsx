@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, Pressable, Text } from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
 
 function PickupDetails({
@@ -86,7 +86,7 @@ function PickupDetails({
           textContentType="telephoneNumber"
         />
       </View>
-      <TouchableOpacity
+      <Pressable
         style={styles.continueBtn}
         onPress={() => {
           if (localName === "" || localPhoneNumber === "")
@@ -103,7 +103,7 @@ function PickupDetails({
         }}
       >
         <Text style={styles.continueBtnTxt}>CONTINUE</Text>
-      </TouchableOpacity>
+      </Pressable>
     </>
   );
 }

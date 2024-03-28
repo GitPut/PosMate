@@ -2,7 +2,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  Pressable,
   useWindowDimensions,
   View,
   TextInput,
@@ -19,7 +19,6 @@ import { Ionicons, Entypo } from "@expo/vector-icons";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { auth, db } from "state/firebaseConfig";
 import CartItem from "components/cart/CartItem";
-import { TouchableWithoutFeedback } from "react-native";
 import SavedCustomerItem from "./components/SavedCustomerItem";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 import Modal from "react-native-modal";
@@ -49,7 +48,7 @@ const SavedCustomersModal = ({
   };
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={closeAll}
       style={{
         justifyContent: "center",
@@ -59,22 +58,22 @@ const SavedCustomersModal = ({
       }}
       activeOpacity={1}
     >
-      <TouchableWithoutFeedback>
+      <Pressable>
         <div style={{ cursor: "default" }}>
           <View style={styles.container}>
             <View style={styles.topGroup}>
               <View style={styles.topRow}>
-                <TouchableOpacity
+                <Pressable
                   onPress={() => {
                     setSaveCustomerModal(false);
                     setDeliveryModal(true);
                   }}
                 >
                   <Entypo name="chevron-left" style={styles.goBackIcon} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={closeAll}>
+                </Pressable>
+                <Pressable onPress={closeAll}>
                   <Ionicons name="md-close" style={styles.closeIcon} />
-                </TouchableOpacity>
+                </Pressable>
               </View>
               <Text style={styles.savedCustomersTxt}>Saved Customers</Text>
             </View>
@@ -110,7 +109,7 @@ const SavedCustomersModal = ({
                     )
                       return;
                     return (
-                      <TouchableOpacity
+                      <Pressable
                         key={customer.id}
                         onPress={() => setcustomerSelected(customer)}
                       >
@@ -120,7 +119,7 @@ const SavedCustomersModal = ({
                             customer.name ? customer.name : "No Name"
                           }
                         />
-                      </TouchableOpacity>
+                      </Pressable>
                     );
                   })}
                 </ScrollView>
@@ -163,8 +162,8 @@ const SavedCustomersModal = ({
             </View>
           </Modal>
         </div>
-      </TouchableWithoutFeedback>
-    </TouchableOpacity>
+      </Pressable>
+    </Pressable>
   );
 };
 

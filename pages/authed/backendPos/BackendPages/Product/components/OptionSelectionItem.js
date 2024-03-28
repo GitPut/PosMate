@@ -1,11 +1,5 @@
 import React, { Component, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, Text, TextInput, Pressable } from "react-native";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 
 function OptionSelectionItem({
@@ -125,7 +119,7 @@ function OptionSelectionItem({
         </View>
       )}
       <View style={styles.btnsRow}>
-        <TouchableOpacity
+        <Pressable
           activeOpacity={0.8}
           style={styles.moveDownBtn}
           onPress={() => {
@@ -144,8 +138,8 @@ function OptionSelectionItem({
           }}
         >
           <Entypo name="chevron-down" style={styles.chevronDown} />
-        </TouchableOpacity>
-        <TouchableOpacity
+        </Pressable>
+        <Pressable
           activeOpacity={0.8}
           style={styles.moveUpBtn}
           onPress={() => {
@@ -164,8 +158,8 @@ function OptionSelectionItem({
           }}
         >
           <Entypo name="chevron-up" style={styles.chevronUp} />
-        </TouchableOpacity>
-        <TouchableOpacity
+        </Pressable>
+        <Pressable
           style={styles.deleteBtn}
           onPress={() => {
             const cloneOuter = structuredClone(testMap);
@@ -187,7 +181,7 @@ function OptionSelectionItem({
             name="delete-outline"
             style={styles.deleteIcon}
           />
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </View>
   );

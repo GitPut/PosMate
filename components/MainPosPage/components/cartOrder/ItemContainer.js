@@ -4,7 +4,7 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity,
+  Pressable,
   Animated,
   Modal,
   useWindowDimensions,
@@ -53,7 +53,7 @@ function ItemContainer({ product, style }) {
   return (
     <div id={product.id}>
       {product.hasImage ? (
-        <TouchableOpacity
+        <Pressable
           onPress={() => {
             if (product.options.length > 0) {
               // navigation.navigate("Product Listing", { product: product });
@@ -88,7 +88,7 @@ function ItemContainer({ product, style }) {
               ${product.price ? product.price : "Placeholder"}
             </Text>
             <View style={styles?.openBtnRow}>
-              {/* <TouchableOpacity style={styles?.openBtn}>
+              {/* <Pressable style={styles?.openBtn}>
                 <MaterialCommunityIcons
                   name="plus"
                   style={styles?.plusIcon}
@@ -112,12 +112,12 @@ function ItemContainer({ product, style }) {
                     }
                   }}
                 ></MaterialCommunityIcons>
-              </TouchableOpacity> */}
+              </Pressable> */}
             </View>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       ) : (
-        <TouchableOpacity
+        <Pressable
           onPress={() => {
             if (product.options.length > 0) {
               // navigation.navigate("Product Listing", { product: product });
@@ -166,7 +166,7 @@ function ItemContainer({ product, style }) {
                 },
               ]}
             >
-              {/* <TouchableOpacity style={styles?.openBtn}>
+              {/* <Pressable style={styles?.openBtn}>
                 <MaterialCommunityIcons
                   name="plus"
                   style={styles?.plusIcon}
@@ -190,10 +190,10 @@ function ItemContainer({ product, style }) {
                     }
                   }}
                 ></MaterialCommunityIcons>
-              </TouchableOpacity> */}
+              </Pressable> */}
             </View>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       )}
       {showProductScreen && (
         <Modal transparent={true}>

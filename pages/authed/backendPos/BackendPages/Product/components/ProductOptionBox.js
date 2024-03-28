@@ -1,7 +1,7 @@
 import ProductImage from "components/ProductImage";
 import AvocatImage from "assets/AvocatImage.jpg";
 import React, { Component } from "react";
-import { StyleSheet, TouchableOpacity, Image, Text, View } from "react-native";
+import { StyleSheet, Pressable, Image, Text, View } from "react-native";
 import { useHistory } from "react-router-dom";
 import { Feather } from "@expo/vector-icons";
 
@@ -16,7 +16,7 @@ function ProductOptionBox({
   const history = useHistory();
 
   return (
-    <TouchableOpacity
+    <Pressable
       style={[styles.container, style]}
       onPress={() => setexistingProduct(product)}
       activeOpacity={0.8}
@@ -40,13 +40,13 @@ function ProductOptionBox({
             <Feather name="edit-3" style={styles.editProductIcon} />
             <Text style={styles.editProductTxt}>Edit Product</Text>
           </View>
-          <TouchableOpacity
+          <Pressable
             onPress={deleteProduct}
             style={[styles.editProductBtn, { backgroundColor: "red" }]}
           >
             <Feather name="trash" style={styles.editProductIcon} />
             <Text style={styles.editProductTxt}>Delete Product</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       ) : (
         <View style={styles.editProductBtn}>
@@ -54,7 +54,7 @@ function ProductOptionBox({
           <Text style={styles.editProductTxt}>Edit Product</Text>
         </View>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

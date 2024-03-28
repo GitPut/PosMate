@@ -4,7 +4,7 @@ import {
   View,
   Text,
   ImageBackground,
-  TouchableOpacity,
+  Pressable,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -55,13 +55,13 @@ function PayForOnlineStore({ payOnlineStore }) {
             </View>
           </View>
         </View>
-        <TouchableOpacity
+        <Pressable
           activeOpacity={0.7}
           style={styles.getStartedBox}
           onPress={payOnlineStore}
         >
           <Text style={styles.getStartedTxt}>Get Started</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </ImageBackground>
   );

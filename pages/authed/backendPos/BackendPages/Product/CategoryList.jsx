@@ -4,7 +4,7 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   TextInput,
 } from "react-native";
@@ -103,26 +103,26 @@ function CategoryList(props) {
           <TextInput style={styles.searchProductBox} placeholder="Search" value={searchFilterValue} onChangeText={(val) => setsearchFilterValue(val)} />
           <Feather name="search" style={{ color: 'grey', fontSize: 20, position: 'absolute', top: 5, right: 5 }} />
         </View>
-        <TouchableOpacity style={styles.manageProductsBtn} onPress={() => seteditMode(prev => !prev)}>
+        <Pressable style={styles.manageProductsBtn} onPress={() => seteditMode(prev => !prev)}>
           <MaterialCommunityIcons
             name="format-list-checks"
             style={styles.manageProductIcon}
           />
           <Text style={styles.manageProductsTxt}>Manage Categories</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View style={styles.scrollArea}>
         <ScrollView
           contentContainerStyle={styles.scrollArea_contentContainerStyle}
         >
           <View style={styles.productsMap}>
-            <TouchableOpacity style={[styles.addProductBtn, editMode && { height: 322 }]} onPress={() => setaddCategoryModal(true)}>
+            <Pressable style={[styles.addProductBtn, editMode && { height: 322 }]} onPress={() => setaddCategoryModal(true)}>
               <Feather
                 name="plus"
                 style={styles.addProductPlusIcon}
               />
               <Text style={styles.addNewItemTxt}>Add New Category</Text>
-            </TouchableOpacity>
+            </Pressable>
             {catalog.categories.map((category, index) => <div key={index} id={index}>
               <CategoryOptionBox
                 style={[styles.productOptionBox, editMode && { height: 322 }]}

@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import IoniconsIcon from "@expo/vector-icons/Ionicons";
 import React, { useState } from "react";
 import { auth, db } from "state/firebaseConfig";
@@ -133,12 +133,12 @@ const TrialEnded = ({ resetLoader }) => {
               marginTop: 50,
             }}
           >
-            <TouchableOpacity style={styles.group5} onPress={logout}>
+            <Pressable style={styles.group5} onPress={logout}>
               <Text style={styles.monthly6}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.group5} onPress={Checkout}>
+            </Pressable>
+            <Pressable style={styles.group5} onPress={Checkout}>
               <Text style={styles.monthly6}>Checkout</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
       </View>

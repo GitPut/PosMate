@@ -5,7 +5,7 @@ import {
   useWindowDimensions,
   StyleSheet,
   Image,
-  TouchableOpacity,
+  Pressable,
   Animated,
   Modal,
 } from "react-native";
@@ -24,6 +24,7 @@ import {
   updateWooCredentials,
 } from "state/firebaseFunctions";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
 const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
@@ -123,7 +124,7 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
             flexDirection: "row",
           }}
         >
-          <TouchableOpacity
+          <Pressable
             onPress={() => setscreen("general")}
             style={{
               width: 120,
@@ -134,8 +135,8 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
             }}
           >
             <Text>General</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             onPress={() => setscreen("woocommerce")}
             style={{
               width: 120,
@@ -146,7 +147,7 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
             }}
           >
             <Text>WooCommerce</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
         {screen === "general" ? (
           <>
@@ -191,9 +192,7 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                     onChange: setaddress,
                     defaultValue: address,
                     menuPortalTarget: document.body,
-                    styles: {
-                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    },
+                    styles: GooglePlacesStyles,
                   }}
                   renderSuggestions={(
                     active,
@@ -281,7 +280,7 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                 <Button
                   title="Save"
                   onPress={handleDataUpdate}
-                  TouchableOpacityContainerStyle={{
+                  PressableContainerStyle={{
                     width: "100%",
                     height: "100%",
                   }}
@@ -371,7 +370,7 @@ const EditStoreDetails = ({ customBtnLbl, customBtnExtraFunction }) => {
                 <Button
                   title="Save"
                   onPress={handleWooDataUpdate}
-                  TouchableOpacityContainerStyle={{
+                  PressableContainerStyle={{
                     width: "100%",
                     height: "100%",
                   }}

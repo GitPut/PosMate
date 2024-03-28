@@ -3,7 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   Modal,
 } from "react-native";
@@ -41,7 +41,7 @@ function DropdownSelectableOption({
         {label} {isRequired ? "*" : ""}
       </Text>
       <View ref={dropdownRef}>
-        <TouchableOpacity
+        <Pressable
           style={styles.dropdown}
           onPress={() => {
             console.log("openDropdown", openDropdown, id);
@@ -66,10 +66,10 @@ function DropdownSelectableOption({
             }
             style={styles.downIcon}
           ></Entypo>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <Modal visible={openDropdown === id} transparent={true}>
-        <TouchableOpacity
+        <Pressable
           style={{
             width: "100%",
             height: "100%",
@@ -87,7 +87,7 @@ function DropdownSelectableOption({
               width: dropdownLayout.width,
             }}
           >
-            <TouchableOpacity
+            <Pressable
               style={styles.dropdown}
               onPress={() => {
                 console.log("openDropdown", openDropdown, id);
@@ -114,7 +114,7 @@ function DropdownSelectableOption({
                 }
                 style={styles.downIcon}
               ></Entypo>
-            </TouchableOpacity>
+            </Pressable>
             {openDropdown === id && (
               <ScrollView
                 style={{
@@ -128,7 +128,7 @@ function DropdownSelectableOption({
                 }}
               >
                 {options.map((option, listIndex) => (
-                  <TouchableOpacity
+                  <Pressable
                     key={listIndex}
                     id={option.id}
                     onPress={() => {
@@ -156,7 +156,7 @@ function DropdownSelectableOption({
                     <Text>{`${option.label}  (+$${
                       option.priceIncrease !== null ? option.priceIncrease : 0
                     })`}</Text>
-                  </TouchableOpacity>
+                  </Pressable>
                 ))}
               </ScrollView>
             )}

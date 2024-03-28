@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
 function GoBackBtn({ style, onPress }) {
   return (
-    <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
-      <Entypo name="chevron-left" style={styles.backIcon}></Entypo>
+    <Pressable style={[styles.container, style]} onPress={onPress}>
+      <Entypo name="chevron-left" style={styles.backIcon} />
       <Text style={styles.lbl}>Dashboard</Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

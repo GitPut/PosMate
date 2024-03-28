@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, Pressable, Text } from "react-native";
 
 function OneTimeSelectableBtn({
   style,
@@ -10,7 +10,7 @@ function OneTimeSelectableBtn({
   onPress,
 }) {
   return (
-    <TouchableOpacity
+    <Pressable
       style={[
         styles.container,
         style,
@@ -28,7 +28,7 @@ function OneTimeSelectableBtn({
       >
         {label}
       </Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

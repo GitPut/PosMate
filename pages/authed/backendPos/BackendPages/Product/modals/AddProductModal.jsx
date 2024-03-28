@@ -3,9 +3,8 @@ import {
     StyleSheet,
     View,
     Text,
-    TouchableOpacity,
+    Pressable,
     ScrollView,
-    TouchableWithoutFeedback,
     useWindowDimensions,
     TextInput,
     Image,
@@ -198,7 +197,7 @@ function AddProductModal({
     //   };
 
     return (
-        <TouchableOpacity
+        <Pressable
             onPress={() => {
                 setaddProductModal(false)
                 setexistingProduct(null)
@@ -211,12 +210,12 @@ function AddProductModal({
             }}
             activeOpacity={1}
         >
-            <TouchableWithoutFeedback>
+            <Pressable>
                 <div style={{ cursor: "default" }}>
                     <View style={[styles.container, { height: height * 0.9, width: width * 0.7 }]}>
                         <View style={styles.topRow}>
                             <Text style={styles.productAdd}>Product {existingProduct ? 'Update' : 'Add'}</Text>
-                            {existingProduct && <TouchableOpacity style={styles.templateBtn} onPress={() => {
+                            {existingProduct && <Pressable style={styles.templateBtn} onPress={() => {
                                 let copy = { ...existingProduct }
                                 copy.name = copy.name + " Copy";
                                 copy.imageUrl = "";
@@ -242,7 +241,7 @@ function AddProductModal({
                                     name="copy"
                                     style={styles.chevronDownIcon}
                                 />
-                            </TouchableOpacity>}
+                            </Pressable>}
                         </View>
                         <View style={[styles.innerScrollArea, { height: height * 0.6 }]}>
                             <ScrollView
@@ -265,11 +264,11 @@ function AddProductModal({
                                     <Text style={styles.productImageUploadTxt}>
                                         Product Image Upload
                                     </Text>
-                                    <TouchableOpacity activeOpacity={0.8} onPress={handleClick} style={[styles.productImageUpContainer]}>
+                                    <Pressable activeOpacity={0.8} onPress={handleClick} style={[styles.productImageUpContainer]}>
                                         {selectedFile ?
                                             <>
                                                 <Image source={{ uri: URL.createObjectURL(selectedFile) }} style={{ width: 150, height: 150, resizeMode: 'contain' }} />
-                                                <TouchableOpacity
+                                                <Pressable
                                                     style={{
                                                         backgroundColor: 'red',
                                                         padding: 5,
@@ -285,12 +284,12 @@ function AddProductModal({
                                                     }}
                                                 >
                                                     <Text style={{ color: 'white' }}>Remove</Text>
-                                                </TouchableOpacity>
+                                                </Pressable>
                                             </>
                                             : currentImgUrl ?
                                                 <>
                                                     <Image source={{ uri: currentImgUrl }} style={{ width: 150, height: 150, resizeMode: 'contain' }} />
-                                                    <TouchableOpacity
+                                                    <Pressable
                                                         style={{
                                                             backgroundColor: 'red',
                                                             padding: 5,
@@ -307,7 +306,7 @@ function AddProductModal({
                                                         }}
                                                     >
                                                         <Text style={{ color: 'white' }}>Remove</Text>
-                                                    </TouchableOpacity>
+                                                    </Pressable>
                                                 </>
                                                 :
                                                 <View style={styles.uploadImageInner}>
@@ -319,7 +318,7 @@ function AddProductModal({
                                                         Drag &amp; drop or select a file to upload Image
                                                     </Text>
                                                 </View>}
-                                    </TouchableOpacity>
+                                    </Pressable>
                                 </View>
                                 <View style={styles.spacer}></View>
                                 <View style={styles.productSmallDetailsRow}>
@@ -477,7 +476,7 @@ function AddProductModal({
                                     })
                                 }
                                 {newProduct.options.length === 0 && (
-                                    // <TouchableOpacity onPress={() => {
+                                    // <Pressable onPress={() => {
                                     //     setnewProductOptions([
                                     //         {
                                     //             label: null,
@@ -496,9 +495,9 @@ function AddProductModal({
                                     //     newProduct?.options[newProduct?.options.length - 1].label === null
                                     // } style={styles.createOptionBtn}>
                                     //     <Text style={styles.createOptionTxt}>Create Option</Text>
-                                    // </TouchableOpacity>
+                                    // </Pressable>
                                     <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                        <TouchableOpacity
+                                        <Pressable
                                             onPress={() => {
                                                 setnewProductOptions([
                                                     {
@@ -520,8 +519,8 @@ function AddProductModal({
                                             style={styles.createOptionBtn}
                                         >
                                             <Text style={styles.createOptionTxt}>Create Option</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
+                                        </Pressable>
+                                        <Pressable
                                             style={[styles.createOptionBtn, { marginLeft: 20 }]}
                                             onPress={() => {
                                                 navigator.clipboard.readText().then((text) => {
@@ -536,26 +535,26 @@ function AddProductModal({
                                             }}
                                         >
                                             <Text style={styles.createOptionTxt}>Paste Option</Text>
-                                        </TouchableOpacity>
+                                        </Pressable>
                                     </View>
                                 )}
                             </ScrollView>
                         </View>
                         <View style={styles.cancelAndSaveBtns}>
-                            <TouchableOpacity style={styles.cancelBtn} onPress={() => {
+                            <Pressable style={styles.cancelBtn} onPress={() => {
                                 setaddProductModal(false)
                                 setexistingProduct(null)
                             }}>
                                 <Text style={styles.cancelTxt}>Cancel</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.saveBtn} onPress={handleDataUpdate}>
+                            </Pressable>
+                            <Pressable style={styles.saveBtn} onPress={handleDataUpdate}>
                                 <Text style={styles.saveTxt}>Save</Text>
-                            </TouchableOpacity>
+                            </Pressable>
                         </View>
                     </View>
                 </div>
-            </TouchableWithoutFeedback>
-        </TouchableOpacity>
+            </Pressable>
+        </Pressable>
     );
 }
 

@@ -1,11 +1,5 @@
 import React, { Component, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, Text, TextInput, Pressable } from "react-native";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import GeneralDropdown from "components/GeneralDropdown";
 
@@ -81,7 +75,7 @@ function OptionIfStatementItem({
           scrollY={scrollY}
         />
       </View>
-      <TouchableOpacity
+      <Pressable
         style={styles.deleteBtn}
         onPress={() => {
           let clone;
@@ -100,7 +94,7 @@ function OptionIfStatementItem({
           name="delete-outline"
           style={styles.deleteIcon}
         />
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 }

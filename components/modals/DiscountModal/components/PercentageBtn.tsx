@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 
 function PercentageBtn({ percentageAmount, style, isSelected, onPress }) {
   return (
-    <TouchableOpacity
+    <Pressable
       style={[
         styles.container,
         style,
@@ -21,7 +21,7 @@ function PercentageBtn({ percentageAmount, style, isSelected, onPress }) {
       >
         {percentageAmount}
       </Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

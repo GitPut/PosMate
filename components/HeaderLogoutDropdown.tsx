@@ -3,7 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   Modal,
   Image,
@@ -35,7 +35,7 @@ function GeneralDropdown({ styles, storeDetails }) {
 
   return (
     <View style={{ zIndex: 1000 }}>
-      <TouchableOpacity
+      <Pressable
         style={styles.userBtn}
         activeOpacity={0.8}
         onPress={() => setopenDropdown((prev) => !prev)}
@@ -53,9 +53,9 @@ function GeneralDropdown({ styles, storeDetails }) {
           name={openDropdown ? "chevron-small-up" : "chevron-small-down"}
           style={styles.chevronDownIcon}
         />
-      </TouchableOpacity>
+      </Pressable>
       <Modal visible={openDropdown} transparent={true}>
-        <TouchableOpacity
+        <Pressable
           style={{
             width: "100%",
             height: "100%",
@@ -73,7 +73,7 @@ function GeneralDropdown({ styles, storeDetails }) {
               width: dropdownLayout.width,
             }}
           >
-            <TouchableOpacity
+            <Pressable
               style={styles.userBtn}
               activeOpacity={0.8}
               onPress={() => setopenDropdown((prev) => !prev)}
@@ -88,9 +88,9 @@ function GeneralDropdown({ styles, storeDetails }) {
                 name={openDropdown ? "chevron-small-up" : "chevron-small-down"}
                 style={styles.chevronDownIcon}
               />
-            </TouchableOpacity>
+            </Pressable>
             {openDropdown && (
-              <TouchableOpacity
+              <Pressable
                 style={{
                   backgroundColor: "rgba(255,255,255,1)",
                   borderRadius: 10,
@@ -116,7 +116,7 @@ function GeneralDropdown({ styles, storeDetails }) {
               >
                 <Text style={styles.logoutFromAccount}>Logout</Text>
                 <Feather name="log-out" style={styles.logoutIcon} />
-              </TouchableOpacity>
+              </Pressable>
             )}
           </View>
         )}

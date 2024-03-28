@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
-  TouchableOpacity,
+  Pressable,
   Image,
   Text,
   ScrollView,
@@ -82,12 +82,12 @@ function OrderCartMain({
   return (
     <View style={styles.container}>
       <View style={styles.leftMenuBarContainer}>
-        <TouchableOpacity style={styles.menuBtn}>
+        <Pressable style={styles.menuBtn}>
           <Entypo name="menu" style={styles.menuIcon}></Entypo>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setpage(1)}>
+        </Pressable>
+        <Pressable onPress={() => setpage(1)}>
           <Feather name="log-out" style={styles.icon}></Feather>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View style={styles.menuContainer}>
         <View style={styles.bannerContainer}>
@@ -283,12 +283,12 @@ function OrderCartMain({
                 ).toFixed(2)}
               </Text>
             </View>
-            <TouchableOpacity style={styles.discountCodeBtn}>
+            <Pressable style={styles.discountCodeBtn}>
               <Text style={styles.discountCode}>Discount Code</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
-        <TouchableOpacity
+        <Pressable
           style={styles.checkoutBtn}
           disabled={cart.length < 1}
           onPress={() => {
@@ -337,7 +337,7 @@ function OrderCartMain({
           }}
         >
           <Text style={styles.checkoutLbl}>Checkout</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </View>
   );

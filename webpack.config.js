@@ -1,4 +1,5 @@
 const createExpoWebpackConfigAsync = require("@expo/webpack-config");
+const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
@@ -21,15 +22,20 @@ module.exports = async function (env, argv) {
     http: require.resolve("stream-http"),
     stream: require.resolve("stream-browserify"),
     zlib: require.resolve("browserify-zlib"),
-    // Add other polyfills as needed, common ones include:
     crypto: require.resolve("crypto-browserify"),
     buffer: require.resolve("buffer/"),
     process: require.resolve("process/browser"),
+    querystring: require.resolve("querystring-es3"),
     net: false, // Mocking net as it's not typically used in the browser
     tls: false, // Mocking tls for the same reason
     fs: false, // Mocking fs since it's not available in the browser
     // Add other necessary polyfills or false fallbacks here
   };
+
+  // Use the React refresh plugin in development mode
+  if (env.mode === "development" || argv.mode === "development") {
+    config.plugins.push(new ReactRefreshWebpackPlugin());
+  }
 
   // Return the customized config
   return config;

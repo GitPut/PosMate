@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { StyleSheet, View, Text, Animated, TextInput, TouchableOpacity, Modal, Image } from "react-native";
+import { StyleSheet, View, Text, Animated, TextInput, Pressable, Modal, Image } from "react-native";
 import {
     onlineStoreState,
     setOnlineStoreState,
@@ -176,7 +176,7 @@ function OnlineStoreSettings() {
                         <View style={styles.inputsGroup}>
                             <View style={styles.urlEndingInputGroup}>
                                 <Text style={styles.onlineUrlEndingTxt}>Online URL Ending</Text>
-                                {onlineStoreDetails.onlineStoreSetUp ? <TouchableOpacity activeOpacity={1} style={[styles.uRLBox, { justifyContent: 'center' }]}><Text>{onlineStoreDetails.urlEnding}</Text></TouchableOpacity> : <TextInput style={styles.uRLBox} placeholder="EX: https://auth.divinepos.com/order/yoururlname" value={onlineStoreDetails.urlEnding ? onlineStoreDetails.urlEnding : urlEnding}
+                                {onlineStoreDetails.onlineStoreSetUp ? <Pressable activeOpacity={1} style={[styles.uRLBox, { justifyContent: 'center' }]}><Text>{onlineStoreDetails.urlEnding}</Text></Pressable> : <TextInput style={styles.uRLBox} placeholder="EX: https://auth.divinepos.com/order/yoururlname" value={onlineStoreDetails.urlEnding ? onlineStoreDetails.urlEnding : urlEnding}
                                     onChangeText={(text) => { if (!onlineStoreDetails.onlineStoreSetUp) { seturlEnding(text.replace(/[^a-zA-Z-]/g, '').toLowerCase()) } }} />}
                             </View>
                             <View style={styles.stripePublicKeyInputGroup}>
@@ -196,11 +196,11 @@ function OnlineStoreSettings() {
                             <Text style={styles.readInfo}>
                                 {onlineStoreDetails.onlineStoreSetUp ? '*Your Store Url Has Already Been Set' : '*Once Confirmed Your Url CAN NOT BE CHANGED'}
                             </Text>
-                            {onlineStoreDetails.onlineStoreSetUp ? <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7} onPress={updateStripeDetails}>
+                            {onlineStoreDetails.onlineStoreSetUp ? <Pressable style={styles.confirmBtn} activeOpacity={0.7} onPress={updateStripeDetails}>
                                 <Text style={styles.confirmTxtBtn}>Update</Text>
-                            </TouchableOpacity> : <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7} onPress={startOnlineStore}>
+                            </Pressable> : <Pressable style={styles.confirmBtn} activeOpacity={0.7} onPress={startOnlineStore}>
                                 <Text style={styles.confirmTxtBtn}>Confirm</Text>
-                            </TouchableOpacity>}
+                            </Pressable>}
                         </View>
                     </View>
                         :

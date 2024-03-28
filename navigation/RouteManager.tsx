@@ -22,7 +22,6 @@ import { logout, updateFreeTrial } from "state/firebaseFunctions";
 const tz = require("moment-timezone");
 import NewUserPayment from "components/modals/NewUserPayment";
 import { Animated, Image } from "react-native";
-import * as Font from "expo-font";
 import TrialEnded from "components/modals/TrialEnded";
 const qz = require("qz-tray");
 
@@ -51,7 +50,7 @@ const RouteManager = () => {
 
   useEffect(() => {
     if (myDeviceDetails.docID && userS) {
-      console.log("Listening for print requests");
+      // console.log("Listening for print requests");
       db.collection("users")
         .doc(userS.uid)
         .collection("devices")
@@ -373,7 +372,7 @@ const RouteManager = () => {
                 docs.forEach((element) => {
                   devices.push({ ...element.data(), docID: element.id });
                   if (element.data().id === deviceID) {
-                    console.log("found device: ", element.data());
+                    // console.log("found device: ", element.data());
                     setMyDeviceDetailsState({
                       ...element.data(),
                       docID: element.id,

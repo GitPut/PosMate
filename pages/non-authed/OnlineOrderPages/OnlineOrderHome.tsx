@@ -4,7 +4,7 @@ import DeliveryDetails from "./components/home/DeliveryDetails";
 import PickupDetails from "./components/home/PickupDetails";
 import {
   Text,
-  TouchableOpacity,
+  Pressable,
   View,
   useWindowDimensions,
   Image,
@@ -65,7 +65,7 @@ function OnlineOrderHome({
               <View style={styles.frontContainer}>
                 <View style={styles.logoGroup}>
                   {storeDetails.hasLogo ? (
-                    <TouchableOpacity
+                    <Pressable
                       onPress={() => {
                         if (page === 5) {
                           setpage(4);
@@ -84,9 +84,9 @@ function OnlineOrderHome({
                         resizeMode="contain"
                         style={styles.logo}
                       />
-                    </TouchableOpacity>
+                    </Pressable>
                   ) : (
-                    <TouchableOpacity
+                    <Pressable
                       onPress={() => {
                         if (page === 5) {
                           setpage(4);
@@ -108,7 +108,7 @@ function OnlineOrderHome({
                       >
                         {storeDetails.name}
                       </Text>
-                    </TouchableOpacity>
+                    </Pressable>
                   )}
                   <Image
                     source={require("./assets/images/image_ridw..png")}
@@ -120,13 +120,13 @@ function OnlineOrderHome({
                   <>
                     {storeDetails.acceptDelivery ? (
                       <View style={styles.btnContainerRow}>
-                        <TouchableOpacity
+                        <Pressable
                           style={styles.pickupBtn}
                           onPress={() => setpage(2)}
                         >
                           <Text style={styles.pickupBtnTxt}>PICK UP</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
+                        </Pressable>
+                        <Pressable
                           style={styles.deliveryBtn}
                           onPress={() => {
                             setorderDetails({
@@ -137,7 +137,7 @@ function OnlineOrderHome({
                           }}
                         >
                           <Text style={styles.deliveryBtnTxt}>DELIVERY</Text>
-                        </TouchableOpacity>
+                        </Pressable>
                       </View>
                     ) : (
                       <div
@@ -148,12 +148,12 @@ function OnlineOrderHome({
                           alignItems: "center",
                         }}
                       >
-                        <TouchableOpacity
+                        <Pressable
                           style={styles.pickupBtn}
                           onPress={() => setpage(2)}
                         >
                           <Text style={styles.pickupBtnTxt}>PICK UP</Text>
-                        </TouchableOpacity>
+                        </Pressable>
                       </div>
                     )}
                   </>
@@ -161,13 +161,13 @@ function OnlineOrderHome({
                   <>
                     {storeDetails.acceptDelivery ? (
                       <View>
-                        <TouchableOpacity
+                        <Pressable
                           style={[styles.pickupBtn, { marginBottom: 20 }]}
                           onPress={() => setpage(2)}
                         >
                           <Text style={styles.pickupBtnTxt}>PICK UP</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
+                        </Pressable>
+                        <Pressable
                           style={styles.deliveryBtn}
                           onPress={() => {
                             setorderDetails({
@@ -178,7 +178,7 @@ function OnlineOrderHome({
                           }}
                         >
                           <Text style={styles.deliveryBtnTxt}>DELIVERY</Text>
-                        </TouchableOpacity>
+                        </Pressable>
                       </View>
                     ) : (
                       <div
@@ -189,12 +189,12 @@ function OnlineOrderHome({
                           alignItems: "center",
                         }}
                       >
-                        <TouchableOpacity
+                        <Pressable
                           style={styles.pickupBtn}
                           onPress={() => setpage(2)}
                         >
                           <Text style={styles.pickupBtnTxt}>PICK UP</Text>
-                        </TouchableOpacity>
+                        </Pressable>
                       </div>
                     )}
                   </>

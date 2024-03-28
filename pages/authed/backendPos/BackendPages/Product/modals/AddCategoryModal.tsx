@@ -3,8 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  Pressable,
   useWindowDimensions,
   TextInput,
 } from "react-native";
@@ -53,7 +52,7 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
   };
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={() => setaddCategoryModal(false)}
       style={{
         justifyContent: "center",
@@ -63,7 +62,7 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
       }}
       activeOpacity={1}
     >
-      <TouchableWithoutFeedback>
+      <Pressable>
         <div style={{ cursor: "default" }}>
           <View style={styles.container}>
             <Text style={styles.addCategoryTxt}>Add Category</Text>
@@ -81,7 +80,7 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
                 <View style={styles.categoryPositionGroup}>
                   <Text style={styles.categoryPosition}>Category Position</Text>
                   <View style={styles.minusPlusSelectorRow}>
-                    <TouchableOpacity
+                    <Pressable
                       activeOpacity={0.8}
                       style={styles.minusContainer}
                       onPress={() =>
@@ -91,11 +90,11 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
                       }
                     >
                       <Feather name="minus" style={styles.minusIcon} />
-                    </TouchableOpacity>
+                    </Pressable>
                     <View style={styles.indexContainer}>
                       <Text style={styles.text}>{categoryPosition}</Text>
                     </View>
-                    <TouchableOpacity
+                    <Pressable
                       activeOpacity={0.8}
                       style={styles.plusContainer}
                       onPress={() =>
@@ -105,7 +104,7 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
                       }
                     >
                       <Feather name="plus" style={styles.plusIcon} />
-                    </TouchableOpacity>
+                    </Pressable>
                   </View>
                 </View>
               </View>
@@ -121,26 +120,26 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
                 />
               </View>
               <View style={styles.btnsRow}>
-                <TouchableOpacity
+                <Pressable
                   activeOpacity={0.8}
                   onPress={() => setaddCategoryModal(false)}
                   style={styles.cancelBox}
                 >
                   <Text style={styles.cancelTxt}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                </Pressable>
+                <Pressable
                   activeOpacity={0.8}
                   onPress={Update}
                   style={styles.saveBox}
                 >
                   <Text style={styles.saveTxt}>Save</Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
           </View>
         </div>
-      </TouchableWithoutFeedback>
-    </TouchableOpacity>
+      </Pressable>
+    </Pressable>
   );
 }
 

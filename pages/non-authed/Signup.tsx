@@ -8,7 +8,7 @@ import {
   Text,
   ImageBackground,
   Modal,
-  TouchableOpacity,
+  Pressable,
   TextInput,
   ScrollView,
   useWindowDimensions,
@@ -74,7 +74,7 @@ function Signup() {
             { height: 110 },
           ]}
         >
-          <TouchableOpacity
+          <Pressable
             onPress={() => history.push("/log-in")}
             style={{ position: "absolute", left: 0, bottom: 24 }}
           >
@@ -85,7 +85,7 @@ function Signup() {
               />
               {!useSmallDesign && <Text style={styles.backTxt}>Back</Text>}
             </View>
-          </TouchableOpacity>
+          </Pressable>
           <a href="https://divinepos.com" style={{ textDecoration: "none" }}>
             <img
               src={require("assets/dpos-logo-black.png")}
@@ -156,12 +156,9 @@ function Signup() {
                     service
                   </Text>
                 </a>
-                <TouchableOpacity
-                  style={styles.loginBtn}
-                  onPress={attemptSignUp}
-                >
+                <Pressable style={styles.loginBtn} onPress={attemptSignUp}>
                   <Text style={styles.loginTxt}>Sign Up</Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
           </View>

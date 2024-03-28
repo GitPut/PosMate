@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { StyleSheet, TouchableOpacity, Text, Image, View } from "react-native";
+import { StyleSheet, Pressable, Text, Image, View } from "react-native";
 import ProductImage from "components/ProductImage";
 
 function CategoryBtn({ style, isSelected, onPress, category, imageUrl }) {
   return (
-    <TouchableOpacity
+    <Pressable
       style={[
         styles.container,
         style,
@@ -31,7 +31,7 @@ function CategoryBtn({ style, isSelected, onPress, category, imageUrl }) {
           />
         </View>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

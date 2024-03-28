@@ -1,7 +1,8 @@
 import React, { Component, useState } from "react";
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, Pressable, Text } from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
 function DeliveryDetails({
@@ -175,9 +176,7 @@ function DeliveryDetails({
                 onChange: (address) => setlocalAddress(address),
                 defaultValue: localAddress,
                 menuPortalTarget: document.body,
-                styles: {
-                  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                },
+                styles: GooglePlacesStyles,
               }}
               renderSuggestions={(active, suggestions, onSelectSuggestion) => (
                 <div>
@@ -215,7 +214,7 @@ function DeliveryDetails({
           />
         </View>
       </View>
-      <TouchableOpacity
+      <Pressable
         style={styles.continueBtn}
         onPress={() => {
           if (
@@ -272,7 +271,7 @@ function DeliveryDetails({
         }}
       >
         <Text style={styles.continueBtnTxt}>CONTINUE</Text>
-      </TouchableOpacity>
+      </Pressable>
     </>
   );
 }

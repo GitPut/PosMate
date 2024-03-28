@@ -2,7 +2,7 @@ import {
   View,
   Text,
   ScrollView,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   TextInput,
 } from "react-native";
@@ -189,7 +189,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
             key={index}
             ref={viewRef}
           >
-            <TouchableOpacity
+            <Pressable
               onPress={() => {
                 if (openOptions === index) {
                   setopenOptions(null);
@@ -216,7 +216,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
                 size={24}
                 color="black"
               />
-            </TouchableOpacity>
+            </Pressable>
             <InnerDisplayOption
               index={index}
               e={e}
@@ -243,7 +243,6 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
 
   useEffect(() => {
     settotal(getPrice());
-    console.log("myObjProfile: ", myObjProfile);
   }, [myObjProfile]);
 
   const getPrice = () => {
@@ -372,7 +371,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
           flexDirection: "row",
         }}
       >
-        <TouchableOpacity
+        <Pressable
           onPress={goBack}
           style={{
             alignItems: "center",
@@ -393,7 +392,7 @@ const ProductListing = ({ product, itemIndex, goBack }) => {
           >
             Dashboard
           </Text>
-        </TouchableOpacity>
+        </Pressable>
         <Text style={{ fontWeight: "600", fontSize: 24 }}>{myObj.name}</Text>
         <Text style={{ fontWeight: "600", fontSize: 22, color: "#4A4A4A" }}>
           Total: ${parseFloat(total).toFixed(2)}

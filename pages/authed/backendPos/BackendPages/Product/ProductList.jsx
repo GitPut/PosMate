@@ -4,7 +4,7 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   TextInput,
 } from "react-native";
@@ -138,7 +138,7 @@ function ProductList(props) {
           <TextInput style={styles.searchProductBox} placeholder="Search" value={searchFilterValue} onChangeText={(val) => setsearchFilterValue(val)} />
           <Feather name="search" style={{ color: 'grey', fontSize: 20, position: 'absolute', top: 5, right: 5 }} />
         </View>
-        <TouchableOpacity style={styles.manageProductsBtn}
+        <Pressable style={styles.manageProductsBtn}
           onPress={() => seteditMode(prev => !prev)}
         // onPress={() => {
         //   AddIdToOptions()
@@ -149,7 +149,7 @@ function ProductList(props) {
             style={styles.manageProductIcon}
           />
           <Text style={styles.manageProductsTxt}>Manage Products</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View style={styles.categoriesScrollView}>
         <ScrollView
@@ -159,12 +159,12 @@ function ProductList(props) {
           }
         >
           {catalog.categories.map((category, index) => (
-            <TouchableOpacity key={index}
+            <Pressable key={index}
               activeOpacity={0.8}
               style={[{ marginRight: 35 }, selectedCategory === category ? { borderBottomWidth: 2, borderBottomColor: 'black' } : { borderBottomWidth: 2, borderBottomColor: 'grey' }]}
               onPress={() => setselectedCategory(prev => prev === category ? null : category)}>
               <Text style={[styles.categoryOpt1Txt, selectedCategory === category ? { color: 'black' } : { color: 'grey' }]}>{category}</Text>
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </ScrollView>
       </View>
@@ -173,13 +173,13 @@ function ProductList(props) {
           contentContainerStyle={styles.scrollArea_contentContainerStyle}
         >
           <View style={styles.productsMap}>
-            <TouchableOpacity style={[styles.addProductBtn, editMode && { height: 322 }]} onPress={() => setaddProductModal(true)}>
+            <Pressable style={[styles.addProductBtn, editMode && { height: 322 }]} onPress={() => setaddProductModal(true)}>
               <Feather
                 name="plus"
                 style={styles.addProductPlusIcon}
               />
               <Text style={styles.addNewItemTxt}>Add New Item</Text>
-            </TouchableOpacity>
+            </Pressable>
             {catalog.products.map((product, index) => <div key={index} id={product.id}>
               <ProductOptionBox
                 style={[styles.productOptionBox, editMode && { height: 322 }]}

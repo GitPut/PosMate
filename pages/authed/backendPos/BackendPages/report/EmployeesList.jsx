@@ -3,7 +3,7 @@ import {
     StyleSheet,
     View,
     Text,
-    TouchableOpacity,
+    Pressable,
     ScrollView
 } from "react-native";
 import EmployeeItem from "./components/EmployeeItem";
@@ -19,9 +19,9 @@ const EmployeesReport = () => {
         <View style={styles.container}>
             <View style={styles.topRow}>
                 <Text style={styles.employeeReportTopHeaderTxt}>Employee Report</Text>
-                <TouchableOpacity style={styles.addEmployeeBtn} activeOpacity={0.6} onPress={() => setaddEmployeeModal(true)}>
+                <Pressable style={styles.addEmployeeBtn} activeOpacity={0.6} onPress={() => setaddEmployeeModal(true)}>
                     <Text style={styles.addEmployeeBtnLbl}>Add Employee</Text>
-                </TouchableOpacity>
+                </Pressable>
             </View>
             <View style={styles.employeeMapContainer}>
                 <View style={styles.innerMapContainer}>

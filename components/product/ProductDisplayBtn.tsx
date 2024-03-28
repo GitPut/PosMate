@@ -2,7 +2,7 @@ import {
   Modal,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  Pressable,
   View,
   Animated,
   Dimensions,
@@ -73,7 +73,7 @@ const ProductDisplayBtn = ({ product, productIndex }) => {
   };
 
   return (
-    <TouchableOpacity
+    <Pressable
       key={productIndex}
       onPress={() => {
         if (product.options.length > 0) {
@@ -181,7 +181,7 @@ const ProductDisplayBtn = ({ product, productIndex }) => {
           />
         </Modal>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

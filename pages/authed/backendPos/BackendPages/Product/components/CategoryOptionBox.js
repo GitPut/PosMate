@@ -1,7 +1,7 @@
 import ProductImage from "components/ProductImage";
 import AvocatImage from "assets/AvocatImage.jpg";
 import React, { Component } from "react";
-import { StyleSheet, TouchableOpacity, Image, Text, View } from "react-native";
+import { StyleSheet, Pressable, Image, Text, View } from "react-native";
 import { useHistory } from "react-router-dom";
 import { userStoreState } from "state/state";
 import { Feather } from "@expo/vector-icons";
@@ -22,7 +22,7 @@ function CategoryOptionBox({
   imageUrl = imageUrl.length > 0 ? imageUrl[0].imageUrl : null;
 
   return (
-    <TouchableOpacity
+    <Pressable
       style={[styles.container, style]}
       onPress={() => {
         seteditCategoryModal(category);
@@ -45,13 +45,13 @@ function CategoryOptionBox({
             <Feather name="edit-3" style={styles.editProductIcon} />
             <Text style={styles.editProductTxt}>Edit Category</Text>
           </View>
-          <TouchableOpacity
+          <Pressable
             onPress={deleteCategory}
             style={[styles.editProductBtn, { backgroundColor: "red" }]}
           >
             <Feather name="trash" style={styles.editProductIcon} />
             <Text style={styles.editProductTxt}>Delete Category</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       ) : (
         <View style={styles.editProductBtn}>
@@ -59,7 +59,7 @@ function CategoryOptionBox({
           <Text style={styles.editProductTxt}>Edit Category</Text>
         </View>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

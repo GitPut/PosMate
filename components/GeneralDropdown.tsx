@@ -3,7 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   Modal,
 } from "react-native";
@@ -40,7 +40,7 @@ function GeneralDropdown({
 
   return (
     <View style={{ zIndex: 1000 }}>
-      <TouchableOpacity
+      <Pressable
         style={styles.dropdown}
         onPress={() => setopenDropdown((prev) => !prev)}
         activeOpacity={1}
@@ -51,9 +51,9 @@ function GeneralDropdown({
           name={openDropdown ? "chevron-small-up" : "chevron-small-down"}
           style={styles.downIcon}
         />
-      </TouchableOpacity>
+      </Pressable>
       <Modal visible={openDropdown} transparent={true}>
-        <TouchableOpacity
+        <Pressable
           style={{
             width: "100%",
             height: "100%",
@@ -71,7 +71,7 @@ function GeneralDropdown({
               width: 190,
             }}
           >
-            <TouchableOpacity
+            <Pressable
               style={[
                 styles.dropdown,
                 {
@@ -89,7 +89,7 @@ function GeneralDropdown({
                 name={openDropdown ? "chevron-small-up" : "chevron-small-down"}
                 style={styles.downIcon}
               />
-            </TouchableOpacity>
+            </Pressable>
             {openDropdown && (
               <ScrollView
                 style={{
@@ -106,7 +106,7 @@ function GeneralDropdown({
                 }}
               >
                 {options.map((option, listIndex) => (
-                  <TouchableOpacity
+                  <Pressable
                     key={listIndex}
                     onPress={() => {
                       setValue(option);
@@ -128,7 +128,7 @@ function GeneralDropdown({
                     activeOpacity={1}
                   >
                     <Text style={styles.placeholder}>{option}</Text>
-                  </TouchableOpacity>
+                  </Pressable>
                 ))}
               </ScrollView>
             )}

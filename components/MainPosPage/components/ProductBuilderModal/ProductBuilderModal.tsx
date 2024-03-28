@@ -6,7 +6,7 @@ import {
   Text,
   TextInput,
   ScrollView,
-  TouchableOpacity,
+  Pressable,
   useWindowDimensions,
 } from "react-native";
 import GoBackBtn from "./GoBackBtn";
@@ -15,7 +15,6 @@ import DropdownSelectableOption from "./DropdownSelectableOption";
 import AddToCartBtn from "./AddToCartBtn";
 import MultipleTimeSelectableOptionGroup from "./MultipleTimeSelectableOptionGroup";
 import { addCartState, cartState, setCartState } from "state/state";
-import { Ionicons } from "@expo/vector-icons/";
 
 function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
   const cart = cartState.use();
@@ -173,7 +172,6 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
 
   useEffect(() => {
     settotal(getPrice());
-    console.log("myObjProfile: ", myObjProfile);
   }, [myObjProfile]);
 
   const getPrice = () => {
@@ -298,7 +296,8 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
         <View
           style={[
             styles.goBackRow,
-            !myObj.description ? { marginBottom: 20 } : { marginBottom: 120 },
+            // !myObj.description ? { marginBottom: 20 } : { marginBottom: 120 },
+            { marginBottom: 100 },
           ]}
         >
           <GoBackBtn onPress={goBack} style={styles.goBackBtn} />
@@ -315,21 +314,25 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
                 resizeMode="contain"
                 style={[
                   styles.itemImg,
-                  myObj.description && { width: 200, height: 200 },
+                  myObj.description && { width: 300, height: 150 },
                 ]}
-              ></Image>
+              />
               <View style={styles.itemInfoTxtGroup}>
                 <View style={styles.topTxtGroup}>
                   <Text style={styles.productName}>{myObj.name}</Text>
-                  {myObj.calorieDetails && (
-                    <Text style={styles.calorieDetails}>280 cal/slice</Text>
-                  )}
+                  <>
+                    {myObj.calorieDetails && (
+                      <Text style={styles.calorieDetails}>280 cal/slice</Text>
+                    )}
+                  </>
                 </View>
-                {myObj.description && (
-                  <Text style={styles.description}>
-                    Description: {myObj.description}
-                  </Text>
-                )}
+                <>
+                  {myObj.description && (
+                    <Text style={styles.description}>
+                      Description: {myObj.description}
+                    </Text>
+                  )}
+                </>
               </View>
             </View>
             <View style={styles.writeNoteContainer}>
@@ -418,8 +421,8 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
   },
   itemImg: {
-    height: 150,
-    width: 150,
+    height: 250,
+    width: 250,
     resizeMode: "contain",
   },
   itemInfoTxtGroup: {
@@ -446,7 +449,7 @@ const styles = StyleSheet.create({
   },
   description: {
     color: "rgba(131,126,126,1)",
-    width: 214,
+    width: "90%",
     textAlign: "left",
     paddingBottom: 50,
   },

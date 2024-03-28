@@ -3,7 +3,7 @@
 //   StyleSheet,
 //   View,
 //   Image,
-//   TouchableOpacity,
+//   Pressable,
 //   Text,
 //   useWindowDimensions,
 // } from "react-native";
@@ -27,12 +27,12 @@
 //         ></Image>
 //       </View>
 //       <View style={styles.btnContainerRow}>
-//         <TouchableOpacity style={styles.pickupBtn}>
+//         <Pressable style={styles.pickupBtn}>
 //           <Text style={styles.pickupBtnTxt}>PICK UP</Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity style={styles.deliveryBtn}>
+//         </Pressable>
+//         <Pressable style={styles.deliveryBtn}>
 //           <Text style={styles.deliveryBtnTxt}>DELIVERY</Text>
-//         </TouchableOpacity>
+//         </Pressable>
 //       </View>
 //       <View style={styles.bottomRowGroup}>
 //         <View style={styles.detailsLocationGroup}>
@@ -199,7 +199,7 @@ import styled, { css } from "styled-components";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import DeliveryDetails from "./components/home/DeliveryDetails";
 import PickupDetails from "./components/home/PickupDetails";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, Pressable, View } from "react-native";
 import CheckOutDetails from "./components/home/CheckOutDetails";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -279,7 +279,7 @@ function OnlineOrderHome({
                 src={require("./assets/images/dpos-logo-white.png")}
               ></Logo>
             ) : (
-              <TouchableOpacity
+              <Pressable
                 onPress={() => {
                   if (page > 1) {
                     setpage((prev) => prev - 1);
@@ -298,7 +298,7 @@ function OnlineOrderHome({
                 >
                   {storeDetails.name}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             )}
             <Dash src={require("./assets/images/image_ridw..png")}></Dash>
           </LogoGroup>

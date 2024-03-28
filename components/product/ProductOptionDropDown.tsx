@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, Pressable, View } from "react-native";
 import React, { useState } from "react";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
@@ -28,7 +28,7 @@ const ProductOptionDropDown = ({ label, options, setValue, value, style }) => {
 
   return (
     <View style={[styles.container, style]}>
-      <TouchableOpacity
+      <Pressable
         onPress={() => setShow((prevState) => !prevState)}
         style={{
           flexDirection: "row",
@@ -65,7 +65,7 @@ const ProductOptionDropDown = ({ label, options, setValue, value, style }) => {
             color={show ? "grey" : "lightgrey"}
           />
         </View>
-      </TouchableOpacity>
+      </Pressable>
       {show && (
         <View
           style={{

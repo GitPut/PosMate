@@ -1,8 +1,7 @@
 import {
   StyleSheet,
   Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  Pressable,
   View,
   useWindowDimensions,
   TextInput,
@@ -14,6 +13,7 @@ import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
 import { addCustomerDetailsToDb } from "state/firebaseFunctions";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import GeneralSwitch from "components/GeneralSwitch";
+import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
@@ -193,8 +193,17 @@ const PhoneOrderModal = ({
   }, [localAddress]);
 
   return (
-    <TouchableOpacity
-      onPress={() => setDeliveryModal(false)}
+    <Pressable
+      onPress={() => {
+        setDeliveryModal(false);
+        setOngoingDelivery(false);
+        setName("");
+        setPhone("");
+        setAddress(null);
+        setBuzzCode("");
+        setUnitNumber("");
+        setDeliveryChecked(false);
+      }}
       style={{
         justifyContent: "center",
         alignItems: "center",
@@ -203,12 +212,12 @@ const PhoneOrderModal = ({
       }}
       activeOpacity={1}
     >
-      <TouchableWithoutFeedback>
+      <Pressable>
         <div style={{ cursor: "default" }}>
           <View style={styles.container}>
             <View style={styles.topHeaderAndCloseGroup}>
               <View style={styles.closeRow}>
-                <TouchableOpacity
+                <Pressable
                   onPress={() => {
                     setDeliveryModal(false);
                     setOngoingDelivery(false);
@@ -217,10 +226,11 @@ const PhoneOrderModal = ({
                     setAddress(null);
                     setBuzzCode("");
                     setUnitNumber("");
+                    setDeliveryChecked(false);
                   }}
                 >
                   <Ionicons name="md-close" style={styles.escapeIcon} />
-                </TouchableOpacity>
+                </Pressable>
               </View>
               <Text style={styles.phoneOrder}>Phone Order</Text>
             </View>
@@ -284,32 +294,8 @@ const PhoneOrderModal = ({
                         placeholder: "Enter customer address",
                         defaultValue: address,
                         menuPortalTarget: document.body,
-                        styles: {
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 9999,
-                          }),
-                        },
+                        styles: GooglePlacesStyles,
                       }}
-                      renderSuggestions={(
-                        active,
-                        suggestions,
-                        onSelectSuggestion
-                      ) => (
-                        <div style={{ width: "80%" }}>
-                          {suggestions.map((suggestion, index) => (
-                            <div
-                              key={index}
-                              className="suggestion"
-                              onClick={(event) => {
-                                onSelectSuggestion(suggestion, event);
-                              }}
-                            >
-                              {suggestion.description}
-                            </div>
-                          ))}
-                        </div>
-                      )}
                     />
                   </View>
                   <TextInput
@@ -340,7 +326,7 @@ const PhoneOrderModal = ({
               )}
             </View>
             <View style={styles.bottomGroup}>
-              <TouchableOpacity
+              <Pressable
                 style={styles.orderButton}
                 onPress={() => {
                   if (name && phone) {
@@ -355,8 +341,8 @@ const PhoneOrderModal = ({
                 <Text style={styles.orderButtonTxt}>
                   {ongoingDelivery ? "Update" : "Order"}
                 </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 style={styles.viewSavedCustomersRow}
                 onPress={() => {
                   setOngoingDelivery(false);
@@ -376,12 +362,12 @@ const PhoneOrderModal = ({
                   style={styles.savedCustomersIcon}
                 />
                 <Text style={styles.savedCustomers}>Saved Customers</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </div>
-      </TouchableWithoutFeedback>
-    </TouchableOpacity>
+      </Pressable>
+    </Pressable>
   );
 };
 

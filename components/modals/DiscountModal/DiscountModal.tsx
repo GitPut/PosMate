@@ -2,8 +2,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  Pressable,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -65,7 +64,7 @@ const DiscountModal = ({
   }, [localDiscountAmount]);
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={() => setdiscountModal(false)}
       style={{
         justifyContent: "center",
@@ -75,7 +74,7 @@ const DiscountModal = ({
       }}
       activeOpacity={1}
     >
-      <TouchableWithoutFeedback>
+      <Pressable>
         <div style={{ cursor: "default" }}>
           <View style={styles.container}>
             <View style={styles.innerContentContainer}>
@@ -127,7 +126,7 @@ const DiscountModal = ({
                 </View>
               </View>
               <View style={styles.confirmAndCancelBtnGroup}>
-                <TouchableOpacity
+                <Pressable
                   disabled={
                     (!storeDetails.settingsPassword && discountAmount !== "") ||
                     (code.length > 0 && discountAmount !== "")
@@ -149,19 +148,19 @@ const DiscountModal = ({
                   style={styles.confirmBtn}
                 >
                   <Text style={styles.confirmLbl}>Confirm</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                </Pressable>
+                <Pressable
                   onPress={() => setdiscountModal(false)}
                   style={styles.cancelBtn}
                 >
                   <Text style={styles.cancelLbl}>Cancel</Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
           </View>
         </div>
-      </TouchableWithoutFeedback>
-    </TouchableOpacity>
+      </Pressable>
+    </Pressable>
   );
 };
 

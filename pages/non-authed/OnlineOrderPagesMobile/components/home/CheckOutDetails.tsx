@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, Pressable, Text } from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
 import {
   CardCvcElement,
@@ -190,13 +190,13 @@ function CheckOutDetails({
           />
         </View>
       </View>
-      <TouchableOpacity
+      <Pressable
         style={styles.continueBtn}
         onPress={handleSubmit}
         disabled={!stripe}
       >
         <Text style={styles.continueBtnTxt}>CHECKOUT</Text>
-      </TouchableOpacity>
+      </Pressable>
     </>
   );
 }

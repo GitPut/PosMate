@@ -6,7 +6,7 @@ import {
   Text,
   TextInput,
   ScrollView,
-  TouchableOpacity,
+  Pressable,
   useWindowDimensions,
 } from "react-native";
 import GoBackBtn from "./GoBackBtn";
@@ -173,7 +173,6 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
 
   useEffect(() => {
     settotal(getPrice());
-    console.log("myObjProfile: ", myObjProfile);
   }, [myObjProfile]);
 
   const getPrice = () => {

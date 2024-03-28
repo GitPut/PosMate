@@ -4,7 +4,7 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity,
+  Pressable,
   Animated,
   Modal,
   useWindowDimensions,
@@ -57,7 +57,7 @@ function ItemContainerMobile({ product, style, setshowProduct }) {
           <Text style={styles?.price}>
             ${product.price ? product.price : "Placeholder"}
           </Text>
-          <TouchableOpacity style={styles?.openBtn}>
+          <Pressable style={styles?.openBtn}>
             <MaterialCommunityIcons
               name="plus"
               style={styles?.plusIcon}
@@ -81,7 +81,7 @@ function ItemContainerMobile({ product, style, setshowProduct }) {
                 }
               }}
             ></MaterialCommunityIcons>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     </div>

@@ -1,9 +1,4 @@
-import {
-  Text,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { Text, Pressable, useWindowDimensions, View } from "react-native";
 import React from "react";
 import { Button } from "@react-native-material/core";
 
@@ -17,7 +12,7 @@ const Confirmation = ({ confirmLbl, yesAction, noAction }) => {
         width: "100%",
       }}
     >
-      <TouchableOpacity
+      <Pressable
         style={{
           backgroundColor: "black",
           opacity: 0.5,

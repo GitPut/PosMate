@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Image, Pressable, StyleSheet } from "react-native";
 import React from "react";
 import { auth, db } from "state/firebaseConfig";
 import { loadStripe } from "@stripe/stripe-js";
@@ -67,7 +67,7 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchableOpacity
+            <Pressable
               style={{
                 height: 50,
                 width: 50,
@@ -80,7 +80,7 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
               onPress={logout}
             >
               <SimpleLineIcons name="logout" size={32} color="black" />
-            </TouchableOpacity>
+            </Pressable>
             <Image source={Logo} resizeMode="contain" style={styles.logo} />
           </View>
           <View style={styles.attentionWrapper}>
@@ -96,12 +96,12 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
           Resubscribe to have access of your store again. At $40/month instead
           of the normal $50/month
         </Text>
-        <TouchableOpacity
+        <Pressable
           style={[styles.updateBtn, { width: 450 }]}
           onPress={sendToCheckout}
         >
           <Text style={styles.updateBilling}>Resubscribe for $40/month</Text>
-        </TouchableOpacity>
+        </Pressable>
         <Text style={styles.txt4}>
           Please call (226) 600-5925 or email us at Support@DivinePos.com so
           that we can solve the problem you had
@@ -128,9 +128,9 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
           We dont your store to have any down time so please have a look at
           updating the details.
         </Text>
-        <TouchableOpacity style={styles.updateBtn} onPress={Manage}>
+        <Pressable style={styles.updateBtn} onPress={Manage}>
           <Text style={styles.updateBilling}>UPDATE BILLING</Text>
-        </TouchableOpacity>
+        </Pressable>
         <Text style={styles.txt4}>
           If. you have any questions or need help please call (226) 600-5925 or
           email us at Support@DivinePos.com

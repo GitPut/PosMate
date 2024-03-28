@@ -10,14 +10,14 @@ const AuthRoute = (props) => {
 
     useEffect(() => {
         const isLoginSettings = localStorage.getItem("isAuthedBackend")
-        if (!location.pathname?.includes("/authed") || location.pathname?.includes("/authed") && isLoginSettings === false) {
+        if (location.pathname?.includes("authed")) {
+            if (isLoginSettings === 'false') {
+                history.push("/pos");
+            }
+        } else {
             history.push("/pos");
         }
-        // else {
-        //     history.push("/authed");
-        // }
-        // //CHANGE BACK ONCE PUBLISHING
-    }, [])
+    }, [location.pathname])
 
     // useEffect(() => {
     //     if (

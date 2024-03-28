@@ -4,8 +4,7 @@ import {
   View,
   Text,
   ScrollView,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  Pressable,
   useWindowDimensions,
   TextInput,
 } from "react-native";
@@ -25,6 +24,7 @@ import {
   storeDetailState,
 } from "state/state";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
@@ -67,7 +67,7 @@ function CustomerDetailsModal({
   };
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={() => {
         setcustomerSelected(null);
         closeAll();
@@ -80,26 +80,26 @@ function CustomerDetailsModal({
       }}
       activeOpacity={1}
     >
-      <TouchableWithoutFeedback>
+      <Pressable>
         <div style={{ cursor: "default" }}>
           <View style={styles.container}>
             <View style={styles.topGroup}>
               <View style={styles.topRow}>
-                <TouchableOpacity
+                <Pressable
                   onPress={() => {
                     setcustomerSelected(null);
                   }}
                 >
                   <EntypoIcon name="chevron-left" style={styles.goBackIcon} />
-                </TouchableOpacity>
-                <TouchableOpacity
+                </Pressable>
+                <Pressable
                   onPress={() => {
                     setcustomerSelected(null);
                     closeAll();
                   }}
                 >
                   <Ionicons name="md-close" style={styles.closeIcon} />
-                </TouchableOpacity>
+                </Pressable>
               </View>
               {edit ? (
                 <View
@@ -192,12 +192,7 @@ function CustomerDetailsModal({
                             placeholder: "Enter customer address",
                             defaultValue: newAddress,
                             menuPortalTarget: document.body,
-                            styles: {
-                              menuPortal: (base) => ({
-                                ...base,
-                                zIndex: 9999,
-                              }),
-                            },
+                            styles: GooglePlacesStyles,
                           }}
                           renderSuggestions={(
                             active,
@@ -301,7 +296,7 @@ function CustomerDetailsModal({
                 </View>
                 <View style={styles.customerOptionsBtnRow}>
                   {edit ? (
-                    <TouchableOpacity
+                    <Pressable
                       onPress={() => {
                         console.log(
                           "New Name:",
@@ -357,9 +352,9 @@ function CustomerDetailsModal({
                         name="check"
                         style={styles.editCustomerIcon}
                       />
-                    </TouchableOpacity>
+                    </Pressable>
                   ) : (
-                    <TouchableOpacity
+                    <Pressable
                       onPress={() => {
                         setEdit(true);
                       }}
@@ -369,9 +364,9 @@ function CustomerDetailsModal({
                         name="pencil"
                         style={styles.editCustomerIcon}
                       />
-                    </TouchableOpacity>
+                    </Pressable>
                   )}
-                  <TouchableOpacity
+                  <Pressable
                     onPress={() => {
                       db.collection("users")
                         .doc(auth.currentUser?.uid)
@@ -385,7 +380,7 @@ function CustomerDetailsModal({
                     }}
                   >
                     <FontAwesomeIcon name="trash" style={styles.deleteIcon} />
-                  </TouchableOpacity>
+                  </Pressable>
                 </View>
               </View>
               <View style={styles.orderScrollView}>
@@ -435,7 +430,7 @@ function CustomerDetailsModal({
                 </ScrollView>
               </View>
               <View style={styles.addNewOrderRow}>
-                <TouchableOpacity
+                <Pressable
                   onPress={() => {
                     setsavedCustomerDetails(customerSelected);
                     setOngoingDelivery(true);
@@ -450,13 +445,13 @@ function CustomerDetailsModal({
                   }}
                 >
                   <Text style={styles.addNewOrder}>+ Add New Order</Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
           </View>
         </div>
-      </TouchableWithoutFeedback>
-    </TouchableOpacity>
+      </Pressable>
+    </Pressable>
   );
 }
 

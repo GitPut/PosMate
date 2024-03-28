@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
 
@@ -22,7 +22,7 @@ function HoursItem({
       <Text style={styles.enteredInTimeTxt}>{hour.startTime}</Text>
       <Text style={styles.enteredOutTimeTxt1}>{hour.endTime}</Text>
       <View style={styles.optionsRow}>
-        <TouchableOpacity
+        <Pressable
           onPress={() => {
             db.collection("users")
               .doc(auth.currentUser.uid)
@@ -37,9 +37,9 @@ function HoursItem({
           }}
         >
           <Feather name="trash" style={styles.trashIcon} />
-        </TouchableOpacity>
+        </Pressable>
         {isPaid ? (
-          <TouchableOpacity
+          <Pressable
             style={styles.markedAsPaidBtn}
             onPress={() => {
               db.collection("users")
@@ -57,9 +57,9 @@ function HoursItem({
             }}
           >
             <Text style={styles.markAsPaidTxt}>Mark Unpaid</Text>
-          </TouchableOpacity>
+          </Pressable>
         ) : (
-          <TouchableOpacity
+          <Pressable
             style={styles.markedAsPaidBtn}
             onPress={() => {
               db.collection("users")
@@ -77,7 +77,7 @@ function HoursItem({
             }}
           >
             <Text style={styles.markAsPaidTxt}>Mark as Paid</Text>
-          </TouchableOpacity>
+          </Pressable>
         )}
       </View>
     </View>

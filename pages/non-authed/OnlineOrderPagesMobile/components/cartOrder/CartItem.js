@@ -4,7 +4,7 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity,
+  Pressable,
   Animated,
   Modal,
 } from "react-native";
@@ -55,7 +55,7 @@ function CartItem({
 
   return (
     <View style={[styles.container, style]}>
-      <TouchableOpacity
+      <Pressable
         style={styles.topRowWithImgContainer}
         onPress={() => cartItem.options.length > 0 && setisOpen(true)}
         activeOpacity={0.8}
@@ -87,13 +87,13 @@ function CartItem({
           </View>
           {!cartItem.quantityNotChangable ? (
             <View style={styles.bottomBtnRow}>
-              <TouchableOpacity
+              <Pressable
                 style={styles.cartItemIncreaseBtn}
                 onPress={increaseAction}
               >
                 <Entypo name="plus" style={styles.plusIcon} />
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 style={styles.cartItemDecreaseBtn}
                 onPress={() => {
                   if (cartItem.quantity < 2 || !cartItem.quantity) {
@@ -104,21 +104,18 @@ function CartItem({
                 }}
               >
                 <Entypo name="minus" style={styles.minusIcon} />
-              </TouchableOpacity>
+              </Pressable>
               {cartItem.options > 0 && (
-                <TouchableOpacity
-                  style={styles.cartItemEditBtn}
-                  onPress={fadeIn}
-                >
+                <Pressable style={styles.cartItemEditBtn} onPress={fadeIn}>
                   <MaterialCommunityIcons
                     name="pencil"
                     style={styles.pencilIcon}
                   />
-                </TouchableOpacity>
+                </Pressable>
               )}
             </View>
           ) : (
-            <TouchableOpacity
+            <Pressable
               style={styles.bottomBtnRow}
               onPress={() => removeAction()}
             >
@@ -126,7 +123,7 @@ function CartItem({
                 name="delete"
                 style={styles.pencilIcon}
               ></MaterialCommunityIcons>
-            </TouchableOpacity>
+            </Pressable>
           )}
           {/* Drop down options */}
           {/* <View style={styles.optionsContainer}>
@@ -146,7 +143,7 @@ function CartItem({
             )}
           </View> */}
         </View>
-      </TouchableOpacity>
+      </Pressable>
       {showProductScreen && (
         <Modal transparent={true}>
           <Animated.View

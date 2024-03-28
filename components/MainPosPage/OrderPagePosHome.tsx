@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
-  TouchableOpacity,
+  Pressable,
   Image,
   Text,
   ScrollView,
@@ -52,13 +52,13 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
   const [deliveryModal, setDeliveryModal] = useState(false);
   const [cashModal, setCashModal] = useState(false);
   const [ongoingDelivery, setOngoingDelivery] = useState(null);
-  const [name, setName] = useState(null);
-  const [phone, setPhone] = useState(null);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [address, setAddress] = useState(null);
-  const [buzzCode, setBuzzCode] = useState(null);
-  const [unitNumber, setUnitNumber] = useState(null);
+  const [buzzCode, setBuzzCode] = useState("");
+  const [unitNumber, setUnitNumber] = useState("");
   const [deliveryChecked, setDeliveryChecked] = useState(false);
-  const [changeDue, setChangeDue] = useState(null);
+  const [changeDue, setChangeDue] = useState("");
   const cart = cartState.use();
   const storeDetails = storeDetailState.use();
   const [cartSub, setCartSub] = useState(0);
@@ -542,7 +542,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             marginBottom: 10,
           }}
         >
-          <TouchableOpacity
+          <Pressable
             style={styles.checkoutBtn}
             disabled={cart.length < 1}
             onPress={() => {
@@ -564,8 +564,8 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             }}
           >
             <Text style={styles.checkoutLbl}>Update</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             style={[styles.checkoutBtn, { backgroundColor: "red" }]}
             disabled={cart.length < 1}
             onPress={() => {
@@ -581,7 +581,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             }}
           >
             <Text style={styles.checkoutLbl}>Cancel</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       );
     }
@@ -598,14 +598,14 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             marginBottom: 10,
           }}
         >
-          <TouchableOpacity
+          <Pressable
             style={styles.checkoutBtn}
             onPress={() => setCashModal(true)}
             disabled={cart.length < 1 || ongoingDelivery}
           >
             <Text style={styles.checkoutLbl}>Cash</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             style={styles.checkoutBtn}
             onPress={() => {
               Print("Card");
@@ -614,13 +614,13 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             disabled={cart.length < 1 || ongoingDelivery}
           >
             <Text style={styles.checkoutLbl}>Card</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       );
     }
     if (ongoingDelivery && cart.length > 0) {
       return (
-        <TouchableOpacity
+        <Pressable
           style={styles.checkoutBtn}
           onPress={() => {
             Print(deliveryChecked ? "deliveryOrder" : "pickupOrder", false);
@@ -633,11 +633,11 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
           }}
         >
           <Text style={styles.checkoutLbl}>Checkout</Text>
-        </TouchableOpacity>
+        </Pressable>
       );
     } else {
       return (
-        <TouchableOpacity
+        <Pressable
           style={styles.checkoutBtn}
           onPress={() => {
             setOngoingDelivery(null);
@@ -650,7 +650,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
           }}
         >
           <Text style={styles.checkoutLbl}>Cancel</Text>
-        </TouchableOpacity>
+        </Pressable>
       );
     }
   };
@@ -660,7 +660,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
       {width > 1250 && (
         <View style={styles.leftMenuBarContainer}>
           <View>
-            <TouchableOpacity
+            <Pressable
               style={[
                 !ongoingOrderListModal &&
                 !clockinModal &&
@@ -682,8 +682,8 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                     : { color: "black" },
                 ]}
               />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={[
                 ongoingOrderListModal ? styles.activeBtn : styles.notActiveBtn,
               ]}
@@ -703,8 +703,8 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                     : { width: 40, height: 40 }
                 }
               />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={[clockinModal ? styles.activeBtn : styles.notActiveBtn]}
               onPress={() => {
                 setclockinModal(true);
@@ -722,8 +722,8 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                     : { width: 40, height: 40 }
                 }
               />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={[deliveryModal ? styles.activeBtn : styles.notActiveBtn]}
               onPress={() => {
                 setDeliveryModal(true);
@@ -741,8 +741,8 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                     : { width: 40, height: 40 }
                 }
               />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={[
                 settingsPasswordModalVis
                   ? styles.activeBtn
@@ -770,11 +770,11 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                     : { width: 40, height: 40 }
                 }
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
-          <TouchableOpacity onPress={logout}>
+          <Pressable onPress={logout}>
             <Feather name="log-out" style={styles.icon}></Feather>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       )}
       <View
@@ -795,7 +795,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
               marginTop: 10,
             }}
           >
-            <TouchableOpacity
+            <Pressable
               onPress={() => {
                 // setpage(1);
               }}
@@ -809,8 +809,8 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
               }}
             >
               <Feather name="log-out" style={{ color: "white" }} size={20} />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               onPress={() => {
                 setcartOpen(true);
               }}
@@ -833,7 +833,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
               <Text style={{ color: "white", fontSize: 20 }}>
                 {cart.length}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         )}
         {/* {width > 1000 && (
@@ -950,7 +950,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
           >
             <Text style={styles.myCartTxt}>My Cart</Text>
             {cart.length > 0 && (
-              <TouchableOpacity
+              <Pressable
                 style={{
                   borderRadius: 10,
                   height: 40,
@@ -969,7 +969,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                   style={{ color: "white" }}
                   size={30}
                 />
-              </TouchableOpacity>
+              </Pressable>
             )}
           </View>
           {cart.length > 0 ? (
@@ -1074,12 +1074,12 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                   ).toFixed(2)}
                 </Text>
               </View>
-              <TouchableOpacity
+              <Pressable
                 style={styles.discountCodeBtn}
                 onPress={() => setdiscountModal(true)}
               >
                 <Text style={styles.discountCode}>Discount Code</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
           <CheckoutBtn />
@@ -1109,7 +1109,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                 marginBottom: 10,
               }}
             >
-              <TouchableOpacity
+              <Pressable
                 onPress={() => {
                   setcartOpen(false);
                 }}
@@ -1122,7 +1122,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                   style={{ color: "grey" }}
                   size={40}
                 />
-              </TouchableOpacity>
+              </Pressable>
               <View
                 style={{
                   backgroundColor: "#1D294E",

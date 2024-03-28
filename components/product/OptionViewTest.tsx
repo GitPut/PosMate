@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, Pressable, FlatList } from "react-native";
 import React, { useState } from "react";
 import { Button, Switch, TextInput } from "@react-native-material/core";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -167,7 +167,7 @@ const InnerOn = ({
             color="black"
           />
         )}
-        <TouchableOpacity
+        <Pressable
           style={{
             height: 40,
             width: 40,
@@ -197,8 +197,8 @@ const InnerOn = ({
           }}
         >
           <MaterialCommunityIcons name="chevron-down" size={32} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity
+        </Pressable>
+        <Pressable
           style={{
             height: 40,
             width: 40,
@@ -228,8 +228,8 @@ const InnerOn = ({
           }}
         >
           <MaterialCommunityIcons name="chevron-up" size={32} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity
+        </Pressable>
+        <Pressable
           style={{
             height: 40,
             width: 40,
@@ -251,7 +251,7 @@ const InnerOn = ({
           }}
         >
           <Feather name="x" size={30} color="white" />
-        </TouchableOpacity>
+        </Pressable>
       </View>
     );
   };
@@ -409,7 +409,7 @@ const InnerOn = ({
             menuPosition="fixed"
           />
         </View>
-        <TouchableOpacity
+        <Pressable
           style={{
             height: 40,
             width: 40,
@@ -432,7 +432,7 @@ const InnerOn = ({
           }}
         >
           <Feather name="x" size={30} color="white" />
-        </TouchableOpacity>
+        </Pressable>
       </View>
     );
   };
@@ -560,7 +560,7 @@ const InnerOn = ({
             menuPosition="fixed"
           />
         </View>
-        <TouchableOpacity
+        <Pressable
           disabled={e.optionType !== "Multi Choice"}
           style={{ margin: 10, width: "47%", height: 52 }}
           activeOpacity={1}
@@ -599,7 +599,7 @@ const InnerOn = ({
             }}
             color="black"
           />
-        </TouchableOpacity>
+        </Pressable>
         <View
           style={{
             margin: 10,
@@ -901,7 +901,7 @@ const OptionView = ({
           borderRadius: 10,
         }}
       >
-        <TouchableOpacity
+        <Pressable
           onPress={() =>
             indexOn !== index ? setindexOn(index) : setindexOn(null)
           }
@@ -932,7 +932,7 @@ const OptionView = ({
           >
             {item.label ? item.label : "New Option"}
           </Text>
-          <TouchableOpacity
+          <Pressable
             style={{
               height: 50,
               width: 50,
@@ -966,8 +966,8 @@ const OptionView = ({
               size={32}
               color="white"
             />
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             style={{
               height: 50,
               width: 50,
@@ -994,8 +994,8 @@ const OptionView = ({
             }}
           >
             <MaterialCommunityIcons name="chevron-up" size={32} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             style={{
               height: 50,
               width: 50,
@@ -1036,8 +1036,8 @@ const OptionView = ({
             }}
           >
             <Feather name="copy" size={32} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             style={{
               height: 50,
               width: 50,
@@ -1065,8 +1065,8 @@ const OptionView = ({
             }}
           >
             <Feather name="x" size={32} color="white" />
-          </TouchableOpacity>
-        </TouchableOpacity>
+          </Pressable>
+        </Pressable>
         {indexOn === index && (
           <View style={{ padding: 20 }}>
             <InnerOn

@@ -1,11 +1,5 @@
 import React, { Component, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
+import { StyleSheet, View, Text, Pressable, TextInput } from "react-native";
 import { Entypo, Ionicons, Feather } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
 import { updateTransList } from "state/firebaseFunctions";
@@ -145,18 +139,15 @@ function FinishPaymentCash({
         </View>
       </View>
       <View style={styles.btnsGroup}>
-        <TouchableOpacity style={styles.finishPaymentBtn} onPress={PayByCash}>
+        <Pressable style={styles.finishPaymentBtn} onPress={PayByCash}>
           <Text style={styles.finishPayment}>Finish Payment</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.payByCardBtn} onPress={PayByCard}>
+        </Pressable>
+        <Pressable style={styles.payByCardBtn} onPress={PayByCard}>
           <Text style={styles.payByCard}>Pay By Card</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.cancelBtn}
-          onPress={() => fadeOut(false)}
-        >
+        </Pressable>
+        <Pressable style={styles.cancelBtn} onPress={() => fadeOut(false)}>
           <Text style={styles.cancel}>Cancel</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </View>
   );

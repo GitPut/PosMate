@@ -6,7 +6,7 @@ import {
     StyleSheet,
     Animated,
     Modal,
-    TouchableOpacity,
+    Pressable,
     Dimensions,
     TextInput,
 } from "react-native";
@@ -115,9 +115,9 @@ function Index(props) {
             <View style={styles.group}>
                 <View style={styles.deviceScrollContainer}>
                     {selectedDevice > 0 ?
-                        <TouchableOpacity style={styles.nextDeviceBtn} activeOpacity={0.8} onPress={() => setselectedDevice(prev => prev - 1)}>
+                        <Pressable style={styles.nextDeviceBtn} activeOpacity={0.8} onPress={() => setselectedDevice(prev => prev - 1)}>
                             <Entypo name="chevron-left" style={styles.icon} />
-                        </TouchableOpacity>
+                        </Pressable>
                         :
                         <View style={styles.backBtn} />
                     }
@@ -148,7 +148,7 @@ function Index(props) {
                                         }
                                     </Text>
                                 </View>
-                                <TouchableOpacity
+                                <Pressable
                                     style={styles.setToMyIDBtn}
                                     activeOpacity={0.8}
                                     onPress={() => {
@@ -169,7 +169,7 @@ function Index(props) {
                                         name="md-key"
                                         style={styles.setToMyIDIcon}
                                     />
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
                             <View style={styles.printOnlineOrderRow}>
                                 <Text style={styles.printOnlineOrdersLbl}>
@@ -263,14 +263,14 @@ function Index(props) {
                             </View>
                         </View>
                         <View style={styles.btnsRow}>
-                            <TouchableOpacity style={styles.updateDeviceBtn} activeOpacity={0.8}
+                            <Pressable style={styles.updateDeviceBtn} activeOpacity={0.8}
                                 onPress={() => {
                                     db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(deviceTree.devices[selectedDevice].docID).update(deviceTree.devices[selectedDevice])
                                 }}
                             >
                                 <Text style={styles.saveDevice}>Save Device</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.deleteDeviceBtn} activeOpacity={0.8}
+                            </Pressable>
+                            <Pressable style={styles.deleteDeviceBtn} activeOpacity={0.8}
                                 onPress={() => {
                                     db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(deviceTree.devices[selectedDevice].docID).delete()
                                     let clone = { ...deviceTree }
@@ -280,7 +280,7 @@ function Index(props) {
                                 }}
                             >
                                 <Text style={styles.deleteDevice}>Delete Device</Text>
-                            </TouchableOpacity>
+                            </Pressable>
                         </View>
                     </View>
                         :
@@ -289,11 +289,11 @@ function Index(props) {
                         </View>
                     }
                     {selectedDevice < deviceTree.devices.length - 1 + deviceTree.extraDevicesPayingFor ?
-                        <TouchableOpacity style={styles.nextDeviceBtn} activeOpacity={0.8} onPress={() => setselectedDevice(prev => prev + 1)}>
+                        <Pressable style={styles.nextDeviceBtn} activeOpacity={0.8} onPress={() => setselectedDevice(prev => prev + 1)}>
                             <Entypo name="chevron-right" style={styles.icon} />
-                        </TouchableOpacity>
+                        </Pressable>
                         :
-                        <TouchableOpacity style={styles.nextDeviceBtn} activeOpacity={0.8}
+                        <Pressable style={styles.nextDeviceBtn} activeOpacity={0.8}
                             onPress={
                                 () => {
                                     if (deviceTree.devices.length < 2 + deviceTree.extraDevicesPayingFor) {
@@ -310,7 +310,7 @@ function Index(props) {
                             }
                         >
                             <Entypo name="plus" style={styles.icon} />
-                        </TouchableOpacity>
+                        </Pressable>
                     }
                 </View>
             </View>

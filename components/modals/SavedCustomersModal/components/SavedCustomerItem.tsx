@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 
 function SavedCustomerItem({ style, customerName }) {

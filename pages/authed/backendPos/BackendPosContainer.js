@@ -3,7 +3,7 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity,
+  Pressable,
   Animated,
   Modal,
   useWindowDimensions,
@@ -210,7 +210,7 @@ function BackendPosContainer(props) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity
+        <Pressable
           onPress={() => {
             history.push("/authed/dashboard");
             setSideMenu("");
@@ -222,15 +222,15 @@ function BackendPosContainer(props) {
             resizeMode="contain"
             style={styles.logo}
           />
-        </TouchableOpacity>
+        </Pressable>
         <View style={styles.rightSideRow}>
-          <TouchableOpacity
+          <Pressable
             onPress={() => history.push("/pos")}
             activeOpacity={0.8}
             style={styles.backToPOSBtn}
           >
             <Text style={styles.pos}>POS</Text>
-          </TouchableOpacity>
+          </Pressable>
           <HeaderLogoutDropdown styles={styles} storeDetails={storeDetails} />
         </View>
       </View>

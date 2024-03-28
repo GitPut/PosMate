@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useHistory } from "react-router-dom";
 
@@ -7,7 +7,7 @@ function DropDownOption({ option }) {
   const history = useHistory();
 
   return (
-    <TouchableOpacity
+    <Pressable
       style={[styles.container]}
       onPress={() =>
         option.link.length > 0 ? history.push(option.link) : option.link()
@@ -17,7 +17,7 @@ function DropDownOption({ option }) {
       <Text style={[styles.label, option.active && { color: "#121212" }]}>
         {option.label}
       </Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

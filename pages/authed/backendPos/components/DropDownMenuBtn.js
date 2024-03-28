@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Image, Pressable } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import DropDownOption from "./DropDownOption";
 
@@ -13,7 +13,7 @@ function DropDownMenuBtn({
 }) {
   return (
     <View>
-      <TouchableOpacity
+      <Pressable
         style={[
           styles.container,
           (active || dropDownOpen) && {
@@ -47,7 +47,7 @@ function DropDownMenuBtn({
           }
           style={styles.dropDownBtnChevronDown}
         />
-      </TouchableOpacity>
+      </Pressable>
       {dropDownOpen && (
         <View style={styles.dropDownOptionsContainer}>
           {options.map((option, index) => {

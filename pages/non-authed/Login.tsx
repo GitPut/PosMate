@@ -8,7 +8,7 @@ import {
   Text,
   ImageBackground,
   Modal,
-  TouchableOpacity,
+  Pressable,
   TextInput,
   Dimensions,
   useWindowDimensions,
@@ -117,17 +117,17 @@ function Login() {
               </View>
             </View>
             <View style={styles.btnBottomContainer}>
-              <TouchableOpacity style={styles.loginBtn} onPress={attemptSignIn}>
+              <Pressable style={styles.loginBtn} onPress={attemptSignIn}>
                 <Text style={styles.loginTxt}>Log In</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => history.push("/sign-up")}>
+              </Pressable>
+              <Pressable onPress={() => history.push("/sign-up")}>
                 <Text style={styles.signUpTxt}>
                   Don't have an account? Sign Up
                 </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => history.push("/reset-password")}>
+              </Pressable>
+              <Pressable onPress={() => history.push("/reset-password")}>
                 <Text style={styles.forgotPassword}>Forgot password</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </View>

@@ -1,11 +1,5 @@
 import React, { Component, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
+import { StyleSheet, View, Text, Pressable, TextInput } from "react-native";
 import OptionSelectionItem from "./OptionSelectionItem";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Switch } from "react-native";
@@ -173,7 +167,7 @@ function OptionsItemOpenInner({
       ))}
       {testMap.length > 0 && <View style={styles.spacer7}></View>}
       <View style={styles.addAnotherSelectionBtnRow1}>
-        <TouchableOpacity
+        <Pressable
           style={styles.addAnotherSelectionBtn2}
           onPress={() => {
             const cloneOuter = structuredClone(testMap);
@@ -197,7 +191,7 @@ function OptionsItemOpenInner({
           <Text style={styles.addAnotherSelectionBtnLbl1}>
             Add Another Selection
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View style={styles.spacer6}></View>
       {e.selectedCaseList?.length > 0 &&
@@ -220,7 +214,7 @@ function OptionsItemOpenInner({
       {e.selectedCaseList?.length > 0 && <View style={styles.spacer7}></View>}
       {optionLbls.length > 1 && (
         <View style={[styles.addAnotherSelectionBtnRow1]}>
-          <TouchableOpacity
+          <Pressable
             style={styles.addAnotherSelectionBtn2}
             onPress={() => {
               const id = generateRandomKey(10);
@@ -268,7 +262,7 @@ function OptionsItemOpenInner({
             <Text style={styles.addAnotherSelectionBtnLbl1}>
               Add If Statement
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       )}
     </View>

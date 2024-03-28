@@ -1,11 +1,5 @@
 import React, { Component, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
+import { StyleSheet, View, Text, Pressable, TextInput } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
 
@@ -32,7 +26,7 @@ function EmployeeClockInItem({
             onChangeText={(val) => setenteredPin(val)}
             value={enteredPin}
           />
-          <TouchableOpacity
+          <Pressable
             style={[
               styles.button,
               isClockedIn && { backgroundColor: "#FF0000" },
@@ -101,7 +95,7 @@ function EmployeeClockInItem({
             <Text style={styles.clockInLabel}>
               {isClockedIn ? "Clock Out" : "Clock In"}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     </View>

@@ -3,8 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  Pressable,
   useWindowDimensions,
 } from "react-native";
 import InputWithLbl from "../components/InputWithLbl";
@@ -48,7 +47,7 @@ function AddEmployeeModal({ setaddEmployeeModal, addEmployeeModal }) {
   };
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={() => setaddEmployeeModal(false)}
       style={{
         justifyContent: "center",
@@ -58,7 +57,7 @@ function AddEmployeeModal({ setaddEmployeeModal, addEmployeeModal }) {
       }}
       activeOpacity={1}
     >
-      <TouchableWithoutFeedback>
+      <Pressable>
         <div style={{ cursor: "default" }}>
           <View style={styles.container}>
             <View style={styles.innerContainer}>
@@ -87,26 +86,26 @@ function AddEmployeeModal({ setaddEmployeeModal, addEmployeeModal }) {
                 />
               </View>
               <View style={styles.bottomBtnsRow}>
-                <TouchableOpacity
+                <Pressable
                   style={styles.cancelBtn}
                   activeOpacity={0.6}
                   onPress={() => setaddEmployeeModal(false)}
                 >
                   <Text style={styles.cancelBtnTxt}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                </Pressable>
+                <Pressable
                   style={styles.saveBtn}
                   activeOpacity={0.6}
                   onPress={AddEmployee}
                 >
                   <Text style={styles.saveBtnTxt}>Save</Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
           </View>
         </div>
-      </TouchableWithoutFeedback>
-    </TouchableOpacity>
+      </Pressable>
+    </Pressable>
   );
 }
 
