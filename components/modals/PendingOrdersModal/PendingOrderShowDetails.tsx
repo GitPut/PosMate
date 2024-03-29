@@ -112,6 +112,7 @@ function PendingOrderShowDetails({
                 .collection("pendingOrders")
                 .doc(element.id)
                 .delete();
+              fadeOut(false);
             }}
           >
             <Text style={styles.cancelOrder}>Cancel Order</Text>
@@ -126,6 +127,7 @@ function PendingOrderShowDetails({
                   .doc(element.id)
                   .delete();
                 updateTransList(element);
+                fadeOut(false);
               } else {
                 if (element.method === "pickupOrder") {
                   //   fadeOut(() => {
@@ -138,13 +140,15 @@ function PendingOrderShowDetails({
                     // });
                     // fadeIn();
                   });
-                } else if (element.method === "deliveryOrder") {
+                  // fadeOut(false);
+                } else {
                   db.collection("users")
                     .doc(auth.currentUser.uid)
                     .collection("pendingOrders")
                     .doc(element.id)
                     .delete();
                   updateTransList(element);
+                  fadeOut(false);
                 }
               }
             }}

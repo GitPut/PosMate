@@ -23,6 +23,7 @@ import GeneralSwitch from "components/GeneralSwitch";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import "react-select2-wrapper/css/select2.css";
 import ReactSelect from "react-select";
+import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 
 function Index(props) {
     const deviceTree = deviceTreeState.use()
@@ -93,6 +94,7 @@ function Index(props) {
 
     useEffect(() => {
         if (deviceTree.devices.length > 1) {
+            console.log('deviceTree.devices', deviceTree.devices)
             const newDeviceTreeDevices = [];
             for (let index = 0; index < deviceTree.devices.length; index++) {
                 const element = deviceTree.devices[index];
@@ -223,39 +225,7 @@ function Index(props) {
                                         }}
                                         placeholder={"Choose Device To Send Print To"}
                                         menuPortalTarget={document.body}
-                                        styles={{
-                                            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                                            control: (provided, state) => ({
-                                                ...provided,
-                                                background: "#fff",
-                                                borderColor: "#9e9e9e",
-                                                minHeight: "52px",
-                                                height: "52px",
-                                                boxShadow: state.isFocused ? null : null,
-                                            }),
-
-                                            valueContainer: (provided, state) => ({
-                                                ...provided,
-                                                height: "52px",
-                                                padding: "0 6px",
-                                            }),
-
-                                            input: (provided, state) => ({
-                                                ...provided,
-                                                margin: "0px",
-                                            }),
-                                            indicatorSeparator: (state) => ({
-                                                display: "none",
-                                            }),
-                                            indicatorsContainer: (provided, state) => ({
-                                                ...provided,
-                                                height: "52px",
-                                            }),
-                                            container: (provided, state) => ({
-                                                ...provided,
-                                                width: "100%",
-                                            }),
-                                        }}
+                                        styles={GooglePlacesStyles}
                                         menuPlacement="auto"
                                         menuPosition="fixed"
                                     />
@@ -288,7 +258,7 @@ function Index(props) {
                             <Text>No Devices Found</Text>
                         </View>
                     }
-                    {selectedDevice < deviceTree.devices.length - 1 + deviceTree.extraDevicesPayingFor ?
+                    {selectedDevice < deviceTree.devices.length - 1 ?
                         <Pressable style={styles.nextDeviceBtn} activeOpacity={0.8} onPress={() => setselectedDevice(prev => prev + 1)}>
                             <Entypo name="chevron-right" style={styles.icon} />
                         </Pressable>

@@ -7,7 +7,7 @@ import {
   ScrollView,
   Modal,
 } from "react-native";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, MaterialIcons } from "@expo/vector-icons";
 
 function GeneralDropdown({
   style,
@@ -16,6 +16,7 @@ function GeneralDropdown({
   setValue,
   options,
   scrollY,
+  isDefaultValueDropdown,
 }) {
   const dropdownRef = useRef(); // Reference to the original button
   const [dropdownLayout, setDropdownLayout] = useState();
@@ -47,10 +48,19 @@ function GeneralDropdown({
         ref={dropdownRef}
       >
         <Text style={styles.placeholder}>{value ? value : placeholder}</Text>
-        <Entypo
-          name={openDropdown ? "chevron-small-up" : "chevron-small-down"}
-          style={styles.downIcon}
-        />
+        {value ? (
+          <Pressable
+            onPress={() => setValue(null)}
+            style={{ marginTop: 5, marginRight: 5 }}
+          >
+            <MaterialIcons name="clear" size={24} color="red" />
+          </Pressable>
+        ) : (
+          <Entypo
+            name={openDropdown ? "chevron-small-up" : "chevron-small-down"}
+            style={styles.downIcon}
+          />
+        )}
       </Pressable>
       <Modal visible={openDropdown} transparent={true}>
         <Pressable
@@ -109,7 +119,7 @@ function GeneralDropdown({
                   <Pressable
                     key={listIndex}
                     onPress={() => {
-                      setValue(option);
+                      setValue(option, listIndex);
                       setopenDropdown(false);
                     }}
                     style={[
@@ -127,7 +137,9 @@ function GeneralDropdown({
                     ]}
                     activeOpacity={1}
                   >
-                    <Text style={styles.placeholder}>{option}</Text>
+                    <Text style={styles.placeholder}>
+                      {isDefaultValueDropdown ? option.label : option}
+                    </Text>
                   </Pressable>
                 ))}
               </ScrollView>

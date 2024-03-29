@@ -40,7 +40,7 @@ function OneTimeSelectableOptionGroup({
               selectedVal={value}
               setselectedVal={setValue}
               onPress={() => {
-                setValue({
+                setValue({ 
                   option: {
                     label: option.label,
                     priceIncrease:
@@ -82,10 +82,13 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   nonActiveOneTimeSelectableBtn: {
-    height: 33,
-    width: 110,
+    minHeight: 33,
+    maxHeight: 50,
+    minWidth: 110,
+    maxWidth: 160,
     marginRight: 7,
     marginBottom: 15,
+    padding: 5,
   },
   nonActiveOneTimeSelectableBtn1: {
     height: 33,

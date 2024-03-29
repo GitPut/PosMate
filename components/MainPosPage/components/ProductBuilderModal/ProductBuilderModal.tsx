@@ -67,7 +67,6 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
     if (selectedList.length > 0 && !optionVal) {
       setoptionVal(selectedList[0]);
     }
-
     if (!(e.selectedCaseList?.length > 0) || checkCases()) {
       if (e.optionType?.toLowerCase() === "dropdown") {
         return (
@@ -91,9 +90,12 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
                 }
               );
 
-              newMyObjProfile.options[index].optionsList[listIndex].selected =
-                true;
+              if (option) {
+                newMyObjProfile.options[index].optionsList[listIndex].selected =
+                  true;
+              }
               setoptionVal(option);
+
               setmyObjProfile(newMyObjProfile);
             }}
             value={optionVal}

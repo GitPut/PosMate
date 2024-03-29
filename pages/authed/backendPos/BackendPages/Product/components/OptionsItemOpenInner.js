@@ -129,20 +129,100 @@ function OptionsItemOpenInner({
         </View>
       </View>
       <View style={styles.spacer5}></View>
-      <View style={styles.optionRequiredRow1}>
-        <Text style={styles.isOptionTxt1}>Is Option Required?:</Text>
-        <GeneralSwitch
-          isActive={e.isRequired}
-          toggleSwitch={() => {
-            sete((prevState) => ({ ...prevState, isRequired: !e.isRequired }));
-            // newProductOptions.current[index].isRequired = val;
-            setnewProductOptions((prev) => {
-              const clone = structuredClone(prev);
-              clone[index].isRequired = !e.isRequired;
-              return clone;
-            });
-          }}
-        />
+      <View style={styles.optionMainInfoRow1}>
+        <View style={styles.optionRequiredRow1}>
+          <Text style={styles.isOptionTxt1}>Is Option Required?:</Text>
+          <GeneralSwitch
+            isActive={e.isRequired}
+            toggleSwitch={() => {
+              sete((prevState) => ({
+                ...prevState,
+                isRequired: !e.isRequired,
+              }));
+              // newProductOptions.current[index].isRequired = val;
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone[index].isRequired = !e.isRequired;
+                return clone;
+              });
+            }}
+          />
+        </View>
+        {(e.optionType === "Dropdown" || e.optionType === "Multi Choice") && (
+          <View style={styles.optionTypeGroup1}>
+            <Text style={styles.optionTypeDropdownLbl1}>Default Value</Text>
+            <View>
+              <GeneralDropdown
+                style={styles.categoryDropDownBox}
+                placeholder="Default Value"
+                value={e.defaultValue ? e.defaultValue.label : null}
+                setValue={(val, valIndex) => {
+                  if (e.defaultValue) {
+                    setnewProductOptions((prev) => {
+                      const clone = structuredClone(prev);
+                      clone[index].defaultValue = val;
+
+                      clone[index].optionsList.forEach((element, indexOfOl) => {
+                        console.log("element from if", element);
+                        if (element.selected) {
+                          clone[index].optionsList[indexOfOl].selected = false;
+                        }
+                      });
+                      if (val) {
+                        clone[index].optionsList[valIndex].selected = true;
+                        console.log(
+                          "val: ",
+                          clone[index].optionsList[valIndex]
+                        );
+                      }
+
+                      return clone;
+                    });
+                  } else {
+                    setnewProductOptions((prev) => {
+                      const clone = structuredClone(prev);
+
+                      clone[index].optionsList.forEach((element, indexOfOl) => {
+                        console.log("element from else", element);
+                        if (element.selected) {
+                          clone[index].optionsList[indexOfOl].selected = false;
+                        }
+                      });
+                      if (val) {
+                        clone[index].optionsList[valIndex].selected = true;
+                      }
+
+                      clone[index] = {
+                        ...e,
+                        defaultValue: val,
+                      };
+                      return clone;
+                    });
+                  }
+                  sete((prevState) => {
+                    const clone = structuredClone(prevState);
+                    clone.defaultValue = val;
+
+                    clone.optionsList.forEach((element, indexOfOl) => {
+                      if (element.selected) {
+                        clone.optionsList[indexOfOl].selected = false;
+                      }
+                    });
+                    if (val) {
+                      clone.optionsList[valIndex].selected = true;
+                    }
+
+                    return clone;
+                  });
+                }}
+                options={testMap}
+                scrollY={scrollY}
+                isDefaultValueDropdown={true}
+              />
+            </View>
+          </View>
+        )}
+        <View style={{ width: 195 }} />
       </View>
       <View style={styles.spacer6}></View>
       {testMap.map((e, indexInnerList) => (
@@ -351,7 +431,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   optionRequiredRow1: {
-    width: 216,
+    width: 239,
     height: 20,
     flexDirection: "row",
     alignItems: "center",

@@ -70,7 +70,7 @@ function InvoiceReport() {
             transList[
             orderIndex
             ];
-          const formatedData = ReceiptPrint(element, storeDetails);
+          const formatedData = ReceiptPrint(element, storeDetails, true);
           data = data.concat(formatedData.data);
         });
         const qz = require("qz-tray");
@@ -106,9 +106,9 @@ function InvoiceReport() {
         );
       }
       setupdateBaseSelectedRows(false)
-      setbaseSelectedRows(null)
+      setbaseSelectedRows([])
     }
-  }, [baseSelectedRows])
+  }, [baseSelectedRows, updateBaseSelectedRows])
 
   const SearchDate = () => {
     if (!startDate || !endDate) {
@@ -167,7 +167,8 @@ function InvoiceReport() {
 
     const filtered = transListTableOrg.filter((item) => {
       let itemDate = item.date
-        ? new Date(item.date) : null
+        ? new Date(`${item.date.slice(0, 10)}T00:00`) : null
+      // console.log('Item Date: ', itemDate)
 
       return (
         itemDate >= todayStart &&
@@ -185,7 +186,7 @@ function InvoiceReport() {
     let salesTotal = filtered.length;
 
     filtered.forEach((item) => {
-      todayTotal += item.amount;
+      todayTotal += parseFloat(item.amount);
     });
 
     const data = [
@@ -250,6 +251,16 @@ function InvoiceReport() {
           );
         });
     }
+  }
+
+  const CheckCase = (item) => {
+    if (search.length > 0) {
+      if (item.customer?.address) {
+        return item.customer.address.label?.toLowerCase().replace(/\s/g, '').includes(search?.toLowerCase().replace(/\s/g, ''))
+      }
+      return item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())
+    }
+    return true
   }
 
   return (
@@ -347,12 +358,12 @@ function InvoiceReport() {
               activeOpacity={0.8}
               style={styles.checkbox}
               onPress={() => {
-                if (baseSelectedRows.length === filteredTransList.filter(e => search.length > 0 ? (e.id.toLowerCase().includes(search.toLowerCase()) || e.name.toLowerCase().includes(search.toLowerCase())) : true).length) {
+                if (baseSelectedRows.length === filteredTransList.filter(e => CheckCase(e)).length) {
                   setbaseSelectedRows([])
                 } else {
                   const newSelectedRows = []
                   filteredTransList.forEach((item) => {
-                    if (search.length > 0 && (item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())) === false) {
+                    if (!CheckCase(item)) {
                       return
                     }
                     newSelectedRows.push(item.id)
@@ -361,7 +372,7 @@ function InvoiceReport() {
                 }
               }}
             >
-              {(baseSelectedRows.length === filteredTransList.filter(e => search.length > 0 ? (e.id.toLowerCase().includes(search.toLowerCase()) || e.name.toLowerCase().includes(search.toLowerCase())) : true).length && filteredTransList.filter(e => search.length > 0 ? (e.id.toLowerCase().includes(search.toLowerCase()) || e.name.toLowerCase().includes(search.toLowerCase())) : true).length > 0) && "X"}
+              {(baseSelectedRows.length === filteredTransList.filter(e => CheckCase(e)).length && filteredTransList.filter(e => CheckCase(e)).length > 0) && "X"}
             </Pressable>
           </View>
           <View style={styles.orderIdCont}>
@@ -389,7 +400,7 @@ function InvoiceReport() {
             contentContainerStyle={styles.scrollArea_contentContainerStyle}
           >
             {filteredTransList.map((item, index) => {
-              if (search.length > 0 && (item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())) === false) {
+              if (!CheckCase(item)) {
                 return null
               }
 

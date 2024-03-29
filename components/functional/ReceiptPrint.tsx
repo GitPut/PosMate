@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 const tz = require("moment-timezone");
 
-const ReceiptPrint = (element, storeDetails) => {
+const ReceiptPrint = (element, storeDetails, reprint) => {
   const CleanupOps = (metaList) => {
     const opsArray = [];
 
@@ -292,7 +292,7 @@ const ReceiptPrint = (element, storeDetails) => {
         }
 
         if (cartItem.extraDetails) {
-          data.push('Note: ' + cartItem.extraDetails);
+          data.push("Note: " + cartItem.extraDetails);
           data.push("\x0A");
         }
 
@@ -549,7 +549,16 @@ const ReceiptPrint = (element, storeDetails) => {
           "\x0A", // line break
           "\x0A", // line break
           //"\x1D" + "\x56" + "\x00",
-          "\x1D" + "\x56" + "\x30" + "\x10" + "\x14" + "\x01" + "\x00" + "\x05"
+          reprint === true
+            ? "\x1D" + "\x56" + "\x30"
+            : "\x1D" +
+                "\x56" +
+                "\x30" +
+                "\x10" +
+                "\x14" +
+                "\x01" +
+                "\x00" +
+                "\x05"
         );
       } else {
         data.push(

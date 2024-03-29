@@ -7,7 +7,7 @@ import {
   ScrollView,
   Modal,
 } from "react-native";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, MaterialIcons } from "@expo/vector-icons";
 
 function DropdownSelectableOption({
   style,
@@ -56,12 +56,24 @@ function DropdownSelectableOption({
                 })`
               : label}
           </Text>
-          <Entypo
-            name={
-              openDropdown === id ? "chevron-small-up" : "chevron-small-down"
-            }
-            style={styles.downIcon}
-          />
+          {value ? (
+            <Pressable
+              onPress={() => {
+                setValue({ option: null, listIndex: null});
+                console.log("hello");
+              }}
+              style={{ marginTop: 5, marginRight: 5 }}
+            >
+              <MaterialIcons name="clear" size={24} color="red" />
+            </Pressable>
+          ) : (
+            <Entypo
+              name={
+                openDropdown === id ? "chevron-small-up" : "chevron-small-down"
+              }
+              style={styles.downIcon}
+            />
+          )}
         </Pressable>
       </View>
       <Modal visible={openDropdown === id} transparent={true}>

@@ -107,7 +107,6 @@ function PendingOrderItem({
                   });
                   fadeIn();
                 }
-                // if (element.method === "deliveryOrder")
                 else {
                   db.collection("users")
                     .doc(auth.currentUser.uid)
