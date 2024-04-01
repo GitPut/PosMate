@@ -18,7 +18,7 @@ function MultipleTimeSelectableOptionGroup({
   label,
   isRequired,
   myObjProfile,
-  setmyObjProfile,
+  setmyObjProfile,  
   index,
   e,
   optionsSelectedLabel,

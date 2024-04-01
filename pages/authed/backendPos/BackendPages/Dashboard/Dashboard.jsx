@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   totalRevenueContainer: {
-    width: 780,
+    width: 600,
     height: 350,
     borderRadius: 10,
     borderWidth: 1,
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   totalRevenueInnerContainer: {
-    width: 746,
+    width: '90%',
     height: 325,
     justifyContent: "space-between"
   },

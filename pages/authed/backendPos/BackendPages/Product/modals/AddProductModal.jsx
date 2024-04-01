@@ -98,7 +98,7 @@ function AddProductModal({
             return
         }
 
-        if (existingProduct) {
+        if (existingProduct && !existingProduct?.isTemplate) {
             let copy = structuredClone(catalog.products);
             const newProductUseRef = {
                 ...newProduct,
@@ -215,7 +215,7 @@ function AddProductModal({
                     <View style={[styles.container, { height: height * 0.9, width: width * 0.7 }]}>
                         <View style={styles.topRow}>
                             <Text style={styles.productAdd}>Product {existingProduct ? 'Update' : 'Add'}</Text>
-                            {existingProduct && <Pressable style={styles.templateBtn} onPress={() => {
+                            {existingProduct && !existingProduct?.isTemplate && <Pressable style={styles.templateBtn} onPress={() => {
                                 let copy = { ...existingProduct }
                                 copy.name = copy.name + " Copy";
                                 copy.imageUrl = "";

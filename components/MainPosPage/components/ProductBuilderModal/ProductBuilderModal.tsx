@@ -15,6 +15,7 @@ import DropdownSelectableOption from "./DropdownSelectableOption";
 import AddToCartBtn from "./AddToCartBtn";
 import MultipleTimeSelectableOptionGroup from "./MultipleTimeSelectableOptionGroup";
 import { addCartState, cartState, setCartState } from "state/state";
+import TableOption from "./TableOption";
 
 function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
   const cart = cartState.use();
@@ -141,21 +142,39 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
                 })
               : "";
 
-          return (
-            <MultipleTimeSelectableOptionGroup
-              e={e}
-              index={index}
-              myObjProfile={myObjProfile}
-              setmyObjProfile={setmyObjProfile}
-              id={index}
-              style={styles.dropdownSelectableOption}
-              setopenDropdown={setopenOptions}
-              openDropdown={openOptions}
-              label={e.label}
-              isRequired={e.isRequired}
-              optionsSelectedLabel={optionsSelectedLabel}
-            />
-          );
+          if (e.viewType === "Table") {
+            return (
+              <TableOption
+                e={e}
+                index={index}
+                myObjProfile={myObjProfile}
+                setmyObjProfile={setmyObjProfile}
+                id={index}
+                style={styles.dropdownSelectableOption}
+                setopenDropdown={setopenOptions}
+                openDropdown={openOptions}
+                label={e.label}
+                isRequired={e.isRequired}
+                optionsSelectedLabel={optionsSelectedLabel}
+              />
+            );
+          } else {
+            return (
+              <MultipleTimeSelectableOptionGroup
+                e={e}
+                index={index}
+                myObjProfile={myObjProfile}
+                setmyObjProfile={setmyObjProfile}
+                id={index}
+                style={styles.dropdownSelectableOption}
+                setopenDropdown={setopenOptions}
+                openDropdown={openOptions}
+                label={e.label}
+                isRequired={e.isRequired}
+                optionsSelectedLabel={optionsSelectedLabel}
+              />
+            );
+          }
         }
       }
     } else if (checkCases() === false) {

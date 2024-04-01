@@ -69,11 +69,11 @@ const EmployeesReport = () => {
 
 const styles = StyleSheet.create({
     container: {
-        width: 1055,
+        width: '100%',
         height: 506,
     },
     topRow: {
-        width: 1055,
+        width: '100%',
         height: 48,
         flexDirection: "row",
         justifyContent: "space-between",

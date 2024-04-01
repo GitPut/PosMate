@@ -99,7 +99,7 @@ function CategoryList(props) {
     <View style={styles.container}>
       <View style={styles.topRow}>
         <Text style={styles.productManagementTxt}>Category Management</Text>
-        <View>
+        <View style={{ width: '60%' }}>
           <TextInput style={styles.searchProductBox} placeholder="Search" value={searchFilterValue} onChangeText={(val) => setsearchFilterValue(val)} />
           <Feather name="search" style={{ color: 'grey', fontSize: 20, position: 'absolute', top: 5, right: 5 }} />
         </View>
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   searchProductBox: {
-    width: 675,
+    width: '100%',
     height: 34,
     backgroundColor: "#f6f6fb",
     borderWidth: 1,

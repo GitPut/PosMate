@@ -17,6 +17,7 @@ import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
 import AddProductModal from "./modals/AddProductModal";
 import Modal from "react-native-modal";
+import ProductTemplatesModal from "./modals/ProductTemplatesModal";
 
 function ProductList(props) {
   const catalog = userStoreState.use()
@@ -28,6 +29,7 @@ function ProductList(props) {
   const [editMode, seteditMode] = useState(false)
   const [addProductModal, setaddProductModal] = useState(false)
   const [existingProduct, setexistingProduct] = useState(null)
+  const [productTemplatesModalVisible, setproductTemplatesModalVisible] = useState(false)
 
   const confirmText = (props) => {
     console.log("COnfirm Text: ", props);
@@ -105,36 +107,11 @@ function ProductList(props) {
     });
   }, [searchFilterValue, selectedCategory,]);
 
-  // const AddIdToOptions = () => {
-  //   catalog.products.map((product, index) => {
-  //     if (product.options) {
-  //       const newOptions = structuredClone(product.options)
-  //       product.options.map((option, optionIndex) => {
-  //         option.optionsList.map((optionItem, optionItemIndex) => {
-  //           if (!optionItem.id) {
-  //             const newId = generateRandomKey(10);
-  //             newOptions[optionIndex].optionsList[optionItemIndex].id = newId;
-  //           }
-  //         }
-  //         )
-  //         db.collection("users")
-  //           .doc(userS.uid)
-  //           .collection("products")
-  //           .doc(product.id.toString())
-  //           .update({
-  //             options: newOptions
-  //           })
-  //       });
-  //     }
-  //   }
-  //   )
-  // }
-
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
         <Text style={styles.productManagementTxt}>Product Management</Text>
-        <View>
+        <View style={{ width: '60%' }}>
           <TextInput style={styles.searchProductBox} placeholder="Search" value={searchFilterValue} onChangeText={(val) => setsearchFilterValue(val)} />
           <Feather name="search" style={{ color: 'grey', fontSize: 20, position: 'absolute', top: 5, right: 5 }} />
         </View>
@@ -179,6 +156,10 @@ function ProductList(props) {
                 style={styles.addProductPlusIcon}
               />
               <Text style={styles.addNewItemTxt}>Add New Item</Text>
+              <Text style={styles.addNewItemTxt}>Or</Text>
+              <Pressable style={styles.templateBtn} onPress={() => setproductTemplatesModalVisible(true)}>
+                <Text style={styles.templatesBtnLbl}>Choose Template</Text>
+              </Pressable>
             </Pressable>
             {catalog.products.map((product, index) => <div key={index} id={product.id}>
               <ProductOptionBox
@@ -214,7 +195,32 @@ function ProductList(props) {
             addProductModal={addProductModal}
             setaddProductModal={setaddProductModal}
             existingProduct={existingProduct}
-            setexistingProduct={setexistingProduct} />
+            setexistingProduct={setexistingProduct}
+          />
+        </View>
+      </Modal>
+      <Modal
+        isVisible={productTemplatesModalVisible}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+      >
+        <View
+          style={{
+            flex: 1,
+            height: "100%",
+            width: "100%",
+            position: "absolute",
+            left: 0,
+            top: 0,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ProductTemplatesModal
+            productTemplatesModalVisible={productTemplatesModalVisible}
+            setproductTemplatesModalVisible={setproductTemplatesModalVisible}
+            setexistingProduct={setexistingProduct}
+          />
         </View>
       </Modal>
     </View>
@@ -251,7 +257,7 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   searchProductBox: {
-    width: 675,
+    width: '100%',
     height: 34,
     backgroundColor: "#f6f6fb",
     borderWidth: 1,
@@ -322,6 +328,22 @@ const styles = StyleSheet.create({
     color: "#121212",
     fontSize: 16,
     marginTop: 20
+  },
+  templateBtn: {
+    width: 175,
+    height: 48,
+    backgroundColor: "#1c294e",
+    borderRadius: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20
+  },
+  templatesBtnLbl: {
+    fontWeight: '700',
+    color: "rgba(255,255,255,1)",
+    fontSize: 17,
+    marginRight: 10
   },
   productOptionBox: {
     height: 285,

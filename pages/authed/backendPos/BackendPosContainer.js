@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   rightSide: {
-    width: 1162,
+    width: '78%',
     height: "100%",
     justifyContent: "flex-end",
   },

@@ -12,8 +12,12 @@ function ProductOptionBox({
   editMode,
   deleteProduct,
   setexistingProduct,
+  isTemplate
 }) {
   const history = useHistory();
+
+  const copyProduct = () =>
+    navigator.clipboard.writeText(JSON.stringify(product));
 
   return (
     <Pressable
@@ -34,6 +38,12 @@ function ProductOptionBox({
           : product.name}
       </Text>
       <Text style={styles.productPriceTxt}>${product.price}</Text>
+      {/* <Pressable
+        style={{ padding: 5, backgroundColor: "grey" }}
+        onPress={copyProduct}
+      >
+        <Text>Copy</Text>
+      </Pressable> */}
       {editMode ? (
         <View>
           <View style={[styles.editProductBtn, { borderRadius: 0 }]}>
@@ -51,7 +61,9 @@ function ProductOptionBox({
       ) : (
         <View style={styles.editProductBtn}>
           <Feather name="edit-3" style={styles.editProductIcon} />
-          <Text style={styles.editProductTxt}>Edit Product</Text>
+          <Text style={styles.editProductTxt}>
+            {!isTemplate ? "Edit Product" : "View Template"}
+          </Text>
         </View>
       )}
     </Pressable>
