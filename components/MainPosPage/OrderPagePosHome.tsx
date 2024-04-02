@@ -1063,15 +1063,25 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                 <Text style={styles.total2}>Total</Text>
                 <Text style={styles.totalValue}>
                   $
-                  {(
-                    Math.ceil(
-                      cartSub *
-                        (storeDetails.taxRate
-                          ? 1 + storeDetails.taxRate / 100
-                          : 1.13) *
-                        10
-                    ) / 10
-                  ).toFixed(2)}
+                  {cartSub > 0
+                    ? parseFloat(
+                        deliveryChecked &&
+                          parseFloat(storeDetails.deliveryPrice) &&
+                          cartSub > 0
+                          ? (
+                              cartSub - parseFloat(storeDetails.deliveryPrice)
+                            ).toFixed(2)
+                          : cartSub.toFixed(2)
+                      ) +
+                      parseFloat(
+                        (
+                          cartSub *
+                          (storeDetails.taxRate
+                            ? parseFloat(storeDetails.taxRate) / 100
+                            : 0.13)
+                        ).toFixed(2)
+                      )
+                    : '0.00'}
                 </Text>
               </View>
               <Pressable
