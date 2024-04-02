@@ -554,8 +554,8 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
 
               Print(deliveryChecked ? "deliveryOrder" : "pickupOrder", false);
               setOngoingDelivery(null);
-              setName(null);
-              setPhone(null);
+              setName("");
+              setPhone("");
               setAddress(null);
               setDeliveryChecked(false);
               setupdatingOrder(false);
@@ -570,8 +570,8 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             disabled={cart.length < 1}
             onPress={() => {
               setCartState([]);
-              setName(null);
-              setPhone(null);
+              setName("");
+              setPhone("");
               setAddress(null);
               setDeliveryChecked(false);
               setOngoingDelivery(null);
@@ -625,8 +625,8 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
           onPress={() => {
             Print(deliveryChecked ? "deliveryOrder" : "pickupOrder", false);
             setOngoingDelivery(null);
-            setName(null);
-            setPhone(null);
+            setName("");
+            setPhone("");
             setAddress(null);
             setDeliveryChecked(false);
             setDiscountAmount(null);
@@ -1262,13 +1262,23 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             setongoingOrderListModal={setongoingOrderListModal}
             updateOrderHandler={(order) => {
               setCartState(order.cart);
-              setName(order.customer.name);
-              setPhone(order.customer.phone);
-              setAddress(order.customer.address);
-              setDeliveryChecked(order.method === "deliveryOrder");
-              setOngoingDelivery(true);
+              if (order.isInStoreOrder) {
+                db.collection("users")
+                  .doc(auth.currentUser?.uid)
+                  .collection("pendingOrders")
+                  .doc(order.id)
+                  .delete();
+              } else {
+                setName(order.customer?.name ? order.customer?.name : "");
+                setPhone(order.customer?.phone ? order.customer?.phone : "");
+                setAddress(
+                  order.customer?.address ? order.customer?.address : null
+                );
+                setDeliveryChecked(order.method === "deliveryOrder");
+                setOngoingDelivery(true);
+                setupdatingOrder(order);
+              }
               setongoingOrderListModal(false);
-              setupdatingOrder(order);
             }}
             ongoingListState={ongoingListState}
             setongoingListState={setongoingListState}

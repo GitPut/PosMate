@@ -81,11 +81,13 @@ function PendingOrderShowDetails({
           <ScrollView contentContainerStyle={{ padding: 10 }}>
             <Text style={styles.cartDetailsOrderLabel}>Order:</Text>
             <Pressable
-              disabled={!(element.method !== "inStoreOrder" && !element.online)}
+              // disabled={!(element.method !== "inStoreOrder" && !element.online)}
+              disabled={!!element.online}
               onPress={() => {
                 updateOrderHandler({
                   ...element,
                   index: index,
+                  isInStoreOrder: !element.online && !element.customer,
                 });
               }}
               style={{ marginLeft: 370 }}
@@ -94,7 +96,8 @@ function PendingOrderShowDetails({
                 name="edit"
                 style={[
                   styles.editIcon,
-                  element.method !== "inStoreOrder" && !element.online
+                  // element.method !== "inStoreOrder" && !element.online
+                  !element.online
                     ? { color: "black" }
                     : { color: "grey" },
                 ]}

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, Image, ScrollView } from "react-native";
+import { StyleSheet, View, Text, Image, ScrollView, useWindowDimensions } from "react-native";
 import DropdownPeriod from "./components/DropdownPeriod";
 import { Ionicons, Entypo, Fontisto } from "@expo/vector-icons";
 import MostOrderItemsListItem from "./components/MostOrderItemsListItem";
@@ -8,6 +8,8 @@ import OrdersBox from "./components/OrdersBox";
 import ShowEmployeeItem from "./components/ShowEmployeeItem";
 
 function Dashboard() {
+  const { height, width } = useWindowDimensions()
+
   return (
     <View style={styles.container}>
       <ScrollView style={{ height: '100%', width: '100%' }} contentContainerStyle={{ paddingRight: 30 }}>
