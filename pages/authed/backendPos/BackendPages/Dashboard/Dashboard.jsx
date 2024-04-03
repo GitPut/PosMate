@@ -14,7 +14,7 @@ function Dashboard() {
     <View style={styles.container}>
       <ScrollView style={{ height: '100%', width: '100%' }} contentContainerStyle={{ paddingRight: 30 }}>
         <View style={styles.wrap}>
-          <View style={styles.totalRevenueContainer}>
+          <View style={[styles.totalRevenueContainer, width > 1280 && { width: 780 }]}>
             <View style={styles.totalRevenueInnerContainer}>
               <Text style={styles.totalRevenue}>Total Revenue</Text>
               <View style={styles.totalRevenueLeftSide}>
