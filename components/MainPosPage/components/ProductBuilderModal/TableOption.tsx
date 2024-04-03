@@ -189,7 +189,7 @@ function TableOption({
                 <View
                   style={[
                     styles.modalContainer,
-                    { height: height * 0.9, width: width * 0.7, padding: 20 },
+                    { height: height * 0.9, width: width * 0.9, padding: 20 },
                   ]}
                 >
                   <View style={styles.innerContainer}>
@@ -326,21 +326,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   optionSelectorItemContainer: {
-    marginBottom: 20,
-  },
-  optionSelectorItemContainer1: {
-    height: 35,
-    width: 220,
-    marginBottom: 20,
-  },
-  optionSelectorItemContainer3: {
-    height: 35,
-    width: 220,
-    marginBottom: 20,
-  },
-  optionSelectorItemContainer2: {
-    height: 35,
-    width: 220,
     marginBottom: 20,
   },
 });
