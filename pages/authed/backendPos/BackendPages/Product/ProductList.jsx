@@ -29,6 +29,7 @@ function ProductList(props) {
   const [editMode, seteditMode] = useState(false)
   const [addProductModal, setaddProductModal] = useState(false)
   const [existingProduct, setexistingProduct] = useState(null)
+  const [isProductTemplate, setisProductTemplate] = useState(false)
   const [productTemplatesModalVisible, setproductTemplatesModalVisible] = useState(false)
 
   const confirmText = (props) => {
@@ -196,6 +197,8 @@ function ProductList(props) {
             setaddProductModal={setaddProductModal}
             existingProduct={existingProduct}
             setexistingProduct={setexistingProduct}
+            isProductTemplate={isProductTemplate}
+            setisProductTemplate={setisProductTemplate}
           />
         </View>
       </Modal>
@@ -220,6 +223,7 @@ function ProductList(props) {
             productTemplatesModalVisible={productTemplatesModalVisible}
             setproductTemplatesModalVisible={setproductTemplatesModalVisible}
             setexistingProduct={setexistingProduct}
+            setisProductTemplate={setisProductTemplate}
           />
         </View>
       </Modal>

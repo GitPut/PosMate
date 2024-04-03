@@ -30,6 +30,7 @@ function ProductTemplatesModal({
   productTemplatesModalVisible,
   setproductTemplatesModalVisible,
   setexistingProduct,
+  setisProductTemplate,
 }) {
   const { width, height } = useWindowDimensions();
   const catalog = productTemplateCatalog;
@@ -60,6 +61,7 @@ function ProductTemplatesModal({
     <Pressable
       onPress={() => {
         setproductTemplatesModalVisible(false);
+        setisProductTemplate(false);
       }}
       style={{
         justifyContent: "center",
@@ -82,7 +84,10 @@ function ProductTemplatesModal({
               </Text>
               <Pressable
                 style={styles.templateBtn}
-                onPress={() => setproductTemplatesModalVisible(false)}
+                onPress={() => {
+                  setproductTemplatesModalVisible(false);
+                  setisProductTemplate(false);
+                }}
               >
                 <Ionicons name="close" style={styles.chevronDownIcon} />
               </Pressable>
@@ -140,8 +145,9 @@ function ProductTemplatesModal({
                           style={[styles.productOptionBox]}
                           index={index}
                           product={newProduct}
-                          setexistingProduct={(setval) => {
-                            setexistingProduct(setval);
+                          setexistingProduct={(val) => {
+                            setexistingProduct(val);
+                            setisProductTemplate(true)
                             setproductTemplatesModalVisible(false);
                           }}
                           isTemplate={true}

@@ -90,7 +90,7 @@ function Index(props) {
                 }
             })
         }
-    }, [selectedDevice])
+    }, [selectedDevice, deviceTree.devices])
 
     useEffect(() => {
         if (deviceTree.devices.length > 1) {
@@ -225,7 +225,17 @@ function Index(props) {
                                         }}
                                         placeholder={"Choose Device To Send Print To"}
                                         menuPortalTarget={document.body}
-                                        styles={GooglePlacesStyles}
+                                        styles={{
+                                            ...GooglePlacesStyles,
+                                            input: (provided) => ({
+                                                ...provided,
+                                                fontFamily: "sans-serif",
+                                                width: "100%",
+                                                height: 40,
+                                                borderRadius: 5,
+                                                paddingTop: 5,
+                                            }),
+                                        }}
                                         menuPlacement="auto"
                                         menuPosition="fixed"
                                     />

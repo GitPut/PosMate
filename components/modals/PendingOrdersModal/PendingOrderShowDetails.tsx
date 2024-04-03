@@ -13,6 +13,7 @@ function PendingOrderShowDetails({
   setongoingOrderListModal,
 }) {
   const { element, index, type, cartString, date } = currentOrder;
+  console.log("Order details: ", currentOrder);
 
   return (
     <View style={styles.container}>
@@ -97,9 +98,7 @@ function PendingOrderShowDetails({
                 style={[
                   styles.editIcon,
                   // element.method !== "inStoreOrder" && !element.online
-                  !element.online
-                    ? { color: "black" }
-                    : { color: "grey" },
+                  !element.online ? { color: "black" } : { color: "grey" },
                 ]}
               ></Feather>
             </Pressable>

@@ -314,11 +314,12 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
         "Customer Phone #:  " + element.customer?.phone,
         "\x0A" + "\x0A",
         "Customer Address: " + element.customer?.address?.label,
-        "Unit #: " +
-          element.customer?.unitNumber +
-          " Buzz Code: " +
-          element.customer?.buzzCode,
         "\x0A" + "\x0A",
+        `Unit #: ${
+          element.customer?.unitNumber ? element.customer?.unitNumber : "N/A"
+        }        Buzz Code: ${
+          element.customer?.buzzCode ? element.customer?.buzzCode : "N/A"
+        }\x0A\x0A`,
         `Total Including (${
           storeDetails.taxRate ? storeDetails.taxRate : "13"
         }% Tax): ` +

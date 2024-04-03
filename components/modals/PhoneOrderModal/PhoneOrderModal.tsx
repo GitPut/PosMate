@@ -195,14 +195,18 @@ const PhoneOrderModal = ({
   return (
     <Pressable
       onPress={() => {
-        setDeliveryModal(false);
-        setOngoingDelivery(false);
-        setName("");
-        setPhone("");
-        setAddress(null);
-        setBuzzCode("");
-        setUnitNumber("");
-        setDeliveryChecked(false);
+        if (ongoingDelivery) {
+          setDeliveryModal(false);
+        } else {
+          setDeliveryModal(false);
+          setOngoingDelivery(false);
+          setName("");
+          setPhone("");
+          setAddress(null);
+          setBuzzCode("");
+          setUnitNumber("");
+          setDeliveryChecked(false);
+        }
       }}
       style={{
         justifyContent: "center",
@@ -309,6 +313,8 @@ const PhoneOrderModal = ({
                       borderRadius: 10,
                       padding: 10,
                     }}
+                    value={unitNumber}
+                    onChangeText={(val) => setUnitNumber(val)}
                   />
                   <TextInput
                     placeholder="Buzz #"
@@ -321,6 +327,8 @@ const PhoneOrderModal = ({
                       borderRadius: 10,
                       padding: 10,
                     }}
+                    value={buzzCode}
+                    onChangeText={(val) => setBuzzCode(val)}
                   />
                 </View>
               )}

@@ -198,6 +198,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
 
   const Print = (method, dontAddToOngoing) => {
     let newVal = 0;
+    let finalCart = cart
     for (let i = 0; i < cart.length; i++) {
       try {
         if (cart[i].quantity > 1) {
@@ -217,7 +218,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
     if (discountAmount) {
       if (discountAmount.includes("%")) {
         const discount = parseFloat(discountAmount.replace("%", "")) / 100;
-        addCartState(
+        finalCart.push(
           {
             name: "Cart Discount: " + discount * 100 + "%",
             price: -(newVal * discount),
@@ -226,11 +227,10 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             extraDetails: null,
             quantityNotChangable: true,
             percent: discount,
-          },
-          cart
+          }
         );
       } else {
-        addCartState(
+        finalCart.push(
           {
             name: "Cart Discount: " + discountAmount,
             price: -parseFloat(discountAmount),
@@ -238,8 +238,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             options: [],
             extraDetails: null,
             quantityNotChangable: true,
-          },
-          cart
+          }
         );
       }
     }
@@ -255,13 +254,13 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
           .collection("customers")
           .doc(savedCustomerDetails.id)
           .update({
-            orders: [...savedCustomerDetails.orders, { cart }],
+            orders: [...savedCustomerDetails.orders, { finalCart }],
           });
         const indexOfCustomer = customers.findIndex(
           (customer) => customer.id === savedCustomerDetails.id
         );
         const newCustomers = structuredClone(customers);
-        newCustomers[indexOfCustomer].orders.push({ cart });
+        newCustomers[indexOfCustomer].orders.push({ finalCart });
         setCustomersList(newCustomers);
       } else {
         db.collection("users")
@@ -269,13 +268,13 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
           .collection("customers")
           .doc(savedCustomerDetails.id)
           .update({
-            orders: [{ cart }],
+            orders: [{ finalCart }],
           });
         const indexOfCustomer = customers.findIndex(
           (customer) => customer.id === savedCustomerDetails.id
         );
         const newCustomers = structuredClone(customers);
-        newCustomers[indexOfCustomer].orders = [{ cart }];
+        newCustomers[indexOfCustomer].orders = [{ finalCart }];
         setCustomersList(newCustomers);
       }
     }
@@ -289,7 +288,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
         date: today,
         transNum: transNum,
         method: "deliveryOrder",
-        cart: cart,
+        cart: finalCart,
         customer: {
           name: name,
           phone: phone,
@@ -310,7 +309,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             date: today,
             transNum: transNum,
             method: "deliveryOrder",
-            cart: cart,
+            cart: finalCart,
             total: data.total,
             customer: {
               name: name,
@@ -361,6 +360,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
       }
 
       setCartState([]);
+      setDiscountAmount(null);
       setDeliveryModal(false);
     } else if (method === "pickupOrder") {
       const today = new Date();
@@ -369,7 +369,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
         date: today,
         transNum: transNum,
         method: "pickupOrder",
-        cart: cart,
+        cart: finalCart,
         customer: {
           name: name,
           phone: phone,
@@ -388,7 +388,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             date: today,
             transNum: transNum,
             method: "pickupOrder",
-            cart: cart,
+            cart: finalCart,
             total: data.total,
             customer: {
               name: name,
@@ -441,6 +441,9 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
       setName(null);
       setPhone(null);
       setAddress(null);
+      setUnitNumber(null)
+      setBuzzCode(null)
+      setDiscountAmount(null);
       setDeliveryChecked(false);
     } else {
       const today = new Date();
@@ -448,7 +451,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
         date: today,
         transNum: transNum,
         method: "inStoreOrder",
-        cart: cart,
+        cart: finalCart,
         customer: {
           name: name,
           phone: phone,
@@ -469,7 +472,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
           total: data.total,
           method: "inStoreOrder",
           paymentMethod: method,
-          cart: cart,
+          cart: finalCart,
         });
       if (
         myDeviceDetails.sendPrintToUserID &&
@@ -567,7 +570,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
           </Pressable>
           <Pressable
             style={[styles.checkoutBtn, { backgroundColor: "red" }]}
-            disabled={cart.length < 1}
+            // disabled={cart.length < 1}
             onPress={() => {
               setCartState([]);
               setName("");
@@ -578,6 +581,8 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
               setupdatingOrder(false);
               setsavedCustomerDetails(null);
               setDiscountAmount(null);
+              setBuzzCode("");
+              setUnitNumber("");
             }}
           >
             <Text style={styles.checkoutLbl}>Cancel</Text>
@@ -586,7 +591,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
       );
     }
 
-    if (ongoingDelivery === null) {
+    if (!ongoingDelivery) {
       return (
         <View
           style={{
@@ -780,7 +785,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
       <View
         style={[
           styles.menuContainer,
-          width < 1250 && { width: "62%" },
+          width > 1300 ? { width: "65%" } : { width: "58%" },
           width < 1000 && { width: "100%" },
         ]}
       >
@@ -912,34 +917,25 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
               styles.scrollAreaProducts_contentContainerStyle
             }
           >
-            {catalog.products.map((product, index) =>
-              width > 1250 ? (
-                <ItemContainer
-                  product={product}
-                  productIndex={index}
-                  key={index}
-                  userUid={catalog.docID}
-                  style={styles.itemContainer}
-                />
-              ) : (
-                <ItemContainerMobile
-                  product={product}
-                  productIndex={index}
-                  key={index}
-                  userUid={catalog.docID}
-                  style={{
-                    height: 220,
-                    width: 160, // Ensure this width accounts for any margins or padding
-                    marginBottom: 30,
-                  }}
-                />
-              )
-            )}
+            {catalog.products.map((product, index) => (
+              <ItemContainer
+                product={product}
+                productIndex={index}
+                key={index}
+                userUid={catalog.docID}
+                style={styles.itemContainer}
+              />
+            ))}
           </ScrollView>
         </View>
       </View>
       {width > 1000 ? (
-        <View style={[styles.cartContainer, width < 1250 && { width: "38%" }]}>
+        <View
+          style={[
+            styles.cartContainer,
+            width > 1300 ? { width: "30%" } : { width: "37%" },
+          ]}
+        >
           <View
             style={{
               flexDirection: "row",
@@ -949,7 +945,7 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             }}
           >
             <Text style={styles.myCartTxt}>My Cart</Text>
-            {cart.length > 0 && (
+            {cart.length > 0 ? (
               <Pressable
                 style={{
                   borderRadius: 10,
@@ -970,10 +966,12 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                   size={30}
                 />
               </Pressable>
+            ) : (
+              <View style={{ height: 40, width: 40 }} />
             )}
           </View>
-          {cart.length > 0 ? (
-            <View style={styles.cartItems}>
+          <View style={styles.cartItems}>
+            {cart.length > 0 ? (
               <ScrollView
                 horizontal={false}
                 contentContainerStyle={styles.cartItems_contentContainerStyle}
@@ -1007,26 +1005,64 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                   />
                 ))}
               </ScrollView>
-            </View>
-          ) : (
-            <Image
-              source={require("./assets/images/noItemsImg.png")}
-              style={{ width: 200, height: "35%", resizeMode: "contain" }}
-            />
-          )}
+            ) : (
+              <View
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  source={require("./assets/images/noItemsImg.png")}
+                  style={{
+                    width: 200,
+                    height: "80%",
+                    resizeMode: "contain",
+                  }}
+                />
+              </View>
+            )}
+          </View>
           <View style={styles.totalsContainer}>
             <View style={styles.topGroupTotalsContainer}>
-              <UntitledComponent
-                amountValue={
-                  discountAmount
-                    ? discountAmount.includes("%")
-                      ? discountAmount
-                      : `$${discountAmount}`
-                    : "N/A"
-                }
-                amountLbl="Discount"
-                style={styles.discountRow}
-              />
+              <View>
+                <UntitledComponent
+                  amountValue={
+                    discountAmount
+                      ? discountAmount.includes("%")
+                        ? discountAmount
+                        : `$${discountAmount}`
+                      : "N/A"
+                  }
+                  amountLbl="Discount"
+                  style={styles.discountRow}
+                />
+                {discountAmount && (
+                  <Pressable
+                    style={{
+                      borderRadius: 30,
+                      height: 22,
+                      width: 22,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "red",
+                      position: "absolute",
+                      right: -35,
+                    }}
+                    onPress={() => {
+                      setDiscountAmount(null);
+                    }}
+                  >
+                    <MaterialIcons
+                      name="clear"
+                      style={{ color: "white" }}
+                      size={20}
+                    />
+                  </Pressable>
+                )}
+              </View>
               {deliveryChecked && parseFloat(storeDetails.deliveryPrice) && (
                 <UntitledComponent
                   amountValue={`$${parseFloat(
@@ -1064,24 +1100,26 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                 <Text style={styles.totalValue}>
                   $
                   {cartSub > 0
-                    ? parseFloat(
-                        deliveryChecked &&
-                          parseFloat(storeDetails.deliveryPrice) &&
-                          cartSub > 0
-                          ? (
-                              cartSub - parseFloat(storeDetails.deliveryPrice)
-                            ).toFixed(2)
-                          : cartSub.toFixed(2)
-                      ) +
-                      parseFloat(
-                        (
-                          cartSub *
-                          (storeDetails.taxRate
-                            ? parseFloat(storeDetails.taxRate) / 100
-                            : 0.13)
-                        ).toFixed(2)
-                      )
-                    : '0.00'}
+                    ? (
+                        parseFloat(
+                          deliveryChecked &&
+                            parseFloat(storeDetails.deliveryPrice) &&
+                            cartSub > 0
+                            ? (
+                                cartSub - parseFloat(storeDetails.deliveryPrice)
+                              ).toFixed(2)
+                            : cartSub.toFixed(2)
+                        ) +
+                        parseFloat(
+                          (
+                            cartSub *
+                            (storeDetails.taxRate
+                              ? parseFloat(storeDetails.taxRate) / 100
+                              : 0.13)
+                          ).toFixed(2)
+                        )
+                      ).toFixed(2)
+                    : "0.00"}
                 </Text>
               </View>
               <Pressable
@@ -1513,7 +1551,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   menuContainer: {
-    width: "67%",
     alignSelf: "stretch",
     justifyContent: "space-around",
     alignItems: "center",

@@ -24,6 +24,8 @@ function AddProductModal({
     setaddProductModal,
     existingProduct,
     setexistingProduct,
+    isProductTemplate,
+    setisProductTemplate
 }) {
     const { width, height } = useWindowDimensions();
     const catalog = userStoreState.use();
@@ -98,7 +100,7 @@ function AddProductModal({
             return
         }
 
-        if (existingProduct && !existingProduct?.isTemplate) {
+        if (existingProduct && !isProductTemplate) {
             let copy = structuredClone(catalog.products);
             const newProductUseRef = {
                 ...newProduct,
@@ -172,10 +174,11 @@ function AddProductModal({
                     .doc(newProduct.id.toString())
                     .set(newProduct)
             }
-            setUserStoreState({ categories: catalog.categories, products: [...catalog.products, newProduct] })
+            // setUserStoreState({ categories: catalog.categories, products: [...catalog.products, newProduct] })
         }
         setaddProductModal(false)
         setexistingProduct(null)
+        setisProductTemplate(false)
     }
 
     const changeHandler = (event) => {
@@ -186,21 +189,12 @@ function AddProductModal({
         }
     };
 
-    //       const scrollToPositionIncluding = (position) => {
-    //     //get the current scroll position and scroll to it plus the position passed in
-    //     console.log("scrollY", scrollY);
-    //     console.log("scrolling to position", position);
-    //     scrollViewRef.current.scrollTo({
-    //       y: position,
-    //       animated: true,
-    //     });
-    //   };
-
     return (
         <Pressable
             onPress={() => {
                 setaddProductModal(false)
                 setexistingProduct(null)
+                setisProductTemplate(false)
             }}
             style={{
                 justifyContent: "center",
@@ -214,8 +208,8 @@ function AddProductModal({
                 <div style={{ cursor: "default" }}>
                     <View style={[styles.container, { height: height * 0.9, width: width * 0.7 }]}>
                         <View style={styles.topRow}>
-                            <Text style={styles.productAdd}>Product {existingProduct ? 'Update' : 'Add'}</Text>
-                            {existingProduct && !existingProduct?.isTemplate && <Pressable style={styles.templateBtn} onPress={() => {
+                            <Text style={styles.productAdd}>Product {isProductTemplate ? 'Add' : existingProduct ? 'Update' : 'Add'}</Text>
+                            {existingProduct && !isProductTemplate && <Pressable style={styles.templateBtn} onPress={() => {
                                 let copy = { ...existingProduct }
                                 copy.name = copy.name + " Copy";
                                 copy.imageUrl = "";
@@ -433,25 +427,6 @@ function AddProductModal({
                                 <View style={styles.spacer4}></View>
                                 <Text style={styles.optionsTxt}>Options</Text>
                                 <View style={styles.spacer5}></View>
-                                {/* <FlatList
-                                    data={newProduct.options}
-                                    keyExtractor={(item) => item.id?.toString()}
-                                    renderItem={({ item, index }) => (
-                                        <OptionsItem key={index} style={styles.optionsItem}
-                                            item={item}
-                                            index={index}
-                                            setnewProduct={setnewProduct}
-                                            newProduct={newProduct}
-                                            newProductOptions={newProductOptions}
-                                            setnewProductOptions={setnewProductOptions}
-                                            indexOn={indexOn}
-                                            setindexOn={setindexOn}
-                                            scrollY={scrollY}
-                                            scrollViewRef={scrollViewRef}
-                                            ref={targetViewRef}
-                                        />
-                                    )}
-                                /> */}
                                 {
                                     newProduct.options.map((option, index) => {
                                         return (
@@ -476,26 +451,6 @@ function AddProductModal({
                                     })
                                 }
                                 {newProduct.options.length === 0 && (
-                                    // <Pressable onPress={() => {
-                                    //     setnewProductOptions([
-                                    //         {
-                                    //             label: null,
-                                    //             optionsList: [],
-                                    //             selectedCaseKey: null,
-                                    //             selectedCaseValue: null,
-                                    //             numOfSelectable: null,
-                                    //             id: Math.random().toString(36).substr(2, 9),
-                                    //             optionType: null,
-                                    //         },
-                                    //     ],
-                                    //     );
-                                    //     setindexOn(0);
-                                    // }} disabled={
-                                    //     newProduct?.options.length > 0 &&
-                                    //     newProduct?.options[newProduct?.options.length - 1].label === null
-                                    // } style={styles.createOptionBtn}>
-                                    //     <Text style={styles.createOptionTxt}>Create Option</Text>
-                                    // </Pressable>
                                     <View style={{ flexDirection: "row", alignItems: "center" }}>
                                         <Pressable
                                             onPress={() => {
@@ -544,11 +499,12 @@ function AddProductModal({
                             <Pressable style={styles.cancelBtn} onPress={() => {
                                 setaddProductModal(false)
                                 setexistingProduct(null)
+                                setisProductTemplate(false)
                             }}>
                                 <Text style={styles.cancelTxt}>Cancel</Text>
                             </Pressable>
                             <Pressable style={styles.saveBtn} onPress={handleDataUpdate}>
-                                <Text style={styles.saveTxt}>Save</Text>
+                                <Text style={styles.saveTxt}>{isProductTemplate ? 'Add' : existingProduct ? 'Save' : 'Add'}</Text>
                             </Pressable>
                         </View>
                     </View>

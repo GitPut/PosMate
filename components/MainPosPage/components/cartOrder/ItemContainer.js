@@ -87,41 +87,13 @@ function ItemContainer({ product, style }) {
             <Text style={styles?.price}>
               ${product.price ? product.price : "Placeholder"}
             </Text>
-            <View style={styles?.openBtnRow}>
-              {/* <Pressable style={styles?.openBtn}>
-                <MaterialCommunityIcons
-                  name="plus"
-                  style={styles?.plusIcon}
-                  onPress={() => {
-                    if (product.options.length > 0) {
-                      // navigation.navigate("Product Listing", { product: product });
-                      // setshowProductScreen(true);
-                      fadeIn();
-                    } else {
-                      addCartState(
-                        {
-                          name: product.name,
-                          price: product.price,
-                          description: product.description,
-                          options: [],
-                          extraDetails: null,
-                          imageUrl: product.imageUrl,
-                        },
-                        cart
-                      );
-                    }
-                  }}
-                ></MaterialCommunityIcons>
-              </Pressable> */}
-            </View>
+            <View style={styles?.openBtnRow}></View>
           </View>
         </Pressable>
       ) : (
         <Pressable
           onPress={() => {
             if (product.options.length > 0) {
-              // navigation.navigate("Product Listing", { product: product });
-              // setshowProductScreen(true);
               fadeIn();
             } else {
               addCartState(
@@ -165,33 +137,7 @@ function ItemContainer({ product, style }) {
                   alignItems: "flex-end",
                 },
               ]}
-            >
-              {/* <Pressable style={styles?.openBtn}>
-                <MaterialCommunityIcons
-                  name="plus"
-                  style={styles?.plusIcon}
-                  onPress={() => {
-                    if (product.options.length > 0) {
-                      // navigation.navigate("Product Listing", { product: product });
-                      // setshowProductScreen(true);
-                      fadeIn();
-                    } else {
-                      addCartState(
-                        {
-                          name: product.name,
-                          price: product.price,
-                          description: product.description,
-                          options: [],
-                          extraDetails: null,
-                          imageUrl: null,
-                        },
-                        cart
-                      );
-                    }
-                  }}
-                ></MaterialCommunityIcons>
-              </Pressable> */}
-            </View>
+            ></View>
           </View>
         </Pressable>
       )}
@@ -212,10 +158,10 @@ function ItemContainer({ product, style }) {
           >
             <View
               style={[
-                screenWidth > 1250
+                screenWidth > 1400
                   ? {
                       height: "100%",
-                      width: "72%",
+                      width: "70%",
                       borderTopRightRadius: 3,
                     }
                   : {
@@ -258,6 +204,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     marginTop: 12,
     marginRight: 11,
+    height: '100%'
   },
   familyCombo: {
     fontWeight: "700",

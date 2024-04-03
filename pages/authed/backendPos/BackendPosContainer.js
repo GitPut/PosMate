@@ -352,9 +352,8 @@ function BackendPosContainer(props) {
           style={[
             styles.rightSide,
             pathname.includes("dashboard") && {
-              width: "80%",
+              width: width < 1300 ? "73%" : "80%",
               backgroundColor: "grey",
-              marginRight: 20,
             },
           ]}
         >
@@ -493,7 +492,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   rightSide: {
-    width: '78%',
+    width: "78%",
     height: "100%",
     justifyContent: "flex-end",
   },

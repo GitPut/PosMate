@@ -21,10 +21,20 @@ function OptionSelectorItemContainer({
         <Entypo name="minus" style={styles.minusIcon} />
       </Pressable>
       <View style={styles.itemNameRow}>
-        <Text style={styles.amountSelected}>
+        <Text
+          style={[
+            styles.amountSelected,
+            option.selectedTimes > 0 && { color: "white" },
+          ]}
+        >
           {option.selectedTimes ? option.selectedTimes : 0} x
         </Text>
-        <Text style={styles.itemNameAndPriceIncrease}>{`${option.label} ${
+        <Text
+          style={[
+            styles.itemNameAndPriceIncrease,
+            option.selectedTimes > 0 && { color: "white" },
+          ]}
+        >{`${option.label} ${
           option.priceIncrease ? `(+$${option.priceIncrease})` : ""
         }`}</Text>
       </View>

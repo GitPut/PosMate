@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         height: 506,
+        paddingRight: 20
     },
     topRow: {
         width: '100%',
@@ -110,15 +111,16 @@ const styles = StyleSheet.create({
         shadowRadius: 20,
         alignItems: "center",
         marginTop: 41,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
     },
     innerMapContainer: {
         height: 301,
         justifyContent: "flex-start",
-        marginTop: 32
+        marginTop: 32,
+        width: '95%'
     },
     employeeNameTopRowHeader: {
-        width: 1002,
+        width: '100%',
         height: 36,
         borderWidth: 0,
         borderColor: "#cbcdda",
@@ -135,7 +137,7 @@ const styles = StyleSheet.create({
     },
     employeeMap_contentContainerStyle: {
         height: 266,
-        width: 1002,
+        width: '100%',
         alignItems: "center",
         paddingRight: 20
     },
