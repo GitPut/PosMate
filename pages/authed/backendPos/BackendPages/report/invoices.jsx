@@ -173,10 +173,9 @@ function InvoiceReport() {
       .saveAs("StoreReceipts.xlsx");
   };
 
-  const PrintTodaysTotal = () => {
-    const today = new Date();
-    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
-    const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+  const PrintTotals = (date) => {
+    const todayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+    const todayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
 
     const filtered = transListTableOrg.filter((item) => {
       let itemDate = item.date
@@ -212,7 +211,7 @@ function InvoiceReport() {
       storeDetails.address?.label + "\x0A",
       storeDetails.website + "\x0A", // text and line break
       storeDetails.phoneNumber + "\x0A", // text and line break
-      today.toDateString() + "\x0A",
+      date.toDateString() + "\x0A",
       "\x0A",
       "Todays Report" + "\x0A", // text and line break
       "\x0A",
@@ -289,8 +288,10 @@ function InvoiceReport() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.topRow}>
+      <View style={{ width: '95%', marginTop: 20, marginBottom: 20 }}>
         <Text style={styles.invoiceReportLbl}>Invoices Report</Text>
+      </View>
+      <View style={styles.topRow}>
         <View style={styles.centerGroup}>
           <TextInput style={styles.searchInvoiceInput} placeholder="Enter search filter" value={search} onChangeText={val => setSearch(val)} />
           <View style={styles.dateSelectorGroup}>
@@ -370,7 +371,25 @@ function InvoiceReport() {
           justifyContent: 'center',
           alignItems: 'center'
         }}
-          onPress={PrintTodaysTotal}
+          onPress={() => {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            PrintTotals(yesterday)
+          }}
+        >
+          <Text>Print Yesterday</Text>
+        </Pressable>
+        <Pressable style={{
+          padding: 10,
+          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          borderRadius: 5,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+          onPress={() => {
+            const today = new Date();
+            PrintTotals(today)
+          }}
         >
           <Text>Print Today</Text>
         </Pressable>
@@ -477,7 +496,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    height: 110,
   },
   invoiceReportLbl: {
     fontWeight: '700',
