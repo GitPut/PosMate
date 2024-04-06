@@ -1,6 +1,5 @@
 import {
   Animated,
-  Modal,
   ScrollView,
   StyleSheet,
   Pressable,
@@ -13,12 +12,13 @@ import { Ionicons } from "@expo/vector-icons";
 import PendingOrderItem from "./components/PendingOrderItem";
 import PendingOrderShowDetails from "./PendingOrderShowDetails";
 import FinishPaymentCash from "./FinishPaymentCash";
+import Modal from "react-native-modal";
 
 const PendingOrdersModal = ({
   setongoingOrderListModal,
   updateOrderHandler,
   ongoingListState,
-  setongoingListState,
+  ongoingOrderListModal,
 }) => {
   const { height, width } = useWindowDimensions();
   const [currentOrder, setcurrentOrder] = useState({
@@ -74,141 +74,164 @@ const PendingOrdersModal = ({
   }
 
   return (
-    <Pressable
-      onPress={() => setongoingOrderListModal(false)}
-      style={{
-        justifyContent: "center",
-        alignItems: "center",
-        height: height,
-        width: width,
-      }}
-      activeOpacity={1}
+    <Modal
+      isVisible={ongoingOrderListModal}
+      animationIn="fadeIn"
+      animationOut="fadeOut"
     >
-      <Pressable>
-        <div style={{ cursor: "default" }}>
-          <View style={styles.pendingOrdersModalContainer}>
-            <View style={styles.closeIconContainer}>
-              <Pressable onPress={() => setongoingOrderListModal(false)}>
-                <Ionicons name="md-close" style={styles.closeIcon} />
-              </Pressable>
-            </View>
-            <View style={styles.secondAreaContainer}>
-              <Text style={styles.pendingOrderLabel}>Pending Orders</Text>
-              <View style={styles.pendingOrderScrollView}>
-                <ScrollView
-                  horizontal={false}
-                  contentContainerStyle={
-                    styles.pendingOrderScrollView_contentContainerStyle
-                  }
-                >
-                  {ongoingListState?.length > 0 ? (
-                    ongoingListState?.map((element, index) => {
-                      let date = null;
-
-                      if (element.online) {
-                        date = parseDate(element.date);
-                      } else {
-                        date = element.date.toDate();
+      <View
+        style={{
+          flex: 1,
+          height: "100%",
+          width: "100%",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Pressable
+          onPress={() => setongoingOrderListModal(false)}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: height,
+            width: width,
+          }}
+        >
+          <Pressable>
+            <div style={{ cursor: "default" }}>
+              <View style={styles.pendingOrdersModalContainer}>
+                <View style={styles.closeIconContainer}>
+                  <Pressable onPress={() => setongoingOrderListModal(false)}>
+                    <Ionicons name="md-close" style={styles.closeIcon} />
+                  </Pressable>
+                </View>
+                <View style={styles.secondAreaContainer}>
+                  <Text style={styles.pendingOrderLabel}>Pending Orders</Text>
+                  <View style={styles.pendingOrderScrollView}>
+                    <ScrollView
+                      horizontal={false}
+                      contentContainerStyle={
+                        styles.pendingOrderScrollView_contentContainerStyle
                       }
-
-                      let cartString = "";
-
-                      element.cart.map((cartItem, index) => {
-                        cartString += `${index + 1}. Name: ${cartItem.name}\n`;
-
-                        if (cartItem.quantity > 1) {
-                          cartString += `     Quantity: ${cartItem.quantity}\n`;
-                          cartString += `     Price: $${
-                            cartItem.price * cartItem.quantity
-                          }`;
-                        } else {
-                          cartString += `    Price: $${cartItem.price}`;
-                        }
-
-                        if (cartItem.description) {
-                          cartString += `     \n${cartItem.description}`;
-                        }
-
-                        if (cartItem.options) {
-                          cartString += `\n`;
-                          cartItem.options.map((option) => {
-                            cartString += `    ${option}\n`;
-                          });
-                        }
-
-                        if (cartItem.extraDetails) {
-                          cartString += `     Note: ${cartItem.extraDetails}\n`;
-                        }
-                      });
-
-                      return (
-                        <PendingOrderItem
-                          style={styles.pendingOrderItem1}
-                          element={element}
-                          index={index}
-                          date={date}
-                          cartString={cartString}
-                          key={index}
-                          setcurrentOrder={setcurrentOrder}
-                          updateOrderHandler={updateOrderHandler}
-                          fadeIn={fadeIn}
-                        />
-                      );
-                    })
-                  ) : (
-                    <View
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
                     >
-                      <Text>No Orders Yet</Text>
-                    </View>
-                  )}
-                </ScrollView>
-              </View>
-            </View>
-            {currentOrder.element && (
-              <Animated.View
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  borderRadius: 10,
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  width: 540,
-                  height: 609,
-                  backgroundColor: "white",
-                  opacity: xPos,
-                }}
-              >
-                {currentOrder.type === "view" ? (
-                  <PendingOrderShowDetails
-                    currentOrder={currentOrder}
-                    updateOrderHandler={updateOrderHandler}
-                    fadeIn={fadeIn}
-                    fadeOut={fadeOut}
-                    setcurrentOrder={setcurrentOrder}
-                    setongoingOrderListModal={setongoingOrderListModal}
-                  />
-                ) : (
-                  <FinishPaymentCash
-                    currentOrder={currentOrder}
-                    updateOrderHandler={updateOrderHandler}
-                    fadeIn={fadeIn}
-                    fadeOut={fadeOut}
-                    setcurrentOrder={setcurrentOrder}
-                  />
+                      {ongoingListState?.length > 0 ? (
+                        ongoingListState?.map((element, index) => {
+                          let date = null;
+
+                          if (element.online) {
+                            date = parseDate(element.date);
+                          } else {
+                            date = element.date.toDate();
+                          }
+
+                          let cartString = "";
+
+                          element.cart.map((cartItem, index) => {
+                            cartString += `${index + 1}. Name: ${
+                              cartItem.name
+                            }\n`;
+
+                            if (cartItem.quantity > 1) {
+                              cartString += `     Quantity: ${cartItem.quantity}\n`;
+                              cartString += `     Price: $${
+                                cartItem.price * cartItem.quantity
+                              }`;
+                            } else {
+                              cartString += `    Price: $${cartItem.price}`;
+                            }
+
+                            if (cartItem.description) {
+                              cartString += `     \n${cartItem.description}`;
+                            }
+
+                            if (cartItem.options) {
+                              cartString += `\n`;
+                              cartItem.options.map((option) => {
+                                cartString += `    ${option}\n`;
+                              });
+                            }
+
+                            if (cartItem.extraDetails) {
+                              cartString += `     Note: ${cartItem.extraDetails}\n`;
+                            }
+                          });
+
+                          if (element.cartNote) {
+                            cartString += `\nNote: ${element.cartNote}`;
+                          }
+                          return (
+                            <PendingOrderItem
+                              style={styles.pendingOrderItem1}
+                              element={element}
+                              index={index}
+                              date={date}
+                              cartString={cartString}
+                              key={index}
+                              setcurrentOrder={setcurrentOrder}
+                              updateOrderHandler={updateOrderHandler}
+                              fadeIn={fadeIn}
+                            />
+                          );
+                        })
+                      ) : (
+                        <View
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text>No Orders Yet</Text>
+                        </View>
+                      )}
+                    </ScrollView>
+                  </View>
+                </View>
+                {currentOrder.element && (
+                  <Animated.View
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      borderRadius: 10,
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      width: 540,
+                      height: 609,
+                      backgroundColor: "white",
+                      opacity: xPos,
+                    }}
+                  >
+                    {currentOrder.type === "view" ? (
+                      <PendingOrderShowDetails
+                        currentOrder={currentOrder}
+                        updateOrderHandler={updateOrderHandler}
+                        fadeIn={fadeIn}
+                        fadeOut={fadeOut}
+                        setcurrentOrder={setcurrentOrder}
+                        setongoingOrderListModal={setongoingOrderListModal}
+                      />
+                    ) : (
+                      <FinishPaymentCash
+                        currentOrder={currentOrder}
+                        updateOrderHandler={updateOrderHandler}
+                        fadeIn={fadeIn}
+                        fadeOut={fadeOut}
+                        setcurrentOrder={setcurrentOrder}
+                      />
+                    )}
+                  </Animated.View>
                 )}
-              </Animated.View>
-            )}
-          </View>
-        </div>
-      </Pressable>
-    </Pressable>
+              </View>
+            </div>
+          </Pressable>
+        </Pressable>
+      </View>
+    </Modal>
   );
 };
 

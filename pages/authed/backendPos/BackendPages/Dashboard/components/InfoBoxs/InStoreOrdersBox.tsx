@@ -1,36 +1,112 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import DropdownPeriod from '../DropdownPeriod';
-import RevenueBox from '../RevenueBox';
-import OrdersBox from '../OrdersBox';
+import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import DropdownPeriod from "../DropdownPeriod";
+import RevenueBox from "../RevenueBox";
+import OrdersBox from "../OrdersBox";
+import SearchDate from "components/functional/SearchDateFunction";
 
-const InStoreOrdersBox = () => {
+const InStoreOrdersBox = ({ allTransactions }) => {
+  const [period, setperiod] = useState("Today");
+  const [details, setdetails] = useState({ orders: 0, revenue: 0 });
+
+  useEffect(() => {
+    const calculateTotals = (transactions) => {
+      let totalRevenue = 0;
+      let totalOrders = 0;
+      transactions.forEach((transaction) => {
+        if (transaction.method === "inStoreOrder") {
+          totalRevenue += parseFloat(transaction.total);
+          totalOrders += 1;
+        }
+      });
+      return { orders: totalOrders, revenue: totalRevenue.toFixed(0) };
+    };
+
+    const getDateRange = (period) => {
+      const today = new Date();
+      switch (period) {
+        case "Today":
+          return {
+            start: new Date().toDateString(),
+            end: new Date().toDateString(),
+          };
+        case "This Week":
+          const weekStart = new Date(
+            today.setDate(today.getDate() - today.getDay())
+          );
+          const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
+          return {
+            start: weekStart.toDateString(),
+            end: weekEnd.toDateString(),
+          };
+        case "This Month":
+          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+          const monthEnd = new Date(
+            today.getFullYear(),
+            today.getMonth() + 1,
+            0
+          );
+          return {
+            start: monthStart.toDateString(),
+            end: monthEnd.toDateString(),
+          };
+        case "This Year":
+          const yearStart = new Date(today.getFullYear(), 0, 1);
+          const yearEnd = new Date(today.getFullYear(), 11, 31);
+          return {
+            start: yearStart.toDateString(),
+            end: yearEnd.toDateString(),
+          };
+        default:
+          // Assuming you want to default to "All Time" with no filtering.
+          return null;
+      }
+    };
+
+    const dateRange = getDateRange(period);
+    let filteredTransactions;
+
+    if (dateRange) {
+      const { start, end } = dateRange;
+      filteredTransactions = SearchDate({
+        startDate: start,
+        endDate: end,
+        transactions: allTransactions,
+      });
+    } else {
+      // No date filtering for "All Time" or unspecified periods
+      filteredTransactions = allTransactions;
+    }
+
+    const { orders, revenue } = calculateTotals(filteredTransactions);
+    setdetails({ orders, revenue });
+  }, [period, allTransactions]);
+
   return (
-    <View style={styles.inStoreOrdersContainer}>
-      <View style={styles.inStoreOrdersInnerContainer}>
-        <View style={styles.inStoreOrdersHeaderRow}>
-          <Text style={styles.inStoreOrders}>In-Store Orders</Text>
-          <DropdownPeriod
-            dropdownPeriodLbl="Monthly"
-            style={styles.inStoreOrdersDropdownPeriod}
-          />
+    <View style={styles.pickupOrdersContainer}>
+      <View style={styles.pickupOrdersInnerContainer}>
+        <View style={styles.pickupOrdersHeaderRow}>
+          <Text style={styles.pickupOrders}>In-Store Orders</Text>
+          <View>
+            <DropdownPeriod value={period} setValue={setperiod} />
+          </View>
         </View>
-        <View style={styles.inStoreOrdersRevAndOrdersContainer}>
+        <View style={styles.pickupOrdersRevAndOrdersContainer}>
           <RevenueBox
-            revenueValue="$11,135"
-            style={styles.revenueBox2}
+            style={styles.revenueBox}
+            revenueValue={details.revenue}
           />
-          <OrdersBox ordersValue="155" style={styles.ordersBox2} />
+          <OrdersBox style={styles.ordersBox} ordersValue={details.orders} />
         </View>
       </View>
     </View>
   );
-}
+};
 
-export default InStoreOrdersBox
+export default InStoreOrdersBox;
 
 const styles = StyleSheet.create({
-  inStoreOrdersContainer: {
+  pickupOrdersContainer: {
     width: 383,
     height: 158,
     shadowColor: "rgba(0,0,0,1)",
@@ -49,13 +125,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     marginBottom: 20,
   },
-  inStoreOrdersInnerContainer: {
+  pickupOrdersInnerContainer: {
     width: 347,
     height: 126,
     justifyContent: "flex-start",
     alignItems: "center",
   },
-  inStoreOrdersHeaderRow: {
+  pickupOrdersHeaderRow: {
     width: 347,
     height: 27,
     flexDirection: "row",
@@ -63,27 +139,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
-  inStoreOrders: {
+  pickupOrders: {
     fontWeight: "700",
     color: "#121212",
     fontSize: 15,
   },
-  inStoreOrdersDropdownPeriod: {
+  pickupOrdersDropdownPeriod: {
     height: 27,
     width: 84,
   },
-  inStoreOrdersRevAndOrdersContainer: {
+  pickupOrdersRevAndOrdersContainer: {
     width: 347,
     height: 65,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  revenueBox2: {
+  revenueBox: {
     height: 65,
     width: 165,
   },
-  ordersBox2: {
+  ordersBox: {
     height: 65,
     width: 165,
   },

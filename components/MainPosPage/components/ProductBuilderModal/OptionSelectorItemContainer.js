@@ -13,7 +13,7 @@ function OptionSelectorItemContainer({
       style={[
         styles.container,
         style,
-        option.selectedTimes > 0 && { backgroundColor: "green" },
+        option.selectedTimes > 0 && { backgroundColor: "#314ab0" }, 
       ]}
       onPress={onPlusPress}
     >

@@ -1,33 +1,109 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import DropdownPeriod from '../DropdownPeriod';
-import RevenueBox from '../RevenueBox';
-import OrdersBox from '../OrdersBox';
+import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import DropdownPeriod from "../DropdownPeriod";
+import RevenueBox from "../RevenueBox";
+import OrdersBox from "../OrdersBox";
+import SearchDate from "components/functional/SearchDateFunction";
 
-const PickupOrdersBox = () => {
+const PickupOrdersBox = ({ allTransactions }) => {
+  const [period, setperiod] = useState("Today");
+  const [details, setdetails] = useState({ orders: 0, revenue: 0 });
+
+  useEffect(() => {
+    const calculateTotals = (transactions) => {
+      let totalRevenue = 0;
+      let totalOrders = 0;
+      transactions.forEach((transaction) => {
+        if (transaction.method === "pickupOrder") {
+          totalRevenue += parseFloat(transaction.total);
+          totalOrders += 1;
+        }
+      });
+      return { orders: totalOrders, revenue: totalRevenue.toFixed(0) };
+    };
+
+    const getDateRange = (period) => {
+      const today = new Date();
+      switch (period) {
+        case "Today":
+          return {
+            start: new Date().toDateString(),
+            end: new Date().toDateString(),
+          };
+        case "This Week":
+          const weekStart = new Date(
+            today.setDate(today.getDate() - today.getDay())
+          );
+          const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
+          return {
+            start: weekStart.toDateString(),
+            end: weekEnd.toDateString(),
+          };
+        case "This Month":
+          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+          const monthEnd = new Date(
+            today.getFullYear(),
+            today.getMonth() + 1,
+            0
+          );
+          return {
+            start: monthStart.toDateString(),
+            end: monthEnd.toDateString(),
+          };
+        case "This Year":
+          const yearStart = new Date(today.getFullYear(), 0, 1);
+          const yearEnd = new Date(today.getFullYear(), 11, 31);
+          return {
+            start: yearStart.toDateString(),
+            end: yearEnd.toDateString(),
+          };
+        default:
+          // Assuming you want to default to "All Time" with no filtering.
+          return null;
+      }
+    };
+
+    const dateRange = getDateRange(period);
+    let filteredTransactions;
+
+    if (dateRange) {
+      const { start, end } = dateRange;
+      filteredTransactions = SearchDate({
+        startDate: start,
+        endDate: end,
+        transactions: allTransactions,
+      });
+    } else {
+      // No date filtering for "All Time" or unspecified periods
+      filteredTransactions = allTransactions;
+    }
+
+    const { orders, revenue } = calculateTotals(filteredTransactions);
+    setdetails({ orders, revenue });
+  }, [period, allTransactions]);
+
   return (
     <View style={styles.pickupOrdersContainer}>
       <View style={styles.pickupOrdersInnerContainer}>
         <View style={styles.pickupOrdersHeaderRow}>
           <Text style={styles.pickupOrders}>Pickup Orders</Text>
-          <DropdownPeriod
-            dropdownPeriodLbl="Today"
-            style={styles.pickupOrdersDropdownPeriod}
-          />
+          <View>
+            <DropdownPeriod value={period} setValue={setperiod} />
+          </View>
         </View>
         <View style={styles.pickupOrdersRevAndOrdersContainer}>
           <RevenueBox
-            revenueValue="$270"
             style={styles.revenueBox}
+            revenueValue={details.revenue}
           />
-          <OrdersBox style={styles.ordersBox} />
+          <OrdersBox style={styles.ordersBox} ordersValue={details.orders} />
         </View>
       </View>
     </View>
   );
-}
+};
 
-export default PickupOrdersBox
+export default PickupOrdersBox;
 
 const styles = StyleSheet.create({
   pickupOrdersContainer: {

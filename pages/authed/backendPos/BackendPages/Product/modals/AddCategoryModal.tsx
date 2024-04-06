@@ -108,7 +108,7 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
                   </View>
                 </View>
               </View>
-              <View style={styles.displayOnlineRow}>
+              {/* <View style={styles.displayOnlineRow}>
                 <Text style={styles.displayOnlineStoreTxt}>
                   Display On online store?:
                 </Text>
@@ -118,7 +118,7 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
                     console.log("toggle");
                   }}
                 />
-              </View>
+              </View> */}
               <View style={styles.btnsRow}>
                 <Pressable
                   activeOpacity={0.8}

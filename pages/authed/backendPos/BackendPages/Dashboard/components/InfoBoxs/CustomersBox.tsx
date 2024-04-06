@@ -1,17 +1,16 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
 
 const CustomersBox = () => {
+  const [period, setperiod] = useState("Today");
+
   return (
     <View style={styles.customersContainer}>
       <View style={styles.customersInnerContainer}>
         <View style={styles.customersHeaderRow}>
           <Text style={styles.customers}>Customers</Text>
-          <DropdownPeriod
-            dropdownPeriodLbl="Today"
-            style={styles.customersDropdownPeriod}
-          />
+          <DropdownPeriod value={period} setValue={setperiod} />
         </View>
         <View style={styles.newCustomersTrendItem}>
           <View style={styles.newCustomerInnerContainer}>

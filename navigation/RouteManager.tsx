@@ -73,10 +73,23 @@ const RouteManager = () => {
               })
               .then(qz.websocket.disconnect)
               .catch(function (err) {
-                // console.error(err);
-                alert(
-                  "An error occured while trying to print. Try refreshing the page and trying again."
-                );
+                if (
+                  err.message.includes(
+                    "A printer must be specified before printing"
+                  )
+                ) {
+                  alert("You must specify a printer in device settings");
+                } else if (
+                  err.message.includes("Unable to establish connection with QZ")
+                ) {
+                  alert(
+                    "You do not have Divine POS Helper installed. Please download from general settings"
+                  );
+                } else {
+                  alert(
+                    "An error occured while trying to print. Try refreshing the page and trying again."
+                  );
+                }
               });
             //print then delete
 
@@ -626,7 +639,7 @@ const RouteManager = () => {
                   "\x0A" +
                   "\x0A",
                 `Total Including (${
-                  storeDetails.taxRate ? storeDetails.taxRate : "13"
+                  storeDetails.taxRate >= 0 ? storeDetails.taxRate : "13"
                 }% Tax): ` +
                   "$" +
                   order.total +
@@ -655,10 +668,25 @@ const RouteManager = () => {
                 })
                 .then(qz.websocket.disconnect)
                 .catch(function (err) {
-                  // console.error(err);
-                  alert(
-                    "An error occured while trying to print. Try refreshing the page and trying again."
-                  );
+                  if (
+                    err.message.includes(
+                      "A printer must be specified before printing"
+                    )
+                  ) {
+                    alert("You must specify a printer in device settings");
+                  } else if (
+                    err.message.includes(
+                      "Unable to establish connection with QZ"
+                    )
+                  ) {
+                    alert(
+                      "You do not have Divine POS Helper installed. Please download from general settings"
+                    );
+                  } else {
+                    alert(
+                      "An error occured while trying to print. Try refreshing the page and trying again."
+                    );
+                  }
                 });
             }
           }

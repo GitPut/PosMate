@@ -150,7 +150,7 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
       "\x0A" + "\x0A",
       "Payment Method: " + element.payment_method_title + "\x0A" + "\x0A",
       `Total Including (${
-        storeDetails.taxRate ? storeDetails.taxRate : "13"
+        storeDetails.taxRate >= 0 ? storeDetails.taxRate : "13"
       }% Tax): ` +
         "$" +
         element.total +
@@ -265,10 +265,9 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
           if (cartItem.price) {
             data.push("\x0A");
             data.push(
-              `Price: $${
-                parseFloat(cartItem.price).toFixed(2) *
-                parseFloat(cartItem.quantity)
-              }`
+              `Price: $${(
+                parseFloat(cartItem.price) * parseFloat(cartItem.quantity)
+              ).toFixed(2)}`
             );
           }
         } else {
@@ -299,16 +298,19 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
         data.push("\x0A" + "\x0A");
       });
 
-      total = storeDetails.taxRate
-        ? total * (1 + storeDetails.taxRate / 100)
-        : total * 1.13;
+      total =
+        storeDetails.taxRate >= 0
+          ? total * (1 + storeDetails.taxRate / 100)
+          : total * 1.13;
       total = total.toFixed(2);
 
       //push ending
       data.push(
         "\x0A",
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-        "\x0A" + "\x0A",
+        element.cartNote
+          ? "\x0A" + "\x0A" + "Note: " + element.cartNote + "\x0A" + "\x0A"
+          : "\x0A" + "\x0A",
         "Customer Name: " + element.customer?.name,
         "\x0A" + "\x0A",
         "Customer Phone #:  " + element.customer?.phone,
@@ -321,8 +323,9 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
           element.customer?.buzzCode ? element.customer?.buzzCode : "N/A"
         }\x0A\x0A`,
         `Total Including (${
-          storeDetails.taxRate ? storeDetails.taxRate : "13"
+          storeDetails.taxRate >= 0 ? storeDetails.taxRate : "13"
         }% Tax): ` +
+          "$" +
           total +
           "\x0A" +
           "\x0A",
@@ -394,10 +397,9 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
           if (cartItem.price) {
             data.push("\x0A");
             data.push(
-              `Price: $${
-                parseFloat(cartItem.price).toFixed(2) *
-                parseFloat(cartItem.quantity)
-              }`
+              `Price: $${(
+                parseFloat(cartItem.price) * parseFloat(cartItem.quantity)
+              ).toFixed(2)}`
             );
           }
         } else {
@@ -428,16 +430,19 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
         data.push("\x0A" + "\x0A");
       });
 
-      total = storeDetails.taxRate
-        ? total * (1 + storeDetails.taxRate / 100)
-        : total * 1.13;
+      total =
+        storeDetails.taxRate >= 0
+          ? total * (1 + storeDetails.taxRate / 100)
+          : total * 1.13;
       total = total.toFixed(2);
 
       //push ending
       data.push(
         "\x0A",
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-        "\x0A" + "\x0A",
+        element.cartNote
+          ? "\x0A" + "\x0A" + "Note: " + element.cartNote + "\x0A" + "\x0A"
+          : "\x0A" + "\x0A",
         "Customer Name: " + element.customer?.name,
         "\x0A" + "\x0A",
         "Customer Phone #:  " + element.customer?.phone,
@@ -445,8 +450,9 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
         "Customer Address: N/A                            ",
         "\x0A",
         `Total Including (${
-          storeDetails.taxRate ? storeDetails.taxRate : "13"
+          storeDetails.taxRate >= 0 ? storeDetails.taxRate : "13"
         }% Tax): ` +
+          "$" +
           total +
           "\x0A" +
           "\x0A",
@@ -494,10 +500,9 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
           if (cartItem.price) {
             data.push("\x0A");
             data.push(
-              `Price: $${
-                parseFloat(cartItem.price).toFixed(2) *
-                parseFloat(cartItem.quantity)
-              }`
+              `Price: $${(
+                parseFloat(cartItem.price) * parseFloat(cartItem.quantity)
+              ).toFixed(2)}`
             );
           }
         } else {
@@ -528,7 +533,10 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
         data.push("\x0A" + "\x0A");
       });
 
-      total = total * 1.13;
+      total =
+        storeDetails.taxRate >= 0
+          ? total * (1 + storeDetails.taxRate / 100)
+          : total * 1.13;
       total = total.toFixed(2);
 
       if (element.paymentMethod === "Cash") {
@@ -536,10 +544,12 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
         data.push(
           "\x0A",
           "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-          "\x0A" + "\x0A",
+          element.cartNote
+            ? "\x0A" + "\x0A" + "Note: " + element.cartNote + "\x0A" + "\x0A"
+            : "\x0A" + "\x0A",
           "Payment Method: " + element.paymentMethod + "\x0A" + "\x0A",
           `Total Including (${
-            storeDetails.taxRate ? storeDetails.taxRate : "13"
+            storeDetails.taxRate >= 0 ? storeDetails.taxRate : "13"
           }% Tax): ` +
             "$" +
             total +
@@ -569,10 +579,12 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
         data.push(
           "\x0A",
           "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-          "\x0A" + "\x0A",
+          element.cartNote
+            ? "\x0A" + "\x0A" + "Note: " + element.cartNote + "\x0A" + "\x0A"
+            : "\x0A" + "\x0A",
           "Payment Method: " + element.paymentMethod + "\x0A" + "\x0A",
           `Total Including (${
-            storeDetails.taxRate ? storeDetails.taxRate : "13"
+            storeDetails.taxRate >= 0 ? storeDetails.taxRate : "13"
           }% Tax): ` +
             "$" +
             total +

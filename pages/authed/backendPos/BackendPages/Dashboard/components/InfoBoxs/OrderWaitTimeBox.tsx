@@ -1,17 +1,16 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
 
 const OrderWaitTimeBox = () => {
+  const [period, setperiod] = useState("Today");  
+
   return (
     <View style={styles.orderWaitTimeContainer}>
       <View style={styles.orderWaitTimeInnerContainer}>
         <View style={styles.orderWaitTimeHeaderRow}>
           <Text style={styles.orderWaitTimeLbl}>Order Wait Time (Minutes)</Text>
-          <DropdownPeriod
-            dropdownPeriodLbl="Today"
-            style={styles.orderWaitTimeDropdownPeriod}
-          />
+          <DropdownPeriod value={period} setValue={setperiod} />
         </View>
         <View style={styles.statsContainer}>
           <View style={styles.shortestContainer}>

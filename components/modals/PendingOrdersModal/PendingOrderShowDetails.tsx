@@ -90,6 +90,7 @@ function PendingOrderShowDetails({
                   index: index,
                   isInStoreOrder: !element.online && !element.customer,
                 });
+                fadeOut(false);
               }}
               style={{ marginLeft: 370 }}
             >
@@ -100,7 +101,7 @@ function PendingOrderShowDetails({
                   // element.method !== "inStoreOrder" && !element.online
                   !element.online ? { color: "black" } : { color: "grey" },
                 ]}
-              ></Feather>
+              />
             </Pressable>
             <Text style={styles.cartDetails}>{cartString}</Text>
           </ScrollView>

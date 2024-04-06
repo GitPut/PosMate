@@ -96,8 +96,21 @@ function InvoiceReport() {
             })
             .then(qz.websocket.disconnect)
             .catch(function (err) {
-              // console.error(err);
-              alert('An error occured while trying to print. Try refreshing the page and trying again.')
+              if (
+                err.message.includes("A printer must be specified before printing")
+              ) {
+                alert("You must specify a printer in device settings");
+              } else if (
+                err.message.includes("Unable to establish connection with QZ")
+              ) {
+                alert(
+                  "You do not have Divine POS Helper installed. Please download from general settings"
+                );
+              } else {
+                alert(
+                  "An error occured while trying to print. Try refreshing the page and trying again."
+                );
+              }
             });
         }
       } else {
@@ -206,7 +219,7 @@ function InvoiceReport() {
       "\x0A",
       "\x0A",
       "\x1B" + "\x61" + "\x30", // left align
-      `Todays Total Revenue: $${todayTotal}`,
+      `Todays Total Revenue: $${todayTotal.toFixed(2)}`,
       "\x0A",
       `Todays Total Sales: ${salesTotal}`,
       "\x0A",
@@ -245,10 +258,21 @@ function InvoiceReport() {
         })
         .then(qz.websocket.disconnect)
         .catch(function (err) {
-          // console.error(err);
-          alert(
-            "An error occured while trying to print. Try refreshing the page and trying again."
-          );
+          if (
+            err.message.includes("A printer must be specified before printing")
+          ) {
+            alert("You must specify a printer in device settings");
+          } else if (
+            err.message.includes("Unable to establish connection with QZ")
+          ) {
+            alert(
+              "You do not have Divine POS Helper installed. Please download from general settings"
+            );
+          } else {
+            alert(
+              "An error occured while trying to print. Try refreshing the page and trying again."
+            );
+          }
         });
     }
   }

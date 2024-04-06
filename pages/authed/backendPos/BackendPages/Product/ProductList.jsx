@@ -163,7 +163,7 @@ function ProductList(props) {
               </Pressable>
             </Pressable>
             {catalog.products.map((product, index) => <div key={index} id={product.id}>
-              <ProductOptionBox
+              <ProductOptionBox 
                 style={[styles.productOptionBox, editMode && { height: 322 }]}
                 index={index}
                 product={product}

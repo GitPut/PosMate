@@ -7,9 +7,8 @@ import {
   useWindowDimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { addCartState, setCartState } from "state/state";
 import PercentageBtn from "./components/PercentageBtn";
+import Modal from "react-native-modal";
 
 const DiscountModal = ({
   setdiscountModal,
@@ -19,6 +18,7 @@ const DiscountModal = ({
   storeDetails,
   setDiscountAmount,
   discountAmount,
+  discountModal,
 }) => {
   const { height, width } = useWindowDimensions();
   const [code, setcode] = useState("");
@@ -64,103 +64,123 @@ const DiscountModal = ({
   }, [localDiscountAmount]);
 
   return (
-    <Pressable
-      onPress={() => setdiscountModal(false)}
-      style={{
-        justifyContent: "center",
-        alignItems: "center",
-        height: height,
-        width: width,
-      }}
-      activeOpacity={1}
+    <Modal
+      isVisible={discountModal}
+      animationIn="fadeIn"
+      animationOut="fadeOut"
     >
-      <Pressable>
-        <div style={{ cursor: "default" }}>
-          <View style={styles.container}>
-            <View style={styles.innerContentContainer}>
-              <View style={styles.labelAndInnerGroup}>
-                <Text style={styles.containerLbl}>Discount</Text>
-                <View style={styles.innerGroup}>
-                  <Text style={styles.currentTotalLbl}>
-                    Total Without Discount: ${totalWithoutDiscount.toFixed(2)}
-                  </Text>
-                  <View style={styles.inputWithPercentageRow}>
-                    <TextInput
-                      style={styles.customPercentageInput}
-                      placeholder="Enter Custom Amount or Percentage"
-                      onChangeText={(text) => setLocalDiscountAmount(text)}
-                      value={localDiscountAmount}
-                    />
-                    <View style={styles.percentageBtnsRow}>
-                      <PercentageBtn
-                        percentageAmount="5%"
-                        style={styles.percentageBtn5}
-                        onPress={() => setLocalDiscountAmount("5%")}
-                        isSelected={localDiscountAmount === "5%"}
-                      />
-                      <PercentageBtn
-                        percentageAmount="10%"
-                        style={styles.percentageBtn10}
-                        onPress={() => setLocalDiscountAmount("10%")}
-                        isSelected={localDiscountAmount === "10%"}
-                      />
-                      <PercentageBtn
-                        percentageAmount="15%"
-                        style={styles.percentageBtn15}
-                        onPress={() => setLocalDiscountAmount("15%")}
-                        isSelected={localDiscountAmount === "15%"}
+      <View
+        style={{
+          flex: 1,
+          height: "100%",
+          width: "100%",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Pressable
+          onPress={() => setdiscountModal(false)}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: height,
+            width: width,
+          }}
+        >
+          <Pressable>
+            <div style={{ cursor: "default" }}>
+              <View style={styles.container}>
+                <View style={styles.innerContentContainer}>
+                  <View style={styles.labelAndInnerGroup}>
+                    <Text style={styles.containerLbl}>Discount</Text>
+                    <View style={styles.innerGroup}>
+                      <Text style={styles.currentTotalLbl}>
+                        Total Without Discount: $
+                        {totalWithoutDiscount.toFixed(2)}
+                      </Text>
+                      <View style={styles.inputWithPercentageRow}>
+                        <TextInput
+                          style={styles.customPercentageInput}
+                          placeholder="Enter Custom Amount or Percentage"
+                          onChangeText={(text) => setLocalDiscountAmount(text)}
+                          value={localDiscountAmount}
+                        />
+                        <View style={styles.percentageBtnsRow}>
+                          <PercentageBtn
+                            percentageAmount="5%"
+                            style={styles.percentageBtn5}
+                            onPress={() => setLocalDiscountAmount("5%")}
+                            isSelected={localDiscountAmount === "5%"}
+                          />
+                          <PercentageBtn
+                            percentageAmount="10%"
+                            style={styles.percentageBtn10}
+                            onPress={() => setLocalDiscountAmount("10%")}
+                            isSelected={localDiscountAmount === "10%"}
+                          />
+                          <PercentageBtn
+                            percentageAmount="15%"
+                            style={styles.percentageBtn15}
+                            onPress={() => setLocalDiscountAmount("15%")}
+                            isSelected={localDiscountAmount === "15%"}
+                          />
+                        </View>
+                      </View>
+                      <Text style={styles.newTotalLbl}>
+                        New Total: $
+                        {totalWithNewDiscount
+                          ? totalWithNewDiscount.toFixed(2)
+                          : cartSub.toFixed(2)}
+                      </Text>
+                      <TextInput
+                        placeholder="Enter Manager's Code"
+                        onChangeText={(text) => setcode(text)}
+                        style={styles.managerCodeInput}
                       />
                     </View>
                   </View>
-                  <Text style={styles.newTotalLbl}>
-                    New Total: $
-                    {totalWithNewDiscount
-                      ? totalWithNewDiscount.toFixed(2)
-                      : cartSub.toFixed(2)}
-                  </Text>
-                  <TextInput
-                    placeholder="Enter Manager's Code"
-                    onChangeText={(text) => setcode(text)}
-                    style={styles.managerCodeInput}
-                  />
+                  <View style={styles.confirmAndCancelBtnGroup}>
+                    <Pressable
+                      disabled={
+                        (!storeDetails.settingsPassword &&
+                          discountAmount !== "") ||
+                        (code.length > 0 && discountAmount !== "")
+                          ? false
+                          : true
+                      }
+                      onPress={() => {
+                        if (
+                          !storeDetails.settingsPassword ||
+                          storeDetails.settingsPassword === code
+                        ) {
+                          console.log("Discount Amount", localDiscountAmount);
+                          setDiscountAmount(localDiscountAmount);
+                          setdiscountModal(false);
+                        } else {
+                          alert("Incorrect Code");
+                        }
+                      }}
+                      style={styles.confirmBtn}
+                    >
+                      <Text style={styles.confirmLbl}>Confirm</Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => setdiscountModal(false)}
+                      style={styles.cancelBtn}
+                    >
+                      <Text style={styles.cancelLbl}>Cancel</Text>
+                    </Pressable>
+                  </View>
                 </View>
               </View>
-              <View style={styles.confirmAndCancelBtnGroup}>
-                <Pressable
-                  disabled={
-                    (!storeDetails.settingsPassword && discountAmount !== "") ||
-                    (code.length > 0 && discountAmount !== "")
-                      ? false
-                      : true
-                  }
-                  onPress={() => {
-                    if (
-                      !storeDetails.settingsPassword ||
-                      storeDetails.settingsPassword === code
-                    ) {
-                      console.log("Discount Amount", localDiscountAmount);
-                      setDiscountAmount(localDiscountAmount);
-                      setdiscountModal(false);
-                    } else {
-                      alert("Incorrect Code");
-                    }
-                  }}
-                  style={styles.confirmBtn}
-                >
-                  <Text style={styles.confirmLbl}>Confirm</Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => setdiscountModal(false)}
-                  style={styles.cancelBtn}
-                >
-                  <Text style={styles.cancelLbl}>Cancel</Text>
-                </Pressable>
-              </View>
-            </View>
-          </View>
-        </div>
-      </Pressable>
-    </Pressable>
+            </div>
+          </Pressable>
+        </Pressable>
+      </View>
+    </Modal>
   );
 };
 

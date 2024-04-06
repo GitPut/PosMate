@@ -117,7 +117,7 @@ function Signup() {
                     style={styles.emailInput}
                     placeholder="Enter phone number"
                     textContentType="telephoneNumber"
-                    value={email}
+                    value={phoneNumber}
                     onChangeText={(val) => setphoneNumber(val)}
                     onKeyPress={handleKeyDown}
                   />

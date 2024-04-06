@@ -1,21 +1,21 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
 
-function MostOrderItemsListItem(props) {
+function MostOrderItemsListItem({imageUrl, itemName, itemNumOfOrders, }) {
   return (
-    <View style={[styles.container, props.style]}>
+    <View style={[styles.container]}>
       <View style={styles.leftSide}>
         <Image
-          source={require("../assets/images/image_SsZa..png")}
+          source={{uri: imageUrl || "https://via.placeholder.com/70"}}
           resizeMode="contain"
           style={styles.itemImg}
         ></Image>
         <Text style={styles.itemName}>
-          {props.itemName || "Pepperoni Pizza"}
+          {itemName}
         </Text>
       </View>
       <Text style={styles.itemNumOfOrders}>
-        {props.itemNumOfOrders || "70"}
+        {itemNumOfOrders}
       </Text>
     </View>
   );
@@ -26,6 +26,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    height: 70,
+    width: 326,
   },
   leftSide: {
     width: 256,

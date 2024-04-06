@@ -10,64 +10,78 @@ import {
 import React, { useState } from "react";
 import { employeesState, setEmployeesState } from "state/state";
 import { Ionicons } from "@expo/vector-icons";
-import { auth, db } from "state/firebaseConfig";
 import EmployeeClockInItem from "./components/EmployeeClockInItem";
+import Modal from "react-native-modal";
 
-const ClockinModal = ({ setclockinModal }) => {
+const ClockinModal = ({ setclockinModal, clockinModal }) => {
   const { height, width } = useWindowDimensions();
   const employees = employeesState.use();
 
   return (
-    <Pressable
-      onPress={() => setclockinModal(false)}
-      style={{
-        justifyContent: "center",
-        alignItems: "center",
-        height: height,
-        width: width,
-      }}
-      activeOpacity={1}
-    >
-      <Pressable>
-        <div style={{ cursor: "default" }}>
-          <View style={styles.container}>
-            <View style={styles.closeIconContainer}>
-              <Pressable onPress={() => setclockinModal(false)}>
-                <Ionicons name="md-close" style={styles.closeIcon} />
-              </Pressable>
-            </View>
-            <View style={styles.secondAreaContainer}>
-              <Text style={styles.employeesClockIn}>
-                Employee&#39;s Clock-In
-              </Text>
-              <View style={styles.employeesScrollView}>
-                <ScrollView
-                  horizontal={false}
-                  contentContainerStyle={
-                    styles.employeesScrollView_contentContainerStyle
-                  }
-                >
-                  {employees.map((employee) => {
-                    const isClockedIn = employee.clockedIn;
+    <Modal isVisible={clockinModal} animationIn="fadeIn" animationOut="fadeOut">
+      <View
+        style={{
+          flex: 1,
+          height: "100%",
+          width: "100%",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Pressable
+          onPress={() => setclockinModal(false)}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: height,
+            width: width,
+          }}
+        >
+          <Pressable>
+            <div style={{ cursor: "default" }}>
+              <View style={styles.container}>
+                <View style={styles.closeIconContainer}>
+                  <Pressable onPress={() => setclockinModal(false)}>
+                    <Ionicons name="md-close" style={styles.closeIcon} />
+                  </Pressable>
+                </View>
+                <View style={styles.secondAreaContainer}>
+                  <Text style={styles.employeesClockIn}>
+                    Employee&#39;s Clock-In
+                  </Text>
+                  <View style={styles.employeesScrollView}>
+                    <ScrollView
+                      horizontal={false}
+                      contentContainerStyle={
+                        styles.employeesScrollView_contentContainerStyle
+                      }
+                    >
+                      {employees.map((employee) => {
+                        const isClockedIn = employee.clockedIn;
 
-                    return (
-                      <EmployeeClockInItem
-                        key={employee.id}
-                        style={styles.employeeClockInItem}
-                        employee={employee}
-                        employees={employees}
-                        setEmployeesState={setEmployeesState}
-                        isClockedIn={isClockedIn}
-                      />
-                    );
-                  })}
-                </ScrollView>
+                        return (
+                          <EmployeeClockInItem
+                            key={employee.id}
+                            style={styles.employeeClockInItem}
+                            employee={employee}
+                            employees={employees}
+                            setEmployeesState={setEmployeesState}
+                            isClockedIn={isClockedIn}
+                          />
+                        );
+                      })}
+                    </ScrollView>
+                  </View>
+                </View>
               </View>
-            </View>
-          </View>
-        </div>
-      </Pressable>
-    </Pressable>
+            </div>
+          </Pressable>
+        </Pressable>
+      </View>
+    </Modal>
   );
 };
 
@@ -108,7 +122,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   employeesScrollView_contentContainerStyle: {
-    height: 544,
+    height: '100%',
     width: 421,
     alignItems: "center",
     paddingTop: 3,

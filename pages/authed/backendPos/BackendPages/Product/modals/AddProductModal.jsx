@@ -19,6 +19,15 @@ import GeneralDropdown from "components/GeneralDropdown";
 import { Button } from "react-native";
 import GeneralSwitch from "components/GeneralSwitch";
 
+const customSort = (a, b) => {
+    // Handle cases where one or both items don't have a rank
+    const rankA = a.rank || Number.MAX_SAFE_INTEGER;
+    const rankB = b.rank || Number.MAX_SAFE_INTEGER;
+
+    // Compare based on ranks
+    return rankA - rankB;
+};
+
 function AddProductModal({
     addProductModal,
     setaddProductModal,
@@ -121,31 +130,53 @@ function AddProductModal({
                             .then((url) => {
                                 newProductUseRef.hasImage = true
                                 newProductUseRef.imageUrl = url
+                                if (newProductUseRef.hasImage && !selectedFile && !currentImgUrl) {
+                                    storage
+                                        .ref(auth.currentUser.uid + '/images/' + existingProduct.id).delete()
+                                    newProductUseRef.hasImage = false
+                                    newProductUseRef.imageUrl = null
+                                }
+
+                                copy[findIndex] = newProductUseRef;
+
+                                setUserStoreState({ categories: catalog.categories, products: copy.sort(customSort) })
+                                db.collection("users")
+                                    .doc(userS.uid)
+                                    .collection("products")
+                                    .doc(newProductUseRef.id.toString())
+                                    .set(newProductUseRef)
+                                if (onlineStoreDetails.onlineStoreSetUp) {
+                                    db.collection("public")
+                                        .doc(userS.uid)
+                                        .collection("products")
+                                        .doc(newProductUseRef.id.toString())
+                                        .set(newProductUseRef)
+                                }
                             });
                     })
-            }
+            } else {
+                if (newProductUseRef.hasImage && !selectedFile && !currentImgUrl) {
+                    storage
+                        .ref(auth.currentUser.uid + '/images/' + existingProduct.id).delete()
+                    newProductUseRef.hasImage = false
+                    newProductUseRef.imageUrl = null
+                }
 
-            if (newProductUseRef.hasImage && !selectedFile && !currentImgUrl) {
-                storage
-                    .ref(auth.currentUser.uid + '/images/' + existingProduct.id).delete()
-                newProductUseRef.hasImage = false
-                newProductUseRef.imageUrl = null
-            }
+                copy[findIndex] = newProductUseRef;
 
-            copy[findIndex] = newProductUseRef;
-
-            setUserStoreState({ categories: catalog.categories, products: copy })
-            db.collection("users")
-                .doc(userS.uid)
-                .collection("products")
-                .doc(newProductUseRef.id.toString())
-                .set(newProductUseRef)
-            if (onlineStoreDetails.onlineStoreSetUp) {
-                db.collection("public")
+                setUserStoreState({ categories: catalog.categories, products: copy.sort(customSort) })
+                db.collection("users")
                     .doc(userS.uid)
                     .collection("products")
                     .doc(newProductUseRef.id.toString())
                     .set(newProductUseRef)
+                if (onlineStoreDetails.onlineStoreSetUp) {
+                    db.collection("public")
+                        .doc(userS.uid)
+                        .collection("products")
+                        .doc(newProductUseRef.id.toString())
+                        .set(newProductUseRef)
+                }
             }
         } else {
             if (selectedFile) {
@@ -158,23 +189,36 @@ function AddProductModal({
                             .then((url) => {
                                 newProduct.hasImage = true
                                 newProduct.imageUrl = url
+                                db.collection("users")
+                                    .doc(userS.uid)
+                                    .collection("products")
+                                    .doc(newProduct.id.toString())
+                                    .set(newProduct)
+                                if (onlineStoreDetails.onlineStoreSetUp) {
+                                    db.collection("public")
+                                        .doc(userS.uid)
+                                        .collection("products")
+                                        .doc(newProduct.id.toString())
+                                        .set(newProduct)
+                                }
+                                setUserStoreState({ categories: catalog.categories, products: [...catalog.products, newProduct].sort(customSort) })
                             });
                     })
-            }
-
-            db.collection("users")
-                .doc(userS.uid)
-                .collection("products")
-                .doc(newProduct.id.toString())
-                .set(newProduct)
-            if (onlineStoreDetails.onlineStoreSetUp) {
-                db.collection("public")
+            } else {
+                db.collection("users")
                     .doc(userS.uid)
                     .collection("products")
                     .doc(newProduct.id.toString())
                     .set(newProduct)
+                if (onlineStoreDetails.onlineStoreSetUp) {
+                    db.collection("public")
+                        .doc(userS.uid)
+                        .collection("products")
+                        .doc(newProduct.id.toString())
+                        .set(newProduct)
+                }
+                setUserStoreState({ categories: catalog.categories, products: [...catalog.products, newProduct].sort(customSort) })
             }
-            // setUserStoreState({ categories: catalog.categories, products: [...catalog.products, newProduct] })
         }
         setaddProductModal(false)
         setexistingProduct(null)

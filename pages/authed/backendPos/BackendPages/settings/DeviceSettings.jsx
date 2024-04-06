@@ -246,6 +246,9 @@ function Index(props) {
                             <Pressable style={styles.updateDeviceBtn} activeOpacity={0.8}
                                 onPress={() => {
                                     db.collection('users').doc(auth.currentUser.uid).collection('devices').doc(deviceTree.devices[selectedDevice].docID).update(deviceTree.devices[selectedDevice])
+                                    if (deviceTree.devices[selectedDevice].id === myDeviceID) {
+                                        setMyDeviceDetailsState(deviceTree.devices[selectedDevice])
+                                    }
                                 }}
                             >
                                 <Text style={styles.saveDevice}>Save Device</Text>

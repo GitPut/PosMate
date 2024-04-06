@@ -14,8 +14,12 @@ import { useFonts } from "expo-font";
 import Axios from "axios";
 import { auth } from "state/firebaseConfig";
 import { useHistory } from "react-router-dom";
+import Modal from "react-native-modal";
 
-const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
+const SettingsPasswordModal = ({
+  setsettingsPasswordModalVis,
+  settingsPasswordModalVis,
+}) => {
   const { height, width } = useWindowDimensions();
   const [password, setpassword] = useState("");
   const storeDetails = storeDetailState.use();
@@ -68,91 +72,114 @@ const SettingsPasswordModal = ({ setsettingsPasswordModalVis, navigation }) => {
   };
 
   return (
-    <Pressable
-      onPress={() => setsettingsPasswordModalVis(false)}
-      style={{
-        justifyContent: "center",
-        alignItems: "center",
-        height: height,
-        width: width,
-      }}
-      activeOpacity={1}
+    <Modal
+      isVisible={settingsPasswordModalVis}
+      animationIn="fadeIn"
+      animationOut="fadeOut"
     >
-      <Pressable>
-        <div style={{ cursor: "default" }}>
-          <View style={styles.container}>
-            <View style={styles.topLabelSectionContainer}>
-              <Text style={styles.settingsLabel}>Settings</Text>
-              <Text style={styles.authorizationLabel}>Authorization</Text>
-            </View>
-            <View>
-              <TextInput
-                placeholder="Enter Password"
-                style={[
-                  styles.passwordTxtInput,
-                  !showPassword &&
-                    password.length !== 0 && { fontFamily: "Password" },
-                ]}
-                value={password}
-                onChangeText={(val) => setpassword(val)}
-                textContentType="none"
-                autoCorrect={false}
-                onKeyPress={handleKeyDown}
-              />
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "absolute",
-                  right: 5,
-                  top: 0,
-                }}
-              >
-                {!showPassword ? (
-                  <Ionicons
-                    name="eye"
-                    size={32}
-                    color="rgba(74,74,74,1)"
-                    onPress={() => setShowPassword((prev) => !prev)}
+      <View
+        style={{
+          flex: 1,
+          height: "100%",
+          width: "100%",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Pressable
+          onPress={() => setsettingsPasswordModalVis(false)}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: height,
+            width: width,
+          }}
+          activeOpacity={1}
+        >
+          <Pressable>
+            <div style={{ cursor: "default" }}>
+              <View style={styles.container}>
+                <View style={styles.topLabelSectionContainer}>
+                  <Text style={styles.settingsLabel}>Settings</Text>
+                  <Text style={styles.authorizationLabel}>Authorization</Text>
+                </View>
+                <View>
+                  <TextInput
+                    placeholder="Enter Password"
+                    style={[
+                      styles.passwordTxtInput,
+                      !showPassword &&
+                        password.length !== 0 && { fontFamily: "Password" },
+                    ]}
+                    value={password}
+                    onChangeText={(val) => setpassword(val)}
+                    textContentType="none"
+                    autoCorrect={false}
+                    onKeyPress={handleKeyDown}
                   />
-                ) : (
-                  <Ionicons
-                    name="eye-off"
-                    size={32}
-                    color="rgba(74,74,74,1)"
-                    onPress={() => setShowPassword((prev) => !prev)}
-                  />
+                  <View
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                      position: "absolute",
+                      right: 5,
+                      top: 0,
+                    }}
+                  >
+                    {!showPassword ? (
+                      <Ionicons
+                        name="eye"
+                        size={32}
+                        color="rgba(74,74,74,1)"
+                        onPress={() => setShowPassword((prev) => !prev)}
+                      />
+                    ) : (
+                      <Ionicons
+                        name="eye-off"
+                        size={32}
+                        color="rgba(74,74,74,1)"
+                        onPress={() => setShowPassword((prev) => !prev)}
+                      />
+                    )}
+                  </View>
+                </View>
+                {inccorectPass && (
+                  <Text style={{ marginBottom: 10 }}>
+                    Password is inccorect!
+                  </Text>
                 )}
+                <View style={styles.bottomSectionContainer}>
+                  <Pressable
+                    onPress={() => {
+                      if (password == storeDetails.settingsPassword) {
+                        setIsSignedInSettingsState(true);
+                        history.push("/authed/dashboard");
+                        setsettingsPasswordModalVis(false);
+                        setinccorectPass(false);
+                        localStorage.setItem("isAuthedBackend", true);
+                      } else {
+                        setinccorectPass(true);
+                      }
+                    }}
+                    style={styles.goBtn}
+                  >
+                    <Text style={styles.goBtnTxt}>Go</Text>
+                  </Pressable>
+                  <Pressable onPress={SendEmail}>
+                    <Text style={styles.forgotPasswordTxt}>
+                      Forgot Password?
+                    </Text>
+                  </Pressable>
+                </View>
               </View>
-            </View>
-            {inccorectPass && (
-              <Text style={{ marginBottom: 10 }}>Password is inccorect!</Text>
-            )}
-            <View style={styles.bottomSectionContainer}>
-              <Pressable
-                onPress={() => {
-                  if (password == storeDetails.settingsPassword) {
-                    setIsSignedInSettingsState(true);
-                    history.push("/authed/dashboard");
-                    setsettingsPasswordModalVis(false);
-                    setinccorectPass(false);
-                    localStorage.setItem("isAuthedBackend", true);
-                  } else {
-                    setinccorectPass(true);
-                  }
-                }}
-                style={styles.goBtn}
-              >
-                <Text style={styles.goBtnTxt}>Go</Text>
-              </Pressable>
-              <Pressable onPress={SendEmail}>
-                <Text style={styles.forgotPasswordTxt}>Forgot Password?</Text>
-              </Pressable>
-            </View>
-          </View>
-        </div>
-      </Pressable>
-    </Pressable>
+            </div>
+          </Pressable>
+        </Pressable>
+      </View>
+    </Modal>
   );
 };
 

@@ -80,28 +80,28 @@ function GeneralSettings() {
   const handleDataUpdate = () => {
     if (name !== null && phoneNumber !== null && address !== null) {
       setStoreDetailState({
-        name: name,
-        phoneNumber: phoneNumber,
-        address: address,
-        website: website,
-        deliveryPrice: deliveryPrice,
-        settingsPassword: settingsPassword,
-        taxRate: parseFloat(taxRate),
-        onlineStoreActive: onlineStoreDetails.onlineStoreActive,
-        acceptDelivery: acceptDelivery,
-        deliveryRange: deliveryRange,
+        name: name ? name : "",
+        phoneNumber: phoneNumber ? phoneNumber : "",
+        address: address ? address : "",
+        website: website ? website : "",
+        deliveryPrice: deliveryPrice ? deliveryPrice : "",
+        settingsPassword: settingsPassword ? settingsPassword : "",
+        taxRate: parseFloat(taxRate) >= 0 ? parseFloat(taxRate) : 13,
+        onlineStoreActive: onlineStoreDetails.onlineStoreActive ? onlineStoreDetails.onlineStoreActive : false,
+        acceptDelivery: acceptDelivery ? acceptDelivery : false,
+        deliveryRange: deliveryRange ? deliveryRange : "",
       });
       updateStoreDetails({
-        name: name,
-        phoneNumber: phoneNumber,
-        address: address,
-        website: website,
-        deliveryPrice: deliveryPrice,
-        settingsPassword: settingsPassword,
-        taxRate: parseFloat(taxRate),
-        onlineStoreActive: onlineStoreDetails.onlineStoreActive,
-        acceptDelivery: acceptDelivery,
-        deliveryRange: deliveryRange,
+        name: name ? name : "",
+        phoneNumber: phoneNumber ? phoneNumber : "",
+        address: address ? address : "",
+        website: website ? website : "",
+        deliveryPrice: deliveryPrice ? deliveryPrice : "",
+        settingsPassword: settingsPassword ? settingsPassword : "",
+        taxRate: parseFloat(taxRate) >= 0 ? parseFloat(taxRate) : 13,
+        onlineStoreActive: onlineStoreDetails.onlineStoreActive ? onlineStoreDetails.onlineStoreActive : false,
+        acceptDelivery: acceptDelivery ? acceptDelivery : false,
+        deliveryRange: deliveryRange ? deliveryRange : "",
       });
       // if (customBtnExtraFunction) {
       //   customBtnExtraFunction();
@@ -152,21 +152,22 @@ function GeneralSettings() {
         </View>
         <View style={styles.rightSideGroup}>
           <InputWithLabel
-            lbl="Tax Rate (%)"
+            lbl="Tax Rate - Default (13%)"
             style={styles.taxRateInput}
-            placeholder='Enter tax rate (%)'
+            placeholder='Enter tax rate (Ex. 13%)'
             onChangeText={(val) => {
-              const re = /^[0-9]+$/;
+              // const re = /^[0-9]+$/;
 
-              if (re.test(val)) {
-                if (parseFloat(val) > 100) {
-                  settaxRate(val);
-                }
-              } else if (!val) {
-                settaxRate("0");
-              }
+              // if (re.test(val)) {
+              //   if (parseFloat(val) > 100) {
+              //     settaxRate(val);
+              //   }
+              // } else if (!val) {
+              //   settaxRate("");
+              // }
+              settaxRate(val);
             }}
-            value={taxRate ? taxRate.toString() : "0"}
+            value={taxRate ? taxRate.toString() : ""}
           />
           <View
             style={[styles.taxRateInput, { justifyContent: "space-between", }]}

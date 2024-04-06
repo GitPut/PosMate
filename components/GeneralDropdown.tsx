@@ -15,7 +15,7 @@ function GeneralDropdown({
   value,
   setValue,
   options,
-  scrollY,
+  scrollY, 
   isDefaultValueDropdown,
 }) {
   const dropdownRef = useRef(); // Reference to the original button

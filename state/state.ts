@@ -121,9 +121,19 @@ export const setSelectedProductState = (val: any): void => {
   selectedProductState.set(val);
 };
 
-export const customersList = entity<any[]>([]);
+interface Customer {
+  name: string;
+  phone: string;
+  address: string | null;
+  buzzCode: string | null;
+  unitNumber: string | null;
+  orders: any[];
+  id: string;
+}
 
-export const setCustomersList = (val: any[]): void => {
+export const customersList = entity<Customer[]>([]);
+
+export const setCustomersList = (val: Customer[]): void => {
   customersList.set(val);
 };
 

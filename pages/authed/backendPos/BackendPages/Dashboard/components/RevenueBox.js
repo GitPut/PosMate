@@ -10,7 +10,7 @@ function RevenueBox(props) {
         style={styles.moneyIcon}
       ></Image>
       <View style={styles.rightSide}>
-        <Text style={styles.revenueValue}>{props.revenueValue || "$270"}</Text>
+        <Text style={styles.revenueValue}>${props.revenueValue}</Text>
         <Text style={styles.revenue}>Revenue</Text>
       </View>
     </View>

@@ -29,6 +29,8 @@ function FinishPaymentCash({
     }
     const data = [
       "\x1B" + "\x40", // init
+      "                                                                              ", // line break
+      "\x0A",
       "\x1B" + "\x61" + "\x31", // center align
       storeDetails.name,
       "\x0A",
@@ -87,10 +89,21 @@ function FinishPaymentCash({
         })
         .then(qz.websocket.disconnect)
         .catch(function (err) {
-          // console.error(err);
-          alert(
-            "An error occured while trying to print. Try refreshing the page and trying again."
-          );
+          if (
+            err.message.includes("A printer must be specified before printing")
+          ) {
+            alert("You must specify a printer in device settings");
+          } else if (
+            err.message.includes("Unable to establish connection with QZ")
+          ) {
+            alert(
+              "You do not have Divine POS Helper installed. Please download from general settings"
+            );
+          } else {
+            alert(
+              "An error occured while trying to print. Try refreshing the page and trying again."
+            );
+          }
         });
     } else {
       alert('Please set up a device and printer in "Settings -> Devices"');

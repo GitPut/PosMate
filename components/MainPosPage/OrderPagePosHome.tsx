@@ -1,18 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Pressable,
-  Image,
-  Text,
-  ScrollView,
-  useWindowDimensions,
-} from "react-native";
-import CategoryBtn from "./components/cartOrder/CategoryBtn";
-import ItemContainer from "./components/cartOrder/ItemContainer";
-import CartItem from "./components/cartOrder/CartItem";
-import UntitledComponent from "./components/cartOrder/UntitledComponent";
-import { Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import {
   cartState,
   customersList,
@@ -20,16 +7,12 @@ import {
   setCartState,
   storeDetailState,
   userStoreState,
-  setCustomersList,
-  addCartState,
   setIsSignedInSettingsState,
+  setCustomersList,
 } from "state/state";
-import ItemContainerMobile from "./components/cartOrder/ItemContainerMobile";
-import Modal from "react-native-modal";
 import { useHistory } from "react-router-dom";
 import { auth, db } from "state/firebaseConfig";
 import ReceiptPrint from "components/functional/ReceiptPrint";
-import { logout } from "state/firebaseFunctions";
 import CashScreen from "components/modals/PayByCashModal";
 import PendingOrderModal from "components/modals/PendingOrdersModal/PendingOrdersModal";
 import SettingsPasswordModal from "components/modals/SettingsPasswordModal";
@@ -37,18 +20,19 @@ import DiscountModal from "components/modals/DiscountModal/DiscountModal";
 import PhoneOrderModal from "components/modals/PhoneOrderModal/PhoneOrderModal";
 import SavedCustomersModal from "components/modals/SavedCustomersModal/SavedCustomersModal";
 import ClockinModal from "components/modals/ClockInModal/ClockinModal";
+import LeftMenuBar from "./components/LeftMenuBar";
+import Cart from "./components/Cart";
+import Modal from "react-native-modal";
+import Print from "./components/Cart/Print";
+import CategorySection from "./components/CategorySection";
+import ProductsSection from "./components/ProductsSection";
 
-interface OrderPagePosHomeProps {
-  navigation: any; // Replace 'any' with the appropriate type for the 'navigation' prop
-}
-
-function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
+function OrderPagePosHome() {
   const { height, width } = useWindowDimensions();
   const catalog = userStoreState.use();
   const [section, setsection] = useState(
     catalog.categories.length > 0 ? catalog.categories[0] : ""
   );
-  const [cartOpen, setcartOpen] = useState(false);
   const [deliveryModal, setDeliveryModal] = useState(false);
   const [cashModal, setCashModal] = useState(false);
   const [ongoingDelivery, setOngoingDelivery] = useState(null);
@@ -75,8 +59,9 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
   const [clockinModal, setclockinModal] = useState(false);
   const [discountModal, setdiscountModal] = useState(false);
   const [discountAmount, setDiscountAmount] = useState(null);
+  const [cartNote, setcartNote] = useState(null);
 
-  function parseDate(input) {
+  function parseDate(input: Date) {
     // Check if the input is a Date object
     if (Object.prototype.toString.call(input) === "[object Date]") {
       if (!isNaN(input.getTime())) {
@@ -131,6 +116,12 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
                   )
                 ) {
                   alert("You must specify a printer in device settings");
+                } else if (
+                  err.message.includes("Unable to establish connection with QZ")
+                ) {
+                  alert(
+                    "You do not have Divine POS Helper installed. Please download from general settings"
+                  );
                 } else {
                   alert(
                     "An error occured while trying to print. Try refreshing the page and trying again."
@@ -196,332 +187,6 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
     }
   }, [cart, deliveryChecked, discountAmount]);
 
-  const Print = (method, dontAddToOngoing) => {
-    let newVal = 0;
-    let finalCart = cart
-    for (let i = 0; i < cart.length; i++) {
-      try {
-        if (cart[i].quantity > 1) {
-          newVal += parseFloat(cart[i].price) * cart[i].quantity;
-          // console.log("Cart item quantity ", cart[i].quantity);
-        } else {
-          newVal += parseFloat(cart[i].price);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    if (deliveryChecked) {
-      newVal += parseFloat(storeDetails.deliveryPrice);
-    }
-
-    if (discountAmount) {
-      if (discountAmount.includes("%")) {
-        const discount = parseFloat(discountAmount.replace("%", "")) / 100;
-        finalCart.push(
-          {
-            name: "Cart Discount: " + discount * 100 + "%",
-            price: -(newVal * discount),
-            description: "Discount Applied to Cart",
-            options: [],
-            extraDetails: null,
-            quantityNotChangable: true,
-            percent: discount,
-          }
-        );
-      } else {
-        finalCart.push(
-          {
-            name: "Cart Discount: " + discountAmount,
-            price: -parseFloat(discountAmount),
-            description: "Discount Applied to Cart",
-            options: [],
-            extraDetails: null,
-            quantityNotChangable: true,
-          }
-        );
-      }
-    }
-
-    if (!myDeviceDetails.id) {
-      return alert("Please set up a device in Settings -> Devices");
-    }
-
-    if (savedCustomerDetails) {
-      if (savedCustomerDetails.orders?.length > 0) {
-        db.collection("users")
-          .doc(auth.currentUser?.uid)
-          .collection("customers")
-          .doc(savedCustomerDetails.id)
-          .update({
-            orders: [...savedCustomerDetails.orders, { finalCart }],
-          });
-        const indexOfCustomer = customers.findIndex(
-          (customer) => customer.id === savedCustomerDetails.id
-        );
-        const newCustomers = structuredClone(customers);
-        newCustomers[indexOfCustomer].orders.push({ finalCart });
-        setCustomersList(newCustomers);
-      } else {
-        db.collection("users")
-          .doc(auth.currentUser?.uid)
-          .collection("customers")
-          .doc(savedCustomerDetails.id)
-          .update({
-            orders: [{ finalCart }],
-          });
-        const indexOfCustomer = customers.findIndex(
-          (customer) => customer.id === savedCustomerDetails.id
-        );
-        const newCustomers = structuredClone(customers);
-        newCustomers[indexOfCustomer].orders = [{ finalCart }];
-        setCustomersList(newCustomers);
-      }
-    }
-
-    const transNum = Math.random().toString(36).substr(2, 9);
-
-    if (method === "deliveryOrder") {
-      const today = new Date();
-
-      const element = {
-        date: today,
-        transNum: transNum,
-        method: "deliveryOrder",
-        cart: finalCart,
-        customer: {
-          name: name,
-          phone: phone,
-          address: address,
-          buzzCode: buzzCode,
-          unitNumber: unitNumber,
-        },
-      };
-
-      const data = ReceiptPrint(element, storeDetails);
-
-      if (!dontAddToOngoing) {
-        console.log("Adding to pending orders");
-        db.collection("users")
-          .doc(auth.currentUser?.uid)
-          .collection("pendingOrders")
-          .add({
-            date: today,
-            transNum: transNum,
-            method: "deliveryOrder",
-            cart: finalCart,
-            total: data.total,
-            customer: {
-              name: name,
-              phone: phone,
-              address: address ? address : null,
-              buzzCode: buzzCode,
-              unitNumber: unitNumber,
-            },
-          });
-      }
-
-      if (
-        myDeviceDetails.sendPrintToUserID &&
-        myDeviceDetails.useDifferentDeviceToPrint
-      ) {
-        console.log("Sending print to different user");
-        db.collection("users")
-          .doc(auth.currentUser?.uid)
-          .collection("devices")
-          .doc(myDeviceDetails.sendPrintToUserID.value)
-          .collection("printRequests")
-          .add({
-            printData: data.data,
-          });
-      } else {
-        const qz = require("qz-tray");
-        qz.websocket
-          .connect()
-          .then(function () {
-            const config = qz.configs.create(myDeviceDetails.printToPrinter);
-            return qz.print(config, data.data);
-          })
-          .then(qz.websocket.disconnect)
-          .catch(function (err) {
-            console.error("error printing: ", err);
-            if (
-              err.message.includes(
-                "A printer must be specified before printing"
-              )
-            ) {
-              alert("You must specify a printer in device settings");
-            } else {
-              alert(
-                "An error occured while trying to print. Try refreshing the page and trying again."
-              );
-            }
-          });
-      }
-
-      setCartState([]);
-      setDiscountAmount(null);
-      setDeliveryModal(false);
-    } else if (method === "pickupOrder") {
-      const today = new Date();
-
-      const element = {
-        date: today,
-        transNum: transNum,
-        method: "pickupOrder",
-        cart: finalCart,
-        customer: {
-          name: name,
-          phone: phone,
-          // address: address,
-        },
-      };
-
-      const data = ReceiptPrint(element, storeDetails);
-
-      if (!dontAddToOngoing) {
-        console.log("Adding to pending orders");
-        db.collection("users")
-          .doc(auth.currentUser?.uid)
-          .collection("pendingOrders")
-          .add({
-            date: today,
-            transNum: transNum,
-            method: "pickupOrder",
-            cart: finalCart,
-            total: data.total,
-            customer: {
-              name: name,
-              phone: phone,
-              address: address ? address : "null",
-            },
-          });
-      }
-
-      if (
-        myDeviceDetails.sendPrintToUserID &&
-        myDeviceDetails.useDifferentDeviceToPrint
-      ) {
-        console.log("Sending print to different user");
-        db.collection("users")
-          .doc(auth.currentUser?.uid)
-          .collection("devices")
-          .doc(myDeviceDetails.sendPrintToUserID.value)
-          .collection("printRequests")
-          .add({
-            printData: data.data,
-          });
-      } else {
-        const qz = require("qz-tray");
-        qz.websocket
-          .connect()
-          .then(function () {
-            const config = qz.configs.create(myDeviceDetails.printToPrinter);
-            return qz.print(config, data.data);
-          })
-          .then(qz.websocket.disconnect)
-          .catch(function (err) {
-            console.error("error printing: ", err);
-            if (
-              err.message.includes(
-                "A printer must be specified before printing"
-              )
-            ) {
-              alert("You must specify a printer in device settings");
-            } else {
-              alert(
-                "An error occured while trying to print. Try refreshing the page and trying again."
-              );
-            }
-          });
-      }
-
-      setCartState([]);
-      setDeliveryModal(false);
-      setName(null);
-      setPhone(null);
-      setAddress(null);
-      setUnitNumber(null)
-      setBuzzCode(null)
-      setDiscountAmount(null);
-      setDeliveryChecked(false);
-    } else {
-      const today = new Date();
-      const element = {
-        date: today,
-        transNum: transNum,
-        method: "inStoreOrder",
-        cart: finalCart,
-        customer: {
-          name: name,
-          phone: phone,
-          address: address,
-        },
-        changeDue: changeDue,
-        paymentMethod: method,
-      };
-
-      const data = ReceiptPrint(element, storeDetails);
-
-      db.collection("users")
-        .doc(auth.currentUser?.uid)
-        .collection("pendingOrders")
-        .add({
-          date: today,
-          transNum: transNum,
-          total: data.total,
-          method: "inStoreOrder",
-          paymentMethod: method,
-          cart: finalCart,
-        });
-      if (
-        myDeviceDetails.sendPrintToUserID &&
-        myDeviceDetails.useDifferentDeviceToPrint
-      ) {
-        console.log("Sending print to different user");
-        db.collection("users")
-          .doc(auth.currentUser?.uid)
-          .collection("devices")
-          .doc(myDeviceDetails.sendPrintToUserID.value)
-          .collection("printRequests")
-          .add({
-            printData: data.data,
-          });
-      } else {
-        const qz = require("qz-tray");
-        qz.websocket
-          .connect()
-          .then(function () {
-            const config = qz.configs.create(myDeviceDetails.printToPrinter);
-            return qz.print(config, data.data);
-          })
-          .then(qz.websocket.disconnect)
-          .catch(function (err) {
-            console.error("error printing: ", err);
-            if (
-              err.message.includes(
-                "A printer must be specified before printing"
-              )
-            ) {
-              alert("You must specify a printer in device settings");
-            } else {
-              alert(
-                "An error occured while trying to print. Try refreshing the page and trying again."
-              );
-            }
-          });
-      }
-    }
-
-    setCartState([]);
-    setName(null);
-    setPhone(null);
-    setAddress(null);
-    setDeliveryChecked(false);
-    setChangeDue(null);
-    setDiscountAmount(null);
-  };
-
   useEffect(() => {
     catalog.products.map((product, index) => {
       if (product.category === section) {
@@ -532,255 +197,24 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
     });
   }, [section]);
 
-  const CheckoutBtn = () => {
-    if (updatingOrder) {
-      return (
-        <View
-          style={{
-            flexDirection: "row",
-            width: "90%",
-            alignSelf: "center",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 10,
-          }}
-        >
-          <Pressable
-            style={styles.checkoutBtn}
-            disabled={cart.length < 1}
-            onPress={() => {
-              db.collection("users")
-                .doc(auth.currentUser?.uid)
-                .collection("pendingOrders")
-                .doc(updatingOrder.id)
-                .delete();
-
-              Print(deliveryChecked ? "deliveryOrder" : "pickupOrder", false);
-              setOngoingDelivery(null);
-              setName("");
-              setPhone("");
-              setAddress(null);
-              setDeliveryChecked(false);
-              setupdatingOrder(false);
-              setsavedCustomerDetails(null);
-              setDiscountAmount(null);
-            }}
-          >
-            <Text style={styles.checkoutLbl}>Update</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.checkoutBtn, { backgroundColor: "red" }]}
-            // disabled={cart.length < 1}
-            onPress={() => {
-              setCartState([]);
-              setName("");
-              setPhone("");
-              setAddress(null);
-              setDeliveryChecked(false);
-              setOngoingDelivery(null);
-              setupdatingOrder(false);
-              setsavedCustomerDetails(null);
-              setDiscountAmount(null);
-              setBuzzCode("");
-              setUnitNumber("");
-            }}
-          >
-            <Text style={styles.checkoutLbl}>Cancel</Text>
-          </Pressable>
-        </View>
-      );
-    }
-
-    if (!ongoingDelivery) {
-      return (
-        <View
-          style={{
-            flexDirection: "row",
-            width: "90%",
-            alignSelf: "center",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 10,
-          }}
-        >
-          <Pressable
-            style={styles.checkoutBtn}
-            onPress={() => setCashModal(true)}
-            disabled={cart.length < 1 || ongoingDelivery}
-          >
-            <Text style={styles.checkoutLbl}>Cash</Text>
-          </Pressable>
-          <Pressable
-            style={styles.checkoutBtn}
-            onPress={() => {
-              Print("Card");
-              setDiscountAmount(null);
-            }}
-            disabled={cart.length < 1 || ongoingDelivery}
-          >
-            <Text style={styles.checkoutLbl}>Card</Text>
-          </Pressable>
-        </View>
-      );
-    }
-    if (ongoingDelivery && cart.length > 0) {
-      return (
-        <Pressable
-          style={styles.checkoutBtn}
-          onPress={() => {
-            Print(deliveryChecked ? "deliveryOrder" : "pickupOrder", false);
-            setOngoingDelivery(null);
-            setName("");
-            setPhone("");
-            setAddress(null);
-            setDeliveryChecked(false);
-            setDiscountAmount(null);
-          }}
-        >
-          <Text style={styles.checkoutLbl}>Checkout</Text>
-        </Pressable>
-      );
-    } else {
-      return (
-        <Pressable
-          style={styles.checkoutBtn}
-          onPress={() => {
-            setOngoingDelivery(null);
-            setDeliveryChecked(false);
-            setName(null);
-            setPhone(null);
-            setAddress(null);
-            setChangeDue(null);
-            setDiscountAmount(null);
-          }}
-        >
-          <Text style={styles.checkoutLbl}>Cancel</Text>
-        </Pressable>
-      );
-    }
-  };
-
   return (
     <View style={[styles.container, { maxHeight: height, maxWidth: width }]}>
       {width > 1250 && (
-        <View style={styles.leftMenuBarContainer}>
-          <View>
-            <Pressable
-              style={[
-                !ongoingOrderListModal &&
-                !clockinModal &&
-                !deliveryModal &&
-                !settingsPasswordModalVis
-                  ? styles.activeBtn
-                  : styles.notActiveBtn,
-              ]}
-            >
-              <Entypo
-                name="menu"
-                style={[
-                  styles.menuIcon,
-                  !ongoingOrderListModal &&
-                  !clockinModal &&
-                  !deliveryModal &&
-                  !settingsPasswordModalVis
-                    ? { color: "white" }
-                    : { color: "black" },
-                ]}
-              />
-            </Pressable>
-            <Pressable
-              style={[
-                ongoingOrderListModal ? styles.activeBtn : styles.notActiveBtn,
-              ]}
-              onPress={() => {
-                setongoingOrderListModal(true);
-              }}
-            >
-              <img
-                src={require("./assets/images/pendingOrderIcon.png")}
-                style={
-                  ongoingOrderListModal
-                    ? {
-                        filter: "invert(100%)",
-                        width: 40,
-                        height: 40,
-                      }
-                    : { width: 40, height: 40 }
-                }
-              />
-            </Pressable>
-            <Pressable
-              style={[clockinModal ? styles.activeBtn : styles.notActiveBtn]}
-              onPress={() => {
-                setclockinModal(true);
-              }}
-            >
-              <img
-                src={require("./assets/images/clockInIcon.png")}
-                style={
-                  clockinModal
-                    ? {
-                        filter: "invert(100%)",
-                        width: 40,
-                        height: 40,
-                      }
-                    : { width: 40, height: 40 }
-                }
-              />
-            </Pressable>
-            <Pressable
-              style={[deliveryModal ? styles.activeBtn : styles.notActiveBtn]}
-              onPress={() => {
-                setDeliveryModal(true);
-              }}
-            >
-              <img
-                src={require("./assets/images/phoneOrderIcon.png")}
-                style={
-                  deliveryModal
-                    ? {
-                        filter: "invert(100%)",
-                        width: 40,
-                        height: 40,
-                      }
-                    : { width: 40, height: 40 }
-                }
-              />
-            </Pressable>
-            <Pressable
-              style={[
-                settingsPasswordModalVis
-                  ? styles.activeBtn
-                  : styles.notActiveBtn,
-              ]}
-              onPress={() => {
-                if (storeDetails.settingsPassword?.length > 0) {
-                  setsettingsPasswordModalVis(true);
-                } else {
-                  setIsSignedInSettingsState(true);
-                  history.push("/authed/dashboard");
-                  localStorage.setItem("isAuthedBackend", true);
-                }
-              }}
-            >
-              <img
-                src={require("./assets/images/settingsIcon.png")}
-                style={
-                  settingsPasswordModalVis
-                    ? {
-                        filter: "invert(100%)",
-                        width: 40,
-                        height: 40,
-                      }
-                    : { width: 40, height: 40 }
-                }
-              />
-            </Pressable>
-          </View>
-          <Pressable onPress={logout}>
-            <Feather name="log-out" style={styles.icon}></Feather>
-          </Pressable>
-        </View>
+        <LeftMenuBar
+          setongoingOrderListModal={setongoingOrderListModal}
+          setclockinModal={setclockinModal}
+          setDeliveryModal={setDeliveryModal}
+          setdiscountModal={setdiscountModal}
+          setsettingsPasswordModalVis={setsettingsPasswordModalVis}
+          ongoingOrderListModal={ongoingOrderListModal}
+          clockinModal={clockinModal}
+          deliveryModal={deliveryModal}
+          discountModal={discountModal}
+          settingsPasswordModalVis={settingsPasswordModalVis}
+          setIsSignedInSettingsState={setIsSignedInSettingsState}
+          history={history}
+          storeDetails={storeDetails}
+        />
       )}
       <View
         style={[
@@ -789,632 +223,109 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
           width < 1000 && { width: "100%" },
         ]}
       >
-        {width < 1000 && (
-          <View
-            style={{
-              flexDirection: "row",
-              width: "90%",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 10,
-              marginTop: 10,
-            }}
-          >
-            <Pressable
-              onPress={() => {
-                // setpage(1);
-              }}
-              style={{
-                backgroundColor: "#1D294E",
-                borderRadius: 10,
-                justifyContent: "center",
-                alignItems: "center",
-                width: 34,
-                height: 34,
-              }}
-            >
-              <Feather name="log-out" style={{ color: "white" }} size={20} />
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                setcartOpen(true);
-              }}
-              style={{
-                backgroundColor: "#1D294E",
-                borderRadius: 10,
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: 58,
-                height: 34,
-                flexDirection: "row",
-                padding: 5,
-              }}
-            >
-              <Feather
-                name="shopping-cart"
-                style={{ color: "white" }}
-                size={20}
-              />
-              <Text style={{ color: "white", fontSize: 20 }}>
-                {cart.length}
-              </Text>
-            </Pressable>
-          </View>
-        )}
-        {/* {width > 1000 && (
-          <View
-            style={[
-              styles.bannerContainer,
-              width < 1000 && {
-                height: 100,
-                justifyContent: "center",
-                alignItems: "center",
-              },
-            ]}
-          >
-            <Image
-              source={require("./assets/images/image_onW3..png")}
-              resizeMode="contain"
-              style={[
-                styles.logo,
-                width < 1000 && { height: 60, maxWidth: 250 },
-              ]}
-            ></Image>
-          </View>
-        )} */}
-        <View style={styles.categoryContainer}>
-          <Text style={styles.lblTxt}>Menu Category</Text>
-          <View style={styles.scrollArea}>
-            <ScrollView
-              horizontal={true}
-              contentContainerStyle={styles.scrollArea_contentContainerStyle}
-            >
-              {catalog.categories?.map((category, index) => {
-                if (
-                  catalog.products.filter(
-                    (x) => x.category === category && x.hasImage
-                  ).length > 0
-                ) {
-                  return (
-                    <CategoryBtn
-                      key={index}
-                      category={category}
-                      onPress={() => {
-                        setsection(category);
-                      }}
-                      isSelected={section === category}
-                      style={styles.activeCategoryBtn}
-                      imageUrl={
-                        catalog.products[
-                          catalog.products.findIndex(
-                            (x) => x.category === category && x.hasImage
-                          )
-                        ]?.imageUrl
-                      }
-                    />
-                  );
-                } else {
-                  return (
-                    <CategoryBtn
-                      key={index}
-                      category={category}
-                      onPress={() => {
-                        setsection(category);
-                      }}
-                      isSelected={section === category}
-                      style={styles.categoryBtn}
-                      imageUrl={null}
-                    />
-                  );
-                }
-              })}
-            </ScrollView>
-          </View>
-        </View>
-        <View style={styles.scrollAreaProducts}>
-          <ScrollView
-            contentContainerStyle={
-              styles.scrollAreaProducts_contentContainerStyle
-            }
-          >
-            {catalog.products.map((product, index) => (
-              <ItemContainer
-                product={product}
-                productIndex={index}
-                key={index}
-                userUid={catalog.docID}
-                style={styles.itemContainer}
-              />
-            ))}
-          </ScrollView>
-        </View>
+        <CategorySection
+          catalog={catalog}
+          section={section}
+          setsection={setsection}
+        />
+        <ProductsSection catalog={catalog} />
       </View>
-      {width > 1000 ? (
-        <View
-          style={[
-            styles.cartContainer,
-            width > 1300 ? { width: "30%" } : { width: "37%" },
-          ]}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "90%",
-            }}
-          >
-            <Text style={styles.myCartTxt}>My Cart</Text>
-            {cart.length > 0 ? (
-              <Pressable
-                style={{
-                  borderRadius: 10,
-                  height: 40,
-                  width: 40,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "#1a2951",
-                }}
-                onPress={() => {
-                  setCartState([]);
-                  setDiscountAmount(null);
-                }}
-              >
-                <MaterialIcons
-                  name="clear"
-                  style={{ color: "white" }}
-                  size={30}
-                />
-              </Pressable>
-            ) : (
-              <View style={{ height: 40, width: 40 }} />
-            )}
-          </View>
-          <View style={styles.cartItems}>
-            {cart.length > 0 ? (
-              <ScrollView
-                horizontal={false}
-                contentContainerStyle={styles.cartItems_contentContainerStyle}
-              >
-                {cart?.map((cartItem, index) => (
-                  <CartItem
-                    style={styles.cartItem1}
-                    key={index}
-                    cartItem={cartItem}
-                    index={index}
-                    removeAction={() => {
-                      console.log("Removing");
-                      const local = structuredClone(cart);
-                      local.splice(index, 1);
-                      setCartState(local);
-                    }}
-                    decreaseAction={() => {
-                      const local = structuredClone(cart);
-                      local[index].quantity--;
-                      setCartState(local);
-                    }}
-                    increaseAction={() => {
-                      const local = structuredClone(cart);
-                      if (local[index].quantity) {
-                        local[index].quantity++;
-                      } else {
-                        local[index].quantity = 2;
-                      }
-                      setCartState(local);
-                    }}
-                  />
-                ))}
-              </ScrollView>
-            ) : (
-              <View
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={require("./assets/images/noItemsImg.png")}
-                  style={{
-                    width: 200,
-                    height: "80%",
-                    resizeMode: "contain",
-                  }}
-                />
-              </View>
-            )}
-          </View>
-          <View style={styles.totalsContainer}>
-            <View style={styles.topGroupTotalsContainer}>
-              <View>
-                <UntitledComponent
-                  amountValue={
-                    discountAmount
-                      ? discountAmount.includes("%")
-                        ? discountAmount
-                        : `$${discountAmount}`
-                      : "N/A"
-                  }
-                  amountLbl="Discount"
-                  style={styles.discountRow}
-                />
-                {discountAmount && (
-                  <Pressable
-                    style={{
-                      borderRadius: 30,
-                      height: 22,
-                      width: 22,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: "red",
-                      position: "absolute",
-                      right: -35,
-                    }}
-                    onPress={() => {
-                      setDiscountAmount(null);
-                    }}
-                  >
-                    <MaterialIcons
-                      name="clear"
-                      style={{ color: "white" }}
-                      size={20}
-                    />
-                  </Pressable>
-                )}
-              </View>
-              {deliveryChecked && parseFloat(storeDetails.deliveryPrice) && (
-                <UntitledComponent
-                  amountValue={`$${parseFloat(
-                    storeDetails.deliveryPrice
-                  ).toFixed(2)}`}
-                  amountLbl="Delivery"
-                  style={styles.discountRow}
-                />
-              )}
-              <UntitledComponent
-                amountValue={
-                  deliveryChecked &&
-                  parseFloat(storeDetails.deliveryPrice) &&
-                  cartSub > 0
-                    ? `$${(
-                        cartSub - parseFloat(storeDetails.deliveryPrice)
-                      ).toFixed(2)}`
-                    : `$${cartSub.toFixed(2)}`
-                }
-                amountLbl="Subtotal"
-                style={styles.subtotalRow}
-              />
-              <UntitledComponent
-                amountValue={`$${(
-                  cartSub *
-                  (storeDetails.taxRate ? storeDetails.taxRate / 100 : 0.13)
-                ).toFixed(2)}`}
-                amountLbl="Tax"
-                style={styles.taxRow}
-              />
-            </View>
-            <View style={styles.totalRowGroup}>
-              <View style={styles.totalRow}>
-                <Text style={styles.total2}>Total</Text>
-                <Text style={styles.totalValue}>
-                  $
-                  {cartSub > 0
-                    ? (
-                        parseFloat(
-                          deliveryChecked &&
-                            parseFloat(storeDetails.deliveryPrice) &&
-                            cartSub > 0
-                            ? (
-                                cartSub - parseFloat(storeDetails.deliveryPrice)
-                              ).toFixed(2)
-                            : cartSub.toFixed(2)
-                        ) +
-                        parseFloat(
-                          (
-                            cartSub *
-                            (storeDetails.taxRate
-                              ? parseFloat(storeDetails.taxRate) / 100
-                              : 0.13)
-                          ).toFixed(2)
-                        )
-                      ).toFixed(2)
-                    : "0.00"}
-                </Text>
-              </View>
-              <Pressable
-                style={styles.discountCodeBtn}
-                onPress={() => setdiscountModal(true)}
-              >
-                <Text style={styles.discountCode}>Discount Code</Text>
-              </Pressable>
-            </View>
-          </View>
-          <CheckoutBtn />
-        </View>
-      ) : (
-        <Modal
-          isVisible={cartOpen}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          style={{ margin: 0 }}
-        >
-          <View
-            style={{
-              width: width,
-              height: height,
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              backgroundColor: "white",
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                width: "90%",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: 10,
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  setcartOpen(false);
-                }}
-              >
-                <Feather
-                  onPress={() => {
-                    setcartOpen(false);
-                  }}
-                  name="chevron-down"
-                  style={{ color: "grey" }}
-                  size={40}
-                />
-              </Pressable>
-              <View
-                style={{
-                  backgroundColor: "#1D294E",
-                  borderRadius: 10,
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: 80,
-                  height: 40,
-                  flexDirection: "row",
-                  padding: 15,
-                }}
-              >
-                <Feather
-                  name="shopping-cart"
-                  style={{ color: "white" }}
-                  size={22}
-                />
-                <Text style={{ color: "white", fontSize: 20 }}>
-                  {cart.length}
-                </Text>
-              </View>
-            </View>
-            <Text style={styles.myCartTxt}>My Cart</Text>
-            {cart.length > 0 ? (
-              <View style={styles.cartItems}>
-                <ScrollView
-                  horizontal={false}
-                  contentContainerStyle={styles.cartItems_contentContainerStyle}
-                >
-                  {cart?.map((cartItem, index) => (
-                    <CartItem
-                      style={styles.cartItem1}
-                      key={index}
-                      cartItem={cartItem}
-                      index={index}
-                      removeAction={() => {
-                        console.log("Removing");
-                        const local = structuredClone(cart);
-                        local.splice(index, 1);
-                        setCartState(local);
-                      }}
-                      decreaseAction={() => {
-                        const local = structuredClone(cart);
-                        local[index].quantity--;
-                        setCartState(local);
-                      }}
-                      increaseAction={() => {
-                        const local = structuredClone(cart);
-                        if (local[index].quantity) {
-                          local[index].quantity++;
-                        } else {
-                          local[index].quantity = 2;
-                        }
-                        setCartState(local);
-                      }}
-                    />
-                  ))}
-                </ScrollView>
-              </View>
-            ) : (
-              <Image
-                source={require("./assets/images/noItemsImg.png")}
-                style={{ width: 200, height: "35%", resizeMode: "contain" }}
-              />
-            )}
-            <View style={[styles.totalsContainer, { height: 150 }]}>
-              <View style={styles.topGroupTotalsContainer}>
-                {deliveryChecked && parseFloat(storeDetails.deliveryPrice) && (
-                  <UntitledComponent
-                    amountValue={`$${parseFloat(
-                      storeDetails.deliveryPrice
-                    ).toFixed(2)}`}
-                    amountLbl="Delivery"
-                    style={styles.discountRow}
-                  />
-                )}
-                <UntitledComponent
-                  amountValue={
-                    deliveryChecked &&
-                    parseFloat(storeDetails.deliveryPrice) &&
-                    cartSub > 0
-                      ? `$${(
-                          cartSub - parseFloat(storeDetails.deliveryPrice)
-                        ).toFixed(2)}`
-                      : `$${cartSub.toFixed(2)}`
-                  }
-                  amountLbl="Subtotal"
-                  style={styles.subtotalRow}
-                />
-                <UntitledComponent
-                  amountValue={`$${(
-                    cartSub *
-                    (storeDetails.taxRate ? storeDetails.taxRate / 100 : 0.13)
-                  ).toFixed(2)}`}
-                  amountLbl="Tax"
-                  style={styles.taxRow}
-                />
-                <View style={styles.totalRow}>
-                  <Text style={styles.total2}>Total</Text>
-                  <Text style={styles.totalValue}>
-                    $
-                    {(
-                      Math.ceil(
-                        cartSub *
-                          (storeDetails.taxRate
-                            ? 1 + storeDetails.taxRate / 100
-                            : 1.13) *
-                          10
-                      ) / 10
-                    ).toFixed(2)}
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <CheckoutBtn />
-          </View>
-        </Modal>
-      )}
-      <Modal
-        isVisible={ongoingOrderListModal}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-      >
-        <View
-          style={{
-            flex: 1,
-            height: "100%",
-            width: "100%",
-            position: "absolute",
-            left: 0,
-            top: 0,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <PendingOrderModal
-            setongoingOrderListModal={setongoingOrderListModal}
-            updateOrderHandler={(order) => {
-              setCartState(order.cart);
-              if (order.isInStoreOrder) {
-                db.collection("users")
-                  .doc(auth.currentUser?.uid)
-                  .collection("pendingOrders")
-                  .doc(order.id)
-                  .delete();
-              } else {
-                setName(order.customer?.name ? order.customer?.name : "");
-                setPhone(order.customer?.phone ? order.customer?.phone : "");
-                setAddress(
-                  order.customer?.address ? order.customer?.address : null
-                );
-                setDeliveryChecked(order.method === "deliveryOrder");
-                setOngoingDelivery(true);
-                setupdatingOrder(order);
-              }
-              setongoingOrderListModal(false);
-            }}
-            ongoingListState={ongoingListState}
-            setongoingListState={setongoingListState}
-          />
-        </View>
-      </Modal>
-      <Modal
-        isVisible={clockinModal}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-      >
-        <View
-          style={{
-            flex: 1,
-            height: "100%",
-            width: "100%",
-            position: "absolute",
-            left: 0,
-            top: 0,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ClockinModal setclockinModal={setclockinModal} />
-        </View>
-      </Modal>
-      <Modal
-        isVisible={deliveryModal}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-      >
-        <View
-          style={{
-            flex: 1,
-            height: "100%",
-            width: "100%",
-            position: "absolute",
-            left: 0,
-            top: 0,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <PhoneOrderModal
-            setsavedCustomerDetails={setsavedCustomerDetails}
-            setDeliveryModal={setDeliveryModal}
-            setOngoingDelivery={setOngoingDelivery}
-            setName={setName}
-            setPhone={setPhone}
-            setAddress={setAddress}
-            name={name}
-            phone={phone}
-            address={address}
-            deliveryChecked={deliveryChecked}
-            setDeliveryChecked={setDeliveryChecked}
-            ongoingDelivery={ongoingDelivery}
-            setsaveCustomerModal={setSaveCustomerModal}
-            setUnitNumber={setUnitNumber}
-            setBuzzCode={setBuzzCode}
-            unitNumber={unitNumber}
-            buzzCode={buzzCode}
-            savedCustomerDetails={savedCustomerDetails}
-          />
-        </View>
-      </Modal>
-      <Modal
-        isVisible={settingsPasswordModalVis}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-      >
-        <View
-          style={{
-            flex: 1,
-            height: "100%",
-            width: "100%",
-            position: "absolute",
-            left: 0,
-            top: 0,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <SettingsPasswordModal
-            setsettingsPasswordModalVis={setsettingsPasswordModalVis}
-            navigation={navigation}
-          />
-        </View>
-      </Modal>
+      <Cart
+        cart={cart}
+        setCartState={setCartState}
+        setDiscountAmount={setDiscountAmount}
+        discountAmount={discountAmount}
+        storeDetails={storeDetails}
+        deliveryChecked={deliveryChecked}
+        cartSub={cartSub}
+        width={width}
+        setOngoingDelivery={setOngoingDelivery}
+        setName={setName}
+        setPhone={setPhone}
+        setAddress={setAddress}
+        setupdatingOrder={setupdatingOrder}
+        setsavedCustomerDetails={setsavedCustomerDetails}
+        setBuzzCode={setBuzzCode}
+        setUnitNumber={setUnitNumber}
+        setChangeDue={setChangeDue}
+        changeDue={changeDue}
+        setCashModal={setCashModal}
+        ongoingDelivery={ongoingDelivery}
+        updatingOrder={updatingOrder}
+        setDeliveryChecked={setDeliveryChecked}
+        setDeliveryModal={setDeliveryModal}
+        setCustomersList={setCustomersList}
+        customers={customers}
+        savedCustomerDetails={savedCustomerDetails}
+        myDeviceDetails={myDeviceDetails}
+        name={name}
+        phone={phone}
+        address={address}
+        buzzCode={buzzCode}
+        unitNumber={unitNumber}
+        cartNote={cartNote}
+        setcartNote={setcartNote}
+      />
+
+      <PendingOrderModal
+        setongoingOrderListModal={setongoingOrderListModal}
+        updateOrderHandler={(order) => {
+          setCartState(order.cart);
+          if (order.cartNote) {
+            setcartNote(order.cartNote);
+          }
+          if (order.isInStoreOrder) {
+            db.collection("users")
+              .doc(auth.currentUser?.uid)
+              .collection("pendingOrders")
+              .doc(order.id)
+              .delete();
+          } else {
+            setName(order.customer?.name ? order.customer?.name : "");
+            setPhone(order.customer?.phone ? order.customer?.phone : "");
+            setAddress(
+              order.customer?.address ? order.customer?.address : null
+            );
+            setDeliveryChecked(order.method === "deliveryOrder");
+            setOngoingDelivery(true);
+            setupdatingOrder(order);
+          }
+          setongoingOrderListModal(false);
+        }}
+        ongoingListState={ongoingListState}
+        ongoingOrderListModal={ongoingOrderListModal}
+      />
+      <ClockinModal
+        setclockinModal={setclockinModal}
+        clockinModal={clockinModal}
+      />
+      <PhoneOrderModal
+        setsavedCustomerDetails={setsavedCustomerDetails}
+        setDeliveryModal={setDeliveryModal}
+        setOngoingDelivery={setOngoingDelivery}
+        setName={setName}
+        setPhone={setPhone}
+        setAddress={setAddress}
+        name={name}
+        phone={phone}
+        address={address}
+        deliveryChecked={deliveryChecked}
+        setDeliveryChecked={setDeliveryChecked}
+        ongoingDelivery={ongoingDelivery}
+        setsaveCustomerModal={setSaveCustomerModal}
+        setUnitNumber={setUnitNumber}
+        setBuzzCode={setBuzzCode}
+        unitNumber={unitNumber}
+        buzzCode={buzzCode}
+        savedCustomerDetails={savedCustomerDetails}
+        deliveryModal={deliveryModal}
+        updatingOrder={updatingOrder}
+      />
+
+      <SettingsPasswordModal
+        setsettingsPasswordModalVis={setsettingsPasswordModalVis}
+        settingsPasswordModalVis={settingsPasswordModalVis}
+      />
       <Modal
         isVisible={saveCustomerModal}
         animationIn="fadeIn"
@@ -1444,59 +355,59 @@ function OrderPagePosHome({ navigation }: OrderPagePosHomeProps) {
             setDeliveryChecked={setDeliveryChecked}
             setsavedCustomerDetails={setsavedCustomerDetails}
             setDeliveryModal={setDeliveryModal}
-            setAddress={setAddress}
           />
         </View>
       </Modal>
-      <Modal isVisible={cashModal} animationIn="fadeIn" animationOut="fadeOut">
-        <View
-          style={{
-            flex: 1,
-            height: "100%",
-            width: "100%",
-            position: "absolute",
-            left: 0,
-            top: 0,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <CashScreen
-            setCashModal={setCashModal}
-            GetTrans={() => Print("Cash")}
-            total={(cartSub * 1.13).toFixed(2)}
-            setChangeDue={setChangeDue}
-          />
-        </View>
-      </Modal>
-      <Modal
-        isVisible={discountModal}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-      >
-        <View
-          style={{
-            flex: 1,
-            height: "100%",
-            width: "100%",
-            position: "absolute",
-            left: 0,
-            top: 0,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <DiscountModal
-            setdiscountModal={setdiscountModal}
-            cartSub={cartSub}
-            cart={cart}
-            deliveryChecked={deliveryChecked}
-            storeDetails={storeDetails}
-            setDiscountAmount={setDiscountAmount}
-            discountAmount={discountAmount}
-          />
-        </View>
-      </Modal>
+      <CashScreen
+        setCashModal={setCashModal}
+        GetTrans={() =>
+          Print({
+            method: "Cash",
+            deliveryChecked: deliveryChecked,
+            storeDetails: storeDetails,
+            cart: cart,
+            setCartState: setCartState,
+            setDiscountAmount: setDiscountAmount,
+            discountAmount: discountAmount,
+            setDeliveryModal: setDeliveryModal,
+            setName: setName,
+            setPhone: setPhone,
+            setAddress: setAddress,
+            setChangeDue: setChangeDue,
+            setDeliveryChecked: setDeliveryChecked,
+            setCustomersList: setCustomersList,
+            customers: customers,
+            savedCustomerDetails: savedCustomerDetails,
+            myDeviceDetails: myDeviceDetails,
+            name: name,
+            phone: phone,
+            address: address,
+            changeDue: changeDue,
+            buzzCode: buzzCode,
+            unitNumber: unitNumber,
+            setUnitNumber: setUnitNumber,
+            setBuzzCode: setBuzzCode,
+            cartNote: cartNote,
+            setcartNote: setcartNote,
+          })
+        }
+        total={(parseFloat(storeDetails.taxRate) >= 0
+          ? cartSub * (1 + parseFloat(storeDetails.taxRate) / 100)
+          : cartSub * 1.13
+        ).toFixed(2)}
+        setChangeDue={setChangeDue}
+        cashModal={cashModal}
+      />
+      <DiscountModal
+        setdiscountModal={setdiscountModal}
+        cartSub={cartSub}
+        cart={cart}
+        deliveryChecked={deliveryChecked}
+        storeDetails={storeDetails}
+        setDiscountAmount={setDiscountAmount}
+        discountAmount={discountAmount}
+        discountModal={discountModal}
+      />
     </View>
   );
 }
@@ -1507,48 +418,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(238,242,255,1)",
     flexDirection: "row",
     alignItems: "center",
-  },
-  leftMenuBarContainer: {
-    width: "5%",
-    backgroundColor: "rgba(255,255,255,1)",
-    alignItems: "center",
-    justifyContent: "space-between",
-    shadowColor: "rgba(0,0,0,1)",
-    shadowOffset: {
-      width: 3,
-      height: 3,
-    },
-    elevation: 30,
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
-    alignSelf: "stretch",
-  },
-  activeBtn: {
-    width: 50,
-    height: 50,
-    backgroundColor: "rgba(29,41,78,1)",
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 30,
-  },
-  notActiveBtn: {
-    width: 50,
-    height: 50,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 30,
-  },
-  menuIcon: {
-    color: "rgba(255,255,255,1)",
-    fontSize: 40,
-  },
-  icon: {
-    color: "rgba(0,0,0,1)",
-    fontSize: 40,
-    marginTop: 30,
-    marginBottom: 30,
   },
   menuContainer: {
     alignSelf: "stretch",
@@ -1567,189 +436,6 @@ const styles = StyleSheet.create({
     height: 75,
     width: 250,
     margin: 10,
-  },
-  categoryContainer: {
-    width: "93%",
-    height: 178,
-    justifyContent: "space-between",
-  },
-  lblTxt: {
-    fontWeight: "700",
-    color: "#121212",
-    fontSize: 19,
-    marginBottom: 10,
-  },
-  scrollArea: {
-    alignSelf: "stretch",
-  },
-  scrollArea_contentContainerStyle: {
-    width: "93%",
-    height: 156,
-    paddingBottom: 5,
-  },
-  activeCategoryBtn: {
-    width: 125,
-    marginRight: 15,
-    height: 150,
-  },
-  categoryBtn: {
-    width: 125,
-    marginRight: 18,
-    height: 150,
-  },
-  scrollAreaProducts: {
-    width: "95%",
-    // height: "45%",
-    height: "60%",
-    justifyContent: "center",
-  },
-  scrollAreaProducts_contentContainerStyle: {
-    flexWrap: "wrap",
-    justifyContent: "space-between", // or 'space-between' if you want equal spacing
-    flexDirection: "row",
-    alignItems: "flex-start",
-    paddingRight: 10,
-    marginLeft: 10,
-  },
-  itemContainer: {
-    height: 160,
-    width: 290, // Ensure this width accounts for any margins or padding
-    marginBottom: 30,
-    // marginRight: 20, // You may need to adjust this based on the number of items per row
-  },
-  cartContainer: {
-    width: "28%",
-    backgroundColor: "rgba(255,255,255,1)",
-    shadowColor: "rgba(0,0,0,1)",
-    shadowOffset: {
-      width: 3,
-      height: 3,
-    },
-    elevation: 30,
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
-    alignSelf: "stretch",
-    justifyContent: "space-around",
-    alignItems: "center",
-  },
-  myCartTxt: {
-    fontWeight: "700",
-    color: "#121212",
-    fontSize: 24,
-    width: "90%",
-    height: 29,
-  },
-  cartItems: {
-    width: "90%",
-    height: "40%",
-  },
-  cartItems_contentContainerStyle: {
-    height: "100%",
-    width: "100%",
-  },
-  cartItem1: {
-    width: "100%",
-    marginBottom: 10,
-  },
-  cartItem2: {
-    width: "100%",
-    marginBottom: 10,
-  },
-  cartItem3: {
-    height: 86,
-    width: "100%",
-    marginBottom: 10,
-  },
-  cartItem4: {
-    height: 86,
-    width: "100%",
-    marginBottom: 10,
-  },
-  cartItem5: {
-    height: 86,
-    width: "100%",
-    marginBottom: 10,
-  },
-  totalsContainer: {
-    width: "90%",
-    height: 250,
-    backgroundColor: "rgba(238,242,255,1)",
-    borderRadius: 20,
-    justifyContent: "space-around",
-    alignItems: "center",
-    shadowColor: "rgba(0,0,0,1)",
-    shadowOffset: {
-      width: 3,
-      height: 3,
-    },
-    elevation: 9,
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-  },
-  topGroupTotalsContainer: {
-    width: 280,
-    height: 85,
-    justifyContent: "space-between",
-  },
-  discountRow: {
-    height: 18,
-    alignSelf: "stretch",
-  },
-  subtotalRow: {
-    height: 18,
-    alignSelf: "stretch",
-  },
-  taxRow: {
-    height: 18,
-    alignSelf: "stretch",
-  },
-  totalRowGroup: {
-    width: 280,
-    height: 66,
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  totalRow: {
-    flexDirection: "row",
-    height: 18,
-    alignSelf: "stretch",
-    justifyContent: "space-between",
-  },
-  total2: {
-    fontWeight: "700",
-    color: "#121212",
-    fontSize: 18,
-  },
-  totalValue: {
-    fontWeight: "700",
-    color: "#121212",
-    fontSize: 18,
-  },
-  discountCodeBtn: {
-    minWidth: 140,
-    minHeight: 35,
-    backgroundColor: "rgba(255,255,255,1)",
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  discountCode: {
-    fontWeight: "700",
-    color: "#121212",
-    fontSize: 16,
-  },
-  checkoutBtn: {
-    width: 170,
-    height: 48,
-    backgroundColor: "#1a2951",
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  checkoutLbl: {
-    fontWeight: "700",
-    color: "rgba(255,255,255,1)",
-    fontSize: 20,
   },
 });
 

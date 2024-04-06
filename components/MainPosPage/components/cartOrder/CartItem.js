@@ -58,7 +58,7 @@ function CartItem({
       <Pressable
         style={[
           styles.topRowWithImgContainer,
-          isOpen && { paddingTop: 15, marginBottom: 20 },
+          isOpen && { paddingTop: 15, marginBottom: 30 },
         ]}
         onPress={() =>
           cartItem.options.length > 0 && setisOpen((prev) => !prev)
@@ -99,46 +99,36 @@ function CartItem({
               <Text style={[styles.cartItemPrice, { fontSize: 8 }]}>/EA.</Text>
             </View>
           </View>
-          {!cartItem.quantityNotChangable ? (
-            <View style={styles.bottomBtnRow}>
-              <Pressable
-                style={styles.cartItemIncreaseBtn}
-                onPress={increaseAction}
-              >
-                <Entypo name="plus" style={styles.plusIcon} />
+
+          <View style={styles.bottomBtnRow}>
+            {!cartItem.editableObj && <View />}
+            {cartItem.editableObj && (
+              <Pressable style={styles.cartItemEditBtn} onPress={fadeIn}>
+                <MaterialCommunityIcons
+                  name="pencil"
+                  style={styles.pencilIcon}
+                />
               </Pressable>
-              <Pressable
-                style={styles.cartItemDecreaseBtn}
-                onPress={() => {
-                  if (cartItem.quantity < 2 || !cartItem.quantity) {
-                    removeAction();
-                  } else {
-                    decreaseAction();
-                  }
-                }}
-              >
-                <Entypo name="minus" style={styles.minusIcon} />
-              </Pressable>
-              {cartItem.editableObj && (
-                <Pressable style={styles.cartItemEditBtn} onPress={fadeIn}>
-                  <MaterialCommunityIcons
-                    name="pencil"
-                    style={styles.pencilIcon}
-                  />
-                </Pressable>
-              )}
-            </View>
-          ) : (
+            )}
             <Pressable
-              style={styles.bottomBtnRow}
-              onPress={() => removeAction()}
+              style={styles.cartItemDecreaseBtn}
+              onPress={() => {
+                if (cartItem.quantity < 2 || !cartItem.quantity) {
+                  removeAction();
+                } else {
+                  decreaseAction();
+                }
+              }}
             >
-              <MaterialCommunityIcons
-                name="delete"
-                style={styles.pencilIcon}
-              ></MaterialCommunityIcons>
+              <Entypo name="minus" style={styles.minusIcon} />
             </Pressable>
-          )}
+            <Pressable
+              style={styles.cartItemIncreaseBtn}
+              onPress={increaseAction}
+            >
+              <Entypo name="plus" style={styles.plusIcon} />
+            </Pressable>
+          </View>
         </View>
       </Pressable>
       {isOpen && (
@@ -210,7 +200,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-    minHeight: 80,
+    minHeight: 100,
   },
   topRowWithImgContainer: {
     width: "90%",
@@ -265,16 +255,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   bottomBtnRow: {
-    width: 77,
-    height: 20,
+    width: 120,
+    height: 30,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 8,
+    marginTop: 10,
   },
   cartItemIncreaseBtn: {
-    width: 20,
-    height: 20,
+    width: 30,
+    height: 30,
     backgroundColor: "rgba(255,255,255,1)",
     borderRadius: 100,
     alignItems: "center",
@@ -290,11 +280,11 @@ const styles = StyleSheet.create({
   },
   plusIcon: {
     color: "rgba(0,0,0,1)",
-    fontSize: 18,
+    fontSize: 25,
   },
   cartItemDecreaseBtn: {
-    width: 20,
-    height: 20,
+    width: 30,
+    height: 30,
     backgroundColor: "rgba(255,255,255,1)",
     borderRadius: 100,
     alignItems: "center",
@@ -310,11 +300,11 @@ const styles = StyleSheet.create({
   },
   minusIcon: {
     color: "rgba(0,0,0,1)",
-    fontSize: 18,
+    fontSize: 25,
   },
   cartItemEditBtn: {
-    width: 20,
-    height: 20,
+    width: 30,
+    height: 30,
     backgroundColor: "rgba(255,255,255,1)",
     borderRadius: 100,
     alignItems: "center",
@@ -330,7 +320,7 @@ const styles = StyleSheet.create({
   },
   pencilIcon: {
     color: "rgba(0,0,0,1)",
-    fontSize: 12,
+    fontSize: 20,
   },
 });
 

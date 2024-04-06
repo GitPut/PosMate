@@ -6,21 +6,13 @@ import {
   useWindowDimensions,
   View,
   TextInput,
-  Button,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   customersList,
-  setCartState,
-  setCustomersList,
-  storeDetailState,
 } from "state/state";
 import { Ionicons, Entypo } from "@expo/vector-icons";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import { auth, db } from "state/firebaseConfig";
-import CartItem from "components/cart/CartItem";
 import SavedCustomerItem from "./components/SavedCustomerItem";
-const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 import Modal from "react-native-modal";
 import CustomerDetailsModal from "./CustomerDetailsModal";
 
@@ -35,7 +27,6 @@ const SavedCustomersModal = ({
   setDeliveryChecked,
   setsavedCustomerDetails,
   setDeliveryModal,
-  setAddress,
 }) => {
   const [customerSelected, setcustomerSelected] = useState(null);
   const { height, width } = useWindowDimensions();

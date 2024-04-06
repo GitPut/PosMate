@@ -14,6 +14,7 @@ import { addCustomerDetailsToDb } from "state/firebaseFunctions";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import GeneralSwitch from "components/GeneralSwitch";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
+import Modal from "react-native-modal";
 
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
@@ -36,6 +37,8 @@ const PhoneOrderModal = ({
   unitNumber,
   setUnitNumber,
   savedCustomerDetails,
+  deliveryModal,
+  updatingOrder,
 }) => {
   const [localAddress, setlocalAddress] = useState(null);
   const [saveCustomerChecked, setsaveCustomerChecked] = useState(false);
@@ -193,189 +196,220 @@ const PhoneOrderModal = ({
   }, [localAddress]);
 
   return (
-    <Pressable
-      onPress={() => {
-        if (ongoingDelivery) {
-          setDeliveryModal(false);
-        } else {
-          setDeliveryModal(false);
-          setOngoingDelivery(false);
-          setName("");
-          setPhone("");
-          setAddress(null);
-          setBuzzCode("");
-          setUnitNumber("");
-          setDeliveryChecked(false);
-        }
-      }}
-      style={{
-        justifyContent: "center",
-        alignItems: "center",
-        height: height,
-        width: width,
-      }}
-      activeOpacity={1}
+    <Modal
+      isVisible={deliveryModal}
+      animationIn="fadeIn"
+      animationOut="fadeOut"
     >
-      <Pressable>
-        <div style={{ cursor: "default" }}>
-          <View style={styles.container}>
-            <View style={styles.topHeaderAndCloseGroup}>
-              <View style={styles.closeRow}>
-                <Pressable
-                  onPress={() => {
-                    setDeliveryModal(false);
-                    setOngoingDelivery(false);
-                    setName("");
-                    setPhone("");
-                    setAddress(null);
-                    setBuzzCode("");
-                    setUnitNumber("");
-                    setDeliveryChecked(false);
-                  }}
-                >
-                  <Ionicons name="md-close" style={styles.escapeIcon} />
-                </Pressable>
-              </View>
-              <Text style={styles.phoneOrder}>Phone Order</Text>
-            </View>
-            <View style={styles.middleGroup}>
-              <View style={styles.customerNameRow}>
-                <MaterialIcons
-                  name="person"
-                  style={styles.customerIcon}
-                ></MaterialIcons>
-                <TextInput
-                  placeholder="Enter name"
-                  style={styles.namedTxtBox}
-                  value={name}
-                  onChangeText={(val) => setName(val)}
-                />
-              </View>
-              <View style={styles.customerPhoneRow}>
-                <FontAwesome
-                  name="phone"
-                  style={styles.numberIcon}
-                ></FontAwesome>
-                <TextInput
-                  placeholder="Enter phone number"
-                  style={styles.phoneNumberTxtBox}
-                  value={phone}
-                  onChangeText={(val) => setPhone(val)}
-                />
-              </View>
-              {!savedCustomerDetails && (
-                <View style={styles.saveCustomerRow}>
-                  <Text style={styles.savedCustomersTxt}>
-                    Would you like to save customer?
-                  </Text>
-                  <GeneralSwitch
-                    isActive={saveCustomerChecked}
-                    toggleSwitch={() =>
-                      setsaveCustomerChecked(!saveCustomerChecked)
-                    }
-                  />
+      <View
+        style={{
+          flex: 1,
+          height: "100%",
+          width: "100%",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Pressable
+          onPress={() => {
+            if (ongoingDelivery || updatingOrder) {
+              setDeliveryModal(false);
+            } else {
+              setDeliveryModal(false);
+              setOngoingDelivery(false);
+              setName("");
+              setPhone("");
+              setAddress(null);
+              setBuzzCode("");
+              setUnitNumber("");
+              setDeliveryChecked(false);
+            }
+          }}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: height,
+            width: width,
+          }}
+        >
+          <Pressable>
+            <div style={{ cursor: "default" }}>
+              <View style={styles.container}>
+                <View style={styles.topHeaderAndCloseGroup}>
+                  <View style={styles.closeRow}>
+                    <Pressable
+                      onPress={() => {
+                        if (ongoingDelivery || updatingOrder) {
+                          setDeliveryModal(false);
+                        } else {
+                          setDeliveryModal(false);
+                          setOngoingDelivery(false);
+                          setName("");
+                          setPhone("");
+                          setAddress(null);
+                          setBuzzCode("");
+                          setUnitNumber("");
+                          setDeliveryChecked(false);
+                        }
+                      }}
+                    >
+                      <Ionicons name="md-close" style={styles.escapeIcon} />
+                    </Pressable>
+                  </View>
+                  <Text style={styles.phoneOrder}>Phone Order</Text>
                 </View>
-              )}
-              <View style={styles.deliveryRow}>
-                <Text style={styles.delivery}>Delivery</Text>
-                <GeneralSwitch
-                  isActive={deliveryChecked}
-                  toggleSwitch={() => setDeliveryChecked(!deliveryChecked)}
-                />
-              </View>
-              {storeDetails.acceptDelivery && deliveryChecked && (
-                <View style={styles.addressTxtBox}>
-                  <View style={{ width: "60%", height: "100%" }}>
-                    <GooglePlacesAutocomplete
-                      apiOptions={{
-                        region: "CA",
-                      }}
-                      debounce={800}
-                      apiKey={GOOGLE_API_KEY}
-                      selectProps={{
-                        localAddress,
-                        onChange: setlocalAddress,
-                        placeholder: "Enter customer address",
-                        defaultValue: address,
-                        menuPortalTarget: document.body,
-                        styles: GooglePlacesStyles,
-                      }}
+                <View style={styles.middleGroup}>
+                  <View style={styles.customerNameRow}>
+                    <MaterialIcons
+                      name="person"
+                      style={styles.customerIcon}
+                    ></MaterialIcons>
+                    <TextInput
+                      placeholder="Enter name"
+                      style={styles.namedTxtBox}
+                      value={name}
+                      onChangeText={(val) => setName(val)}
                     />
                   </View>
-                  <TextInput
-                    placeholder="Unit #"
-                    style={{
-                      width: "18%",
-                      height: "100%",
-                      backgroundColor: "rgba(255,255,255,1)",
-                      borderWidth: 1,
-                      borderColor: "#000000",
-                      borderRadius: 10,
-                      padding: 10,
-                    }}
-                    value={unitNumber}
-                    onChangeText={(val) => setUnitNumber(val)}
-                  />
-                  <TextInput
-                    placeholder="Buzz #"
-                    style={{
-                      width: "18%",
-                      height: "100%",
-                      backgroundColor: "rgba(255,255,255,1)",
-                      borderWidth: 1,
-                      borderColor: "#000000",
-                      borderRadius: 10,
-                      padding: 10,
-                    }}
-                    value={buzzCode}
-                    onChangeText={(val) => setBuzzCode(val)}
-                  />
+                  <View style={styles.customerPhoneRow}>
+                    <FontAwesome
+                      name="phone"
+                      style={styles.numberIcon}
+                    ></FontAwesome>
+                    <TextInput
+                      placeholder="Enter phone number"
+                      style={styles.phoneNumberTxtBox}
+                      value={phone}
+                      onChangeText={(val) => setPhone(val)}
+                    />
+                  </View>
+                  {!savedCustomerDetails && (
+                    <View style={styles.saveCustomerRow}>
+                      <Text style={styles.savedCustomersTxt}>
+                        Would you like to save customer?
+                      </Text>
+                      <GeneralSwitch
+                        isActive={saveCustomerChecked}
+                        toggleSwitch={() =>
+                          setsaveCustomerChecked(!saveCustomerChecked)
+                        }
+                      />
+                    </View>
+                  )}
+                  {storeDetails.acceptDelivery ? (
+                    <View style={styles.deliveryRow}>
+                      <Text style={styles.delivery}>Delivery</Text>
+                      <GeneralSwitch
+                        isActive={deliveryChecked}
+                        toggleSwitch={() =>
+                          setDeliveryChecked(!deliveryChecked)
+                        }
+                      />
+                    </View>
+                  ) : (
+                    <Text>
+                      You do not accept delivery. (If you would like to please
+                      go to settings and switch accept delivery to true)
+                    </Text>
+                  )}
+                  {storeDetails.acceptDelivery && deliveryChecked && (
+                    <View style={styles.addressTxtBox}>
+                      <View style={{ width: "60%", height: "100%" }}>
+                        <GooglePlacesAutocomplete
+                          apiOptions={{
+                            region: "CA",
+                          }}
+                          debounce={800}
+                          apiKey={GOOGLE_API_KEY}
+                          selectProps={{
+                            localAddress,
+                            onChange: setlocalAddress,
+                            placeholder: "Enter customer address",
+                            defaultValue: address,
+                            menuPortalTarget: document.body,
+                            styles: GooglePlacesStyles,
+                          }}
+                        />
+                      </View>
+                      <TextInput
+                        placeholder="Unit #"
+                        style={{
+                          width: "18%",
+                          height: "100%",
+                          backgroundColor: "rgba(255,255,255,1)",
+                          borderWidth: 1,
+                          borderColor: "#000000",
+                          borderRadius: 10,
+                          padding: 10,
+                        }}
+                        value={unitNumber}
+                        onChangeText={(val) => setUnitNumber(val)}
+                      />
+                      <TextInput
+                        placeholder="Buzz #"
+                        style={{
+                          width: "18%",
+                          height: "100%",
+                          backgroundColor: "rgba(255,255,255,1)",
+                          borderWidth: 1,
+                          borderColor: "#000000",
+                          borderRadius: 10,
+                          padding: 10,
+                        }}
+                        value={buzzCode}
+                        onChangeText={(val) => setBuzzCode(val)}
+                      />
+                    </View>
+                  )}
                 </View>
-              )}
-            </View>
-            <View style={styles.bottomGroup}>
-              <Pressable
-                style={styles.orderButton}
-                onPress={() => {
-                  if (name && phone) {
-                    setDeliveryModal(false);
-                    setOngoingDelivery(true);
-                    if (saveCustomerChecked) {
-                      SaveCustomer();
-                    }
-                  }
-                }}
-              >
-                <Text style={styles.orderButtonTxt}>
-                  {ongoingDelivery ? "Update" : "Order"}
-                </Text>
-              </Pressable>
-              <Pressable
-                style={styles.viewSavedCustomersRow}
-                onPress={() => {
-                  setOngoingDelivery(false);
-                  setName("");
-                  setPhone("");
-                  setAddress(null);
-                  setBuzzCode("");
-                  setUnitNumber("");
-                  setsaveCustomerChecked(false);
-                  setDeliveryChecked(false);
-                  setDeliveryModal(false);
-                  setsaveCustomerModal(true);
-                }}
-              >
-                <MaterialIcons
-                  name="history"
-                  style={styles.savedCustomersIcon}
-                />
-                <Text style={styles.savedCustomers}>Saved Customers</Text>
-              </Pressable>
-            </View>
-          </View>
-        </div>
-      </Pressable>
-    </Pressable>
+                <View style={styles.bottomGroup}>
+                  <Pressable
+                    style={styles.orderButton}
+                    onPress={() => {
+                      if (name && phone) {
+                        setDeliveryModal(false);
+                        setOngoingDelivery(true);
+                        if (saveCustomerChecked) {
+                          SaveCustomer();
+                        }
+                      }
+                    }}
+                  >
+                    <Text style={styles.orderButtonTxt}>
+                      {ongoingDelivery ? "Update" : "Order"}
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={styles.viewSavedCustomersRow}
+                    onPress={() => {
+                      setOngoingDelivery(false);
+                      setName("");
+                      setPhone("");
+                      setAddress(null);
+                      setBuzzCode("");
+                      setUnitNumber("");
+                      setsaveCustomerChecked(false);
+                      setDeliveryChecked(false);
+                      setDeliveryModal(false);
+                      setsaveCustomerModal(true);
+                    }}
+                  >
+                    <MaterialIcons
+                      name="history"
+                      style={styles.savedCustomersIcon}
+                    />
+                    <Text style={styles.savedCustomers}>Saved Customers</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </div>
+          </Pressable>
+        </Pressable>
+      </View>
+    </Modal>
   );
 };
 

@@ -79,13 +79,13 @@ function TableOption({
       }
       setlocalMyObjProfile(newMyObjProfile);
     } else {
-      console.log(
-        "Didnt Work ",
-        "selectedTimesTotal: ",
-        selectedTimesTotal,
-        " e.numOfSelectable: ",
-        e.numOfSelectable
-      );
+      // console.log(
+      //   "Didnt Work ",
+      //   "selectedTimesTotal: ",
+      //   selectedTimesTotal,
+      //   " e.numOfSelectable: ",
+      //   e.numOfSelectable
+      // );
     }
   };
 
@@ -195,16 +195,34 @@ function TableOption({
                   <View style={styles.innerContainer}>
                     <View style={styles.header}>
                       <Pressable
+                        onPress={clearOptions}
+                        style={{
+                          backgroundColor: "rgba(208,2,27,1)",
+                          borderRadius: 50,
+                          height: 40,
+                          width: 40,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Ionicons name="ios-refresh" style={styles.resetIcon} />
+                      </Pressable>
+                      <Text style={styles.optionName}>{e.label}</Text>
+                      <Pressable
                         onPress={() => {
                           setmodalVisible(false);
                           setmyObjProfile(localMyObjProfile);
                         }}
+                        style={{
+                          backgroundColor: "#314ab0",
+                          borderRadius: 50,
+                          height: 40,
+                          width: 40,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
                       >
-                        <Ionicons name="md-close" style={styles.closeIcon} />
-                      </Pressable>
-                      <Text style={styles.optionName}>{e.label}</Text>
-                      <Pressable onPress={clearOptions}>
-                        <Ionicons name="ios-refresh" style={styles.resetIcon} />
+                        <Ionicons name="checkmark" style={styles.closeIcon} />
                       </Pressable>
                     </View>
                     <View style={styles.scrollArea}>
@@ -297,7 +315,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   closeIcon: {
-    color: "rgba(0,0,0,1)",
+    color: "white",
     fontSize: 40,
   },
   optionName: {
@@ -306,8 +324,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   resetIcon: {
-    color: "rgba(208,2,27,1)",
-    fontSize: 40,
+    color: "white",
+    fontSize: 35,
   },
   scrollArea: {
     width: "100%",

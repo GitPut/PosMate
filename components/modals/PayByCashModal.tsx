@@ -7,75 +7,96 @@ import {
   TextInput,
 } from "react-native";
 import React, { useState } from "react";
+import Modal from "react-native-modal";
 
-const CashScreen = ({ setCashModal, GetTrans, total, setChangeDue }) => {
+const CashScreen = ({
+  setCashModal,
+  GetTrans,
+  total,
+  setChangeDue,
+  cashModal,
+}) => {
   const [cash, setCash] = useState("");
   const { height, width } = useWindowDimensions();
 
   return (
-    <Pressable
-      onPress={() => setCashModal(false)}
-      style={{
-        justifyContent: "center",
-        alignItems: "center",
-        height: height,
-        width: width,
-      }}
-      activeOpacity={1}
-    >
-      <Pressable>
-        <div style={{ cursor: "default" }}>
-          <View style={styles.container}>
-            <Text style={styles.paymentDetailsLabel}>Payment Details</Text>
-            <View style={styles.mainPartGroup}>
-              <Text style={styles.orderTotal}>Total: ${total}</Text>
-              <TextInput
-                style={styles.amountPaidTxtInput}
-                placeholder="Enter Cash Recieved"
-                value={cash}
-                onChangeText={(val) => {
-                  const re = /^-?\d*\.?\d*$/;
+    <Modal isVisible={cashModal} animationIn="fadeIn" animationOut="fadeOut">
+      <View
+        style={{
+          flex: 1,
+          height: "100%",
+          width: "100%",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Pressable
+          onPress={() => setCashModal(false)}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: height,
+            width: width,
+          }}
+        >
+          <Pressable>
+            <div style={{ cursor: "default" }}>
+              <View style={styles.container}>
+                <Text style={styles.paymentDetailsLabel}>Payment Details</Text>
+                <View style={styles.mainPartGroup}>
+                  <Text style={styles.orderTotal}>Total: ${total}</Text>
+                  <TextInput
+                    style={styles.amountPaidTxtInput}
+                    placeholder="Enter Cash Recieved"
+                    value={cash}
+                    onChangeText={(val) => {
+                      const re = /^-?\d*\.?\d*$/;
 
-                  if (re.test(val)) {
-                    setCash(val.toString());
-                    setChangeDue((parseFloat(val) - total).toFixed(2));
-                  } else if (!val) {
-                    setCash("");
-                    setChangeDue(total);
-                  }
-                }}
-              />
-              <View style={styles.changeDueRow}>
-                <Text style={styles.changeDue}>Change Due:</Text>
-                <Text style={styles.changeDueValue}>
-                  $
-                  {parseFloat(cash) > 0
-                    ? (total - parseFloat(cash)).toFixed(2)
-                    : total}
-                </Text>
+                      if (re.test(val)) {
+                        setCash(val.toString());
+                        setChangeDue((parseFloat(val) - total).toFixed(2));
+                      } else if (!val) {
+                        setCash("");
+                        setChangeDue(total);
+                      }
+                    }}
+                  />
+                  <View style={styles.changeDueRow}>
+                    <Text style={styles.changeDue}>Change Due:</Text>
+                    <Text style={styles.changeDueValue}>
+                      $
+                      {parseFloat(cash) > 0
+                        ? (total - parseFloat(cash)).toFixed(2)
+                        : total}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.btnsGroup}>
+                  <Pressable
+                    style={styles.finishPaymentBtn}
+                    onPress={() => {
+                      GetTrans("Cash");
+                      setCashModal(false);
+                    }}
+                  >
+                    <Text style={styles.finishPayment}>Finish Payment</Text>
+                  </Pressable>
+                  <Pressable
+                    style={styles.cancelBtn}
+                    onPress={() => setCashModal(false)}
+                  >
+                    <Text style={styles.cancel}>Cancel</Text>
+                  </Pressable>
+                </View>
               </View>
-            </View>
-            <View style={styles.btnsGroup}>
-              <Pressable
-                style={styles.finishPaymentBtn}
-                onPress={() => {
-                  GetTrans("Cash");
-                  setCashModal(false);
-                }}
-              >
-                <Text style={styles.finishPayment}>Finish Payment</Text>
-              </Pressable>
-              <Pressable
-                style={styles.cancelBtn}
-                onPress={() => setCashModal(false)}
-              >
-                <Text style={styles.cancel}>Cancel</Text>
-              </Pressable>
-            </View>
-          </View>
-        </div>
-      </Pressable>
-    </Pressable>
+            </div>
+          </Pressable>
+        </Pressable>
+      </View>
+    </Modal>
   );
 };
 
