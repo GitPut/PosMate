@@ -265,6 +265,7 @@ function OrderPagePosHome() {
         unitNumber={unitNumber}
         cartNote={cartNote}
         setcartNote={setcartNote}
+        setsaveCustomerChecked={setSaveCustomerModal}
       />
 
       <PendingOrderModal

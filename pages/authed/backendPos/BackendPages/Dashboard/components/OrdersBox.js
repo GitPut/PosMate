@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
 
-function OrdersBox(props) {
+function OrdersBox({ ordersValue, style }) {
   return (
-    <View style={[styles.container, props.style]}>
+    <View style={[styles.container, style]}>
       <Image
         source={require("../assets/images/image_Y7Ho..png")}
         resizeMode="contain"
         style={styles.ordersIcon}
-      ></Image>
+      />
       <View style={styles.rightSide}>
-        <Text style={styles.ordersValue}>{props.ordersValue || "15"}</Text>
+        <Text style={styles.ordersValue}>{ordersValue}</Text>
         <Text style={styles.ordersTxt}>Orders</Text>
       </View>
     </View>

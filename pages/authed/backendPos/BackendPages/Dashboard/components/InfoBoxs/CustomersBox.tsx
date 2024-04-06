@@ -1,9 +1,84 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
+import SearchDate from "components/functional/SearchDateFunction";
 
-const CustomersBox = () => {
+const CustomersBox = ({ customers }) => {
   const [period, setperiod] = useState("Today");
+  const [details, setdetails] = useState({
+    newCustomers: 0,
+  });
+
+  useEffect(() => {
+    const calculateTotals = (transactions) => {
+      let totalNewCustomers = 0;
+      transactions.forEach(() => {
+        totalNewCustomers += 1;
+      });
+      return {
+        newCustomers: totalNewCustomers,
+      };
+    };
+
+    const getDateRange = (period) => {
+      const today = new Date();
+      switch (period) {
+        case "Today":
+          return {
+            start: new Date().toDateString(),
+            end: new Date().toDateString(),
+          };
+        case "This Week":
+          const weekStart = new Date(
+            today.setDate(today.getDate() - today.getDay())
+          );
+          const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
+          return {
+            start: weekStart.toDateString(),
+            end: weekEnd.toDateString(),
+          };
+        case "This Month":
+          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+          const monthEnd = new Date(
+            today.getFullYear(),
+            today.getMonth() + 1,
+            0
+          );
+          return {
+            start: monthStart.toDateString(),
+            end: monthEnd.toDateString(),
+          };
+        case "This Year":
+          const yearStart = new Date(today.getFullYear(), 0, 1);
+          const yearEnd = new Date(today.getFullYear(), 11, 31);
+          return {
+            start: yearStart.toDateString(),
+            end: yearEnd.toDateString(),
+          };
+        default:
+          // Assuming you want to default to "All Time" with no filtering.
+          return null;
+      }
+    };
+
+    const dateRange = getDateRange(period);
+    let filteredCustomers;
+
+    if (dateRange) {
+      const { start, end } = dateRange;
+      filteredCustomers = SearchDate({
+        startDate: start,
+        endDate: end,
+        customers: customers,
+      });
+    } else {
+      // No date filtering for "All Time" or unspecified periods
+      filteredCustomers = customers;
+    }
+
+    const { newCustomers } = calculateTotals(filteredCustomers);
+    setdetails({ newCustomers });
+  }, [period, customers]);
 
   return (
     <View style={styles.customersContainer}>
@@ -21,17 +96,11 @@ const CustomersBox = () => {
                 style={styles.customerIcon}
               />
               <View style={styles.newCustomersRightSideInner}>
-                <Text style={styles.newCustomersValue}>15</Text>
+                <Text style={styles.newCustomersValue}>
+                  {details.newCustomers}
+                </Text>
                 <Text style={styles.newCustomersTxt}>New Customers</Text>
               </View>
-            </View>
-            <View style={styles.newCustomersRightSide}>
-              <Image
-                source={require("../../assets/images/image_wGdd..png")}
-                resizeMode="contain"
-                style={styles.increasingIcon}
-              />
-              <Text style={styles.newCustomersPercent}>+ 75%</Text>
             </View>
           </View>
         </View>

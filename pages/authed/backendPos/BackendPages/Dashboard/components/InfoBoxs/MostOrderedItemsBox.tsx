@@ -96,7 +96,7 @@ const MostOrderedItemsBox = ({ style, allTransactions }) => {
           imageUrl:
             catalog.products[
               catalog.products.findIndex((product) => product.name === item[0])
-            ].imageUrl ?? "https://via.placeholder.com/70",
+            ].imageUrl ?? "https://via.placeholder.com/50",
         };
       });
     };
@@ -197,8 +197,9 @@ const styles = StyleSheet.create({
   },
   topItemsContainer: {
     width: 326,
-    height: 209,
+    height: 240,
     justifyContent: "space-between",
+    marginTop: 10
   },
   mostOrderItemsListItem1: {
     height: 70,

@@ -54,7 +54,10 @@ export const updateTransList = (receipt: any) => {
   db.collection("users")
     .doc(auth.currentUser?.uid)
     .collection("transList")
-    .add(receipt);
+    .add({
+      ...receipt,
+      dateCompleted: new Date(),
+    });
 };
 
 export const updateStoreDetails = (storeDetails: any) => {
@@ -87,4 +90,7 @@ export const addCustomerDetailsToDb = (customer: any) =>
     .collection("users")
     .doc(auth.currentUser?.uid)
     .collection("customers")
-    .add(customer);
+    .add({
+      ...customer,
+      createdAt: new Date(),
+    });

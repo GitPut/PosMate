@@ -85,6 +85,7 @@ interface CartProps {
   unitNumber: string;
   cartNote?: string | null;
   setcartNote: React.Dispatch<React.SetStateAction<string | null>>;
+  setsaveCustomerChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Cart: React.FC<CartProps> = ({
@@ -122,6 +123,7 @@ const Cart: React.FC<CartProps> = ({
   unitNumber,
   cartNote,
   setcartNote,
+  setsaveCustomerChecked,
 }) => {
   return (
     <View
@@ -365,6 +367,7 @@ const Cart: React.FC<CartProps> = ({
         unitNumber={unitNumber}
         cartNote={cartNote}
         setcartNote={setcartNote}
+        setsaveCustomerChecked={setsaveCustomerChecked}
       />
     </View>
   );

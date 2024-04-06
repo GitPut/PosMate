@@ -76,6 +76,7 @@ interface CheckoutBtnProps {
   unitNumber: string;
   cartNote?: string | null;
   setcartNote: React.Dispatch<React.SetStateAction<string | null>>;
+  setsaveCustomerChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CheckoutBtn: React.FC<CheckoutBtnProps> = ({
@@ -111,6 +112,7 @@ const CheckoutBtn: React.FC<CheckoutBtnProps> = ({
   unitNumber,
   cartNote,
   setcartNote,
+  setsaveCustomerChecked,
 }) => {
   if (updatingOrder) {
     return (
@@ -135,6 +137,8 @@ const CheckoutBtn: React.FC<CheckoutBtnProps> = ({
               .delete();
 
             Print({
+              setsaveCustomerChecked: setsaveCustomerChecked,
+              setsavedCustomerDetails: setsavedCustomerDetails,
               method: deliveryChecked ? "deliveryOrder" : "pickupOrder",
               dontAddToOngoing: false,
               deliveryChecked: deliveryChecked,
@@ -222,6 +226,8 @@ const CheckoutBtn: React.FC<CheckoutBtnProps> = ({
           style={styles.checkoutBtn}
           onPress={() => {
             Print({
+              setsaveCustomerChecked: setsaveCustomerChecked,
+              setsavedCustomerDetails: setsavedCustomerDetails,
               method: "Card",
               deliveryChecked: deliveryChecked,
               storeDetails: storeDetails,
@@ -265,6 +271,8 @@ const CheckoutBtn: React.FC<CheckoutBtnProps> = ({
         style={styles.checkoutBtn}
         onPress={() => {
           Print({
+            setsaveCustomerChecked: setsaveCustomerChecked,
+            setsavedCustomerDetails: setsavedCustomerDetails,
             method: deliveryChecked ? "deliveryOrder" : "pickupOrder",
             dontAddToOngoing: false,
             deliveryChecked: deliveryChecked,

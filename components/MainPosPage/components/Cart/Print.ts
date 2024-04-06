@@ -67,6 +67,7 @@ interface PrintProps {
   setCustomersList: (customers: Customer[]) => void;
   customers: Customer[];
   savedCustomerDetails?: Customer | null | undefined;
+  setsavedCustomerDetails: (customer: Customer | null) => void;
   myDeviceDetails: DeviceDetails;
   name: string;
   phone: string;
@@ -78,6 +79,7 @@ interface PrintProps {
   setBuzzCode: (buzzCode: string | null) => void;
   cartNote?: string | null;
   setcartNote: (note: string | null) => void;
+  setsaveCustomerChecked: (checked: boolean) => void;
 }
 
 const Print: React.FC<PrintProps> = ({
@@ -109,6 +111,8 @@ const Print: React.FC<PrintProps> = ({
   setBuzzCode,
   cartNote,
   setcartNote,
+  setsavedCustomerDetails,
+  setsaveCustomerChecked,
 }) => {
   let newVal = 0;
   const finalCart = cart;
@@ -370,6 +374,8 @@ const Print: React.FC<PrintProps> = ({
     setBuzzCode(null);
     setDiscountAmount(null);
     setDeliveryChecked(false);
+    setsavedCustomerDetails(null);
+    setsaveCustomerChecked(false);
   } else {
     const today = new Date();
     const element = {
@@ -454,6 +460,8 @@ const Print: React.FC<PrintProps> = ({
   setChangeDue(null);
   setDiscountAmount(null);
   setcartNote("");
+  setsavedCustomerDetails(null);
+  setsaveCustomerChecked(false);
 };
 
 export default Print;

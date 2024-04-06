@@ -1,9 +1,111 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
+import SearchDate from "components/functional/SearchDateFunction";
 
-const OrderWaitTimeBox = () => {
-  const [period, setperiod] = useState("Today");  
+const OrderWaitTimeBox = ({ allTransactions }) => {
+  const [period, setperiod] = useState("Today");
+  const [details, setdetails] = useState({
+    shortest: 0,
+    longest: 0,
+    average: 0,
+    mean: 0,
+  });
+
+  useEffect(() => {
+    const calculateTotals = (transactions) => {
+      let shortest = 0;
+      let longest = 0;
+      let average = 0;
+      let mean = 0;
+      let total = 0;
+      let totalOrders = 0;
+      transactions.forEach((transaction) => {
+        //get time between date and dateCompleted
+        const date = transaction.originalData.date_created
+          ? new Date(transaction.originalData.date_created)
+          : new Date(transaction.originalData.date.seconds * 1000);
+
+        if (transaction.originalData.dateCompleted) {
+          const dateCompleted = new Date(
+            transaction.originalData.dateCompleted.seconds * 1000
+          );
+          const diff = dateCompleted - date;
+          const minutes = Math.floor(diff / 60000);
+          total += minutes;
+          totalOrders += 1;
+          if (shortest === 0 || minutes < shortest) {
+            shortest = minutes;
+          }
+          if (longest === 0 || minutes > longest) {
+            longest = minutes;
+          }
+        }
+      });
+
+      average = total / totalOrders;
+      mean = total / totalOrders;
+
+      return {
+        shortest: shortest,
+        longest: longest,
+        average: average,
+        mean: mean,
+      };
+    };
+
+    const getDateRange = (period) => {
+      const today = new Date();
+      switch (period) {
+        case "Today":
+          return {
+            start: new Date().toDateString(),
+            end: new Date().toDateString(),
+          };
+        case "This Week":
+          const weekStart = new Date(
+            today.setDate(today.getDate() - today.getDay())
+          );
+          const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
+          return {
+            start: weekStart.toDateString(),
+            end: weekEnd.toDateString(),
+          };
+        case "This Month":
+          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+          const monthEnd = new Date(
+            today.getFullYear(),
+            today.getMonth() + 1,
+            0
+          );
+          return {
+            start: monthStart.toDateString(),
+            end: monthEnd.toDateString(),
+          };
+        case "This Year":
+          const yearStart = new Date(today.getFullYear(), 0, 1);
+          const yearEnd = new Date(today.getFullYear(), 11, 31);
+          return {
+            start: yearStart.toDateString(),
+            end: yearEnd.toDateString(),
+          };
+        default:
+          return {
+            start: new Date().toDateString(),
+            end: new Date().toDateString(),
+          };
+      }
+    };
+
+    const { start, end } = getDateRange(period);
+    const filtered = SearchDate({
+      startDate: start,
+      endDate: end,
+      transactions: allTransactions,
+    });
+    const totals = calculateTotals(filtered);
+    setdetails(totals);
+  }, [period, allTransactions]);
 
   return (
     <View style={styles.orderWaitTimeContainer}>
@@ -20,7 +122,7 @@ const OrderWaitTimeBox = () => {
               style={styles.clockIcon}
             />
             <View style={styles.shortestRightSide}>
-              <Text style={styles.shorestTimeValue}>12</Text>
+              <Text style={styles.shorestTimeValue}>{details.shortest}</Text>
               <Text style={styles.shortest}>Shortest</Text>
             </View>
           </View>
@@ -31,7 +133,7 @@ const OrderWaitTimeBox = () => {
               style={styles.clockIcon1}
             />
             <View style={styles.longestRightSide}>
-              <Text style={styles.longestTimeValue}>20</Text>
+              <Text style={styles.longestTimeValue}>{details.longest}</Text>
               <Text style={styles.longest}>Longest</Text>
             </View>
           </View>
@@ -42,7 +144,7 @@ const OrderWaitTimeBox = () => {
               style={styles.clockIcon2}
             />
             <View style={styles.averageRightSide}>
-              <Text style={styles.averageTimeValue}>16</Text>
+              <Text style={styles.averageTimeValue}>{details.average}</Text>
               <Text style={styles.average}>Average</Text>
             </View>
           </View>
@@ -53,7 +155,7 @@ const OrderWaitTimeBox = () => {
               style={styles.clockIcon3}
             />
             <View style={styles.meanRightSide}>
-              <Text style={styles.meanTimeValue}>16</Text>
+              <Text style={styles.meanTimeValue}>{details.mean}</Text>
               <Text style={styles.mean}>Mean</Text>
             </View>
           </View>

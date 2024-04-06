@@ -286,7 +286,7 @@ const PhoneOrderModal = ({
                       onChangeText={(val) => setPhone(val)}
                     />
                   </View>
-                  {!savedCustomerDetails && (
+                  {!savedCustomerDetails && ( 
                     <View style={styles.saveCustomerRow}>
                       <Text style={styles.savedCustomersTxt}>
                         Would you like to save customer?

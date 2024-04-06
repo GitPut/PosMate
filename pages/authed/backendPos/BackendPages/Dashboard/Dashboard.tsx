@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   View,
-  Text,
-  Image,
   ScrollView,
   useWindowDimensions,
 } from "react-native";
-import DropdownPeriod from "./components/DropdownPeriod";
-import RevenueBox from "./components/RevenueBox";
-import OrdersBox from "./components/OrdersBox";
-import ShowEmployeeItem from "./components/ShowEmployeeItem";
 import TotalRevenueBox from "./components/InfoBoxs/TotalRevenueBox";
 import MostOrderedItemsBox from "./components/InfoBoxs/MostOrderedItemsBox";
 import PickupOrdersBox from "./components/InfoBoxs/PickupOrdersBox";
@@ -18,13 +12,12 @@ import DeliveryOrdersBox from "./components/InfoBoxs/DeliveryOrdersBox";
 import InStoreOrdersBox from "./components/InfoBoxs/InStoreOrdersBox";
 import CustomersBox from "./components/InfoBoxs/CustomersBox";
 import OrderWaitTimeBox from "./components/InfoBoxs/OrderWaitTimeBox";
-import EmployeesBox from "./components/InfoBoxs/EmployeesBox";
-import { auth, db } from "state/firebaseConfig";
-import { transListTableOrgState } from "state/state";
+import { customersList, transListTableOrgState } from "state/state";
 
 function Dashboard() {
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const transListTableOrg = transListTableOrgState.use();
+  const customers = customersList.use();
 
   return (
     <View style={styles.container}>
@@ -44,8 +37,8 @@ function Dashboard() {
             />
           )}
           <View style={{ justifyContent: "space-between" }}>
-            <OrderWaitTimeBox />
-            {width > 1300 && <CustomersBox />}
+            <OrderWaitTimeBox allTransactions={transListTableOrg} />
+            {width > 1300 && <CustomersBox customers={customers} />}
             {width < 1300 && (
               <MostOrderedItemsBox
                 style={{ height: 300 }}
@@ -66,7 +59,6 @@ function Dashboard() {
               <InStoreOrdersBox allTransactions={transListTableOrg} />
             </>
           )}
-          {/* <EmployeesBox /> */}
         </View>
       </ScrollView>
     </View>

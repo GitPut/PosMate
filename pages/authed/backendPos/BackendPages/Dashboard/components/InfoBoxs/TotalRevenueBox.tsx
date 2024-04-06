@@ -182,7 +182,6 @@ const TotalRevenueBox = ({ style, allTransactions }) => {
       // Now you can safely parse the adjusted date string
       const date = new Date(adjustedDateString);
       const month = date.getMonth();
-      console.log("month", month, " - ", transaction);
       localData[month].uv += parseFloat(transaction.total);
       localData[month].pv += 1;
       localData[month].amt += 1;
@@ -295,11 +294,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   amountRow: {
-    width: 208,
+    width: 340,
     height: 27,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
   },
   totalRevenue1: {
     fontWeight: "700",
