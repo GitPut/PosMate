@@ -1,11 +1,11 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import CategoryBtn from './cartOrder/CategoryBtn';
+import { updatePosHomeState } from 'state/posHomeState';
 
 const CategorySection = ({
     catalog,
     section,
-    setsection,
 }) => {
   return (
     <View style={styles.categoryContainer}>
@@ -26,7 +26,7 @@ const CategorySection = ({
                   key={index}
                   category={category}
                   onPress={() => {
-                    setsection(category);
+                   updatePosHomeState({ section: category });
                   }}
                   isSelected={section === category}
                   style={styles.activeCategoryBtn}
@@ -45,7 +45,7 @@ const CategorySection = ({
                   key={index}
                   category={category}
                   onPress={() => {
-                    setsection(category);
+                    updatePosHomeState({ section: category });
                   }}
                   isSelected={section === category}
                   style={styles.categoryBtn}

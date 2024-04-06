@@ -7,6 +7,7 @@ import {
   Pressable,
   Animated,
   Modal,
+  useWindowDimensions,
 } from "react-native";
 import { MaterialCommunityIcons, Entypo } from "@expo/vector-icons";
 import ProductBuilderModal from "../ProductBuilderModal/ProductBuilderModal";
@@ -23,6 +24,7 @@ function CartItem({
   const xPos = useRef(new Animated.Value(-1000)).current;
   const shadowOpacity = useRef(new Animated.Value(0)).current;
   const [isOpen, setisOpen] = useState(false);
+  const { width } = useWindowDimensions();
 
   const fadeIn = () => {
     // Will change xPos value to 0 in 3 seconds
@@ -174,11 +176,19 @@ function CartItem({
             }}
           >
             <View
-              style={{
-                height: "100%",
-                width: "72%",
-                borderTopRightRadius: 3,
-              }}
+              style={[
+                width > 1400
+                  ? {
+                      height: "100%",
+                      width: "70%",
+                      borderTopRightRadius: 3,
+                    }
+                  : {
+                      height: "100%",
+                      width: "100%",
+                      borderTopRightRadius: 3,
+                    },
+              ]}
             >
               <ProductBuilderModal
                 product={cartItem.editableObj}

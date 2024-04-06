@@ -1,119 +1,31 @@
 import ReceiptPrint from "components/functional/ReceiptPrint";
 import { auth, db } from "state/firebaseConfig";
-
-// Defining interfaces for props and other objects used
-interface CartItem {
-  imageUrl?: string;
-  quantity?: number;
-  name: string;
-  price: number | string; // If price is a string, ensure to parse it when doing calculations
-  quantityNotChangable?: boolean;
-  editableObj?: any; // Specify further if possible
-  description?: string;
-  extraDetails?: string;
-  options: string[]; // Assuming options are an array of strings, adjust if necessary
-  percent?: number;
-}
-
-interface StoreDetails {
-  name: string;
-  address: string;
-  phoneNumber: string;
-  website: string;
-  comSelected: string;
-  deliveryPrice: string;
-  settingsPassword: string;
-  taxRate: string;
-  acceptDelivery: boolean;
-  deliveryRange: string;
-}
-
-interface CustomerOrder {
-  cart: CartItem[];
-}
-
-interface Customer {
-  id: string;
-  name: string;
-  orders: CustomerOrder[]; // Adjust according to actual structure
-  // Add other relevant fields
-}
-
-interface DeviceDetails {
-  id?: string;
-  printToPrinter?: string; // Adjust according to actual structure
-  sendPrintToUserID?: {
-    value: string;
-  };
-  useDifferentDeviceToPrint?: boolean;
-  // Add other relevant fields
-}
+import { posHomeState, resetPosHomeState, updatePosHomeState } from "state/posHomeState";
+import { cartState, customersList, myDeviceDetailsState, setCartState, setCustomersList, storeDetailState } from "state/state";
 
 interface PrintProps {
+  dontAddToOngoing: boolean;
   method: string;
-  dontAddToOngoing?: boolean;
-  deliveryChecked?: boolean;
-  storeDetails: StoreDetails;
-  cart: CartItem[];
-  setCartState: (cart: CartItem[]) => void;
-  setDiscountAmount: (amount: string | null) => void;
-  discountAmount: string;
-  setDeliveryModal: (show: boolean) => void;
-  setName: (name: string | null) => void;
-  setPhone: (phone: string | null) => void;
-  setAddress: (address: string | null) => void;
-  setChangeDue: (changeDue: string | null) => void;
-  setDeliveryChecked: (checked: boolean) => void;
-  setCustomersList: (customers: Customer[]) => void;
-  customers: Customer[];
-  savedCustomerDetails?: Customer | null | undefined;
-  setsavedCustomerDetails: (customer: Customer | null) => void;
-  myDeviceDetails: DeviceDetails;
-  name: string;
-  phone: string;
-  address: string;
-  changeDue: string;
-  buzzCode?: string;
-  unitNumber?: string;
-  setUnitNumber: (unitNumber: string | null) => void;
-  setBuzzCode: (buzzCode: string | null) => void;
-  cartNote?: string | null;
-  setcartNote: (note: string | null) => void;
-  setsaveCustomerChecked: (checked: boolean) => void;
 }
 
-const Print: React.FC<PrintProps> = ({
-  method,
-  dontAddToOngoing,
-  deliveryChecked,
-  storeDetails,
-  cart,
-  setCartState,
-  setDiscountAmount,
-  discountAmount,
-  setDeliveryModal,
-  setName,
-  setPhone,
-  setAddress,
-  setChangeDue,
-  setDeliveryChecked,
-  setCustomersList,
-  customers,
-  savedCustomerDetails,
-  myDeviceDetails,
-  name,
-  phone,
-  address,
-  changeDue,
-  buzzCode,
-  unitNumber,
-  setUnitNumber,
-  setBuzzCode,
-  cartNote,
-  setcartNote,
-  setsavedCustomerDetails,
-  setsaveCustomerChecked,
-}) => {
+const Print = ({ dontAddToOngoing, method }: PrintProps) => {
+   const {
+     discountAmount,
+     deliveryChecked,
+     changeDue,
+     savedCustomerDetails,
+     name,
+     phone,
+     address,
+     buzzCode,
+     unitNumber,
+     cartNote,
+   } = posHomeState.use();
+   const customers = customersList.use();
+   const cart = cartState.use();
+   const storeDetails = storeDetailState.use();
+   const myDeviceDetails = myDeviceDetailsState.use();
+
   let newVal = 0;
   const finalCart = cart;
   for (let i = 0; i < cart.length; i++) {
@@ -281,8 +193,12 @@ const Print: React.FC<PrintProps> = ({
     }
 
     setCartState([]);
-    setDiscountAmount(null);
-    setDeliveryModal(false);
+    // setDiscountAmount(null);
+    // setDeliveryModal(false);
+    updatePosHomeState({
+      discountAmount: null,
+      deliveryModal: false,
+    })
   } else if (method === "pickupOrder") {
     const today = new Date();
 
@@ -366,16 +282,17 @@ const Print: React.FC<PrintProps> = ({
     }
 
     setCartState([]);
-    setDeliveryModal(false);
-    setName(null);
-    setPhone(null);
-    setAddress(null);
-    setUnitNumber(null);
-    setBuzzCode(null);
-    setDiscountAmount(null);
-    setDeliveryChecked(false);
-    setsavedCustomerDetails(null);
-    setsaveCustomerChecked(false);
+    // setDeliveryModal(false);
+    // setName(null);
+    // setPhone(null);
+    // setAddress(null);
+    // setUnitNumber(null);
+    // setBuzzCode(null);
+    // setDiscountAmount(null);
+    // setDeliveryChecked(false);
+    // setsavedCustomerDetails(null);
+    // setsaveCustomerChecked(false);
+    resetPosHomeState()
   } else {
     const today = new Date();
     const element = {
@@ -453,15 +370,16 @@ const Print: React.FC<PrintProps> = ({
   }
 
   setCartState([]);
-  setName(null);
-  setPhone(null);
-  setAddress(null);
-  setDeliveryChecked(false);
-  setChangeDue(null);
-  setDiscountAmount(null);
-  setcartNote("");
-  setsavedCustomerDetails(null);
-  setsaveCustomerChecked(false);
+  // setName(null);
+  // setPhone(null);
+  // setAddress(null);
+  // setDeliveryChecked(false);
+  // setChangeDue(null);
+  // setDiscountAmount(null);
+  // setcartNote("");
+  // setsavedCustomerDetails(null);
+  // setsaveCustomerChecked(false);
+  resetPosHomeState()
 };
 
 export default Print;

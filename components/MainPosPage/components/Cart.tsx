@@ -6,125 +6,31 @@ import {
   Text,
   TextInput,
   View,
+  useWindowDimensions,
 } from "react-native";
 import React from "react";
 import CartItem from "./cartOrder/CartItem";
 import UntitledComponent from "./cartOrder/UntitledComponent";
 import { MaterialIcons } from "@expo/vector-icons";
 import CheckoutBtn from "./Cart/CheckoutBtn";
-
-// Assuming CartItemProps is defined in "./cartOrder/CartItem"
-// and StoreDetails and DiscountAmount have been defined somewhere
-interface StoreDetails {
-  deliveryPrice: number;
-  taxRate?: number; // Assuming this exists based on usage in Cart component
-  // Add any other relevant fields used within your components
-}
-
-interface CartItemProps {
-  cartItem: {
-    imageUrl?: string;
-    quantity?: number;
-    name: string;
-    price: number | string; // If price is a string, ensure to parse it when doing calculations
-    quantityNotChangable?: boolean;
-    editableObj?: any; // Specify further if possible
-    description?: string;
-    extraDetails?: string;
-    options: string[]; // Assuming options are an array of strings, adjust if necessary
-  };
-  index: number;
-  removeAction: () => void;
-  decreaseAction: () => void;
-  increaseAction: () => void;
-  style?: any; // You could use React Native's StyleProp<ViewStyle> for better typing
-}
-
-interface Customer {
-  id: string;
-  name: string;
-  phone: string;
-  address?: string; // Add optional if not all customers have addresses
-  // Include any other fields relevant to your customers
-}
-
-interface CartProps {
-  cart: CartItemProps[]; // Adjust based on the actual type
-  setCartState: React.Dispatch<React.SetStateAction<CartItemProps[]>>;
-  setDiscountAmount: React.Dispatch<React.SetStateAction<string | null>>;
-  discountAmount: string;
-  storeDetails: StoreDetails; // Define this based on actual usage
-  deliveryChecked: boolean;
-  cartSub: number;
-  width: number;
-  setOngoingDelivery: React.Dispatch<React.SetStateAction<boolean>>;
-  setName: React.Dispatch<React.SetStateAction<string | null>>;
-  setPhone: React.Dispatch<React.SetStateAction<string | null>>;
-  setAddress: React.Dispatch<React.SetStateAction<string | null>>;
-  setupdatingOrder: React.Dispatch<React.SetStateAction<boolean>>;
-  setsavedCustomerDetails: React.Dispatch<
-    React.SetStateAction<Customer | null>
-  >; // Assuming Customer type is defined
-  setBuzzCode: React.Dispatch<React.SetStateAction<string | null>>;
-  setUnitNumber: React.Dispatch<React.SetStateAction<string | null>>;
-  setChangeDue: React.Dispatch<React.SetStateAction<string | null>>;
-  changeDue: string | null;
-  setCashModal: React.Dispatch<React.SetStateAction<boolean>>;
-  ongoingDelivery: boolean;
-  updatingOrder: boolean;
-  setDeliveryChecked: React.Dispatch<React.SetStateAction<boolean>>;
-  setDeliveryModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setCustomersList: React.Dispatch<React.SetStateAction<Customer[]>>;
-  customers: Customer[];
-  savedCustomerDetails: Customer | null;
-  myDeviceDetails: any; // Define more specifically if possible
-  name: string;
-  phone: string;
-  address: string;
-  buzzCode: string;
-  unitNumber: string;
-  cartNote?: string | null;
-  setcartNote: React.Dispatch<React.SetStateAction<string | null>>;
-  setsaveCustomerChecked: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const Cart: React.FC<CartProps> = ({
-  cart,
+import {
+  cartState,
   setCartState,
-  setDiscountAmount,
-  discountAmount,
-  storeDetails,
-  deliveryChecked,
-  cartSub,
-  width,
-  setOngoingDelivery,
-  setName,
-  setPhone,
-  setAddress,
-  setupdatingOrder,
-  setsavedCustomerDetails,
-  setBuzzCode,
-  setUnitNumber,
-  setChangeDue,
-  changeDue,
-  setCashModal,
-  ongoingDelivery,
-  updatingOrder,
-  setDeliveryChecked,
-  setDeliveryModal,
-  setCustomersList,
-  customers,
-  savedCustomerDetails,
-  myDeviceDetails,
-  name,
-  phone,
-  address,
-  buzzCode,
-  unitNumber,
-  cartNote,
-  setcartNote,
-  setsaveCustomerChecked,
-}) => {
+  storeDetailState,
+} from "state/state";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
+
+const Cart = () => {
+  const {
+    discountAmount,
+    deliveryChecked,
+    cartSub,
+    cartNote,
+  } = posHomeState.use();
+  const cart = cartState.use();
+  const storeDetails = storeDetailState.use();
+  const { width } = useWindowDimensions();
+
   return (
     <View
       style={[
@@ -153,7 +59,7 @@ const Cart: React.FC<CartProps> = ({
             }}
             onPress={() => {
               setCartState([]);
-              setDiscountAmount(null);
+              updatePosHomeState({ discountAmount: null });
             }}
           >
             <MaterialIcons name="clear" style={{ color: "white" }} size={30} />
@@ -232,7 +138,9 @@ const Cart: React.FC<CartProps> = ({
               }}
               multiline={true}
               value={cartNote}
-              onChangeText={(text) => setcartNote(text)}
+              onChangeText={(text) => {
+                updatePosHomeState({ cartNote: text });
+              }}
             />
             <View>
               <UntitledComponent
@@ -259,7 +167,7 @@ const Cart: React.FC<CartProps> = ({
                     right: -35,
                   }}
                   onPress={() => {
-                    setDiscountAmount(null);
+                    updatePosHomeState({ discountAmount: null });
                   }}
                 >
                   <MaterialIcons
@@ -296,10 +204,10 @@ const Cart: React.FC<CartProps> = ({
           <UntitledComponent
             amountValue={`$${(
               cartSub *
-              (storeDetails.taxRate >= 0 ? storeDetails.taxRate / 100 : 0.13)
+              (parseFloat(storeDetails.taxRate) >= 0 ? parseFloat(storeDetails.taxRate) / 100 : 0.13)
             ).toFixed(2)}`}
             amountLbl={`Tax (${
-              storeDetails.taxRate >= 0 ? storeDetails.taxRate : 13
+              parseFloat(storeDetails.taxRate) >= 0 ? parseFloat(storeDetails.taxRate) : 13
             }%)`}
             style={styles.taxRow}
           />
@@ -323,7 +231,7 @@ const Cart: React.FC<CartProps> = ({
                     parseFloat(
                       (
                         cartSub *
-                        (storeDetails.taxRate >= 0
+                        (parseFloat(storeDetails.taxRate) >= 0
                           ? parseFloat(storeDetails.taxRate) / 100
                           : 0.13)
                       ).toFixed(2)
@@ -334,41 +242,7 @@ const Cart: React.FC<CartProps> = ({
           </View>
         </View>
       </View>
-      <CheckoutBtn
-        updatingOrder={updatingOrder}
-        cart={cart}
-        setCartState={setCartState}
-        setOngoingDelivery={setOngoingDelivery}
-        setName={setName}
-        setPhone={setPhone}
-        setAddress={setAddress}
-        setDeliveryChecked={setDeliveryChecked}
-        setupdatingOrder={setupdatingOrder}
-        setsavedCustomerDetails={setsavedCustomerDetails}
-        setDiscountAmount={setDiscountAmount}
-        setBuzzCode={setBuzzCode}
-        setUnitNumber={setUnitNumber}
-        setCashModal={setCashModal}
-        ongoingDelivery={ongoingDelivery}
-        deliveryChecked={deliveryChecked}
-        storeDetails={storeDetails}
-        discountAmount={discountAmount}
-        setChangeDue={setChangeDue}
-        changeDue={changeDue}
-        setDeliveryModal={setDeliveryModal}
-        setCustomersList={setCustomersList}
-        customers={customers}
-        savedCustomerDetails={savedCustomerDetails}
-        myDeviceDetails={myDeviceDetails}
-        name={name}
-        phone={phone}
-        address={address}
-        buzzCode={buzzCode}
-        unitNumber={unitNumber}
-        cartNote={cartNote}
-        setcartNote={setcartNote}
-        setsaveCustomerChecked={setsaveCustomerChecked}
-      />
+      <CheckoutBtn />
     </View>
   );
 };

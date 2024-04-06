@@ -9,18 +9,16 @@ import {
 import React, { useEffect, useState } from "react";
 import PercentageBtn from "./components/PercentageBtn";
 import Modal from "react-native-modal";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
+import { cartState, storeDetailState } from "state/state";
 
-const DiscountModal = ({
-  setdiscountModal,
-  cartSub,
-  cart,
-  deliveryChecked,
-  storeDetails,
-  setDiscountAmount,
-  discountAmount,
-  discountModal,
-}) => {
+const DiscountModal = () => {
   const { height, width } = useWindowDimensions();
+  const { discountModal, discountAmount, deliveryChecked, cartSub } =
+    posHomeState.use();
+  const storeDetails = storeDetailState.use();
+  const cart = cartState.use();
+
   const [code, setcode] = useState("");
   const [totalWithoutDiscount, settotalWithoutDiscount] = useState(0);
   const [totalWithNewDiscount, settotalWithNewDiscount] = useState(0);
@@ -47,18 +45,17 @@ const DiscountModal = ({
     }
 
     settotalWithoutDiscount(newVal);
-  }, []);
+  }, [cart, deliveryChecked]);
 
   useEffect(() => {
     if (localDiscountAmount.includes("%")) {
       const discount = parseFloat(localDiscountAmount.replace("%", "")) / 100;
       settotalWithNewDiscount(
-        parseFloat(totalWithoutDiscount) -
-          parseFloat(totalWithoutDiscount) * discount
+        totalWithoutDiscount - totalWithoutDiscount * discount
       );
     } else {
       settotalWithNewDiscount(
-        parseFloat(totalWithoutDiscount) - parseFloat(localDiscountAmount)
+        totalWithoutDiscount - parseFloat(localDiscountAmount)
       );
     }
   }, [localDiscountAmount]);
@@ -82,7 +79,9 @@ const DiscountModal = ({
         }}
       >
         <Pressable
-          onPress={() => setdiscountModal(false)}
+          onPress={() => {
+            updatePosHomeState({ discountModal: false });
+          }}
           style={{
             justifyContent: "center",
             alignItems: "center",
@@ -156,9 +155,12 @@ const DiscountModal = ({
                           !storeDetails.settingsPassword ||
                           storeDetails.settingsPassword === code
                         ) {
-                          console.log("Discount Amount", localDiscountAmount);
-                          setDiscountAmount(localDiscountAmount);
-                          setdiscountModal(false);
+                          // setDiscountAmount(localDiscountAmount);
+                          // setdiscountModal(false);
+                          updatePosHomeState({
+                            discountAmount: localDiscountAmount,
+                            discountModal: false,
+                          });
                         } else {
                           alert("Incorrect Code");
                         }
@@ -168,7 +170,10 @@ const DiscountModal = ({
                       <Text style={styles.confirmLbl}>Confirm</Text>
                     </Pressable>
                     <Pressable
-                      onPress={() => setdiscountModal(false)}
+                      // onPress={() => setdiscountModal(false)}
+                      onPress={() => {
+                        updatePosHomeState({ discountModal: false });
+                      }}
                       style={styles.cancelBtn}
                     >
                       <Text style={styles.cancelLbl}>Cancel</Text>

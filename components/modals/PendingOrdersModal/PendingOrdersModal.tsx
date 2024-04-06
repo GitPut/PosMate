@@ -13,19 +13,48 @@ import PendingOrderItem from "./components/PendingOrderItem";
 import PendingOrderShowDetails from "./PendingOrderShowDetails";
 import FinishPaymentCash from "./FinishPaymentCash";
 import Modal from "react-native-modal";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
+import { setCartState } from "state/state";
+import { auth, db } from "state/firebaseConfig";
 
-const PendingOrdersModal = ({
-  setongoingOrderListModal,
-  updateOrderHandler,
-  ongoingListState,
-  ongoingOrderListModal,
-}) => {
+const PendingOrdersModal = () => {
   const { height, width } = useWindowDimensions();
   const [currentOrder, setcurrentOrder] = useState({
     element: null,
     index: null,
   });
   const xPos = useRef(new Animated.Value(0)).current;
+  const { ongoingListState, ongoingOrderListModal } = posHomeState.use();
+
+  const updateOrderHandler = (order) => {
+    setCartState(order.cart);
+    if (order.cartNote) {
+      updatePosHomeState({ cartNote: order.cartNote });
+    }
+    if (order.isInStoreOrder) {
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .collection("pendingOrders")
+        .doc(order.id)
+        .delete();
+    } else {
+      updatePosHomeState({
+        name: order.customer?.name ? order.customer?.name : "",
+      });
+      updatePosHomeState({
+        phone: order.customer?.phone ? order.customer?.phone : "",
+      });
+      updatePosHomeState({
+        address: order.customer?.address ? order.customer?.address : null,
+      });
+      updatePosHomeState({
+        deliveryChecked: order.method === "deliveryOrder",
+      });
+      updatePosHomeState({ ongoingDelivery: true });
+      updatePosHomeState({ updatingOrder: order });
+      updatePosHomeState({ ongoingOrderListModal: false });
+    }
+  };
 
   const fadeIn = () => {
     Animated.timing(xPos, {
@@ -92,7 +121,7 @@ const PendingOrdersModal = ({
         }}
       >
         <Pressable
-          onPress={() => setongoingOrderListModal(false)}
+          onPress={() => updatePosHomeState({ ongoingOrderListModal: false })}
           style={{
             justifyContent: "center",
             alignItems: "center",
@@ -104,7 +133,11 @@ const PendingOrdersModal = ({
             <div style={{ cursor: "default" }}>
               <View style={styles.pendingOrdersModalContainer}>
                 <View style={styles.closeIconContainer}>
-                  <Pressable onPress={() => setongoingOrderListModal(false)}>
+                  <Pressable
+                    onPress={() =>
+                      updatePosHomeState({ ongoingOrderListModal: false })
+                    }
+                  >
                     <Ionicons name="md-close" style={styles.closeIcon} />
                   </Pressable>
                 </View>
@@ -213,7 +246,11 @@ const PendingOrdersModal = ({
                         fadeIn={fadeIn}
                         fadeOut={fadeOut}
                         setcurrentOrder={setcurrentOrder}
-                        setongoingOrderListModal={setongoingOrderListModal}
+                        setongoingOrderListModal={(val) =>
+                          updatePosHomeState({
+                            ongoingOrderListModal: val,
+                          })
+                        }
                       />
                     ) : (
                       <FinishPaymentCash

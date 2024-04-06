@@ -8,16 +8,20 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import Modal from "react-native-modal";
+import Print from "components/MainPosPage/components/Cart/Print";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
+import { storeDetailState } from "state/state";
 
-const CashScreen = ({
-  setCashModal,
-  GetTrans,
-  total,
-  setChangeDue,
-  cashModal,
-}) => {
+const CashScreen = () => {
   const [cash, setCash] = useState("");
   const { height, width } = useWindowDimensions();
+  const { cartSub, cashModal } = posHomeState.use();
+  const storeDetails = storeDetailState.use();
+  const total = (
+    parseFloat(storeDetails.taxRate) >= 0
+      ? cartSub * (1 + parseFloat(storeDetails.taxRate) / 100)
+      : cartSub * 1.13
+  ).toFixed(2);
 
   return (
     <Modal isVisible={cashModal} animationIn="fadeIn" animationOut="fadeOut">
@@ -34,7 +38,9 @@ const CashScreen = ({
         }}
       >
         <Pressable
-          onPress={() => setCashModal(false)}
+          onPress={() => {
+            updatePosHomeState({ cashModal: false });
+          }}
           style={{
             justifyContent: "center",
             alignItems: "center",
@@ -57,10 +63,14 @@ const CashScreen = ({
 
                       if (re.test(val)) {
                         setCash(val.toString());
-                        setChangeDue((parseFloat(val) - total).toFixed(2));
+                        // setChangeDue((parseFloat(val) - total).toFixed(2));
+                        updatePosHomeState({
+                          changeDue: (parseFloat(val) - parseFloat(total)).toFixed(2),
+                        })
                       } else if (!val) {
                         setCash("");
-                        setChangeDue(total);
+                        // setChangeDue(total);
+                        updatePosHomeState({ changeDue: total });
                       }
                     }}
                   />
@@ -69,7 +79,7 @@ const CashScreen = ({
                     <Text style={styles.changeDueValue}>
                       $
                       {parseFloat(cash) > 0
-                        ? (total - parseFloat(cash)).toFixed(2)
+                        ? (parseFloat(total) - parseFloat(cash)).toFixed(2)
                         : total}
                     </Text>
                   </View>
@@ -78,15 +88,22 @@ const CashScreen = ({
                   <Pressable
                     style={styles.finishPaymentBtn}
                     onPress={() => {
-                      GetTrans("Cash");
-                      setCashModal(false);
+                      Print({
+                        method: "Cash",
+                        dontAddToOngoing: false,
+                      });
+                      // setCashModal(false);
+                      updatePosHomeState({ cashModal: false });
                     }}
                   >
                     <Text style={styles.finishPayment}>Finish Payment</Text>
                   </Pressable>
                   <Pressable
                     style={styles.cancelBtn}
-                    onPress={() => setCashModal(false)}
+                    // onPress={() => setCashModal(false)}
+                    onPress={() => {
+                      updatePosHomeState({ cashModal: false });
+                    }}
                   >
                     <Text style={styles.cancel}>Cancel</Text>
                   </Pressable>

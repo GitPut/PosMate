@@ -8,43 +8,34 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { customersList, setCustomersList, storeDetailState } from "state/state";
-import { Switch } from "react-native-gesture-handler";
 import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
 import { addCustomerDetailsToDb } from "state/firebaseFunctions";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import GeneralSwitch from "components/GeneralSwitch";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 import Modal from "react-native-modal";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
 
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
-const PhoneOrderModal = ({
-  setDeliveryModal,
-  setOngoingDelivery,
-  setName,
-  setPhone,
-  setAddress,
-  name,
-  phone,
-  address,
-  deliveryChecked,
-  setDeliveryChecked,
-  setsavedCustomerDetails,
-  ongoingDelivery,
-  setsaveCustomerModal,
-  buzzCode,
-  setBuzzCode,
-  unitNumber,
-  setUnitNumber,
-  savedCustomerDetails,
-  deliveryModal,
-  updatingOrder,
-}) => {
+const PhoneOrderModal = () => {
   const [localAddress, setlocalAddress] = useState(null);
   const [saveCustomerChecked, setsaveCustomerChecked] = useState(false);
   const customers = customersList.use();
   const storeDetails = storeDetailState.use();
   const { height, width } = useWindowDimensions();
+  const {
+    name,
+    phone,
+    address,
+    deliveryChecked,
+    ongoingDelivery,
+    buzzCode,
+    unitNumber,
+    savedCustomerDetails,
+    deliveryModal,
+    updatingOrder,
+  } = posHomeState.use();
 
   // Function to calculate distance between two points using Haversine formula
   function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -113,14 +104,25 @@ const PhoneOrderModal = ({
       unitNumber: unitNumber ? unitNumber : null,
       orders: [],
     }).then((docRef) => {
-      setsavedCustomerDetails({
-        name: name,
-        phone: phone,
-        address: address ? address : null,
-        buzzCode: buzzCode ? buzzCode : null,
-        unitNumber: unitNumber ? unitNumber : null,
-        orders: [],
-        id: docRef.id,
+      // setsavedCustomerDetails({
+      //   name: name,
+      //   phone: phone,
+      //   address: address ? address : null,
+      //   buzzCode: buzzCode ? buzzCode : null,
+      //   unitNumber: unitNumber ? unitNumber : null,
+      //   orders: [],
+      //   id: docRef.id,
+      // });
+      updatePosHomeState({
+        savedCustomerDetails: {
+          name: name,
+          phone: phone,
+          address: address ? address : null,
+          buzzCode: buzzCode ? buzzCode : null,
+          unitNumber: unitNumber ? unitNumber : null,
+          orders: [],
+          id: docRef.id,
+        },
       });
 
       setCustomersList([
@@ -140,7 +142,6 @@ const PhoneOrderModal = ({
 
   useEffect(() => {
     if (address) {
-      console.log("Set address: ", address);
       setlocalAddress(address);
       try {
         calculateDistanceBetweenAddresses(
@@ -169,7 +170,8 @@ const PhoneOrderModal = ({
 
   useEffect(() => {
     if (localAddress) {
-      setAddress(localAddress);
+      // setAddress(localAddress);
+      updatePosHomeState({ address: localAddress });
       try {
         calculateDistanceBetweenAddresses(
           storeDetails.address.value.reference,
@@ -216,16 +218,27 @@ const PhoneOrderModal = ({
         <Pressable
           onPress={() => {
             if (ongoingDelivery || updatingOrder) {
-              setDeliveryModal(false);
+              // setDeliveryModal(false);
+              updatePosHomeState({ deliveryModal: false });
             } else {
-              setDeliveryModal(false);
-              setOngoingDelivery(false);
-              setName("");
-              setPhone("");
-              setAddress(null);
-              setBuzzCode("");
-              setUnitNumber("");
-              setDeliveryChecked(false);
+              // setDeliveryModal(false);
+              // setOngoingDelivery(false);
+              // setName("");
+              // setPhone("");
+              // setAddress(null);
+              // setBuzzCode("");
+              // setUnitNumber("");
+              // setDeliveryChecked(false);
+              updatePosHomeState({
+                deliveryModal: false,
+                ongoingDelivery: false,
+                name: "",
+                phone: "",
+                address: null,
+                buzzCode: "",
+                unitNumber: "",
+                deliveryChecked: false,
+              });
             }
           }}
           style={{
@@ -243,16 +256,27 @@ const PhoneOrderModal = ({
                     <Pressable
                       onPress={() => {
                         if (ongoingDelivery || updatingOrder) {
-                          setDeliveryModal(false);
+                          // setDeliveryModal(false);
+                          updatePosHomeState({ deliveryModal: false });
                         } else {
-                          setDeliveryModal(false);
-                          setOngoingDelivery(false);
-                          setName("");
-                          setPhone("");
-                          setAddress(null);
-                          setBuzzCode("");
-                          setUnitNumber("");
-                          setDeliveryChecked(false);
+                          // setDeliveryModal(false);
+                          // setOngoingDelivery(false);
+                          // setName("");
+                          // setPhone("");
+                          // setAddress(null);
+                          // setBuzzCode("");
+                          // setUnitNumber("");
+                          // setDeliveryChecked(false);
+                          updatePosHomeState({
+                            deliveryModal: false,
+                            ongoingDelivery: false,
+                            name: "",
+                            phone: "",
+                            address: null,
+                            buzzCode: "",
+                            unitNumber: "",
+                            deliveryChecked: false,
+                          });
                         }
                       }}
                     >
@@ -271,7 +295,9 @@ const PhoneOrderModal = ({
                       placeholder="Enter name"
                       style={styles.namedTxtBox}
                       value={name}
-                      onChangeText={(val) => setName(val)}
+                      onChangeText={(val) => {
+                        updatePosHomeState({ name: val });
+                      }}
                     />
                   </View>
                   <View style={styles.customerPhoneRow}>
@@ -283,10 +309,12 @@ const PhoneOrderModal = ({
                       placeholder="Enter phone number"
                       style={styles.phoneNumberTxtBox}
                       value={phone}
-                      onChangeText={(val) => setPhone(val)}
+                      onChangeText={(val) => {
+                        updatePosHomeState({ phone: val });
+                      }}
                     />
                   </View>
-                  {!savedCustomerDetails && ( 
+                  {!savedCustomerDetails && (
                     <View style={styles.saveCustomerRow}>
                       <Text style={styles.savedCustomersTxt}>
                         Would you like to save customer?
@@ -305,7 +333,10 @@ const PhoneOrderModal = ({
                       <GeneralSwitch
                         isActive={deliveryChecked}
                         toggleSwitch={() =>
-                          setDeliveryChecked(!deliveryChecked)
+                          // setDeliveryChecked(!deliveryChecked)
+                          updatePosHomeState({
+                            deliveryChecked: !deliveryChecked,
+                          })
                         }
                       />
                     </View>
@@ -346,7 +377,9 @@ const PhoneOrderModal = ({
                           padding: 10,
                         }}
                         value={unitNumber}
-                        onChangeText={(val) => setUnitNumber(val)}
+                        onChangeText={(val) => {
+                          updatePosHomeState({ unitNumber: val });
+                        }}
                       />
                       <TextInput
                         placeholder="Buzz #"
@@ -360,7 +393,9 @@ const PhoneOrderModal = ({
                           padding: 10,
                         }}
                         value={buzzCode}
-                        onChangeText={(val) => setBuzzCode(val)}
+                        onChangeText={(val) => {
+                          updatePosHomeState({ buzzCode: val });
+                        }}
                       />
                     </View>
                   )}
@@ -370,8 +405,12 @@ const PhoneOrderModal = ({
                     style={styles.orderButton}
                     onPress={() => {
                       if (name && phone) {
-                        setDeliveryModal(false);
-                        setOngoingDelivery(true);
+                        // setDeliveryModal(false);
+                        // setOngoingDelivery(true);
+                        updatePosHomeState({
+                          deliveryModal: false,
+                          ongoingDelivery: true,
+                        });
                         if (saveCustomerChecked) {
                           SaveCustomer();
                         }
@@ -385,16 +424,27 @@ const PhoneOrderModal = ({
                   <Pressable
                     style={styles.viewSavedCustomersRow}
                     onPress={() => {
-                      setOngoingDelivery(false);
-                      setName("");
-                      setPhone("");
-                      setAddress(null);
-                      setBuzzCode("");
-                      setUnitNumber("");
                       setsaveCustomerChecked(false);
-                      setDeliveryChecked(false);
-                      setDeliveryModal(false);
-                      setsaveCustomerModal(true);
+                      // setOngoingDelivery(false);
+                      // setName("");
+                      // setPhone("");
+                      // setAddress(null);
+                      // setBuzzCode("");
+                      // setUnitNumber("");
+                      // setDeliveryChecked(false);
+                      // setDeliveryModal(false);
+                      // setsaveCustomerModal(true);
+                      updatePosHomeState({
+                        ongoingDelivery: false,
+                        name: "",
+                        phone: "",
+                        address: null,
+                        buzzCode: "",
+                        unitNumber: "",
+                        deliveryChecked: false,
+                        deliveryModal: false,
+                        saveCustomerModal: true,
+                      });
                     }}
                   >
                     <MaterialIcons

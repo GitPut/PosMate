@@ -13,7 +13,6 @@ import {
   Ionicons,
   FontAwesome as FontAwesomeIcon,
   MaterialCommunityIcons as MaterialCommunityIconsIcon,
-  MaterialIcons as MaterialIconsIcon,
 } from "@expo/vector-icons";
 import OrderItem from "./components/OrderItem";
 import { auth, db } from "state/firebaseConfig";
@@ -25,20 +24,13 @@ import {
 } from "state/state";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
+import { updatePosHomeState } from "state/posHomeState";
 
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
 function CustomerDetailsModal({
   setcustomerSelected,
   customerSelected,
-  setOngoingDelivery,
-  setNameForDelivery,
-  setPhoneForDelivery,
-  setAddressForDelivery,
-  setBuzzCodeForDelivery,
-  setUnitNumberForDelivery,
-  setDeliveryChecked,
-  setsavedCustomerDetails,
   closeAll,
 }) {
   const { height, width } = useWindowDimensions();
@@ -78,7 +70,6 @@ function CustomerDetailsModal({
         height: height,
         width: width,
       }}
-      activeOpacity={1}
     >
       <Pressable>
         <div style={{ cursor: "default" }}>
@@ -200,8 +191,9 @@ function CustomerDetailsModal({
                             onSelectSuggestion
                           ) => (
                             <div style={{ width: "80%" }}>
-                              {suggestions.map((suggestion) => (
+                              {suggestions.map((suggestion, index) => (
                                 <div
+                                  key={index}
                                   className="suggestion"
                                   onClick={(event) => {
                                     onSelectSuggestion(suggestion, event);
@@ -298,18 +290,6 @@ function CustomerDetailsModal({
                   {edit ? (
                     <Pressable
                       onPress={() => {
-                        console.log(
-                          "New Name:",
-                          newName,
-                          " New Phone: ",
-                          newPhoneNumber,
-                          " New Address: ",
-                          newAddress,
-                          " New Buzz: ",
-                          newBuzzCode,
-                          " New Unit: ",
-                          newUnitNumber
-                        );
                         db.collection("users")
                           .doc(auth.currentUser?.uid)
                           .collection("customers")
@@ -397,25 +377,29 @@ function CustomerDetailsModal({
                       prevOrderIndex={prevOrderIndex}
                       setOrderPickUp={() => {
                         setCartState(prevOrder.cart);
-                        setOngoingDelivery(true);
-                        setNameForDelivery(customerSelected.name);
-                        setPhoneForDelivery(customerSelected.phone);
-                        setAddressForDelivery(customerSelected.address);
-                        setBuzzCodeForDelivery(customerSelected.buzzCode);
-                        setUnitNumberForDelivery(customerSelected.unitNumber);
-                        setDeliveryChecked(false);
+                        updatePosHomeState({
+                          deliveryChecked: false,
+                          ongoingDelivery: true,
+                          name: customerSelected.name,
+                          phone: customerSelected.phone,
+                          address: customerSelected.address,
+                          buzzCode: customerSelected.buzzCode,
+                          unitNumber: customerSelected.unitNumber,
+                        })
                         setcustomerSelected(null);
                         closeAll();
                       }}
                       setOrderDelivery={() => {
                         setCartState(prevOrder.cart);
-                        setOngoingDelivery(true);
-                        setNameForDelivery(customerSelected.name);
-                        setPhoneForDelivery(customerSelected.phone);
-                        setAddressForDelivery(customerSelected.address);
-                        setBuzzCodeForDelivery(customerSelected.buzzCode);
-                        setUnitNumberForDelivery(customerSelected.unitNumber);
-                        setDeliveryChecked(true);
+                        updatePosHomeState({
+                          deliveryChecked: true,
+                          ongoingDelivery: true,
+                          name: customerSelected.name,
+                          phone: customerSelected.phone,
+                          address: customerSelected.address,
+                          buzzCode: customerSelected.buzzCode,
+                          unitNumber: customerSelected.unitNumber,
+                        })
                         setcustomerSelected(null);
                         closeAll();
                       }}
@@ -432,14 +416,23 @@ function CustomerDetailsModal({
               <View style={styles.addNewOrderRow}>
                 <Pressable
                   onPress={() => {
-                    setsavedCustomerDetails(customerSelected);
-                    setOngoingDelivery(true);
-                    setNameForDelivery(customerSelected.name);
-                    setPhoneForDelivery(customerSelected.phone);
-                    setAddressForDelivery(customerSelected.address);
-                    setBuzzCodeForDelivery(customerSelected.buzzCode);
-                    setUnitNumberForDelivery(customerSelected.unitNumber);
-                    setDeliveryChecked(false);
+                    // setsavedCustomerDetails(customerSelected);
+                    // setOngoingDelivery(true);
+                    // setNameForDelivery(customerSelected.name);
+                    // setPhoneForDelivery(customerSelected.phone);
+                    // setAddressForDelivery(customerSelected.address);
+                    // setBuzzCodeForDelivery(customerSelected.buzzCode);
+                    // setUnitNumberForDelivery(customerSelected.unitNumber);
+                    // setDeliveryChecked(false);
+                    updatePosHomeState({
+                      deliveryChecked: false,
+                      ongoingDelivery: true,
+                      name: customerSelected.name,
+                      phone: customerSelected.phone,
+                      address: customerSelected.address,
+                      buzzCode: customerSelected.buzzCode,
+                      unitNumber: customerSelected.unitNumber,
+                    })
                     setcustomerSelected(null);
                     closeAll();
                   }}

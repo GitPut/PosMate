@@ -15,17 +15,18 @@ import Axios from "axios";
 import { auth } from "state/firebaseConfig";
 import { useHistory } from "react-router-dom";
 import Modal from "react-native-modal";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
 
-const SettingsPasswordModal = ({
-  setsettingsPasswordModalVis,
-  settingsPasswordModalVis,
-}) => {
+const SettingsPasswordModal = () => {
   const { height, width } = useWindowDimensions();
   const [password, setpassword] = useState("");
   const storeDetails = storeDetailState.use();
   const [inccorectPass, setinccorectPass] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const history = useHistory();
+  const {
+    settingsPasswordModalVis,
+  } = posHomeState.use();
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -33,7 +34,8 @@ const SettingsPasswordModal = ({
         setIsSignedInSettingsState(true);
         history.push("/authed/dashboard");
         localStorage.setItem("isAuthedBackend", true);
-        setsettingsPasswordModalVis(false);
+        // setsettingsPasswordModalVis(false);
+        updatePosHomeState({ settingsPasswordModalVis: false });
         setinccorectPass(false);
       } else {
         setinccorectPass(true);
@@ -90,14 +92,15 @@ const SettingsPasswordModal = ({
         }}
       >
         <Pressable
-          onPress={() => setsettingsPasswordModalVis(false)}
+          onPress={() => {
+            updatePosHomeState({ settingsPasswordModalVis: false });
+          }}
           style={{
             justifyContent: "center",
             alignItems: "center",
             height: height,
             width: width,
           }}
-          activeOpacity={1}
         >
           <Pressable>
             <div style={{ cursor: "default" }}>
@@ -157,7 +160,8 @@ const SettingsPasswordModal = ({
                       if (password == storeDetails.settingsPassword) {
                         setIsSignedInSettingsState(true);
                         history.push("/authed/dashboard");
-                        setsettingsPasswordModalVis(false);
+                        // setsettingsPasswordModalVis(false);
+                        updatePosHomeState({ settingsPasswordModalVis: false });
                         setinccorectPass(false);
                         localStorage.setItem("isAuthedBackend", true);
                       } else {

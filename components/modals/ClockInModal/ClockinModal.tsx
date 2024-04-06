@@ -12,10 +12,12 @@ import { employeesState, setEmployeesState } from "state/state";
 import { Ionicons } from "@expo/vector-icons";
 import EmployeeClockInItem from "./components/EmployeeClockInItem";
 import Modal from "react-native-modal";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
 
-const ClockinModal = ({ setclockinModal, clockinModal }) => {
+const ClockinModal = () => {
   const { height, width } = useWindowDimensions();
   const employees = employeesState.use();
+  const {clockinModal} = posHomeState.use();
 
   return (
     <Modal isVisible={clockinModal} animationIn="fadeIn" animationOut="fadeOut">
@@ -32,7 +34,7 @@ const ClockinModal = ({ setclockinModal, clockinModal }) => {
         }}
       >
         <Pressable
-          onPress={() => setclockinModal(false)}
+          onPress={() => updatePosHomeState({ clockinModal: false })}
           style={{
             justifyContent: "center",
             alignItems: "center",
@@ -44,7 +46,9 @@ const ClockinModal = ({ setclockinModal, clockinModal }) => {
             <div style={{ cursor: "default" }}>
               <View style={styles.container}>
                 <View style={styles.closeIconContainer}>
-                  <Pressable onPress={() => setclockinModal(false)}>
+                  <Pressable
+                    onPress={() => updatePosHomeState({ clockinModal: false })}
+                  >
                     <Ionicons name="md-close" style={styles.closeIcon} />
                   </Pressable>
                 </View>

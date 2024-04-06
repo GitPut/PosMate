@@ -15,27 +15,21 @@ import { Ionicons, Entypo } from "@expo/vector-icons";
 import SavedCustomerItem from "./components/SavedCustomerItem";
 import Modal from "react-native-modal";
 import CustomerDetailsModal from "./CustomerDetailsModal";
+import { updatePosHomeState } from "state/posHomeState";
 
-const SavedCustomersModal = ({
-  setSaveCustomerModal,
-  setOngoingDelivery,
-  setNameForDelivery,
-  setPhoneForDelivery,
-  setAddressForDelivery,
-  setBuzzCodeForDelivery,
-  setUnitNumberForDelivery,
-  setDeliveryChecked,
-  setsavedCustomerDetails,
-  setDeliveryModal,
-}) => {
+const SavedCustomersModal = () => {
   const [customerSelected, setcustomerSelected] = useState(null);
   const { height, width } = useWindowDimensions();
   const [search, setsearch] = useState("");
   const customers = customersList.use();
 
   const closeAll = () => {
-    setDeliveryModal(false);
-    setSaveCustomerModal(false);
+    // setDeliveryModal(false);
+    // setSaveCustomerModal(false);
+    updatePosHomeState({
+      saveCustomerModal: false,
+      deliveryModal: false,
+    })
   };
 
   return (
@@ -47,7 +41,6 @@ const SavedCustomersModal = ({
         height: height,
         width: width,
       }}
-      activeOpacity={1}
     >
       <Pressable>
         <div style={{ cursor: "default" }}>
@@ -56,8 +49,12 @@ const SavedCustomersModal = ({
               <View style={styles.topRow}>
                 <Pressable
                   onPress={() => {
-                    setSaveCustomerModal(false);
-                    setDeliveryModal(true);
+                    // setSaveCustomerModal(false);
+                    // setDeliveryModal(true);
+                    updatePosHomeState({
+                      saveCustomerModal: false,
+                      deliveryModal: true,
+                    });
                   }}
                 >
                   <Entypo name="chevron-left" style={styles.goBackIcon} />
@@ -139,14 +136,6 @@ const SavedCustomersModal = ({
                 <CustomerDetailsModal
                   setcustomerSelected={setcustomerSelected}
                   customerSelected={customerSelected}
-                  setOngoingDelivery={setOngoingDelivery}
-                  setNameForDelivery={setNameForDelivery}
-                  setPhoneForDelivery={setPhoneForDelivery}
-                  setAddressForDelivery={setAddressForDelivery}
-                  setBuzzCodeForDelivery={setBuzzCodeForDelivery}
-                  setUnitNumberForDelivery={setUnitNumberForDelivery}
-                  setDeliveryChecked={setDeliveryChecked}
-                  setsavedCustomerDetails={setsavedCustomerDetails}
                   closeAll={closeAll}
                 />
               )}

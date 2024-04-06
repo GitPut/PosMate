@@ -1,14 +1,10 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { logout } from 'state/firebaseFunctions';
-import { Feather, Entypo } from '@expo/vector-icons';
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { logout } from "state/firebaseFunctions";
+import { Feather, Entypo } from "@expo/vector-icons";
+import { updatePosHomeState } from "state/posHomeState";
 
 const LeftMenuBar = ({
-  setongoingOrderListModal,
-  setclockinModal,
-  setDeliveryModal,
-  setdiscountModal,
-  setsettingsPasswordModalVis,
   ongoingOrderListModal,
   clockinModal,
   deliveryModal,
@@ -49,7 +45,7 @@ const LeftMenuBar = ({
             ongoingOrderListModal ? styles.activeBtn : styles.notActiveBtn,
           ]}
           onPress={() => {
-            setongoingOrderListModal(true);
+            updatePosHomeState({ ongoingOrderListModal: true });
           }}
         >
           <img
@@ -68,7 +64,7 @@ const LeftMenuBar = ({
         <Pressable
           style={[clockinModal ? styles.activeBtn : styles.notActiveBtn]}
           onPress={() => {
-            setclockinModal(true);
+            updatePosHomeState({ clockinModal: true });
           }}
         >
           <img
@@ -87,7 +83,7 @@ const LeftMenuBar = ({
         <Pressable
           style={[deliveryModal ? styles.activeBtn : styles.notActiveBtn]}
           onPress={() => {
-            setDeliveryModal(true);
+            updatePosHomeState({ deliveryModal: true });
           }}
         >
           <img
@@ -105,7 +101,9 @@ const LeftMenuBar = ({
         </Pressable>
         <Pressable
           style={[discountModal ? styles.activeBtn : styles.notActiveBtn]}
-          onPress={() => setdiscountModal(true)}
+          onPress={() => {
+            updatePosHomeState({ discountModal: true });
+          }}
         >
           <Feather
             name="percent"
@@ -119,7 +117,7 @@ const LeftMenuBar = ({
           ]}
           onPress={() => {
             if (storeDetails.settingsPassword?.length > 0) {
-              setsettingsPasswordModalVis(true);
+              updatePosHomeState({ settingsPasswordModalVis: true });
             } else {
               setIsSignedInSettingsState(true);
               history.push("/authed/dashboard");
@@ -148,7 +146,7 @@ const LeftMenuBar = ({
   );
 };
 
-export default LeftMenuBar
+export default LeftMenuBar;
 
 const styles = StyleSheet.create({
   leftMenuBarContainer: {
