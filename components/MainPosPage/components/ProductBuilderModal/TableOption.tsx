@@ -13,7 +13,6 @@ import Modal from "react-native-modal";
 import OptionSelectorItemContainer from "./OptionSelectorItemContainer";
 
 function TableOption({
-  style,
   setopenDropdown,
   openDropdown,
   id,
@@ -121,7 +120,7 @@ function TableOption({
 
   return (
     <View
-      style={[styles.container, style, openDropdown === id && { zIndex: 1000 }]}
+      style={[styles.container, openDropdown === id && { zIndex: 1000 }]}
     >
       <Text style={styles.lbl}>
         {label} {isRequired ? "*" : ""}
@@ -266,6 +265,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    height: 44,
+    marginBottom: 20,
+    alignSelf: "stretch",
   },
   modalContainer: {
     backgroundColor: "rgba(255,255,255,1)",

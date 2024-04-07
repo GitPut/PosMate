@@ -103,7 +103,7 @@ function OptionsItemOpenInner({
                   optionType: val,
                 }));
               }}
-              options={["Multi Choice", "Dropdown"]}
+              options={["Dropdown", "Quantity Dropdown", "Table View", "Row"]}
               scrollY={scrollY}
             />
           </View>
@@ -148,7 +148,7 @@ function OptionsItemOpenInner({
             }}
           />
         </View>
-        {(e.optionType === "Dropdown" || e.optionType === "Multi Choice") && (
+        {/* {(e.optionType === "Dropdown" || e.optionType === "Row") && (
           <View style={styles.optionTypeGroup1}>
             <Text style={styles.optionTypeDropdownLbl1}>Default Value</Text>
             <View>
@@ -221,45 +221,8 @@ function OptionsItemOpenInner({
               />
             </View>
           </View>
-        )}
-        {e.optionType === "Multi Choice" ? (
-          <View style={styles.optionTypeGroup1}>
-            <Text style={styles.optionTypeDropdownLbl1}>View Type</Text>
-            <View>
-              <GeneralDropdown
-                style={styles.categoryDropDownBox}
-                placeholder="Choose View Type"
-                value={e.viewType}
-                setValue={(val) => {
-                  if (e.viewType) {
-                    setnewProductOptions((prev) => {
-                      const clone = structuredClone(prev);
-                      clone[index].viewType = val;
-                      return clone;
-                    });
-                  } else {
-                    setnewProductOptions((prev) => {
-                      const clone = structuredClone(prev);
-                      clone[index] = {
-                        ...e,
-                        viewType: val,
-                      };
-                      return clone;
-                    });
-                  }
-                  sete((prevState) => ({
-                    ...prevState,
-                    viewType: val,
-                  }));
-                }}
-                options={["Default", "Table"]}
-                scrollY={scrollY}
-              />
-            </View>
-          </View>
-        ) : (
-          <View style={{ width: 195 }} />
-        )}
+        )} */}
+        <View style={{ width: 195 }} />
       </View>
       <View style={styles.spacer6}></View>
       {testMap.map((e, indexInnerList) => (

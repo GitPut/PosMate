@@ -16,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons/";
 import MultipleTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/MultipleTimeSelectableOptionGroup";
 import DropdownSelectableOption from "components/MainPosPage/components/ProductBuilderModal/DropdownSelectableOption";
 import OneTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/OneTimeSelectableOptionGroup";
+import DisplayOption from "pages/authed/backendPos/BackendPages/Product/components/DisplayOption";
 
 function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
   const cart = cartState.use();
@@ -27,149 +28,6 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
   );
   const [openOptions, setopenOptions] = useState(null);
   const screenWidth = useWindowDimensions().width;
-
-  const DisplayOption = ({ e, index }) => {
-    const checkCases = () => {
-      if (e.selectedCaseList?.length > 0) {
-        const listOfTrueIfS = [];
-
-        e.selectedCaseList.forEach((ifStatement) => {
-          const caseKeyList = myObjProfile.options.filter(
-            (op) => op.label == ifStatement.selectedCaseKey
-          );
-
-          if (caseKeyList.length > 0) {
-            const caseValueList = caseKeyList[0].optionsList.filter(
-              (opL) => opL.label == ifStatement.selectedCaseValue
-            );
-
-            if (caseValueList.length > 0) {
-              if (caseValueList[0].selected === true) {
-                listOfTrueIfS.push(ifStatement);
-              }
-            }
-          }
-        });
-
-        if (e.selectedCaseList?.length === listOfTrueIfS.length) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return true;
-      }
-    };
-
-    const [optionVal, setoptionVal] = useState();
-
-    const selectedList = e.optionsList.filter((checkOp) => checkOp.selected);
-
-    if (selectedList.length > 0 && !optionVal) {
-      setoptionVal(selectedList[0]);
-    }
-
-    if (!(e.selectedCaseList?.length > 0) || checkCases()) {
-      if (e.optionType?.toLowerCase() === "dropdown") {
-        return (
-          <DropdownSelectableOption
-            id={index}
-            style={styles.dropdownSelectableOption}
-            setopenDropdown={setopenOptions}
-            openDropdown={openOptions}
-            label={e.label}
-            isRequired={e.isRequired}
-            options={e.optionsList}
-            setValue={({ option, listIndex }) => {
-              const newMyObjProfile = structuredClone(myObjProfile);
-              newMyObjProfile.options[index].optionsList.forEach(
-                (element, indexOfOl) => {
-                  if (element.selected) {
-                    newMyObjProfile.options[index].optionsList[
-                      indexOfOl
-                    ].selected = false;
-                  }
-                }
-              );
-
-              newMyObjProfile.options[index].optionsList[listIndex].selected =
-                true;
-              setoptionVal(option);
-              setmyObjProfile(newMyObjProfile);
-            }}
-            value={optionVal}
-          />
-        );
-      } else {
-        if (e.numOfSelectable === "1") {
-          return (
-            <OneTimeSelectableOptionGroup
-              label={e.label}
-              isRequired={e.isRequired}
-              options={e.optionsList}
-              setValue={({ option, listIndex }) => {
-                const newMyObjProfile = structuredClone(myObjProfile);
-                newMyObjProfile.options[index].optionsList.forEach(
-                  (element, indexOfOl) => {
-                    if (element.selected) {
-                      newMyObjProfile.options[index].optionsList[
-                        indexOfOl
-                      ].selected = false;
-                    }
-                  }
-                );
-
-                newMyObjProfile.options[index].optionsList[listIndex].selected =
-                  true;
-                setoptionVal(option);
-                setmyObjProfile(newMyObjProfile);
-              }}
-              value={optionVal}
-              style={styles.oneTimeSelectableOptionGroup}
-            />
-          );
-        } else {
-          const optionsSelected = myObjProfile.options[
-            index
-          ].optionsList.filter((op) => op.selectedTimes > 0);
-          const optionsSelectedLabel =
-            optionsSelected.length > 0
-              ? optionsSelected.map((op, index) => {
-                  if (index > 0) return `, ${op.label} (${op.selectedTimes})`;
-                  return `${op.label} (${op.selectedTimes})`;
-                })
-              : "";
-
-          return (
-            <MultipleTimeSelectableOptionGroup
-              e={e}
-              index={index}
-              myObjProfile={myObjProfile}
-              setmyObjProfile={setmyObjProfile}
-              id={index}
-              style={styles.dropdownSelectableOption}
-              setopenDropdown={setopenOptions}
-              openDropdown={openOptions}
-              label={e.label}
-              isRequired={e.isRequired}
-              optionsSelectedLabel={optionsSelectedLabel}
-            />
-          );
-        }
-      }
-    } else if (checkCases() === false) {
-      const newMyObjProfile = structuredClone(myObjProfile);
-      newMyObjProfile.options[index].optionsList.forEach(
-        (item, indexOfItem) => {
-          if (item.selected === true) {
-            newMyObjProfile.options[index].optionsList[indexOfItem].selected =
-              false;
-            setmyObjProfile(newMyObjProfile);
-          }
-        }
-      );
-    }
-  };
 
   useEffect(() => {
     settotal(getPrice());
@@ -208,8 +66,9 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
 
     myObjProfile.options.forEach((op) => {
       if (
-        op.optionType?.toLowerCase() === "dropdown" ||
-        op.numOfSelectable === "1"
+        op.optionType === "Dropdown" ||
+        op.numOfSelectable === "1" ||
+        op.optionType === "Row"
       ) {
         let opWVal = `${op.label}: `;
         const numberOfSelected = op.optionsList.filter(
@@ -291,6 +150,152 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
     }
   };
 
+  const DisplayOption = ({ e, index }) => {
+    const checkCases = () => {
+      if (e.selectedCaseList?.length > 0) {
+        const listOfTrueIfS = [];
+
+        e.selectedCaseList.forEach((ifStatement) => {
+          const caseKeyList = myObjProfile.options.filter(
+            (op) => op.label == ifStatement.selectedCaseKey
+          );
+
+          if (caseKeyList.length > 0) {
+            const caseValueList = caseKeyList[0].optionsList.filter(
+              (opL) => opL.label == ifStatement.selectedCaseValue
+            );
+
+            if (caseValueList.length > 0) {
+              if (caseValueList[0].selected === true) {
+                listOfTrueIfS.push(ifStatement);
+              }
+            }
+          }
+        });
+
+        if (e.selectedCaseList?.length === listOfTrueIfS.length) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    };
+
+    const [optionVal, setoptionVal] = useState();
+
+    const selectedList = e.optionsList.filter((checkOp) => checkOp.selected);
+
+    if (selectedList.length > 0 && !optionVal) {
+      setoptionVal(selectedList[0]);
+    }
+    if (!(e.selectedCaseList?.length > 0) || checkCases()) {
+      if (e.optionType === "Dropdown") {
+        return (
+          <DropdownSelectableOption
+            id={index}
+            setopenDropdown={setopenOptions}
+            openDropdown={openOptions}
+            label={e.label}
+            isRequired={e.isRequired}
+            options={e.optionsList}
+            setValue={({ option, listIndex }) => {
+              const newMyObjProfile = structuredClone(myObjProfile);
+              newMyObjProfile.options[index].optionsList.forEach(
+                (element, indexOfOl) => {
+                  if (element.selected) {
+                    newMyObjProfile.options[index].optionsList[
+                      indexOfOl
+                    ].selected = false;
+                  }
+                }
+              );
+
+              if (option) {
+                newMyObjProfile.options[index].optionsList[listIndex].selected =
+                  true;
+              }
+              setoptionVal(option);
+
+              setmyObjProfile(newMyObjProfile);
+            }}
+            value={optionVal}
+          />
+        );
+      } else if (
+        e.optionType === "Quantity Dropdown" ||
+        e.optionType === "Table View"
+      ) {
+        const optionsSelected = myObjProfile.options[index].optionsList.filter(
+          (op) => op.selectedTimes > 0
+        );
+        const optionsSelectedLabel =
+          optionsSelected.length > 0
+            ? optionsSelected.map((op, index) => {
+                if (index > 0) return `, ${op.label} (${op.selectedTimes})`;
+                return `${op.label} (${op.selectedTimes})`;
+              })
+            : "";
+
+        return (
+          <MultipleTimeSelectableOptionGroup
+            e={e}
+            index={index}
+            myObjProfile={myObjProfile}
+            setmyObjProfile={setmyObjProfile}
+            id={index}
+            setopenDropdown={setopenOptions}
+            openDropdown={openOptions}
+            label={e.label}
+            isRequired={e.isRequired}
+            optionsSelectedLabel={optionsSelectedLabel}
+          />
+        );
+      } else {
+        return (
+          <OneTimeSelectableOptionGroup
+            label={e.label}
+            isRequired={e.isRequired}
+            options={e.optionsList}
+            setValue={({ option, listIndex }) => {
+              const newMyObjProfile = structuredClone(myObjProfile);
+              newMyObjProfile.options[index].optionsList.forEach(
+                (element, indexOfOl) => {
+                  if (element.selected) {
+                    newMyObjProfile.options[index].optionsList[
+                      indexOfOl
+                    ].selected = false;
+                  }
+                }
+              );
+
+              newMyObjProfile.options[index].optionsList[listIndex].selected =
+                true;
+              setoptionVal(option);
+              setmyObjProfile(newMyObjProfile);
+            }}
+            value={optionVal}
+          />
+        );
+      }
+    }
+    // else if (checkCases() === false) {
+    else {
+      const newMyObjProfile = structuredClone(myObjProfile);
+      newMyObjProfile.options[index].optionsList.forEach(
+        (item, indexOfItem) => {
+          if (item.selected === true) {
+            newMyObjProfile.options[index].optionsList[indexOfItem].selected =
+              false;
+            setmyObjProfile(newMyObjProfile);
+          }
+        }
+      );
+      return <></>;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.productBuilderGroup}>
@@ -354,9 +359,15 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
                 paddingRight: 30,
               }}
             >
+              <View>
               {myObjProfile.options.map((e, index) => (
-                <DisplayOption e={e} index={index} key={index} />
+                <DisplayOption
+                  key={index}
+                  e={e}
+                  index={index}
+                />
               ))}
+                </View>
             </ScrollView>
             <View style={styles.totalLblRow}>
               <Text style={styles.totalLbl}>

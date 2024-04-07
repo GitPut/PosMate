@@ -30,12 +30,14 @@ function OneTimeSelectableOptionGroup({
       </Text>
       <View style={styles.optionsRow}>
         {options.map((option, listIndex) => {
-          return ( 
+          return (
             <OneTimeSelectableBtn
               key={listIndex}
-              label={`${option.label}  (+$${
-                option.priceIncrease !== null ? option.priceIncrease : 0
-              })`}
+              label={
+                option.priceIncrease > 0
+                  ? `${option.label} (+$${option.priceIncrease})`
+                  : option.label
+              }
               style={styles.nonActiveOneTimeSelectableBtn}
               selectedVal={value}
               setselectedVal={setValue}
@@ -68,6 +70,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#121212",
     fontSize: 14,
+    marginBottom: 10
   },
   optionsRow: {
     width: "100%",
@@ -81,10 +84,13 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   nonActiveOneTimeSelectableBtn: {
-    height: 33,
-    width: 90,
+    minHeight: 33,
+    maxHeight: 50,
+    minWidth: 110,
+    maxWidth: 160,
     marginRight: 7,
     marginBottom: 15,
+    padding: 5,
   },
   nonActiveOneTimeSelectableBtn1: {
     height: 33,

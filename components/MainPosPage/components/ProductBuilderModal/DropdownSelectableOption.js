@@ -10,7 +10,6 @@ import {
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 
 function DropdownSelectableOption({
-  style,
   setopenDropdown,
   openDropdown,
   id,
@@ -30,9 +29,7 @@ function DropdownSelectableOption({
   }, []);
 
   return (
-    <View
-      style={[styles.container, style, openDropdown === id && { zIndex: 1000 }]}
-    >
+    <View style={[styles.container, openDropdown === id && { zIndex: 1000 }]}>
       <Text style={styles.lbl}>
         {label} {isRequired ? "*" : ""}
       </Text>
@@ -59,7 +56,7 @@ function DropdownSelectableOption({
           {value ? (
             <Pressable
               onPress={() => {
-                setValue({ option: null, listIndex: null});
+                setValue({ option: null, listIndex: null });
                 console.log("hello");
               }}
               style={{ marginTop: 5, marginRight: 5 }}
@@ -179,6 +176,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    height: 44,
+    marginBottom: 20,
+    alignSelf: "stretch",
   },
   lbl: {
     fontWeight: "700",

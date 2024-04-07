@@ -11,14 +11,13 @@ import {
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 
 function MultipleTimeSelectableOptionGroup({
-  style,
   setopenDropdown,
   openDropdown,
   id,
   label,
   isRequired,
   myObjProfile,
-  setmyObjProfile,  
+  setmyObjProfile,
   index,
   e,
   optionsSelectedLabel,
@@ -75,13 +74,13 @@ function MultipleTimeSelectableOptionGroup({
       }
       setlocalMyObjProfile(newMyObjProfile);
     } else {
-      console.log(
-        "Didnt Work ",
-        "selectedTimesTotal: ",
-        selectedTimesTotal,
-        " e.numOfSelectable: ",
-        e.numOfSelectable
-      );
+      // console.log(
+      //   "Didnt Work ",
+      //   "selectedTimesTotal: ",
+      //   selectedTimesTotal,
+      //   " e.numOfSelectable: ",
+      //   e.numOfSelectable
+      // );
     }
   };
 
@@ -93,17 +92,6 @@ function MultipleTimeSelectableOptionGroup({
       setDropdownLayout({ x, y, width, height });
     });
   }, []);
-
-  const handleKeyDown = (e, option, listIndex) => {
-    // Prevent manual editing
-    e.preventDefault();
-
-    if (e.key === "ArrowUp") {
-      onPlusPress({ option, listIndex });
-    } else if (e.key === "ArrowDown") {
-      onMinusPress({ option, listIndex });
-    }
-  };
 
   useEffect(() => {
     const optionsSelected = localMyObjProfile.options[index].optionsList.filter(
@@ -136,9 +124,7 @@ function MultipleTimeSelectableOptionGroup({
   };
 
   return (
-    <View
-      style={[styles.container, style, openDropdown === id && { zIndex: 1000 }]}
-    >
+    <View style={[styles.container, openDropdown === id && { zIndex: 1000 }]}>
       <Text style={styles.lbl}>
         {label} {isRequired ? "*" : ""}
       </Text>
@@ -329,6 +315,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    height: 44,
+    marginBottom: 20,
+    alignSelf: "stretch",
   },
   lbl: {
     fontWeight: "700",

@@ -3,7 +3,6 @@ import { StyleSheet, View, Text } from "react-native";
 import OneTimeSelectableBtn from "./OneTimeSelectableBtn";
 
 function OneTimeSelectableOptionGroup({
-  style,
   isRequired,
   label,
   options,
@@ -24,7 +23,7 @@ function OneTimeSelectableOptionGroup({
   }, []);
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container]}>
       <Text style={styles.lbl}>
         {label} {isRequired ? "*" : ""}
       </Text>
@@ -33,14 +32,16 @@ function OneTimeSelectableOptionGroup({
           return (
             <OneTimeSelectableBtn
               key={listIndex}
-              label={`${option.label}  (+$${
-                option.priceIncrease !== null ? option.priceIncrease : 0
-              })`}
+              label={
+                option.priceIncrease > 0
+                  ? `${option.label} (+$${option.priceIncrease})`
+                  : option.label
+              }
               style={styles.nonActiveOneTimeSelectableBtn}
               selectedVal={value}
               setselectedVal={setValue}
               onPress={() => {
-                setValue({ 
+                setValue({
                   option: {
                     label: option.label,
                     priceIncrease:
@@ -63,6 +64,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
+    marginBottom: 20,
+    alignSelf: "stretch",
   },
   lbl: {
     fontWeight: "700",

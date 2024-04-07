@@ -30,13 +30,7 @@ function DropdownSelectableOption({
   }, []);
 
   return (
-    <View
-      style={[
-        style,
-        openDropdown === id && { zIndex: 1000 },
-        { marginTop: 15 },
-      ]}
-    >
+    <View style={[style, openDropdown === id && { zIndex: 1000 },]}>
       <Text style={styles.lbl}>
         {label} {isRequired ? "*" : ""}
       </Text>

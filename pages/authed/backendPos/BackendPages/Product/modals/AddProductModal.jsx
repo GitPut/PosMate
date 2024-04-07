@@ -8,16 +8,14 @@ import {
     useWindowDimensions,
     TextInput,
     Image,
-    FlatList
 } from "react-native";
 import OptionsItem from "../components/OptionsItem";
 import { Ionicons as IoniconsIcon, MaterialCommunityIcons as MaterialCommunityIconsIcon } from "@expo/vector-icons";
 import { onlineStoreState, setUserStoreState, userState, userStoreState } from "state/state";
-import { useHistory } from "react-router-dom";
 import { auth, db, storage } from "state/firebaseConfig";
 import GeneralDropdown from "components/GeneralDropdown";
-import { Button } from "react-native";
 import GeneralSwitch from "components/GeneralSwitch";
+import ProductBuilderView from "../components/ProductBuilderView";
 
 const customSort = (a, b) => {
     // Handle cases where one or both items don't have a rank
@@ -250,83 +248,63 @@ function AddProductModal({
         >
             <Pressable>
                 <div style={{ cursor: "default" }}>
-                    <View style={[styles.container, { height: height * 0.9, width: width * 0.7 }]}>
-                        <View style={styles.topRow}>
-                            <Text style={styles.productAdd}>Product {isProductTemplate ? 'Add' : existingProduct ? 'Update' : 'Add'}</Text>
-                            {existingProduct && !isProductTemplate && <Pressable style={styles.templateBtn} onPress={() => {
-                                let copy = { ...existingProduct }
-                                copy.name = copy.name + " Copy";
-                                copy.imageUrl = "";
-                                copy.hasImage = false;
-                                copy.id = Math.random().toString(36).substr(2, 9);
-                                db.collection("users")
-                                    .doc(userS.uid)
-                                    .collection("products")
-                                    .doc(copy.id.toString())
-                                    .set(copy)
-                                if (onlineStoreDetails.onlineStoreSetUp) {
-                                    db.collection("public")
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', height: '100%', width: '100%' }}>
+                        <View style={[styles.container, { height: height * 0.9, width: width * 0.6 }]}>
+                            <View style={styles.topRow}>
+                                <Text style={styles.productAdd}>Product {isProductTemplate ? 'Add' : existingProduct ? 'Update' : 'Add'}</Text>
+                                {existingProduct && !isProductTemplate && <Pressable style={styles.templateBtn} onPress={() => {
+                                    let copy = { ...existingProduct }
+                                    copy.name = copy.name + " Copy";
+                                    copy.imageUrl = "";
+                                    copy.hasImage = false;
+                                    copy.id = Math.random().toString(36).substr(2, 9);
+                                    db.collection("users")
                                         .doc(userS.uid)
                                         .collection("products")
                                         .doc(copy.id.toString())
                                         .set(copy)
-                                }
-                                setUserStoreState({ categories: catalog.categories, products: [...catalog.products, copy] })
-                                setexistingProduct(copy)
-                            }}>
-                                <Text style={styles.templatesBtnLbl}>Duplicate</Text>
-                                <IoniconsIcon
-                                    name="copy"
-                                    style={styles.chevronDownIcon}
-                                />
-                            </Pressable>}
-                        </View>
-                        <View style={[styles.innerScrollArea, { height: height * 0.6 }]}>
-                            <ScrollView
-                                contentContainerStyle={styles.innerScrollArea_contentContainerStyle}
-                                onScroll={(event) => {
-                                    const currentScrollPosition = event.nativeEvent.contentOffset.y;
-                                    setScrollY(currentScrollPosition);
-                                }}
-                                scrollEventThrottle={16} // Adjust the throttle rate as needed
-                                ref={scrollViewRef} // Step 2: Assign the ref to ScrollView
-                            >
-                                <input
-                                    type="file"
-                                    ref={hiddenFileInput}
-                                    onChange={changeHandler}
-                                    style={{ display: 'none' }}
-                                    accept="image/*"
-                                />
-                                <View style={styles.imageUploadGroup}>
-                                    <Text style={styles.productImageUploadTxt}>
-                                        Product Image Upload
-                                    </Text>
-                                    <Pressable activeOpacity={0.8} onPress={handleClick} style={[styles.productImageUpContainer]}>
-                                        {selectedFile ?
-                                            <>
-                                                <Image source={{ uri: URL.createObjectURL(selectedFile) }} style={{ width: 150, height: 150, resizeMode: 'contain' }} />
-                                                <Pressable
-                                                    style={{
-                                                        backgroundColor: 'red',
-                                                        padding: 5,
-                                                        borderRadius: 5,
-                                                        position: 'absolute',
-                                                        top: 10,
-                                                        right: 10,
-                                                        justifyContent: 'center',
-                                                        alignItems: 'center'
-                                                    }}
-                                                    onPress={() => {
-                                                        setSelectedFile(null)
-                                                    }}
-                                                >
-                                                    <Text style={{ color: 'white' }}>Remove</Text>
-                                                </Pressable>
-                                            </>
-                                            : currentImgUrl ?
+                                    if (onlineStoreDetails.onlineStoreSetUp) {
+                                        db.collection("public")
+                                            .doc(userS.uid)
+                                            .collection("products")
+                                            .doc(copy.id.toString())
+                                            .set(copy)
+                                    }
+                                    setUserStoreState({ categories: catalog.categories, products: [...catalog.products, copy] })
+                                    setexistingProduct(copy)
+                                }}>
+                                    <Text style={styles.templatesBtnLbl}>Duplicate</Text>
+                                    <IoniconsIcon
+                                        name="copy"
+                                        style={styles.chevronDownIcon}
+                                    />
+                                </Pressable>}
+                            </View>
+                            <View style={[styles.innerScrollArea, { height: height * 0.6 }]}>
+                                <ScrollView
+                                    contentContainerStyle={styles.innerScrollArea_contentContainerStyle}
+                                    onScroll={(event) => {
+                                        const currentScrollPosition = event.nativeEvent.contentOffset.y;
+                                        setScrollY(currentScrollPosition);
+                                    }}
+                                    scrollEventThrottle={16} // Adjust the throttle rate as needed
+                                    ref={scrollViewRef} // Step 2: Assign the ref to ScrollView
+                                >
+                                    <input
+                                        type="file"
+                                        ref={hiddenFileInput}
+                                        onChange={changeHandler}
+                                        style={{ display: 'none' }}
+                                        accept="image/*"
+                                    />
+                                    <View style={styles.imageUploadGroup}>
+                                        <Text style={styles.productImageUploadTxt}>
+                                            Product Image Upload
+                                        </Text>
+                                        <Pressable activeOpacity={0.8} onPress={handleClick} style={[styles.productImageUpContainer]}>
+                                            {selectedFile ?
                                                 <>
-                                                    <Image source={{ uri: currentImgUrl }} style={{ width: 150, height: 150, resizeMode: 'contain' }} />
+                                                    <Image source={{ uri: URL.createObjectURL(selectedFile) }} style={{ width: 150, height: 150, resizeMode: 'contain' }} />
                                                     <Pressable
                                                         style={{
                                                             backgroundColor: 'red',
@@ -340,216 +318,241 @@ function AddProductModal({
                                                         }}
                                                         onPress={() => {
                                                             setSelectedFile(null)
-                                                            setcurrentImgUrl(null)
                                                         }}
                                                     >
                                                         <Text style={{ color: 'white' }}>Remove</Text>
                                                     </Pressable>
                                                 </>
-                                                :
-                                                <View style={styles.uploadImageInner}>
-                                                    <MaterialCommunityIconsIcon
-                                                        name="folder-multiple-image"
-                                                        style={styles.upProductImageIcon}
-                                                    />
-                                                    <Text style={styles.dragDropImageTxt}>
-                                                        Drag &amp; drop or select a file to upload Image
-                                                    </Text>
-                                                </View>}
-                                    </Pressable>
-                                </View>
-                                <View style={styles.spacer}></View>
-                                <View style={styles.productSmallDetailsRow}>
-                                    <View style={styles.productNameInputGroup}>
-                                        <Text style={styles.productNameTxt}>Product Name</Text>
-                                        <TextInput style={styles.productNameBox}
-                                            placeholder="Enter Product Name"
-                                            onChangeText={val => setnewProduct((prevState) => ({
-                                                ...prevState,
-                                                name: val,
-                                            }))}
-                                            value={newProduct?.name}
-                                        />
+                                                : currentImgUrl ?
+                                                    <>
+                                                        <Image source={{ uri: currentImgUrl }} style={{ width: 150, height: 150, resizeMode: 'contain' }} />
+                                                        <Pressable
+                                                            style={{
+                                                                backgroundColor: 'red',
+                                                                padding: 5,
+                                                                borderRadius: 5,
+                                                                position: 'absolute',
+                                                                top: 10,
+                                                                right: 10,
+                                                                justifyContent: 'center',
+                                                                alignItems: 'center'
+                                                            }}
+                                                            onPress={() => {
+                                                                setSelectedFile(null)
+                                                                setcurrentImgUrl(null)
+                                                            }}
+                                                        >
+                                                            <Text style={{ color: 'white' }}>Remove</Text>
+                                                        </Pressable>
+                                                    </>
+                                                    :
+                                                    <View style={styles.uploadImageInner}>
+                                                        <MaterialCommunityIconsIcon
+                                                            name="folder-multiple-image"
+                                                            style={styles.upProductImageIcon}
+                                                        />
+                                                        <Text style={styles.dragDropImageTxt}>
+                                                            Drag &amp; drop or select a file to upload Image
+                                                        </Text>
+                                                    </View>}
+                                        </Pressable>
                                     </View>
-                                    <View style={styles.productPriceInputGroup}>
-                                        <Text style={styles.productPriceTxt}>Product Price</Text>
-                                        <TextInput style={styles.productPriceBox}
-                                            placeholder='Enter Product Price'
-                                            onChangeText={(val) => {
-                                                const re = /^-?\d*\.?\d*$/;
-
-                                                // if value is not blank, then test the regex
-
-                                                if (re.test(val)) {
-                                                    setnewProduct((prevState) => ({
-                                                        ...prevState,
-                                                        price: val,
-                                                    }))
-                                                } else if (!val) {
-                                                    setnewProduct((prevState) => ({
-                                                        ...prevState,
-                                                        price: 0,
-                                                    }))
-                                                }
-                                            }}
-                                            value={newProduct?.price.toString()}
-                                        />
-                                    </View>
-                                    <View style={styles.productCategoryInputGroup}>
-                                        <Text style={styles.category}>Category</Text>
-                                        <GeneralDropdown
-                                            style={styles.categoryDropDownBox}
-                                            placeholder='Choose Category'
-                                            value={newProduct?.category}
-                                            setValue={(val) => {
-                                                setnewProduct((prevState) => ({
+                                    <View style={styles.spacer}></View>
+                                    <View style={styles.productSmallDetailsRow}>
+                                        <View style={styles.productNameInputGroup}>
+                                            <Text style={styles.productNameTxt}>Product Name</Text>
+                                            <TextInput style={styles.productNameBox}
+                                                placeholder="Enter Product Name"
+                                                onChangeText={val => setnewProduct((prevState) => ({
                                                     ...prevState,
-                                                    category: val,
-                                                }));
-                                            }}
-                                            options={selectValues}
-                                            scrollY={scrollY}
-                                        />
-                                    </View>
-                                    <View style={styles.productRankInputGroup}>
-                                        <Text style={styles.rankTxt}>Rank</Text>
-                                        <TextInput style={styles.rankBox}
-                                            placeholder='N/A'
-                                            onChangeText={(val) => {
-                                                const re = /^[0-9]+$/;
+                                                    name: val,
+                                                }))}
+                                                value={newProduct?.name}
+                                            />
+                                        </View>
+                                        <View style={styles.productPriceInputGroup}>
+                                            <Text style={styles.productPriceTxt}>Product Price</Text>
+                                            <TextInput style={styles.productPriceBox}
+                                                placeholder='Enter Product Price'
+                                                onChangeText={(val) => {
+                                                    const re = /^-?\d*\.?\d*$/;
 
-                                                // if value is not blank, then test the regex
+                                                    // if value is not blank, then test the regex
 
-                                                if (re.test(val)) {
+                                                    if (re.test(val)) {
+                                                        setnewProduct((prevState) => ({
+                                                            ...prevState,
+                                                            price: val,
+                                                        }))
+                                                    } else if (!val) {
+                                                        setnewProduct((prevState) => ({
+                                                            ...prevState,
+                                                            price: 0,
+                                                        }))
+                                                    }
+                                                }}
+                                                value={newProduct?.price.toString()}
+                                            />
+                                        </View>
+                                        <View style={styles.productCategoryInputGroup}>
+                                            <Text style={styles.category}>Category</Text>
+                                            <GeneralDropdown
+                                                style={styles.categoryDropDownBox}
+                                                placeholder='Choose Category'
+                                                value={newProduct?.category}
+                                                setValue={(val) => {
                                                     setnewProduct((prevState) => ({
                                                         ...prevState,
-                                                        rank: val,
-                                                    }))
-                                                } else if (!val) {
-                                                    setnewProduct((prevState) => ({
-                                                        ...prevState,
-                                                        rank: undefined,
-                                                    }))
+                                                        category: val,
+                                                    }));
+                                                }}
+                                                options={selectValues}
+                                                scrollY={scrollY}
+                                            />
+                                        </View>
+                                        <View style={styles.productRankInputGroup}>
+                                            <Text style={styles.rankTxt}>Rank</Text>
+                                            <TextInput style={styles.rankBox}
+                                                placeholder='N/A'
+                                                onChangeText={(val) => {
+                                                    const re = /^[0-9]+$/;
+
+                                                    // if value is not blank, then test the regex
+
+                                                    if (re.test(val)) {
+                                                        setnewProduct((prevState) => ({
+                                                            ...prevState,
+                                                            rank: val,
+                                                        }))
+                                                    } else if (!val) {
+                                                        setnewProduct((prevState) => ({
+                                                            ...prevState,
+                                                            rank: undefined,
+                                                        }))
+                                                    }
                                                 }
-                                            }
-                                            }
-                                            value={newProduct?.rank?.toString()}
-                                        />
+                                                }
+                                                value={newProduct?.rank?.toString()}
+                                            />
+                                        </View>
                                     </View>
-                                </View>
-                                <View style={styles.spacer2}></View>
-                                <View style={styles.displayOnlineSwitchRow}>
-                                    <Text style={styles.displayOnlineStoreTxt}>
-                                        Dont display on online store?:
-                                    </Text>
-                                    {/* <View style={styles.onlineStoreSwitch}></View> */}
-                                    <GeneralSwitch isActive={newProduct?.dontDisplayOnOnlineStore} toggleSwitch={() => {
-                                        setnewProduct((prevState) => ({
-                                            ...prevState,
-                                            dontDisplayOnOnlineStore: !prevState.dontDisplayOnOnlineStore,
-                                        }))
-                                    }}
-                                    />
-                                </View>
-                                <View style={styles.spacer3}></View>
-                                <View style={styles.productDescriptionInputGroup}>
-                                    <Text style={styles.productDescriptionTxt}>
-                                        Product Description
-                                    </Text>
-                                    <TextInput style={styles.productDiscBox}
-                                        placeholder="Enter Product Description"
-                                        onChangeText={val =>
+                                    <View style={styles.spacer2}></View>
+                                    <View style={styles.displayOnlineSwitchRow}>
+                                        <Text style={styles.displayOnlineStoreTxt}>
+                                            Dont display on online store?:
+                                        </Text>
+                                        {/* <View style={styles.onlineStoreSwitch}></View> */}
+                                        <GeneralSwitch isActive={newProduct?.dontDisplayOnOnlineStore} toggleSwitch={() => {
                                             setnewProduct((prevState) => ({
                                                 ...prevState,
-                                                description: val,
+                                                dontDisplayOnOnlineStore: !prevState.dontDisplayOnOnlineStore,
                                             }))
-                                        }
-                                        multiline={true}
-                                        value={newProduct?.description}
-                                    />
-                                </View>
-                                <View style={styles.spacer4}></View>
-                                <Text style={styles.optionsTxt}>Options</Text>
-                                <View style={styles.spacer5}></View>
-                                {
-                                    newProduct.options.map((option, index) => {
-                                        return (
-                                            <OptionsItem
-                                                key={option.id}
-                                                style={styles.optionsItem}
-                                                item={option}
-                                                index={index}
-                                                setnewProduct={setnewProduct}
-                                                newProduct={newProduct}
-                                                newProductOptions={newProductOptions}
-                                                setnewProductOptions={setnewProductOptions}
-                                                indexOn={indexOn}
-                                                setindexOn={setindexOn}
-                                                scrollY={scrollY}
-                                                scrollViewRef={scrollViewRef}
-                                                ref={targetViewRef}
-                                                selectedID={selectedID}
-                                                setselectedID={setselectedID}
-                                            />
-                                        )
-                                    })
-                                }
-                                {newProduct.options.length === 0 && (
-                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                        <Pressable
-                                            onPress={() => {
-                                                setnewProductOptions([
-                                                    {
-                                                        label: null,
-                                                        optionsList: [],
-                                                        selectedCaseKey: null,
-                                                        selectedCaseValue: null,
-                                                        numOfSelectable: null,
-                                                        id: Math.random().toString(36).substr(2, 9),
-                                                        optionType: null,
-                                                    },
-                                                ],
-                                                );
-                                                setindexOn(0);
-                                            }}
-                                            disabled={
-                                                newProduct?.options.length > 0 &&
-                                                newProduct?.options[newProduct?.options.length - 1].label === null}
-                                            style={styles.createOptionBtn}
-                                        >
-                                            <Text style={styles.createOptionTxt}>Create Option</Text>
-                                        </Pressable>
-                                        <Pressable
-                                            style={[styles.createOptionBtn, { marginLeft: 20 }]}
-                                            onPress={() => {
-                                                navigator.clipboard.readText().then((text) => {
-                                                    try {
-                                                        const parsed = JSON.parse(text);
-                                                        setnewProductOptions([parsed]);
-                                                        setindexOn(0);
-                                                    } catch (e) {
-                                                        alert("Invalid JSON");
-                                                    }
-                                                });
-                                            }}
-                                        >
-                                            <Text style={styles.createOptionTxt}>Paste Option</Text>
-                                        </Pressable>
+                                        }}
+                                        />
                                     </View>
-                                )}
-                            </ScrollView>
+                                    <View style={styles.spacer3}></View>
+                                    <View style={styles.productDescriptionInputGroup}>
+                                        <Text style={styles.productDescriptionTxt}>
+                                            Product Description
+                                        </Text>
+                                        <TextInput style={styles.productDiscBox}
+                                            placeholder="Enter Product Description"
+                                            onChangeText={val =>
+                                                setnewProduct((prevState) => ({
+                                                    ...prevState,
+                                                    description: val,
+                                                }))
+                                            }
+                                            multiline={true}
+                                            value={newProduct?.description}
+                                        />
+                                    </View>
+                                    <View style={styles.spacer4}></View>
+                                    <Text style={styles.optionsTxt}>Options</Text>
+                                    <View style={styles.spacer5}></View>
+                                    {
+                                        newProduct.options.map((option, index) => {
+                                            return (
+                                                <OptionsItem
+                                                    key={option.id}
+                                                    style={styles.optionsItem}
+                                                    item={option}
+                                                    index={index}
+                                                    setnewProduct={setnewProduct}
+                                                    newProduct={newProduct}
+                                                    newProductOptions={newProductOptions}
+                                                    setnewProductOptions={setnewProductOptions}
+                                                    indexOn={indexOn}
+                                                    setindexOn={setindexOn}
+                                                    scrollY={scrollY}
+                                                    scrollViewRef={scrollViewRef}
+                                                    ref={targetViewRef}
+                                                    selectedID={selectedID}
+                                                    setselectedID={setselectedID}
+                                                />
+                                            )
+                                        })
+                                    }
+                                    {newProduct.options.length === 0 && (
+                                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                            <Pressable
+                                                onPress={() => {
+                                                    setnewProductOptions([
+                                                        {
+                                                            label: null,
+                                                            optionsList: [],
+                                                            selectedCaseKey: null,
+                                                            selectedCaseValue: null,
+                                                            numOfSelectable: null,
+                                                            id: Math.random().toString(36).substr(2, 9),
+                                                            optionType: null,
+                                                        },
+                                                    ],
+                                                    );
+                                                    setindexOn(0);
+                                                }}
+                                                disabled={
+                                                    newProduct?.options.length > 0 &&
+                                                    newProduct?.options[newProduct?.options.length - 1].label === null}
+                                                style={styles.createOptionBtn}
+                                            >
+                                                <Text style={styles.createOptionTxt}>Create Option</Text>
+                                            </Pressable>
+                                            <Pressable
+                                                style={[styles.createOptionBtn, { marginLeft: 20 }]}
+                                                onPress={() => {
+                                                    navigator.clipboard.readText().then((text) => {
+                                                        try {
+                                                            const parsed = JSON.parse(text);
+                                                            setnewProductOptions([parsed]);
+                                                            setindexOn(0);
+                                                        } catch (e) {
+                                                            alert("Invalid JSON");
+                                                        }
+                                                    });
+                                                }}
+                                            >
+                                                <Text style={styles.createOptionTxt}>Paste Option</Text>
+                                            </Pressable>
+                                        </View>
+                                    )}
+                                </ScrollView>
+                            </View>
+                            <View style={styles.cancelAndSaveBtns}>
+                                <Pressable style={styles.cancelBtn} onPress={() => {
+                                    setaddProductModal(false)
+                                    setexistingProduct(null)
+                                    setisProductTemplate(false)
+                                }}>
+                                    <Text style={styles.cancelTxt}>Cancel</Text>
+                                </Pressable>
+                                <Pressable style={styles.saveBtn} onPress={handleDataUpdate}>
+                                    <Text style={styles.saveTxt}>{isProductTemplate ? 'Add' : existingProduct ? 'Save' : 'Add'}</Text>
+                                </Pressable>
+                            </View>
                         </View>
-                        <View style={styles.cancelAndSaveBtns}>
-                            <Pressable style={styles.cancelBtn} onPress={() => {
-                                setaddProductModal(false)
-                                setexistingProduct(null)
-                                setisProductTemplate(false)
-                            }}>
-                                <Text style={styles.cancelTxt}>Cancel</Text>
-                            </Pressable>
-                            <Pressable style={styles.saveBtn} onPress={handleDataUpdate}>
-                                <Text style={styles.saveTxt}>{isProductTemplate ? 'Add' : existingProduct ? 'Save' : 'Add'}</Text>
-                            </Pressable>
+                        <View style={[styles.container, { height: height * 0.9, width: width * 0.36 }]}>
+                            <ProductBuilderView product={newProduct} imageUrl={selectedFile ? URL.createObjectURL(selectedFile) : currentImgUrl ? currentImgUrl : null} />
                         </View>
                     </View>
                 </div>

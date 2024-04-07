@@ -1,31 +1,20 @@
-import React, { Component, useEffect, useRef, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Image,
-  Text,
-  TextInput,
-  ScrollView,
-  Pressable,
-  useWindowDimensions,
-} from "react-native";
-import GoBackBtn from "./GoBackBtn";
-import OneTimeSelectableOptionGroup from "./OneTimeSelectableOptionGroup";
-import DropdownSelectableOption from "./DropdownSelectableOption";
-import AddToCartBtn from "./AddToCartBtn";
-import MultipleTimeSelectableOptionGroup from "./MultipleTimeSelectableOptionGroup";
-import { addCartState, cartState, setCartState } from "state/state";
-import TableOption from "./TableOption";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, Image, Text, ScrollView } from "react-native";
+import AddToCartBtn from "components/MainPosPage/components/ProductBuilderModal/AddToCartBtn";
+import DropdownSelectableOption from "components/MainPosPage/components/ProductBuilderModal/DropdownSelectableOption";
+import MultipleTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/MultipleTimeSelectableOptionGroup";
+import TableOption from "components/MainPosPage/components/ProductBuilderModal/TableOption";
+import OneTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/OneTimeSelectableOptionGroup";
 
-function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
-  const cart = cartState.use();
+function ProductBuilderView({ product, imageUrl }) {
   const myObj = product;
   const [myObjProfile, setmyObjProfile] = useState(myObj);
   const [total, settotal] = useState(myObj.total ? myObj.total : myObj.price);
-  const [extraInput, setextraInput] = useState(
-    myObj.extraDetails ? myObj.extraDetails : ""
-  );
   const [openOptions, setopenOptions] = useState(null);
+
+  useEffect(() => {
+    setmyObjProfile(product);
+  }, [product]);
 
   useEffect(() => {
     settotal(getPrice());
@@ -56,96 +45,6 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
         });
     });
     return total;
-  };
-
-  const AddToCart = () => {
-    const opsArray = [];
-    let stop = false;
-
-    myObjProfile.options.forEach((op) => {
-      if (
-        op.optionType === "Dropdown" ||
-        op.numOfSelectable === "1" ||
-        op.optionType === "Row"
-      ) {
-        let opWVal = `${op.label}: `;
-        const numberOfSelected = op.optionsList.filter(
-          (f) => f.selected === true
-        ).length;
-
-        if (numberOfSelected > 0) {
-          opWVal = `${op.label}: `;
-
-          op.optionsList.map((e, index) => {
-            if (e.selected === true) {
-              if (index < op.optionsList.length - 1 && numberOfSelected > 1) {
-                opWVal += e.label + " , ";
-              } else {
-                opWVal += e.label;
-              }
-            }
-          });
-          opsArray.push(opWVal);
-        } else if (numberOfSelected === 0 && op.isRequired === true) {
-          alert(op.label + " is required. Please fill out to add to cart");
-          stop = true;
-        }
-      } else {
-        const selectedItems = op.optionsList.filter(
-          (op) => op.selectedTimes > 0
-        );
-        if (selectedItems.length > 0) {
-          let opWVal = `${op.label}:\n`;
-          selectedItems.map((e, index) => {
-            if (index < selectedItems.length - 1) {
-              opWVal += "   " + e.selectedTimes + " X " + e.label + "\n";
-            } else {
-              opWVal += "   " + e.selectedTimes + " X " + e.label;
-            }
-          });
-          opsArray.push(opWVal);
-        }
-      }
-    });
-    if (!stop) {
-      const objWTotal = {
-        ...myObjProfile,
-        total: total,
-        extraDetails: extraInput,
-      };
-
-      if (itemIndex >= 0) {
-        const copyCart = structuredClone(cart);
-        copyCart[itemIndex] = {
-          name: myObjProfile.name,
-          price: total,
-          description: myObj.description,
-          options: opsArray,
-          extraDetails: extraInput,
-          editableObj: objWTotal,
-          imageUrl: imageUrl ? imageUrl : null,
-        };
-        setCartState(copyCart);
-      } else {
-        addCartState(
-          {
-            name: myObjProfile.name,
-            price: total,
-            description: myObj.description,
-            options: opsArray,
-            extraDetails: extraInput,
-            editableObj: objWTotal,
-            imageUrl: imageUrl ? imageUrl : null,
-          },
-          cart
-        );
-      }
-
-      goBack();
-      setmyObjProfile(myObj);
-      settotal(myObjProfile.price);
-      setextraInput(null);
-    }
   };
 
   const DisplayOption = ({ e, index }) => {
@@ -319,93 +218,85 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.productBuilderGroup}>
-        <View
-          style={[
-            styles.goBackRow,
-            // !myObj.description ? { marginBottom: 20 } : { marginBottom: 120 },
-            { marginBottom: 100 },
-          ]}
-        >
-          <GoBackBtn onPress={goBack} style={styles.goBackBtn} />
-        </View>
-        <View style={styles.leftRightGroup}>
-          <View style={styles.leftSideGroup}>
-            <View style={styles.itemInfoContainer}>
-              <Image
-                source={
-                  imageUrl
-                    ? { uri: imageUrl }
-                    : require("../../assets/images/image_xJCw..png")
-                }
-                resizeMode="contain"
-                style={[
-                  styles.itemImg,
-                  myObj.description && { width: 300, height: 150 },
-                ]}
-              />
-              <View style={styles.itemInfoTxtGroup}>
-                <View style={styles.topTxtGroup}>
-                  <Text style={styles.productName}>{myObj.name}</Text>
-                  <>
-                    {myObj.calorieDetails && (
-                      <Text style={styles.calorieDetails}>280 cal/slice</Text>
-                    )}
-                  </>
-                </View>
+      <ScrollView
+        contentContainerStyle={{
+          height: "90%",
+          width: "100%",
+        }}
+        style={{ width: "100%", height: "100%", padding: 20 }}
+      >
+        <Text style={{ fontWeight: "700", color: "#121212", fontSize: 21 }}>
+          Preview
+        </Text>
+        <View style={styles.productBuilderGroup}>
+          <View style={styles.itemInfoContainer}>
+            <Image
+              source={
+                imageUrl
+                  ? { uri: imageUrl }
+                  : require("components/MainPosPage/assets/images/image_xJCw..png")
+              }
+              resizeMode="contain"
+              style={[
+                styles.itemImg,
+                myObj.description && { width: 300, height: 150 },
+              ]}
+            />
+            <View style={styles.itemInfoTxtGroup}>
+              <View style={styles.topTxtGroup}>
+                <Text style={styles.productName}>{myObj.name}</Text>
                 <>
-                  {myObj.description && (
-                    <Text style={styles.description}>
-                      Description: {myObj.description}
-                    </Text>
+                  {myObj.calorieDetails && (
+                    <Text style={styles.calorieDetails}>280 cal/slice</Text>
                   )}
                 </>
               </View>
-            </View>
-            <View style={styles.writeNoteContainer}>
-              <Text style={styles.notesLbl}>Notes:</Text>
-              <TextInput
-                style={styles.noteInput}
-                placeholder="Write any extra info here..."
-                placeholderTextColor="#90949a"
-                multiline={true}
-                numberOfLines={4}
-                onChangeText={(val) => setextraInput(val)}
-                value={extraInput}
-              />
+              <>
+                {myObj.description && (
+                  <Text style={styles.description}>
+                    Description: {myObj.description}
+                  </Text>
+                )}
+              </>
             </View>
           </View>
-          <View style={styles.rightSideGroup}>
-            <ScrollView
-              contentContainerStyle={{
-                height: "90%",
-                width: "100%",
-                padding: 20,
-                paddingLeft: 30,
-                paddingRight: 30,
-              }}
-            >
-              <View>
-                {myObjProfile.options.map((e, index) => (
-                  <DisplayOption key={index} e={e} index={index} />
-                ))}
+          <View
+            style={{
+              width: "100%",
+              padding: 20,
+              paddingLeft: 30,
+              paddingRight: 30,
+              backgroundColor: "white",
+              borderRadius: 10,
+              marginTop: 20,
+            }}
+          >
+            <View>
+            {myObjProfile.options.map((e, index) => (
+              <DisplayOption
+                key={index}
+                e={e}
+                index={index}
+              />
+            ))}
               </View>
-            </ScrollView>
-            <View style={styles.totalLblRow}>
-              <Text style={styles.totalLbl}>
-                Total: ${parseFloat(total).toFixed(2)}
-              </Text>
-            </View>
+          </View>
+          <View style={styles.totalLblRow}>
+            <Text style={styles.totalLbl}>
+              Total: ${parseFloat(total).toFixed(2)}
+            </Text>
           </View>
         </View>
         <View style={styles.addToCartRow}>
           <AddToCartBtn
             style={styles.addToCartBtn}
-            title={itemIndex >= 0 ? "Save" : "Add To Cart"}
-            onPress={AddToCart}
+            title="Add To Cart"
+            onPress={() => {
+              //
+            }}
           />
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -417,11 +308,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#edf2ff",
     width: "100%",
     height: "100%",
+    borderRadius: 10,
   },
   productBuilderGroup: {
-    width: "90%",
+    width: "100%",
     height: "85%",
-    justifyContent: "space-between",
+    paddingTop: 20,
   },
   goBackRow: {
     alignSelf: "stretch",
@@ -432,9 +324,6 @@ const styles = StyleSheet.create({
   },
   leftRightGroup: {
     height: "70%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignSelf: "stretch",
   },
   leftSideGroup: {
     width: "35%",
@@ -549,4 +438,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductBuilderModal;
+export default ProductBuilderView;

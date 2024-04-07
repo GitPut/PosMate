@@ -40,7 +40,7 @@ function OptionSelectionItem({
     >
       <View
         style={
-          newProductOptions[index]?.numOfSelectable > 0
+          newProductOptions[index]?.numOfSelectable > 1
             ? styles.optionSelectionNameInputGroupLimit
             : styles.optionSelectionNameInputGroup
         }
@@ -92,7 +92,7 @@ function OptionSelectionItem({
           placeholder="Enter If Price Increases With Selection"
         />
       </View>
-      {newProductOptions[index].numOfSelectable > 0 && (
+      {newProductOptions[index].numOfSelectable > 1 && (
         <View style={styles.selectionLimitInputGroupLimit}>
           <Text style={styles.limit}>Limit</Text>
           <TextInput
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   optionSelectionNameInputGroup: {
-    width: 351,
+    width: 290,
     height: 84,
     justifyContent: "space-between",
   },
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   btnsRow: {
-    width: 197,
+    width: 180,
     height: 50,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     fontSize: 27,
   },
   optionSelectionNameInputGroupLimit: {
-    width: 280,
+    width: 250,
     height: 84,
     justifyContent: "space-between",
   },
