@@ -371,9 +371,9 @@ function AddProductModal({
                                             />
                                         </View>
                                         <View style={styles.productPriceInputGroup}>
-                                            <Text style={styles.productPriceTxt}>Product Price</Text>
+                                            <Text style={styles.productPriceTxt}>Base Price</Text>
                                             <TextInput style={styles.productPriceBox}
-                                                placeholder='Enter Product Price'
+                                                placeholder='Enter Base Price'
                                                 onChangeText={(val) => {
                                                     const re = /^-?\d*\.?\d*$/;
 
@@ -382,7 +382,7 @@ function AddProductModal({
                                                     if (re.test(val)) {
                                                         setnewProduct((prevState) => ({
                                                             ...prevState,
-                                                            price: val,
+                                                            price: val.replace(/^0+/, ''),
                                                         }))
                                                     } else if (!val) {
                                                         setnewProduct((prevState) => ({

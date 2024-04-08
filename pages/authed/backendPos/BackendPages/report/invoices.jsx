@@ -173,7 +173,7 @@ function InvoiceReport() {
       .saveAs("StoreReceipts.xlsx");
   };
 
-  const PrintTotals = (date) => {
+  const PrintTotals = (date, dateName) => {
     const todayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
     const todayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
 
@@ -190,7 +190,7 @@ function InvoiceReport() {
     );
 
     if (filtered.length === 0) {
-      alert("No sales today");
+      alert(`No sales ${dateName}`);
       return;
     }
 
@@ -213,14 +213,14 @@ function InvoiceReport() {
       storeDetails.phoneNumber + "\x0A", // text and line break
       date.toDateString() + "\x0A",
       "\x0A",
-      "Todays Report" + "\x0A", // text and line break
+      `${dateName}s Report` + "\x0A", // text and line break
       "\x0A",
       "\x0A",
       "\x0A",
       "\x1B" + "\x61" + "\x30", // left align
-      `Todays Total Revenue: $${todayTotal.toFixed(2)}`,
+      `${dateName}s Total Revenue: $${todayTotal.toFixed(2)}`,
       "\x0A",
-      `Todays Total Sales: ${salesTotal}`,
+      `${dateName}s Total Sales: ${salesTotal}`,
       "\x0A",
       "\x0A",
       "\x0A",
@@ -374,7 +374,7 @@ function InvoiceReport() {
           onPress={() => {
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
-            PrintTotals(yesterday)
+            PrintTotals(yesterday, 'Yesterday')
           }}
         >
           <Text>Print Yesterday</Text>
@@ -388,7 +388,7 @@ function InvoiceReport() {
         }}
           onPress={() => {
             const today = new Date();
-            PrintTotals(today)
+            PrintTotals(today, 'Today')
           }}
         >
           <Text>Print Today</Text>

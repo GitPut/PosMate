@@ -67,7 +67,6 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
     myObjProfile.options.forEach((op) => {
       if (
         op.optionType === "Dropdown" ||
-        op.numOfSelectable === "1" ||
         op.optionType === "Row"
       ) {
         let opWVal = `${op.label}: `;

@@ -80,7 +80,7 @@ function OptionsItemOpenInner({
             <GeneralDropdown
               style={styles.categoryDropDownBox}
               placeholder="Choose Type"
-              value={e.optionType}
+              value={e.optionType} 
               setValue={(val) => {
                 if (e.optionType) {
                   setnewProductOptions((prev) => {
@@ -148,7 +148,7 @@ function OptionsItemOpenInner({
             }}
           />
         </View>
-        {/* {(e.optionType === "Dropdown" || e.optionType === "Row") && (
+        {(e.optionType === "Dropdown" || e.optionType === "Row") && (
           <View style={styles.optionTypeGroup1}>
             <Text style={styles.optionTypeDropdownLbl1}>Default Value</Text>
             <View>
@@ -157,61 +157,37 @@ function OptionsItemOpenInner({
                 placeholder="Default Value"
                 value={e.defaultValue ? e.defaultValue.label : null}
                 setValue={(val, valIndex) => {
-                  if (e.defaultValue) {
-                    setnewProductOptions((prev) => {
-                      const clone = structuredClone(prev);
-                      clone[index].defaultValue = val;
-
-                      clone[index].optionsList.forEach((element, indexOfOl) => {
-                        console.log("element from if", element);
-                        if (element.selected) {
-                          clone[index].optionsList[indexOfOl].selected = false;
-                        }
-                      });
-                      if (val) {
-                        clone[index].optionsList[valIndex].selected = true;
-                        console.log(
-                          "val: ",
-                          clone[index].optionsList[valIndex]
-                        );
-                      }
-
-                      return clone;
-                    });
-                  } else {
-                    setnewProductOptions((prev) => {
-                      const clone = structuredClone(prev);
-
-                      clone[index].optionsList.forEach((element, indexOfOl) => {
-                        console.log("element from else", element);
-                        if (element.selected) {
-                          clone[index].optionsList[indexOfOl].selected = false;
-                        }
-                      });
-                      if (val) {
-                        clone[index].optionsList[valIndex].selected = true;
-                      }
-
-                      clone[index] = {
-                        ...e,
-                        defaultValue: val,
-                      };
-                      return clone;
-                    });
-                  }
-                  sete((prevState) => {
-                    const clone = structuredClone(prevState);
-                    clone.defaultValue = val;
-
-                    clone.optionsList.forEach((element, indexOfOl) => {
+                  settestMap((prev) => {
+                    const clone = structuredClone(prev);
+                    clone.forEach((element, indexOfOl) => {
                       if (element.selected) {
-                        clone.optionsList[indexOfOl].selected = false;
+                        clone[indexOfOl].selected = false;
                       }
                     });
                     if (val) {
-                      clone.optionsList[valIndex].selected = true;
+                      clone[valIndex].selected = true;
+                    }
+                    return clone;
+                  });
+                  setnewProductOptions((prev) => {
+                    const clone = structuredClone(prev);
+                    clone[index].defaultValue = val;
+
+                    clone[index].optionsList.forEach((element, indexOfOl) => {
+                      if (element.selected) {
+                        clone[index].optionsList[indexOfOl].selected = false;
+                      }
+                    });
+                    if (val) {
+                      clone[index].optionsList[valIndex].selected = true;
+                      console.log("val: ", clone[index].optionsList[valIndex]);
                     }
 
+                    return clone;
+                  });
+                  sete((prevState) => {
+                    const clone = structuredClone(prevState);
+                    clone.defaultValue = val;
                     return clone;
                   });
                 }}
@@ -221,7 +197,7 @@ function OptionsItemOpenInner({
               />
             </View>
           </View>
-        )} */}
+        )}
         <View style={{ width: 195 }} />
       </View>
       <View style={styles.spacer6}></View>

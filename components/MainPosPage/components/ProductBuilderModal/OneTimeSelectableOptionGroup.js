@@ -9,18 +9,18 @@ function OneTimeSelectableOptionGroup({
   value,
   setValue,
 }) {
-  useEffect(() => {
-    if (!value) {
-      setValue({
-        option: {
-          label: options[0].label,
-          priceIncrease:
-            options[0].priceIncrease !== null ? options[0].priceIncrease : 0,
-        },
-        listIndex: 0,
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!value && options.length > 0) {
+  //     setValue({
+  //       option: {
+  //         label: options[0]?.label,
+  //         priceIncrease:
+  //           options[0]?.priceIncrease !== null ? options[0]?.priceIncrease : 0,
+  //       },
+  //       listIndex: 0,
+  //     });
+  //   }
+  // }, []);
 
   return (
     <View style={[styles.container]}>
@@ -31,7 +31,7 @@ function OneTimeSelectableOptionGroup({
         {options.map((option, listIndex) => {
           return (
             <OneTimeSelectableBtn
-              key={listIndex}
+              key={option.id}
               label={
                 option.priceIncrease > 0
                   ? `${option.label} (+$${option.priceIncrease})`

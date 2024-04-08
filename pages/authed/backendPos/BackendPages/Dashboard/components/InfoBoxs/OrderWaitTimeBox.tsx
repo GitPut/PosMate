@@ -122,7 +122,9 @@ const OrderWaitTimeBox = ({ allTransactions }) => {
               style={styles.clockIcon}
             />
             <View style={styles.shortestRightSide}>
-              <Text style={styles.shorestTimeValue}>{details.shortest}</Text>
+              <Text style={styles.shorestTimeValue}>
+                {!isNaN(details.shortest) ? details.shortest.toFixed(0) : 0}
+              </Text>
               <Text style={styles.shortest}>Shortest</Text>
             </View>
           </View>
@@ -133,7 +135,9 @@ const OrderWaitTimeBox = ({ allTransactions }) => {
               style={styles.clockIcon1}
             />
             <View style={styles.longestRightSide}>
-              <Text style={styles.longestTimeValue}>{details.longest}</Text>
+              <Text style={styles.longestTimeValue}>
+                {!isNaN(details.longest) ? details.longest.toFixed(0) : 0}
+              </Text>
               <Text style={styles.longest}>Longest</Text>
             </View>
           </View>
@@ -144,7 +148,9 @@ const OrderWaitTimeBox = ({ allTransactions }) => {
               style={styles.clockIcon2}
             />
             <View style={styles.averageRightSide}>
-              <Text style={styles.averageTimeValue}>{details.average}</Text>
+              <Text style={styles.averageTimeValue}>
+                {!isNaN(details.average) ? details.average.toFixed(0) : 0}
+              </Text>
               <Text style={styles.average}>Average</Text>
             </View>
           </View>
@@ -155,7 +161,9 @@ const OrderWaitTimeBox = ({ allTransactions }) => {
               style={styles.clockIcon3}
             />
             <View style={styles.meanRightSide}>
-              <Text style={styles.meanTimeValue}>{details.mean}</Text>
+              <Text style={styles.meanTimeValue}>
+                {!isNaN(details.mean) ? details.mean.toFixed(0) : 0}
+              </Text>
               <Text style={styles.mean}>Mean</Text>
             </View>
           </View>

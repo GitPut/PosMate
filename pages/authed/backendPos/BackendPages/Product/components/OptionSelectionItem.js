@@ -15,6 +15,7 @@ function OptionSelectionItem({
   highlightedOptionID,
   sethighlightedOptionID,
   scrollToPositionIncluding,
+  optionType,
 }) {
   const eInnerList = structuredClone(eInnerListStart);
 
@@ -38,11 +39,40 @@ function OptionSelectionItem({
             },
       ]}
     >
+        {/* <View
+          style={{ height: 50, justifyContent: "center", alignItems: "center" }}
+        >
+          <Pressable
+            style={{
+              width: 30,
+              height: 30,
+              justifyContent: "center",
+              alignItems: "center",
+              borderWidth: 1,
+            }}
+            onPress={() => {
+              const cloneOuter = structuredClone(testMap);
+              cloneOuter.map((e) => (e.selected = false));
+              cloneOuter[indexInnerList].selected = !eInnerList.selected;
+              setnewProductOptions((prev) => {
+                const clone = structuredClone(prev);
+                clone[index].optionsList = cloneOuter;
+                return clone;
+              });
+              settestMap(cloneOuter);
+            }}
+          >
+            {eInnerList.selected && (
+              <Text style={{ fontSize: 20, color: "black" }}>X</Text>
+            )}
+          </Pressable>
+        </View> */}
       <View
         style={
-          newProductOptions[index]?.numOfSelectable > 1
-            ? styles.optionSelectionNameInputGroupLimit
-            : styles.optionSelectionNameInputGroup
+          // newProductOptions[index]?.numOfSelectable > 1
+          //   ? styles.optionSelectionNameInputGroupLimit
+          //   : styles.optionSelectionNameInputGroup
+          styles.optionSelectionNameInputGroup
         }
       >
         <Text style={styles.selectionNameInputLbl}>Option Selection Name</Text>
@@ -64,9 +94,10 @@ function OptionSelectionItem({
       </View>
       <View
         style={
-          newProductOptions[index]?.numOfSelectable > 0
-            ? styles.selectionPriceIncreaseInputGroupLimit
-            : styles.selectionPriceIncreaseInputGroup
+          // newProductOptions[index]?.numOfSelectable > 0
+          //   ? styles.selectionPriceIncreaseInputGroupLimit
+          //   : styles.selectionPriceIncreaseInputGroup
+          styles.selectionPriceIncreaseInputGroup
         }
       >
         <Text style={styles.selectionPriceIncreaseLbl}>Price Increase</Text>
@@ -92,7 +123,7 @@ function OptionSelectionItem({
           placeholder="Enter If Price Increases With Selection"
         />
       </View>
-      {newProductOptions[index].numOfSelectable > 1 && (
+      {/* {newProductOptions[index].numOfSelectable > 1 && (
         <View style={styles.selectionLimitInputGroupLimit}>
           <Text style={styles.limit}>Limit</Text>
           <TextInput
@@ -117,7 +148,7 @@ function OptionSelectionItem({
             }}
           />
         </View>
-      )}
+      )} */}
       <View style={styles.btnsRow}>
         <Pressable
           activeOpacity={0.8}

@@ -10,13 +10,34 @@ import React, { useState } from "react";
 import Modal from "react-native-modal";
 import Print from "components/MainPosPage/components/Cart/Print";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
-import { storeDetailState } from "state/state";
+import {
+  cartState,
+  customersList,
+  myDeviceDetailsState,
+  storeDetailState,
+} from "state/state";
 
 const CashScreen = () => {
   const [cash, setCash] = useState("");
   const { height, width } = useWindowDimensions();
-  const { cartSub, cashModal } = posHomeState.use();
+  const {
+    deliveryChecked,
+    discountAmount,
+    changeDue,
+    savedCustomerDetails,
+    name,
+    phone,
+    address,
+    buzzCode,
+    unitNumber,
+    cartNote,
+    cartSub,
+    cashModal,
+  } = posHomeState.use();
+  const cart = cartState.use();
   const storeDetails = storeDetailState.use();
+  const myDeviceDetails = myDeviceDetailsState.use();
+  const customers = customersList.use();
   const total = (
     parseFloat(storeDetails.taxRate) >= 0
       ? cartSub * (1 + parseFloat(storeDetails.taxRate) / 100)
@@ -65,8 +86,10 @@ const CashScreen = () => {
                         setCash(val.toString());
                         // setChangeDue((parseFloat(val) - total).toFixed(2));
                         updatePosHomeState({
-                          changeDue: (parseFloat(val) - parseFloat(total)).toFixed(2),
-                        })
+                          changeDue: (
+                            parseFloat(val) - parseFloat(total)
+                          ).toFixed(2),
+                        });
                       } else if (!val) {
                         setCash("");
                         // setChangeDue(total);
@@ -91,6 +114,20 @@ const CashScreen = () => {
                       Print({
                         method: "Cash",
                         dontAddToOngoing: false,
+                        discountAmount,
+                        deliveryChecked,
+                        changeDue,
+                        savedCustomerDetails,
+                        name,
+                        phone,
+                        address,
+                        buzzCode,
+                        unitNumber,
+                        cartNote,
+                        customers,
+                        cart,
+                        storeDetails,
+                        myDeviceDetails,
                       });
                       // setCashModal(false);
                       updatePosHomeState({ cashModal: false });

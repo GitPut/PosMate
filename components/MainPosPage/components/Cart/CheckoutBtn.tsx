@@ -4,16 +4,35 @@ import { auth, db } from "state/firebaseConfig";
 import Print from "./Print";
 import {
   cartState,
+  customersList,
+  myDeviceDetailsState,
+  storeDetailState,
 } from "state/state";
-import { posHomeState, resetPosHomeState, updatePosHomeState } from "state/posHomeState";
+import {
+  posHomeState,
+  resetPosHomeState,
+  updatePosHomeState,
+} from "state/posHomeState";
 
 const CheckoutBtn = () => {
   const {
     deliveryChecked,
     ongoingDelivery,
     updatingOrder,
+    discountAmount,
+    changeDue,
+    savedCustomerDetails,
+    name,
+    phone,
+    address,
+    buzzCode,
+    unitNumber,
+    cartNote,
   } = posHomeState.use();
   const cart = cartState.use();
+  const storeDetails = storeDetailState.use();
+  const myDeviceDetails = myDeviceDetailsState.use();
+  const customers = customersList.use();
 
   if (updatingOrder) {
     return (
@@ -40,15 +59,21 @@ const CheckoutBtn = () => {
             Print({
               method: deliveryChecked ? "deliveryOrder" : "pickupOrder",
               dontAddToOngoing: false,
+              discountAmount,
+              deliveryChecked,
+              changeDue,
+              savedCustomerDetails,
+              name,
+              phone,
+              address,
+              buzzCode,
+              unitNumber,
+              cartNote,
+              customers,
+              cart,
+              storeDetails,
+              myDeviceDetails,
             });
-            // setOngoingDelivery(null);
-            // setName("");
-            // setPhone("");
-            // setAddress(null);
-            // setDeliveryChecked(false);
-            // setupdatingOrder(false);
-            // setsavedCustomerDetails(null);
-            // setDiscountAmount(null);
           }}
         >
           <Text style={styles.checkoutLbl}>Update</Text>
@@ -56,18 +81,6 @@ const CheckoutBtn = () => {
         <Pressable
           style={[styles.checkoutBtn, { backgroundColor: "red" }]}
           onPress={() => {
-            // setCartState([]);
-            // setName("");
-            // setPhone("");
-            // setAddress(null);
-            // setDeliveryChecked(false);
-            // setOngoingDelivery(null);
-            // setupdatingOrder(false);
-            // setsavedCustomerDetails(null);
-            // setDiscountAmount(null);
-            // setBuzzCode("");
-            // setUnitNumber("");
-            // setcartNote(null);
             resetPosHomeState();
           }}
         >
@@ -104,6 +117,20 @@ const CheckoutBtn = () => {
             Print({
               method: "Card",
               dontAddToOngoing: false,
+              discountAmount,
+              deliveryChecked,
+              changeDue,
+              savedCustomerDetails,
+              name,
+              phone,
+              address,
+              buzzCode,
+              unitNumber,
+              cartNote,
+              customers,
+              cart,
+              storeDetails,
+              myDeviceDetails,
             });
           }}
           disabled={cart.length < 1 || ongoingDelivery}
@@ -121,13 +148,21 @@ const CheckoutBtn = () => {
           Print({
             method: deliveryChecked ? "deliveryOrder" : "pickupOrder",
             dontAddToOngoing: false,
+            discountAmount,
+            deliveryChecked,
+            changeDue,
+            savedCustomerDetails,
+            name,
+            phone,
+            address,
+            buzzCode,
+            unitNumber,
+            cartNote,
+            customers,
+            cart,
+            storeDetails,
+            myDeviceDetails,
           });
-          // setOngoingDelivery(null);
-          // setName("");
-          // setPhone("");
-          // setAddress(null);
-          // setDeliveryChecked(false);
-          // setDiscountAmount(null);
         }}
       >
         <Text style={styles.checkoutLbl}>Checkout</Text>
@@ -145,7 +180,7 @@ const CheckoutBtn = () => {
           // setAddress(null);
           // setChangeDue(null);
           // setDiscountAmount(null);
-          resetPosHomeState()
+          resetPosHomeState();
         }}
       >
         <Text style={styles.checkoutLbl}>Cancel</Text>

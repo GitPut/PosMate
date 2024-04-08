@@ -60,7 +60,7 @@ const RouteManager = () => {
           if (snapshot.empty) return;
 
           snapshot.forEach((doc) => {
-            // console.log("Data to print recieved: ", doc.data().printData);
+            // console.log("Data to print recieved: ", doc.data()?.printData);
 
             const qz = require("qz-tray");
             qz.websocket
@@ -69,7 +69,7 @@ const RouteManager = () => {
                 const config = qz.configs.create(
                   myDeviceDetails.printToPrinter
                 );
-                return qz.print(config, doc.data().printData);
+                return qz.print(config, doc.data()?.printData);
               })
               .then(qz.websocket.disconnect)
               .catch(function (err) {
@@ -153,22 +153,22 @@ const RouteManager = () => {
 
             setUserStoreState({
               products: products.sort(customSort),
-              categories: doc.data().categories ? doc.data().categories : [],
+              categories: doc.data()?.categories ? doc.data()?.categories : [],
             });
 
             // setOnlineStoreState({
-            //   urlEnding: doc.data().urlEnding,
-            //   onlineStoreActive: doc.data().onlineStoreActive,
-            //   onlineStoreSetUp: doc.data().onlineStoreSetUp,
-            //   stripePublicKey: doc.data().stripePublicKey,
-            //   stripeSecretKey: doc.data().stripeSecretKey,
+            //   urlEnding: doc.data()?.urlEnding,
+            //   onlineStoreActive: doc.data()?.onlineStoreActive,
+            //   onlineStoreSetUp: doc.data()?.onlineStoreSetUp,
+            //   stripePublicKey: doc.data()?.stripePublicKey,
+            //   stripeSecretKey: doc.data()?.stripeSecretKey,
             // });
 
-            if (doc.data().wooCredentials) {
-              setWoocommerceState(doc.data().wooCredentials);
+            if (doc.data()?.wooCredentials) {
+              setWoocommerceState(doc.data()?.wooCredentials);
             }
-            if (doc.data().storeDetails) {
-              setStoreDetailState(doc.data().storeDetails);
+            if (doc.data()?.storeDetails) {
+              setStoreDetailState(doc.data()?.storeDetails);
             }
 
             doc.ref
@@ -211,7 +211,7 @@ const RouteManager = () => {
                       if (element.data().status === "active") {
                         setisSubscribed(true);
                         setisNewUser(false);
-                        if (doc.data().freeTrial) {
+                        if (doc.data()?.freeTrial) {
                           setTrialDetailsState({
                             endDate: null,
                             hasEnded: null,
@@ -233,7 +233,7 @@ const RouteManager = () => {
                       if (element.data().status === "active") {
                         setisSubscribed(true);
                         setisNewUser(false);
-                        if (doc.data().freeTrial) {
+                        if (doc.data()?.freeTrial) {
                           setTrialDetailsState({
                             endDate: null,
                             hasEnded: null,
@@ -254,11 +254,11 @@ const RouteManager = () => {
                     if (element.data().role === "Online Store") {
                       if (element.data().status === "active") {
                         setOnlineStoreState({
-                          urlEnding: doc.data().urlEnding,
-                          onlineStoreActive: doc.data().onlineStoreActive,
-                          onlineStoreSetUp: doc.data().onlineStoreSetUp,
-                          stripePublicKey: doc.data().stripePublicKey,
-                          stripeSecretKey: doc.data().stripeSecretKey,
+                          urlEnding: doc.data()?.urlEnding,
+                          onlineStoreActive: doc.data()?.onlineStoreActive,
+                          onlineStoreSetUp: doc.data()?.onlineStoreSetUp,
+                          stripePublicKey: doc.data()?.stripePublicKey,
+                          stripeSecretKey: doc.data()?.stripeSecretKey,
                           paidStatus: "active",
                         });
                       } else if (element.data().status === "canceled") {
@@ -273,11 +273,11 @@ const RouteManager = () => {
                             onlineStoreActive: false,
                           });
                         setOnlineStoreState({
-                          urlEnding: doc.data().urlEnding,
+                          urlEnding: doc.data()?.urlEnding,
                           onlineStoreActive: false,
-                          onlineStoreSetUp: doc.data().onlineStoreSetUp,
-                          stripePublicKey: doc.data().stripePublicKey,
-                          stripeSecretKey: doc.data().stripeSecretKey,
+                          onlineStoreSetUp: doc.data()?.onlineStoreSetUp,
+                          stripePublicKey: doc.data()?.stripePublicKey,
+                          stripeSecretKey: doc.data()?.stripeSecretKey,
                           paidStatus: "canceled",
                         });
                       } else {
@@ -292,11 +292,11 @@ const RouteManager = () => {
                             onlineStoreActive: false,
                           });
                         setOnlineStoreState({
-                          urlEnding: doc.data().urlEnding,
+                          urlEnding: doc.data()?.urlEnding,
                           onlineStoreActive: false,
-                          onlineStoreSetUp: doc.data().onlineStoreSetUp,
-                          stripePublicKey: doc.data().stripePublicKey,
-                          stripeSecretKey: doc.data().stripeSecretKey,
+                          onlineStoreSetUp: doc.data()?.onlineStoreSetUp,
+                          stripePublicKey: doc.data()?.stripePublicKey,
+                          stripeSecretKey: doc.data()?.stripeSecretKey,
                           paidStatus: null,
                         });
                       }
@@ -308,7 +308,7 @@ const RouteManager = () => {
                       e.data().status === "active"
                   ).length;
                   extraDevicesPayingFor = devicesAmount;
-                } else if (doc.data().freeTrial) {
+                } else if (doc.data()?.freeTrial) {
                   setisSubscribed(true);
                   setisNewUser(false);
                 } else {
@@ -336,18 +336,18 @@ const RouteManager = () => {
                 console.log("Error has occured with db customers: ", e)
               );
 
-            if (doc.data().freeTrial) {
+            if (doc.data()?.freeTrial) {
               setisNewUser(false);
-              const firstDate = new Date(doc.data().freeTrial.seconds * 1000);
+              const firstDate = new Date(doc.data()?.freeTrial.seconds * 1000);
               const today = new Date();
               if (firstDate <= today) {
                 setTrialDetailsState({
-                  endDate: doc.data().freeTrial,
+                  endDate: doc.data()?.freeTrial,
                   hasEnded: true,
                 });
               } else {
                 setTrialDetailsState({
-                  endDate: doc.data().freeTrial,
+                  endDate: doc.data()?.freeTrial,
                   hasEnded: false,
                 });
               }
@@ -402,15 +402,15 @@ const RouteManager = () => {
               .onSnapshot((doc) => {
                 setUserStoreState({
                   products: products.sort(customSort),
-                  categories: doc.data().categories
-                    ? doc.data().categories
+                  categories: doc.data()?.categories
+                    ? doc.data()?.categories
                     : [],
                 });
-                if (doc.data().wooCredentials) {
-                  setWoocommerceState(doc.data().wooCredentials);
+                if (doc.data()?.wooCredentials) {
+                  setWoocommerceState(doc.data()?.wooCredentials);
                 }
-                if (doc.data().storeDetails) {
-                  setStoreDetailState(doc.data().storeDetails);
+                if (doc.data()?.storeDetails) {
+                  setStoreDetailState(doc.data()?.storeDetails);
                 }
               });
 

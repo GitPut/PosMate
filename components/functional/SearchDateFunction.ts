@@ -12,6 +12,7 @@ const SearchDate = ({ startDate, endDate, transactions, customers }) => {
   if (customers) {
     // Filter the list based on the date range
     const filtered = customers.filter((item) => {
+      if (!item.createdAt) return false;
       const itemDate = new Date(item.createdAt.seconds * 1000);
 
       // const isCorrectFilter = search.length > 0 ? (item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())) : true

@@ -214,7 +214,7 @@ function ProductBuilderModalMobile({ product, itemIndex, goBack, imageUrl }) {
     myObjProfile.options.forEach((op) => {
       if (
         op.optionType?.toLowerCase() === "dropdown" ||
-        op.numOfSelectable === "1"
+        op.optionType === "Row"
       ) {
         let opWVal = `${op.label}: `;
         const numberOfSelected = op.optionsList.filter(

@@ -62,9 +62,9 @@ function CartItem({
           styles.topRowWithImgContainer,
           isOpen && { paddingTop: 15, marginBottom: 30 },
         ]}
-        onPress={() =>
-          cartItem.options.length > 0 && setisOpen((prev) => !prev)
-        }
+        onPress={() => {
+          cartItem.options.length > 0 && setisOpen((prev) => !prev);
+        }}
         activeOpacity={0.8}
       >
         {cartItem.imageUrl && (

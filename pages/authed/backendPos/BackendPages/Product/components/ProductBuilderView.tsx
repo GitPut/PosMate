@@ -5,6 +5,7 @@ import DropdownSelectableOption from "components/MainPosPage/components/ProductB
 import MultipleTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/MultipleTimeSelectableOptionGroup";
 import TableOption from "components/MainPosPage/components/ProductBuilderModal/TableOption";
 import OneTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/OneTimeSelectableOptionGroup";
+import ItemNoOptionsView from "./ItemNoOptionsView";
 
 function ProductBuilderView({ product, imageUrl }) {
   const myObj = product;
@@ -228,74 +229,74 @@ function ProductBuilderView({ product, imageUrl }) {
         <Text style={{ fontWeight: "700", color: "#121212", fontSize: 21 }}>
           Preview
         </Text>
-        <View style={styles.productBuilderGroup}>
-          <View style={styles.itemInfoContainer}>
-            <Image
-              source={
-                imageUrl
-                  ? { uri: imageUrl }
-                  : require("components/MainPosPage/assets/images/image_xJCw..png")
-              }
-              resizeMode="contain"
-              style={[
-                styles.itemImg,
-                myObj.description && { width: 300, height: 150 },
-              ]}
-            />
-            <View style={styles.itemInfoTxtGroup}>
-              <View style={styles.topTxtGroup}>
-                <Text style={styles.productName}>{myObj.name}</Text>
-                <>
-                  {myObj.calorieDetails && (
-                    <Text style={styles.calorieDetails}>280 cal/slice</Text>
-                  )}
-                </>
-              </View>
-              <>
-                {myObj.description && (
-                  <Text style={styles.description}>
-                    Description: {myObj.description}
-                  </Text>
+        {product.options.length > 0 ? (
+          <>
+            <View style={styles.productBuilderGroup}>
+              <View style={styles.itemInfoContainer}>
+                {imageUrl && (
+                  <Image
+                    source={{ uri: imageUrl }}
+                    resizeMode="contain"
+                    style={[
+                      styles.itemImg,
+                      myObj.description && { width: 300, height: 150 },
+                    ]}
+                  />
                 )}
-              </>
-            </View>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              padding: 20,
-              paddingLeft: 30,
-              paddingRight: 30,
-              backgroundColor: "white",
-              borderRadius: 10,
-              marginTop: 20,
-            }}
-          >
-            <View>
-            {myObjProfile.options.map((e, index) => (
-              <DisplayOption
-                key={index}
-                e={e}
-                index={index}
-              />
-            ))}
+                <View style={styles.itemInfoTxtGroup}>
+                  <View style={styles.topTxtGroup}>
+                    <Text style={styles.productName}>{myObj.name}</Text>
+                    <>
+                      {myObj.calorieDetails && (
+                        <Text style={styles.calorieDetails}>280 cal/slice</Text>
+                      )}
+                    </>
+                  </View>
+                  <>
+                    {myObj.description && (
+                      <Text style={styles.description}>
+                        Description: {myObj.description}
+                      </Text>
+                    )}
+                  </>
+                </View>
               </View>
-          </View>
-          <View style={styles.totalLblRow}>
-            <Text style={styles.totalLbl}>
-              Total: ${parseFloat(total).toFixed(2)}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.addToCartRow}>
-          <AddToCartBtn
-            style={styles.addToCartBtn}
-            title="Add To Cart"
-            onPress={() => {
-              //
-            }}
-          />
-        </View>
+              <View
+                style={{
+                  width: "100%",
+                  padding: 20,
+                  paddingLeft: 30,
+                  paddingRight: 30,
+                  backgroundColor: "white",
+                  borderRadius: 10,
+                  marginTop: 20,
+                }}
+              >
+                <View>
+                  {myObjProfile.options.map((e, index) => (
+                    <DisplayOption key={index} e={e} index={index} />
+                  ))}
+                </View>
+              </View>
+              <View style={styles.totalLblRow}>
+                <Text style={styles.totalLbl}>
+                  Total: ${parseFloat(total).toFixed(2)}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.addToCartRow}>
+              <AddToCartBtn
+                style={styles.addToCartBtn}
+                title="Add To Cart"
+                onPress={() => {
+                  //
+                }}
+              />
+            </View>
+          </>
+        ) : (
+          <ItemNoOptionsView product={product} />
+        )}
       </ScrollView>
     </View>
   );
