@@ -86,6 +86,7 @@ function OnlineStoreSettings() {
             stripePublicKey: stripePublicKey,
             stripeSecretKey: stripeSecretKey
         })
+        alert("Stripe details updated successfully")
     }
 
     const makeOnlineStoreActive = () => {

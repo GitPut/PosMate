@@ -12,12 +12,12 @@ function ProductOptionBox({
   editMode,
   deleteProduct,
   setexistingProduct,
-  isTemplate
+  isTemplate,
 }) {
   const history = useHistory();
 
   const copyProduct = () =>
-    navigator.clipboard.writeText(JSON.stringify(product));
+    navigator.clipboard.writeText(JSON.stringify(product.options));
 
   return (
     <Pressable

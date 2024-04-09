@@ -203,21 +203,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 20,
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-around", // or 'flex-start' if you want all items aligned to the start
     alignItems: "center",
+    height: 160, // Fixed height for each container
+    width: "100%", // Take up the full width available
   },
   itemImg: {
-    height: 133,
-    width: 117,
+    height: 133, // Fixed height for the image
+    width: 117, // Fixed width for the image
     margin: 6,
   },
   rightSide: {
-    width: "40%",
+    flex: 1, // Take up the remaining space after the image
     justifyContent: "space-between",
     margin: 6,
     alignSelf: "stretch",
-    marginTop: 12,
-    marginRight: 11,
   },
   familyCombo: {
     fontWeight: "700",

@@ -22,6 +22,7 @@ function Login() {
   const history = useHistory();
   const { height, width } = useWindowDimensions();
   const [useSmallDesign, setuseSmallDesign] = useState(width < 1024);
+  const [secureEntry, setsecureEntry] = useState(true);
 
   useEffect(() => {
     const third = width / 3;
@@ -37,7 +38,8 @@ function Login() {
       signIn(email, password).catch((error) => {
         console.log(error);
         // seterror(error.message);
-        alert(error.message);
+        // alert(error.message);
+        alert("Invalid email or password");
       });
     } else {
       alert("Please enter your email and password");
@@ -99,21 +101,32 @@ function Login() {
                   placeholder="Enter email"
                   textContentType="emailAddress"
                   value={email}
-                  onChangeText={(val) => setEmail(val)}
+                  onChangeText={(val) => setEmail(val.replace(/\s/g, ""))}
                   onKeyPress={handleKeyDown}
                 />
               </View>
               <View style={styles.passwordInputGroup}>
                 <Text style={styles.password}>Password</Text>
-                <TextInput
-                  style={styles.passwordInput}
-                  secureTextEntry={true}
-                  textContentType="password"
-                  placeholder="Enter password"
-                  value={password}
-                  onChangeText={(val) => setPassword(val)}
-                  onKeyPress={handleKeyDown}
-                />
+                <View>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Enter password"
+                    secureTextEntry={secureEntry}
+                    textContentType="password"
+                    value={password}
+                    onChangeText={(val) => setPassword(val.replace(/\s/g, ""))}
+                    onKeyPress={handleKeyDown}
+                  />
+                  <Pressable
+                    onPress={() => setsecureEntry(!secureEntry)}
+                    style={{ position: "absolute", right: 15, top: 15 }}
+                  >
+                    <Feather
+                      name={secureEntry ? "eye-off" : "eye"}
+                      style={{ fontSize: 20, color: "#333333" }}
+                    />
+                  </Pressable>
+                </View>
               </View>
             </View>
             <View style={styles.btnBottomContainer}>

@@ -116,15 +116,6 @@ const NewUserPayment = ({ resetLoader }) => {
                       />
                     </View>
                     <View style={styles.group7}>
-                      <Text style={styles.cloudBased}>
-                        WooCommerce Integration
-                      </Text>
-                      <IoniconsIcon
-                        name="ios-checkmark"
-                        style={styles.checkIcon}
-                      />
-                    </View>
-                    <View style={styles.group7}>
                       <Text style={styles.cloudBased}>24/H Support</Text>
                       <IoniconsIcon
                         name="ios-checkmark"
@@ -279,7 +270,7 @@ const NewUserPayment = ({ resetLoader }) => {
                       onBlur={() => setwebsite(localWebsite)}
                       value={localWebsite}
                       style={[styles.textInput, { marginBottom: 15 }]}
-                      label="Enter store website url"
+                      label="Enter store website url (Optional)"
                       leading={(props) => (
                         <MaterialCommunityIconsIcon name="web" {...props} />
                       )}

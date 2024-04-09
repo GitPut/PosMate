@@ -159,6 +159,18 @@ export const setMyDeviceDetailsState = (val: any): void => {
   myDeviceDetailsState.set(val);
 };
 
+export const resetMyDeviceDetailsState = (): void => {
+  myDeviceDetailsState.set({
+    name: null,
+    id: null,
+    docID: null,
+    useDifferentDeviceToPrint: false,
+    printToPrinter: null,
+    sendPrintToUserID: null,
+    printOnlineOrders: false,
+  });
+};
+
 export const employeesState = entity<any[]>([]);
 
 export const setEmployeesState = (val: any[]): void => {

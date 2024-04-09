@@ -182,9 +182,11 @@ const TotalRevenueBox = ({ style, allTransactions }) => {
       // Now you can safely parse the adjusted date string
       const date = new Date(adjustedDateString);
       const month = date.getMonth();
-      localData[month].uv += parseFloat(transaction.total);
-      localData[month].pv += 1;
-      localData[month].amt += 1;
+      if (localData[month]) {
+        localData[month].uv += parseFloat(transaction.total);
+        localData[month].pv += 1;
+        localData[month].amt += 1;
+      }
     });
     setdata(localData);
   }, [period, allTransactions]);

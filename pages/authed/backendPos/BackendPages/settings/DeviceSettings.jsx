@@ -13,6 +13,7 @@ import {
 import {
     deviceIdState,
     deviceTreeState,
+    resetMyDeviceDetailsState,
     setDeviceTreeState,
     setMyDeviceDetailsState,
 } from "state/state";
@@ -249,6 +250,7 @@ function Index(props) {
                                     if (deviceTree.devices[selectedDevice].id === myDeviceID) {
                                         setMyDeviceDetailsState(deviceTree.devices[selectedDevice])
                                     }
+                                    alert('Device Updated')
                                 }}
                             >
                                 <Text style={styles.saveDevice}>Save Device</Text>
@@ -260,6 +262,7 @@ function Index(props) {
                                     clone = { ...clone, devices: clone.devices.filter(deviceSearch => deviceSearch.docID !== deviceTree.devices[selectedDevice].docID) }
                                     setDeviceTreeState(clone)
                                     setselectedDevice(prev => prev > 0 ? prev - 1 : 0)
+                                    resetMyDeviceDetailsState()
                                 }}
                             >
                                 <Text style={styles.deleteDevice}>Delete Device</Text>

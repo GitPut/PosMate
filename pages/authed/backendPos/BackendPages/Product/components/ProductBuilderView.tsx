@@ -221,7 +221,6 @@ function ProductBuilderView({ product, imageUrl }) {
     <View style={styles.container}>
       <ScrollView
         contentContainerStyle={{
-          height: "90%",
           width: "100%",
         }}
         style={{ width: "100%", height: "100%", padding: 20 }}
@@ -284,7 +283,7 @@ function ProductBuilderView({ product, imageUrl }) {
                 </Text>
               </View>
             </View>
-            <View style={styles.addToCartRow}>
+            {/* <View style={styles.addToCartRow}>
               <AddToCartBtn
                 style={styles.addToCartBtn}
                 title="Add To Cart"
@@ -292,7 +291,7 @@ function ProductBuilderView({ product, imageUrl }) {
                   //
                 }}
               />
-            </View>
+            </View> */}
           </>
         ) : (
           <ItemNoOptionsView product={product} />
@@ -332,7 +331,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   itemInfoContainer: {
-    height: "60%",
+    height: 350,
     borderRadius: 20,
     backgroundColor: "rgba(255,255,255,1)",
     alignItems: "center",

@@ -24,6 +24,7 @@ export const signUp = (
             website: null,
             comSelected: null,
             deliveryPrice: null,
+            taxRate: 13,
           },
           ownerDetails: {
             name: name,
@@ -72,9 +73,14 @@ export const updateStoreDetails = (storeDetails: any) => {
 };
 
 export const updateFreeTrial = (endDate: any) => {
-  db.collection("users").doc(auth.currentUser?.uid).update({
-    freeTrial: endDate,
-  });
+  db.collection("users")
+    .doc(auth.currentUser?.uid)
+    .update({
+      freeTrial: endDate,
+    })
+    .finally(() => {
+      window.location.reload();
+    });
 };
 
 export const logout = () => {

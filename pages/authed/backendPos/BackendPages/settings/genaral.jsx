@@ -106,6 +106,7 @@ function GeneralSettings() {
       // if (customBtnExtraFunction) {
       //   customBtnExtraFunction();
       // }
+      alert("Settings updated successfully");
     } else {
       alert("Please fill in all fields");
     }

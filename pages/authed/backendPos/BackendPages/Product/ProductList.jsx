@@ -106,7 +106,7 @@ function ProductList(props) {
         }
       }
     });
-  }, [searchFilterValue, selectedCategory,]);
+  }, [searchFilterValue, selectedCategory, catalog.products]);
 
   return (
     <View style={styles.container}>
@@ -150,7 +150,13 @@ function ProductList(props) {
         <ScrollView
           contentContainerStyle={styles.scrollArea_contentContainerStyle}
         >
-          <View style={styles.productsMap}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(215px, 1fr))', // Create columns that are at least 215px wide
+            gap: 30, // Space between items
+            width: '100%',
+          }}>
+            {/* <View style={styles.productsMap}> */}
             <Pressable style={[styles.addProductBtn, editMode && { height: 322 }]} onPress={() => setaddProductModal(true)}>
               <Feather
                 name="plus"
@@ -163,7 +169,7 @@ function ProductList(props) {
               </Pressable>
             </Pressable>
             {catalog.products.map((product, index) => <div key={index} id={product.id}>
-              <ProductOptionBox 
+              <ProductOptionBox
                 style={[styles.productOptionBox, editMode && { height: 322 }]}
                 index={index}
                 product={product}
@@ -172,7 +178,8 @@ function ProductList(props) {
                 setexistingProduct={setexistingProduct}
               />
             </div>)}
-          </View>
+            {/* </View> */}
+          </div>
         </ScrollView>
       </View>
       <Modal

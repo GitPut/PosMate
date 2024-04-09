@@ -123,7 +123,7 @@ function ResetPassword() {
                   placeholder="Enter email"
                   textContentType="emailAddress"
                   value={email}
-                  onChangeText={(val) => setEmail(val)}
+                  onChangeText={(val) => setEmail(val.replace(/\s/g, ""))}
                   onKeyPress={handleKeyDown}
                 />
               </View>

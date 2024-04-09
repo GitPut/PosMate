@@ -8,28 +8,54 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CartItem from "./cartOrder/CartItem";
 import UntitledComponent from "./cartOrder/UntitledComponent";
 import { MaterialIcons } from "@expo/vector-icons";
 import CheckoutBtn from "./Cart/CheckoutBtn";
-import {
-  cartState,
-  setCartState,
-  storeDetailState,
-} from "state/state";
+import { cartState, setCartState, storeDetailState } from "state/state";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 
 const Cart = () => {
-  const {
-    discountAmount,
-    deliveryChecked,
-    cartSub,
-    cartNote,
-  } = posHomeState.use();
+  const { discountAmount, deliveryChecked, cartSub, cartNote } =
+    posHomeState.use();
   const cart = cartState.use();
   const storeDetails = storeDetailState.use();
   const { width } = useWindowDimensions();
+  const [total, settotal] = useState(0);
+
+  useEffect(() => {
+    // cartSub > 0
+    //   ? (
+    //       parseFloat(
+    //         deliveryChecked &&
+    //           parseFloat(storeDetails.deliveryPrice) &&
+    //           cartSub > 0
+    //           ? (cartSub - parseFloat(storeDetails.deliveryPrice)).toFixed(2)
+    //           : cartSub.toFixed(2)
+    //       ) +
+    //       parseFloat(
+    //         (
+    //           cartSub *
+    //           (parseFloat(storeDetails.taxRate) >= 0
+    //             ? parseFloat(storeDetails.taxRate) / 100
+    //             : 0.13)
+    //         ).toFixed(2)
+    //       )
+    //     ).toFixed(2)
+    //   : "0.00";
+
+    if (cartSub > 0) {
+      settotal(
+        cartSub *
+          (parseFloat(storeDetails.taxRate) >= 0
+            ? 1 + parseFloat(storeDetails.taxRate) / 100
+            : 1.13)
+      );
+    } else {
+      settotal(0);
+    }
+  }, [cart, discountAmount, deliveryChecked, cartSub, cartNote, storeDetails]);
 
   return (
     <View
@@ -204,10 +230,14 @@ const Cart = () => {
           <UntitledComponent
             amountValue={`$${(
               cartSub *
-              (parseFloat(storeDetails.taxRate) >= 0 ? parseFloat(storeDetails.taxRate) / 100 : 0.13)
+              (parseFloat(storeDetails.taxRate) >= 0
+                ? parseFloat(storeDetails.taxRate) / 100
+                : 0.13)
             ).toFixed(2)}`}
             amountLbl={`Tax (${
-              parseFloat(storeDetails.taxRate) >= 0 ? parseFloat(storeDetails.taxRate) : 13
+              parseFloat(storeDetails.taxRate) >= 0
+                ? parseFloat(storeDetails.taxRate)
+                : 13
             }%)`}
             style={styles.taxRow}
           />
@@ -215,30 +245,7 @@ const Cart = () => {
         <View style={styles.totalRowGroup}>
           <View style={styles.totalRow}>
             <Text style={styles.total2}>Total</Text>
-            <Text style={styles.totalValue}>
-              $
-              {cartSub > 0
-                ? (
-                    parseFloat(
-                      deliveryChecked &&
-                        parseFloat(storeDetails.deliveryPrice) &&
-                        cartSub > 0
-                        ? (
-                            cartSub - parseFloat(storeDetails.deliveryPrice)
-                          ).toFixed(2)
-                        : cartSub.toFixed(2)
-                    ) +
-                    parseFloat(
-                      (
-                        cartSub *
-                        (parseFloat(storeDetails.taxRate) >= 0
-                          ? parseFloat(storeDetails.taxRate) / 100
-                          : 0.13)
-                      ).toFixed(2)
-                    )
-                  ).toFixed(2)
-                : "0.00"}
-            </Text>
+            <Text style={styles.totalValue}>${total.toFixed(2)}</Text>
           </View>
         </View>
       </View>

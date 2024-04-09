@@ -105,12 +105,21 @@ const LeftMenuBar = ({
             updatePosHomeState({ discountModal: true });
           }}
         >
-          <Feather
-            name="percent"
-            color={discountModal ? "white" : "black"}
-            size={35}
+          <img
+            src={require("../assets/images/percentIcon.png")}
+            style={
+              discountModal
+                ? {
+                    filter: "invert(100%)",
+                    width: 30,
+                    height: 30,
+                  }
+                : { width: 30, height: 30 }
+            }
           />
         </Pressable>
+      </View>
+      <View style={{marginBottom: 15}}>
         <Pressable
           style={[
             settingsPasswordModalVis ? styles.activeBtn : styles.notActiveBtn,
@@ -139,9 +148,6 @@ const LeftMenuBar = ({
           />
         </Pressable>
       </View>
-      <Pressable onPress={logout}>
-        <Feather name="log-out" style={styles.icon} />
-      </Pressable>
     </View>
   );
 };

@@ -147,27 +147,6 @@ function OrderCartMain({
             </Pressable>
           </View>
         )}
-        {screenWidth > 1000 && (
-          <View
-            style={[
-              styles.bannerContainer,
-              screenWidth < 1000 && {
-                height: 100,
-                justifyContent: "center",
-                alignItems: "center",
-              },
-            ]}
-          >
-            <Image
-              source={require("./assets/images/image_onW3..png")}
-              resizeMode="contain"
-              style={[
-                styles.logo,
-                screenWidth < 1000 && { height: 60, maxWidth: 250 },
-              ]}
-            ></Image>
-          </View>
-        )}
         <View style={styles.categoryContainer}>
           <Text style={styles.lblTxt}>Menu Category</Text>
           <View style={styles.scrollArea}>
@@ -722,7 +701,7 @@ const styles = StyleSheet.create({
   },
   scrollAreaProducts: {
     width: "88%",
-    height: "45%",
+    height: "56%",
     justifyContent: "center",
   },
   scrollAreaProducts_contentContainerStyle: {

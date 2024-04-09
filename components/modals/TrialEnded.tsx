@@ -22,9 +22,10 @@ const TrialEnded = ({ resetLoader }) => {
       priceId = "price_1Mb2s4CIw3L7DOwI5PDx3qKx";
     } else if (planType.value === "yearly") {
       priceId = "price_1Mb2s4CIw3L7DOwIF00zPa4q";
-    } else if (planType.value === "test") {
-      priceId = "price_1Mb4uSCIw3L7DOwI6exh9JBt";
     }
+    // else if (planType.value === "test") {
+    //   priceId = "price_1Mb4uSCIw3L7DOwI6exh9JBt";
+    // }
     await db
       .collection("users")
       .doc(auth.currentUser.uid)
@@ -97,7 +98,7 @@ const TrialEnded = ({ resetLoader }) => {
               options={[
                 { value: "monthly", label: "Monthly" },
                 { value: "yearly", label: "Yearly" },
-                { value: "test", label: "Test" },
+                // { value: "test", label: "Test" },
               ]}
               value={planType}
               onChange={(e) => setplanType(e)}
@@ -114,10 +115,6 @@ const TrialEnded = ({ resetLoader }) => {
           </View>
           <View style={styles.group7}>
             <Text style={styles.cloudBased}>Easy to Use</Text>
-            <IoniconsIcon name="ios-checkmark" style={styles.checkIcon} />
-          </View>
-          <View style={styles.group7}>
-            <Text style={styles.cloudBased}>WooCommerce Integration</Text>
             <IoniconsIcon name="ios-checkmark" style={styles.checkIcon} />
           </View>
           <View style={styles.group7}>

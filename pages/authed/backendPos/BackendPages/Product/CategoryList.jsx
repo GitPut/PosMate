@@ -115,7 +115,12 @@ function CategoryList(props) {
         <ScrollView
           contentContainerStyle={styles.scrollArea_contentContainerStyle}
         >
-          <View style={styles.productsMap}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(215px, 1fr))', // Create columns that are at least 215px wide
+            gap: 30, // Space between items
+            width: '100%',
+          }}>
             <Pressable style={[styles.addProductBtn, editMode && { height: 322 }]} onPress={() => setaddCategoryModal(true)}>
               <Feather
                 name="plus"
@@ -133,7 +138,7 @@ function CategoryList(props) {
                 seteditCategoryModal={seteditCategoryModal}
               />
             </div>)}
-          </View>
+          </div>
         </ScrollView>
       </View>
       <Modal

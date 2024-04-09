@@ -89,25 +89,45 @@ function ItemContainerMobile({ product, style, setshowProduct }) {
 }
 
 const styles = StyleSheet.create({
+  // container: {
+  //   backgroundColor: "#ffffff",
+  //   borderRadius: 20,
+  //   flexDirection: "row",
+  //   justifyContent: "space-around",
+  //   alignItems: "center",
+  // },
+  // itemImg: {
+  //   height: 100,
+  //   width: 120,
+  //   margin: 6,
+  // },
+  // rightSide: {
+  //   width: "40%",
+  //   justifyContent: "space-between",
+  //   margin: 6,
+  //   alignSelf: "stretch",
+  //   marginTop: 12,
+  //   marginRight: 11,
+  // },
   container: {
     backgroundColor: "#ffffff",
     borderRadius: 20,
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-around", // or 'flex-start' if you want all items aligned to the start
     alignItems: "center",
+    height: "100%", // Fixed height for each container
+    width: "100%", // Take up the full width available
   },
   itemImg: {
-    height: 100,
-    width: 120,
+    height: 100, // Fixed height for the image
+    width: 120, // Fixed width for the image
     margin: 6,
   },
   rightSide: {
-    width: "40%",
+    flex: 1, // Take up the remaining space after the image
     justifyContent: "space-between",
     margin: 6,
     alignSelf: "stretch",
-    marginTop: 12,
-    marginRight: 11,
   },
   familyCombo: {
     fontWeight: "700",

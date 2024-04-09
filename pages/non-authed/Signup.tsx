@@ -24,6 +24,7 @@ function Signup() {
   const history = useHistory();
   const { height, width } = useWindowDimensions();
   const [useSmallDesign, setuseSmallDesign] = useState(width < 1024);
+  const [secureEntry, setsecureEntry] = useState(true);
 
   useEffect(() => {
     const third = width / 3;
@@ -39,7 +40,8 @@ function Signup() {
       signUp(email, password, name, phoneNumber).catch((error) => {
         console.log(error);
         // seterror(error.message);
-        alert(error.message);
+        // alert(error.message);
+        alert("There was a issue signing up. Please try again.");
       });
     } else {
       alert("Please enter your email and password");
@@ -107,7 +109,7 @@ function Signup() {
                     placeholder="Enter name"
                     textContentType="name"
                     value={name}
-                    onChangeText={(val) => setname(val)}
+                    onChangeText={(val) => setname(val.replace(/\s/g, ""))}
                     onKeyPress={handleKeyDown}
                   />
                 </View>
@@ -118,7 +120,9 @@ function Signup() {
                     placeholder="Enter phone number"
                     textContentType="telephoneNumber"
                     value={phoneNumber}
-                    onChangeText={(val) => setphoneNumber(val)}
+                    onChangeText={(val) =>
+                      setphoneNumber(val.replace(/\s/g, ""))
+                    }
                     onKeyPress={handleKeyDown}
                   />
                 </View>
@@ -129,21 +133,34 @@ function Signup() {
                     placeholder="Enter email"
                     textContentType="emailAddress"
                     value={email}
-                    onChangeText={(val) => setEmail(val)}
+                    onChangeText={(val) => setEmail(val.replace(/\s/g, ""))}
                     onKeyPress={handleKeyDown}
                   />
                 </View>
                 <View style={styles.emailInputGroup}>
                   <Text style={styles.password}>Password</Text>
-                  <TextInput
-                    style={styles.passwordInput}
-                    placeholder="Enter password"
-                    secureTextEntry={true}
-                    textContentType="password"
-                    value={password}
-                    onChangeText={(val) => setPassword(val)}
-                    onKeyPress={handleKeyDown}
-                  />
+                  <View>
+                    <TextInput
+                      style={styles.passwordInput}
+                      placeholder="Enter password"
+                      secureTextEntry={secureEntry}
+                      textContentType="password"
+                      value={password}
+                      onChangeText={(val) =>
+                        setPassword(val.replace(/\s/g, ""))
+                      }
+                      onKeyPress={handleKeyDown}
+                    />
+                    <Pressable
+                      onPress={() => setsecureEntry(!secureEntry)}
+                      style={{ position: "absolute", right: 15, top: 15 }}
+                    >
+                      <Feather
+                        name={secureEntry ? "eye-off" : "eye"}
+                        style={{ fontSize: 20, color: "#333333" }}
+                      />
+                    </Pressable>
+                  </View>
                 </View>
               </View>
               <View style={styles.btnBottomContainer}>
