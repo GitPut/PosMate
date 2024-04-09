@@ -1,9 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import { StyleSheet, View, Text, Pressable, Touchable } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
 import { updateTransList } from "state/firebaseFunctions";
+import { storeDetailState } from "state/state";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
 
 function PendingOrderItem({
   element,
@@ -15,6 +17,26 @@ function PendingOrderItem({
   cartString,
   fadeIn,
 }) {
+  const storeDetails = storeDetailState.use();
+  const { managerAuthorizedStatus, pendingAuthAction } = posHomeState.use();
+
+  useEffect(() => {
+    if (
+      managerAuthorizedStatus &&
+      pendingAuthAction === `cancelOrder${element.id}`
+    ) {
+      db.collection("users")
+        .doc(auth.currentUser.uid)
+        .collection("pendingOrders")
+        .doc(element.id)
+        .delete();
+      updatePosHomeState({
+        managerAuthorizedStatus: false,
+        pendingAuthAction: "",
+      });
+    }
+  }, [managerAuthorizedStatus, pendingAuthAction]);
+
   return (
     <View style={[styles.container, style]}>
       <View style={styles.customerDetailsContainer}>
@@ -78,11 +100,18 @@ function PendingOrderItem({
           {/* )} */}
           <Pressable
             onPress={() => {
-              db.collection("users")
-                .doc(auth.currentUser.uid)
-                .collection("pendingOrders")
-                .doc(element.id)
-                .delete();
+              if (storeDetails.settingsPassword.length > 0) {
+                updatePosHomeState({
+                  authPasswordModal: true,
+                  pendingAuthAction: `cancelOrder${element.id}`,
+                });
+              } else {
+                db.collection("users")
+                  .doc(auth.currentUser.uid)
+                  .collection("pendingOrders")
+                  .doc(element.id)
+                  .delete();
+              }
             }}
           >
             <MaterialCommunityIcons name="cancel" style={styles.cancelIcon} />
@@ -106,8 +135,7 @@ function PendingOrderItem({
                     date: date,
                   });
                   fadeIn();
-                }
-                else {
+                } else {
                   db.collection("users")
                     .doc(auth.currentUser.uid)
                     .collection("pendingOrders")

@@ -1,31 +1,5 @@
 import { entity } from "simpler-state";
 
-//  const [section, setsection] = useState(
-//    catalog.categories.length > 0 ? catalog.categories[0] : ""
-//  );
-//  const [deliveryModal, setDeliveryModal] = useState(false);
-//  const [cashModal, setCashModal] = useState(false);
-//  const [ongoingDelivery, setOngoingDelivery] = useState(null);
-//  const [name, setName] = useState("");
-//  const [phone, setPhone] = useState("");
-//  const [address, setAddress] = useState(null);
-//  const [buzzCode, setBuzzCode] = useState("");
-//  const [unitNumber, setUnitNumber] = useState("");
-//  const [deliveryChecked, setDeliveryChecked] = useState(false);
-//  const [changeDue, setChangeDue] = useState("");
-//  const [cartSub, setCartSub] = useState(0);
-//  const [saveCustomerModal, setSaveCustomerModal] = useState(false);
-//  const [savedCustomerDetails, setsavedCustomerDetails] = useState(null);
-//  const [ongoingOrderListModal, setongoingOrderListModal] = useState(false);
-//  const [settingsPasswordModalVis, setsettingsPasswordModalVis] =
-//    useState(false);
-//  const [updatingOrder, setupdatingOrder] = useState(false);
-//  const [ongoingListState, setongoingListState] = useState([]);
-//  const [clockinModal, setclockinModal] = useState(false);
-//  const [discountModal, setdiscountModal] = useState(false);
-//  const [discountAmount, setDiscountAmount] = useState(null);
-//  const [cartNote, setcartNote] = useState(null);
-
 interface PosHomeState {
   section: string;
   deliveryModal: boolean;
@@ -49,6 +23,10 @@ interface PosHomeState {
   discountModal: boolean;
   discountAmount: any;
   cartNote: any;
+  customCashModal: boolean;
+  authPasswordModal: boolean;
+  managerAuthorizedStatus: boolean;
+  pendingAuthAction: string;
 }
 
 export const posHomeState = entity<PosHomeState>({
@@ -74,6 +52,10 @@ export const posHomeState = entity<PosHomeState>({
   discountModal: false,
   discountAmount: null,
   cartNote: null,
+  customCashModal: false,
+  authPasswordModal: false,
+  managerAuthorizedStatus: false,
+  pendingAuthAction: ""
 });
 
 export const setPosHomeState = (val: PosHomeState): void => {
@@ -103,6 +85,10 @@ export const resetPosHomeState = (): void => {
     discountModal: false,
     discountAmount: null,
     cartNote: null,
+    customCashModal: false,
+    authPasswordModal: false,
+    managerAuthorizedStatus: false,
+    pendingAuthAction: ""
   });
 };
 

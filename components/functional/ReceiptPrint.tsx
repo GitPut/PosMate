@@ -572,7 +572,7 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
                 "\x10" +
                 "\x14" +
                 "\x01" +
-                "\x00" +
+                "\x00" + 
                 "\x05"
         );
       } else {

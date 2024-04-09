@@ -196,38 +196,57 @@ function OrderCartMain({
             </ScrollView>
           </View>
         </View>
-        <View style={styles.scrollAreaProducts}>
-          <ScrollView
-            contentContainerStyle={
-              styles.scrollAreaProducts_contentContainerStyle
-            }
-          >
-            {catalog.products.map((product, index) =>
-              screenWidth > 1250 ? (
-                <ItemContainer
-                  product={product}
-                  productIndex={index}
-                  key={index}
-                  userUid={catalog.docID}
-                  style={styles.itemContainer}
-                />
-              ) : (
-                <ItemContainerMobile
-                  product={product}
-                  productIndex={index}
-                  key={index}
-                  userUid={catalog.docID}
-                  style={{
-                    height: 220,
-                    width: 160, // Ensure this width accounts for any margins or padding
-                    marginBottom: 30,
-                  }}
-                  setshowProduct={setshowProduct}
-                />
-              )
-            )}
-          </ScrollView>
-        </View>
+        {screenWidth > 1250 ? (
+          <div style={stylesBigScreen.scrollAreaProducts}>
+            <div style={{ ...stylesBigScreen.scrollAreaProducts, overflowY: "auto" }}>
+              {/* ScrollView from 'react-native-web' */}
+              <div style={stylesBigScreen.gridContainer}>
+                {catalog.products.map((product, index) => (
+                  <ItemContainer
+                    product={product}
+                    productIndex={index}
+                    key={index}
+                    userUid={catalog.docID}
+                    // Pass inline style or className to ItemContainer if needed
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <View style={styles.scrollAreaProducts}>
+            <ScrollView
+              contentContainerStyle={
+                styles.scrollAreaProducts_contentContainerStyle
+              }
+            >
+              {catalog.products.map((product, index) =>
+                screenWidth > 1250 ? (
+                  <ItemContainer
+                    product={product}
+                    productIndex={index}
+                    key={index}
+                    userUid={catalog.docID}
+                    style={styles.itemContainer}
+                  />
+                ) : (
+                  <ItemContainerMobile
+                    product={product}
+                    productIndex={index}
+                    key={index}
+                    userUid={catalog.docID}
+                    style={{
+                      height: 220,
+                      width: 160, // Ensure this width accounts for any margins or padding
+                      marginBottom: 30,
+                    }}
+                    setshowProduct={setshowProduct}
+                  />
+                )
+              )}
+            </ScrollView>
+          </View>
+        )}
       </View>
       {screenWidth > 1000 ? (
         <View
@@ -608,6 +627,27 @@ function OrderCartMain({
     </View>
   );
 }
+
+const stylesBigScreen = {
+  scrollAreaProducts: {
+    width: "94%",
+    height: "60vh",
+    justifyContent: "center",
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  gridContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(215px, 1fr))",
+    gap: "30px",
+    width: "100%",
+  },
+  // Make sure ItemContainer uses this style or an equivalent CSS class
+  itemContainer: {
+    height: "160px",
+    marginBottom: "30px",
+  },
+};
 
 const styles = StyleSheet.create({
   container: {

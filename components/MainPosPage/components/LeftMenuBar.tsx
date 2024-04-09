@@ -1,19 +1,22 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import React from "react";
-import { logout } from "state/firebaseFunctions";
-import { Feather, Entypo } from "@expo/vector-icons";
-import { updatePosHomeState } from "state/posHomeState";
+import { Entypo } from "@expo/vector-icons";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
+import { setIsSignedInSettingsState, storeDetailState } from "state/state";
+import { useHistory } from "react-router-dom";
 
-const LeftMenuBar = ({
-  ongoingOrderListModal,
-  clockinModal,
-  deliveryModal,
-  discountModal,
-  settingsPasswordModalVis,
-  setIsSignedInSettingsState,
-  history,
-  storeDetails,
-}) => {
+const LeftMenuBar = () => {
+  const {
+    ongoingOrderListModal,
+    clockinModal,
+    deliveryModal,
+    discountModal,
+    settingsPasswordModalVis,
+    customCashModal,
+  } = posHomeState.use();
+  const history = useHistory();
+  const storeDetails = storeDetailState.use();
+
   return (
     <View style={styles.leftMenuBarContainer}>
       <View>
@@ -118,8 +121,27 @@ const LeftMenuBar = ({
             }
           />
         </Pressable>
+        <Pressable
+          style={[customCashModal ? styles.activeBtn : styles.notActiveBtn]}
+          onPress={() => {
+            updatePosHomeState({ customCashModal: true });
+          }}
+        >
+          <img
+            src={require("../assets/images/dollarSignIcon.png")}
+            style={
+              customCashModal
+                ? {
+                    filter: "invert(100%)",
+                    width: 40,
+                    height: 40,
+                  }
+                : { width: 40, height: 40 }
+            }
+          />
+        </Pressable>
       </View>
-      <View style={{marginBottom: 15}}>
+      <View style={{ marginBottom: 15 }}>
         <Pressable
           style={[
             settingsPasswordModalVis ? styles.activeBtn : styles.notActiveBtn,

@@ -66,7 +66,7 @@ const ProductsSection = ({ catalog }) => {
               userUid={catalog.docID}
               // Pass inline style or className to ItemContainer if needed
             />
-          ))}
+          ))} 
         </div>
       </div>
     </div>

@@ -23,6 +23,8 @@ import Modal from "react-native-modal";
 import CategorySection from "./components/CategorySection";
 import ProductsSection from "./components/ProductsSection";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
+import CustomCashModal from "components/modals/CustomCashModal";
+import AuthPasswordModal from "components/modals/AuthPasswordModal";
 
 function OrderPagePosHome() {
   const { height, width } = useWindowDimensions();
@@ -30,19 +32,9 @@ function OrderPagePosHome() {
   const cart = cartState.use();
   const storeDetails = storeDetailState.use();
   const myDeviceDetails = myDeviceDetailsState.use();
-  const history = useHistory();
 
-  const {
-    section,
-    deliveryModal,
-    deliveryChecked,
-    saveCustomerModal,
-    ongoingOrderListModal,
-    settingsPasswordModalVis,
-    clockinModal,
-    discountModal,
-    discountAmount,
-  } = posHomeState.use();
+  const { section, deliveryChecked, saveCustomerModal, discountAmount } =
+    posHomeState.use();
 
   function parseDate(input: Date) {
     // Check if the input is a Date object
@@ -194,18 +186,7 @@ function OrderPagePosHome() {
 
   return (
     <View style={[styles.container, { maxHeight: height, maxWidth: width }]}>
-      {width > 1250 && (
-        <LeftMenuBar
-          ongoingOrderListModal={ongoingOrderListModal}
-          clockinModal={clockinModal}
-          deliveryModal={deliveryModal}
-          discountModal={discountModal}
-          settingsPasswordModalVis={settingsPasswordModalVis}
-          setIsSignedInSettingsState={setIsSignedInSettingsState}
-          history={history}
-          storeDetails={storeDetails}
-        />
-      )}
+      {width > 1250 && <LeftMenuBar />}
       <View
         style={[
           styles.menuContainer,
@@ -243,7 +224,9 @@ function OrderPagePosHome() {
         </View>
       </Modal>
       <CashScreen />
+      <CustomCashModal />
       <DiscountModal />
+      <AuthPasswordModal />
     </View>
   );
 }

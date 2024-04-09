@@ -1,8 +1,10 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import { StyleSheet, View, Text, Pressable, ScrollView } from "react-native";
 import { Entypo, Ionicons, Feather } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
 import { updateTransList } from "state/firebaseFunctions";
+import { storeDetailState } from "state/state";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
 
 function PendingOrderShowDetails({
   currentOrder,
@@ -13,7 +15,36 @@ function PendingOrderShowDetails({
   setongoingOrderListModal,
 }) {
   const { element, index, type, cartString, date } = currentOrder;
-  console.log("Order details: ", currentOrder);
+  const storeDetails = storeDetailState.use();
+  const { managerAuthorizedStatus, pendingAuthAction } = posHomeState.use();
+
+  useEffect(() => {
+    if (
+      managerAuthorizedStatus &&
+      pendingAuthAction === `cancelOrder${element.id}`
+    ) {
+      db.collection("users")
+        .doc(auth.currentUser.uid)
+        .collection("pendingOrders")
+        .doc(element.id)
+        .delete();
+      updatePosHomeState({
+        managerAuthorizedStatus: false,
+        pendingAuthAction: "",
+      });
+      fadeOut(false);
+    } else if (
+      managerAuthorizedStatus &&
+      pendingAuthAction === `updateOrder${element.id}`
+    ) {
+      updateOrderHandler({
+        ...element,
+        index: index,
+        isInStoreOrder: !element.online && !element.customer,
+      });
+      fadeOut(false);
+    }
+  }, [managerAuthorizedStatus, pendingAuthAction]);
 
   return (
     <View style={styles.container}>
@@ -85,12 +116,19 @@ function PendingOrderShowDetails({
               // disabled={!(element.method !== "inStoreOrder" && !element.online)}
               disabled={!!element.online}
               onPress={() => {
-                updateOrderHandler({
-                  ...element,
-                  index: index,
-                  isInStoreOrder: !element.online && !element.customer,
-                });
-                fadeOut(false);
+                if (storeDetails.settingsPassword.length > 0) {
+                  updatePosHomeState({
+                    authPasswordModal: true,
+                    pendingAuthAction: `updateOrder${element.id}`,
+                  });
+                } else {
+                  updateOrderHandler({
+                    ...element,
+                    index: index,
+                    isInStoreOrder: !element.online && !element.customer,
+                  });
+                  fadeOut(false);
+                }
               }}
               style={{ marginLeft: 370 }}
             >
@@ -110,12 +148,19 @@ function PendingOrderShowDetails({
           <Pressable
             style={styles.cancelBtn}
             onPress={() => {
-              db.collection("users")
-                .doc(auth.currentUser.uid)
-                .collection("pendingOrders")
-                .doc(element.id)
-                .delete();
-              fadeOut(false);
+              if (storeDetails.settingsPassword.length > 0) {
+                updatePosHomeState({
+                  authPasswordModal: true,
+                  pendingAuthAction: `cancelOrder${element.id}`,
+                });
+              } else {
+                db.collection("users")
+                  .doc(auth.currentUser.uid)
+                  .collection("pendingOrders")
+                  .doc(element.id)
+                  .delete();
+                fadeOut(false);
+              }
             }}
           >
             <Text style={styles.cancelOrder}>Cancel Order</Text>
