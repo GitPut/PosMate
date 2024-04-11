@@ -68,6 +68,15 @@ interface ReceiptElement {
   changeDue?: string;
 }
 
+interface CartItem {
+  name: string;
+  quantity: number;
+  price?: string;
+  description?: string;
+  options?: string[];
+  extraDetails?: string;
+}
+
 function ReceiptPrint(
   element: ReceiptElement,
   storeDetails: StoreDetails,
@@ -118,7 +127,7 @@ function ReceiptPrint(
     return null;
   }
 
-  let data = [];
+  let data: string[] = [];
   let total = 0;
 
   let date;
@@ -243,7 +252,7 @@ function ReceiptPrint(
     if (element.online) {
       const localDate = parseDate(element.date);
       // Convert to a nice date and time format
-      date = localDate.toLocaleString("en-US", {
+      date = localDate?.toLocaleString("en-US", {
         year: "numeric",
         month: "short",
         day: "numeric",
@@ -323,7 +332,7 @@ function ReceiptPrint(
             "\x1B" + "\x61" + "\x30", // left align
           ];
 
-      element.cart?.map((cartItem) => {
+      element.cart?.map((cartItem: CartItem) => {
         data.push(`Name: ${cartItem.name}`);
         data.push("\x0A");
 
