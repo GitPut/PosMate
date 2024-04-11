@@ -1,10 +1,80 @@
-import { View, Text } from "react-native";
-import React from "react";
 const tz = require("moment-timezone");
 
-const ReceiptPrint = (element, storeDetails, reprint) => {
-  const CleanupOps = (metaList) => {
-    const opsArray = [];
+interface MetaItem {
+  key: string;
+  value: any; // 'any' because the value type is not specified; you might want to refine this based on actual usage.
+}
+
+interface LineItem {
+  name: string;
+  quantity: number;
+  price?: string;
+  meta?: MetaItem[];
+  description?: string;
+  options?: string[];
+  extraDetails?: string;
+}
+
+interface ShippingDetails {
+  address_1: string;
+  city: string;
+  postcode: string;
+  state: string;
+  first_name: string;
+  last_name: string;
+}
+
+interface BillingDetails {
+  phone: string;
+}
+
+interface StoreDetails {
+  name: string;
+  address?: {
+    label: string;
+  };
+  website: string;
+  phoneNumber: string;
+  taxRate: number;
+  deliveryPrice?: string;
+}
+
+interface ReceiptElement {
+  date_created?: string;
+  line_items?: LineItem[];
+  shipping?: ShippingDetails;
+  billing?: BillingDetails;
+  payment_method_title?: string;
+  total?: string;
+  number?: string;
+  shipping_lines?: { method_title: string }[];
+  customer_note?: string;
+  online?: boolean;
+  date?: any; // This could be further refined based on the actual data type (Date, { seconds: number }, etc.)
+  method?: "deliveryOrder" | "pickupOrder";
+  cart?: LineItem[];
+  transNum?: string;
+  cartNote?: string;
+  customer?: {
+    name?: string;
+    phone?: string;
+    address?: {
+      label: string;
+    };
+    unitNumber?: string;
+    buzzCode?: string;
+  };
+  paymentMethod?: string;
+  changeDue?: string;
+}
+
+function ReceiptPrint(
+  element: ReceiptElement,
+  storeDetails: StoreDetails,
+  reprint: boolean
+): { data: string[]; total: number } {
+  const CleanupOps = (metaList: MetaItem[]) => {
+    const opsArray: { key: string; vals: any[] }[] = [];
 
     metaList.forEach((op) => {
       const arrContaingMe = opsArray.filter(
@@ -24,10 +94,10 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
     return opsArray;
   };
 
-  function parseDate(input) {
+  function parseDate(input: Date | string) {
     // Check if the input is a Date object
     if (Object.prototype.toString.call(input) === "[object Date]") {
-      if (!isNaN(input.getTime())) {
+      if (!isNaN((input as Date).getTime())) {
         // It's a valid Date object, return it
         return input;
       }
@@ -38,7 +108,7 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
       const dateObject = new Date(input);
 
       // Check if the dateObject is a valid Date
-      if (!isNaN(dateObject.getTime())) {
+      if (!isNaN((dateObject as Date).getTime())) {
         // It's a valid Date object, return it
         return dateObject;
       }
@@ -117,19 +187,19 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
     data.push("\x0A");
     data.push(`Customer Details:`);
     data.push("\x0A");
-    data.push(`Address: ${element.shipping.address_1}`);
+    data.push(`Address: ${element.shipping?.address_1}`);
     data.push("\x0A");
-    data.push(`City: ${element.shipping.city}`);
+    data.push(`City: ${element.shipping?.city}`);
     data.push("\x0A");
-    data.push(`Zip/Postal Code: ${element.shipping.postcode}`);
+    data.push(`Zip/Postal Code: ${element.shipping?.postcode}`);
     data.push("\x0A");
-    data.push(`Province/State: ${element.shipping.state}`);
+    data.push(`Province/State: ${element.shipping?.state}`);
     data.push("\x0A");
     data.push(
-      `Name: ${element.shipping.first_name} ${element.shipping.last_name}`
+      `Name: ${element.shipping?.first_name} ${element.shipping?.last_name}`
     );
     data.push("\x0A");
-    element.shipping_lines.map((line) => {
+    element.shipping_lines?.map((line) => {
       data.push(`Shipping Method: ${line.method_title}`);
       data.push("\x0A");
     });
@@ -168,7 +238,7 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
 
     data.push("\x1D" + "\x56" + "\x00");
 
-    return data;
+    return { data: data, total: element.total ? parseFloat(element.total) : 0 };
   } else {
     if (element.online) {
       const localDate = parseDate(element.date);
@@ -203,7 +273,9 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
     }
 
     if (element.method === "deliveryOrder") {
-      total += parseFloat(storeDetails.deliveryPrice);
+      total += parseFloat(
+        storeDetails.deliveryPrice ? storeDetails.deliveryPrice : "0"
+      );
       data = element.online
         ? [
             "\x1B" + "\x40", // init
@@ -251,7 +323,7 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
             "\x1B" + "\x61" + "\x30", // left align
           ];
 
-      element.cart.map((cartItem) => {
+      element.cart?.map((cartItem) => {
         data.push(`Name: ${cartItem.name}`);
         data.push("\x0A");
 
@@ -266,7 +338,7 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
             data.push("\x0A");
             data.push(
               `Price: $${(
-                parseFloat(cartItem.price) * parseFloat(cartItem.quantity)
+                parseFloat(cartItem.price) * cartItem.quantity
               ).toFixed(2)}`
             );
           }
@@ -383,7 +455,7 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
             "\x1B" + "\x61" + "\x30", // left align
           ];
 
-      element.cart.map((cartItem) => {
+      element.cart?.map((cartItem) => {
         data.push(`Name: ${cartItem.name}`);
         data.push("\x0A");
 
@@ -486,7 +558,7 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
         "\x1B" + "\x61" + "\x30", // left align
       ];
 
-      element.cart.map((cartItem) => {
+      element.cart?.map((cartItem) => {
         data.push(`Name: ${cartItem.name}`);
         data.push("\x0A");
 
@@ -572,7 +644,7 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
                 "\x10" +
                 "\x14" +
                 "\x01" +
-                "\x00" + 
+                "\x00" +
                 "\x05"
         );
       } else {
@@ -606,6 +678,6 @@ const ReceiptPrint = (element, storeDetails, reprint) => {
     }
   }
   return { data: data, total: total };
-};
+}
 
 export default ReceiptPrint;

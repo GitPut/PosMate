@@ -1,10 +1,6 @@
 import ReceiptPrint from "components/functional/ReceiptPrint";
 import { auth, db } from "state/firebaseConfig";
-import {
-  posHomeState,
-  resetPosHomeState,
-  updatePosHomeState,
-} from "state/posHomeState";
+import { resetPosHomeState, updatePosHomeState } from "state/posHomeState";
 import { setCartState, setCustomersList } from "state/state";
 
 interface PrintProps {
@@ -23,7 +19,18 @@ interface PrintProps {
   customers: any[];
   cart: any[];
   storeDetails: object;
-  myDeviceDetails: object;
+  myDeviceDetails: {
+    name: string;
+    id: string;
+    docID: string;
+    useDifferentDeviceToPrint: boolean;
+    printToPrinter: string;
+    sendPrintToUserID: {
+      label: string;
+      value: string;
+    };
+    printOnlineOrders: boolean;
+  };
 }
 
 const Print = ({ ...props }: PrintProps) => {

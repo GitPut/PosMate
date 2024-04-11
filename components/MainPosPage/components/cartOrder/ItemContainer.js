@@ -1,15 +1,13 @@
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   StyleSheet,
   View,
-  Image,
   Text,
   Pressable,
   Animated,
   Modal,
   useWindowDimensions,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { addCartState, cartState } from "state/state";
 import ProductImage from "components/ProductImage";
 import ProductBuilderModal from "../ProductBuilderModal/ProductBuilderModal";

@@ -17,7 +17,7 @@ interface PosHomeState {
   savedCustomerDetails: any;
   ongoingOrderListModal: boolean;
   settingsPasswordModalVis: boolean;
-  updatingOrder: boolean;
+  updatingOrder: any;
   ongoingListState: any[];
   clockinModal: boolean;
   discountModal: boolean;

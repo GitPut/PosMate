@@ -1,4 +1,20 @@
-export const GooglePlacesStyles = {
+interface StyleFunctionProps {
+  [key: string]: any; // Since provided and base can have any additional properties, we use a broad type here
+}
+
+interface GooglePlacesStylesProps {
+  menu: (provided: StyleFunctionProps) => StyleFunctionProps;
+  menuList: (provided: StyleFunctionProps) => StyleFunctionProps;
+  menuPortal: (base: StyleFunctionProps) => StyleFunctionProps;
+  option: (provided: StyleFunctionProps) => StyleFunctionProps;
+  input: (provided: StyleFunctionProps) => StyleFunctionProps;
+  placeholder: (provided: StyleFunctionProps) => StyleFunctionProps;
+  singleValue: (provided: StyleFunctionProps) => StyleFunctionProps;
+  noOptionsMessage: (provided: StyleFunctionProps) => StyleFunctionProps;
+  control: (base: StyleFunctionProps) => StyleFunctionProps;
+}
+
+const GooglePlacesStyles: GooglePlacesStylesProps = {
   menu: (provided) => ({
     ...provided,
     fontFamily: "sans-serif",
@@ -47,3 +63,5 @@ export const GooglePlacesStyles = {
     borderColor: "#9b9b9b",
   }),
 };
+
+export default GooglePlacesStyles;

@@ -1,4 +1,34 @@
-const SearchDate = ({ startDate, endDate, transactions, customers }) => {
+interface Customer {
+  createdAt?: {
+    seconds: number;
+  };
+  // Add other customer properties as needed
+}
+
+interface Transaction {
+  originalData: {
+    date_created?: string;
+    date?: {
+      seconds: number;
+    };
+    // Include other properties of originalData as necessary
+  };
+  // Include other properties of Transaction as necessary
+}
+
+interface SearchDateProps {
+  startDate: string; // Assuming ISO date string format
+  endDate: string; // Assuming ISO date string format
+  transactions: Transaction[];
+  customers?: Customer[];
+}
+
+const SearchDate = ({
+  startDate,
+  endDate,
+  transactions,
+  customers,
+}: SearchDateProps) => {
   if (!startDate || !endDate) {
     console.log("Start or end date not provided");
     return;
@@ -27,12 +57,13 @@ const SearchDate = ({ startDate, endDate, transactions, customers }) => {
     // Filter the list based on the date range
     const filtered = transactions.filter((item) => {
       const itemDate = item.originalData.date_created
-        ? new Date(item.originalData.date_created)
-        : new Date(item.originalData.date.seconds * 1000);
+      ? new Date(item.originalData.date_created)
+      : item.originalData?.date ? new Date(item.originalData.date.seconds * 1000) : undefined;
 
       // const isCorrectFilter = search.length > 0 ? (item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())) : true
 
       // Check if the item's date is within the start and end dates
+      if(!itemDate) return false;
       return itemDate >= startDateConverted && itemDate <= endDateConverted;
     });
 
