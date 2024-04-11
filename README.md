@@ -46,5 +46,5 @@ This repository contains proprietary software owned by Micton Web Design Inc. Ac
 
 For any questions or support related to Divine POS development, please contact:
 
-- Phone: (226) 600-5925
+- Phone: 1 (833) 348-7671
 - Email: support@divinepos.com

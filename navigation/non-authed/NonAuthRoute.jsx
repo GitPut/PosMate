@@ -27,7 +27,6 @@ const NonAuthRoute = (props) => {
 
     return (
         <>
-            {/* {!location.pathname.includes('/order/') && <WebHomeHeader />} */}
             <Switch>
                 <Route path="/log-in" component={Login} />
                 <Route path="/sign-up" component={Signup} />
