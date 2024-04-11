@@ -1,8 +1,8 @@
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
-import OptionSelectionItem from "./OptionSelectionItem";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import OptionsItemOpenInner from "./OptionsItemOpenInner";
+import { Tooltip } from "react-tooltip";
 
 function OptionsItem({
   item,
@@ -117,9 +117,27 @@ function OptionsItem({
               activeOpacity={0.8}
               style={styles.moveDownBtn}
               onPress={copyEToClipboard}
+              nativeID="copyToClipboardBtn"
             >
               <Entypo name="clipboard" size={20} color="white" />
             </Pressable>
+            <Tooltip
+              anchorSelect="#copyToClipboardBtn"
+              place="top"
+              style={{
+                backgroundColor: "black",
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 16,
+                  padding: 10,
+                }}
+              >
+                Copy to clipboard
+              </Text>
+            </Tooltip>
             <Pressable
               activeOpacity={0.8}
               style={styles.moveDownBtn}
@@ -144,9 +162,27 @@ function OptionsItem({
                   setselectedID(item.id);
                 }
               }}
+              nativeID="moveDownBtn"
             >
               <Entypo name="chevron-down" style={styles.chevronDown} />
             </Pressable>
+            <Tooltip
+              anchorSelect="#moveDownBtn"
+              place="top"
+              style={{
+                backgroundColor: "black",
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 16,
+                  padding: 10,
+                }}
+              >
+                Move down
+              </Text>
+            </Tooltip>
             <Pressable
               activeOpacity={0.8}
               style={styles.moveUpBtn}
@@ -168,9 +204,27 @@ function OptionsItem({
                   setselectedID(item.id);
                 }
               }}
+              nativeID="moveUpBtn"
             >
               <Entypo name="chevron-up" style={styles.chevronUp} />
             </Pressable>
+            <Tooltip
+              anchorSelect="#moveUpBtn"
+              place="top"
+              style={{
+                backgroundColor: "black",
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 16,
+                  padding: 10,
+                }}
+              >
+                Move up
+              </Text>
+            </Tooltip>
             <Pressable
               activeOpacity={0.8}
               style={styles.duplicateBtn}
@@ -192,12 +246,30 @@ function OptionsItem({
                 setindexOn(newProductOptions.length);
                 setselectedID(null);
               }}
+              nativeID="duplicateBtn"
             >
               <MaterialCommunityIcons
                 name="content-copy"
                 style={styles.duplicateIcon}
               />
             </Pressable>
+            <Tooltip
+              anchorSelect="#duplicateBtn"
+              place="top"
+              style={{
+                backgroundColor: "black",
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 16,
+                  padding: 10,
+                }}
+              >
+                Duplicate
+              </Text>
+            </Tooltip>
             <Pressable
               activeOpacity={0.8}
               style={styles.deleteBtn}
@@ -219,12 +291,30 @@ function OptionsItem({
                 setindexOn(null);
                 setselectedID(null);
               }}
+              nativeID="deleteBtn"
             >
               <MaterialCommunityIcons
                 name="delete-outline"
                 style={styles.deleteIcon}
               />
             </Pressable>
+            <Tooltip
+              anchorSelect="#deleteBtn"
+              place="top"
+              style={{
+                backgroundColor: "black",
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 16,
+                  padding: 10,
+                }}
+              >
+                Delete
+              </Text>
+            </Tooltip>
           </View>
         </Pressable>
         {indexOn === index && (
