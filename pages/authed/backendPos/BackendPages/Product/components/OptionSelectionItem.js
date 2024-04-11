@@ -39,7 +39,7 @@ function OptionSelectionItem({
             },
       ]}
     >
-        {/* <View
+      {/* <View
           style={{ height: 50, justifyContent: "center", alignItems: "center" }}
         >
           <Pressable
@@ -206,6 +206,7 @@ function OptionSelectionItem({
               setmoveToOptionPos(indexInnerList - 1);
             }
             sethighlightedOptionID(eInnerList.id);
+            scrollToPositionIncluding(0);
           }}
         >
           <MaterialCommunityIcons

@@ -138,23 +138,58 @@ function ProductBuilderModalMobile({ product, itemIndex, goBack, imageUrl }) {
             isRequired={e.isRequired}
             options={e.optionsList}
             setValue={({ option, listIndex }) => {
-              const newMyObjProfile = structuredClone(myObjProfile);
-              newMyObjProfile.options[index].optionsList.forEach(
-                (element, indexOfOl) => {
-                  if (element.selected) {
+              if (parseFloat(e.numOfSelectable) === 1) {
+                const newMyObjProfile = structuredClone(myObjProfile);
+                newMyObjProfile.options[index].optionsList.forEach(
+                  (element, indexOfOl) => {
+                    if (element.selected) {
+                      newMyObjProfile.options[index].optionsList[
+                        indexOfOl
+                      ].selected = false;
+                    }
+                  }
+                );
+
+                newMyObjProfile.options[index].optionsList[listIndex].selected =
+                  true;
+                setoptionVal(option);
+                setmyObjProfile(newMyObjProfile);
+              } else {
+                console.log("INside else of one time selectable option group");
+                const newMyObjProfile = structuredClone(myObjProfile);
+                const totalSelected = myObjProfile.options[
+                  index
+                ].optionsList.filter((op) => op.selected === true).length;
+                if (
+                  newMyObjProfile.options[index].optionsList[listIndex].selected
+                ) {
+                  console.log(
+                    "Inside if of one time selectable option group is selected part"
+                  );
+                  newMyObjProfile.options[index].optionsList[
+                    listIndex
+                  ].selected = false;
+                } else {
+                  console.log(
+                    "Inside else of one time selectable option group else part"
+                  );
+                  if (
+                    totalSelected < e.numOfSelectable ||
+                    e.numOfSelectable === 0 ||
+                    !e.numOfSelectable
+                  ) {
+                    console.log(
+                      "Inside if of one time selectable option group else part not selected"
+                    );
                     newMyObjProfile.options[index].optionsList[
-                      indexOfOl
-                    ].selected = false;
+                      listIndex
+                    ].selected = true;
                   }
                 }
-              );
-
-              newMyObjProfile.options[index].optionsList[listIndex].selected =
-                true;
-              setoptionVal(option);
-              setmyObjProfile(newMyObjProfile);
+                setmyObjProfile(newMyObjProfile);
+              }
             }}
-            value={optionVal}
+            value={e.numOfSelectable === 1 ? optionVal : false}
             style={styles.oneTimeSelectableOptionGroup}
           />
         );

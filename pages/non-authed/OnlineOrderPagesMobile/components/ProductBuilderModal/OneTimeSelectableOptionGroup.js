@@ -10,18 +10,6 @@ function OneTimeSelectableOptionGroup({
   value,
   setValue,
 }) {
-  useEffect(() => {
-    if (!value) {
-      setValue({
-        option: {
-          label: options[0].label,
-          priceIncrease:
-            options[0].priceIncrease !== null ? options[0].priceIncrease : 0,
-        },
-        listIndex: 0,
-      });
-    }
-  }, []);
 
   return (
     <View style={[style]}>
@@ -51,7 +39,13 @@ function OneTimeSelectableOptionGroup({
                   listIndex: listIndex,
                 });
               }}
-              isSelected={value ? value.label === option.label : false}
+              isSelected={
+                value
+                  ? value.label === option.label
+                  : option.selected
+                  ? option.selected
+                  : false
+              }
             />
           );
         })}

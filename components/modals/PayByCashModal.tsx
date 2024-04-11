@@ -61,6 +61,7 @@ const CashScreen = () => {
         <Pressable
           onPress={() => {
             updatePosHomeState({ cashModal: false });
+            setCash("");
           }}
           style={{
             justifyContent: "center",
@@ -131,6 +132,7 @@ const CashScreen = () => {
                       });
                       // setCashModal(false);
                       updatePosHomeState({ cashModal: false });
+                      setCash("");
                     }}
                   >
                     <Text style={styles.finishPayment}>Finish Payment</Text>
@@ -140,6 +142,7 @@ const CashScreen = () => {
                     // onPress={() => setCashModal(false)}
                     onPress={() => {
                       updatePosHomeState({ cashModal: false });
+                      setCash("");
                     }}
                   >
                     <Text style={styles.cancel}>Cancel</Text>

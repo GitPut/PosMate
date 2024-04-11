@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import ProductImage from 'components/ProductImage';
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import ProductImage from "components/ProductImage";
 
-const ItemNoOptionsView = ({product}) => {
+const ItemNoOptionsView = ({ product }) => {
   return (
-    <View style={{marginTop: 50}}>
+    <View style={{ marginTop: 50 }}>
       {product.hasImage ? (
         <View style={[styles.container]}>
           <ProductImage
@@ -39,10 +39,10 @@ const ItemNoOptionsView = ({product}) => {
         >
           <View>
             <Text style={styles?.familyCombo}>
-              {product.name ? product.name : "Placeholder"}
+              {product.name ? product.name : "Product Name..."}
             </Text>
             <Text style={styles?.price}>
-              ${product.price ? product.price : "Placeholder"}
+              ${product.price ? product.price : "0"}
             </Text>
             <View
               style={[
@@ -60,9 +60,9 @@ const ItemNoOptionsView = ({product}) => {
       )}
     </View>
   );
-}
+};
 
-export default ItemNoOptionsView
+export default ItemNoOptionsView;
 
 const styles = StyleSheet.create({
   container: {

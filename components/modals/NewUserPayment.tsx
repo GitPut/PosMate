@@ -28,20 +28,6 @@ const NewUserPayment = ({ resetLoader }) => {
   const [phoneNumber, setphoneNumber] = useState(storeDetails.phoneNumber);
   const [address, setaddress] = useState(storeDetails.address);
   const [website, setwebsite] = useState(storeDetails.website);
-  const [deliveryPrice, setdeliveryPrice] = useState(
-    storeDetails.deliveryPrice
-  );
-  const [com, setcom] = useState(storeDetails.comSelected);
-  const [settingsPassword, setsettingsPassword] = useState(
-    storeDetails.settingsPassword
-  );
-  const wooCredentials = woocommerceState.use();
-  const [apiUrl, setapiUrl] = useState(wooCredentials.apiUrl);
-  const [ck, setck] = useState(wooCredentials.ck);
-  const [cs, setcs] = useState(wooCredentials.cs);
-  const [useWoocommerce, setuseWoocommerce] = useState(
-    wooCredentials.useWoocommerce
-  );
 
   return (
     <>
@@ -162,10 +148,10 @@ const NewUserPayment = ({ resetLoader }) => {
               name: storeName,
               phoneNumber: phoneNumber,
               address: address,
-              website: website ? website : null,
-              deliveryPrice: deliveryPrice ? deliveryPrice : null,
-              comSelected: com ? com : null,
-              settingsPassword: settingsPassword ? settingsPassword : null,
+              website: website ? website : "",
+              deliveryPrice: "",
+              settingsPassword: "",
+              taxRate: 13,
             });
 
             if (planType.value === "freeTrial") {
@@ -211,6 +197,9 @@ const NewUserPayment = ({ resetLoader }) => {
                       await stripe.redirectToCheckout({ sessionId });
                     }
                   });
+                })
+                .finally(() => {
+                  window.location.reload();
                 });
             }
           }}
@@ -296,8 +285,9 @@ const NewUserPayment = ({ resetLoader }) => {
                         onSelectSuggestion
                       ) => (
                         <div>
-                          {suggestions.map((suggestion) => (
+                          {suggestions.map((suggestion, index) => (
                             <div
+                              key={index}
                               className="suggestion"
                               onClick={(event) => {
                                 onSelectSuggestion(suggestion, event);

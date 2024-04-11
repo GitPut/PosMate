@@ -14,7 +14,6 @@ export const signUp = (
       db.collection("users")
         .doc(userAuth.user.uid)
         .set({
-          products: [],
           categories: [],
           wooCredentials: { ck: null, cs: null, useWoocommerce: false },
           storeDetails: {

@@ -37,6 +37,9 @@ const PendingOrdersModal = () => {
         .collection("pendingOrders")
         .doc(order.id)
         .delete();
+      updatePosHomeState({
+        ongoingOrderListModal: false,
+      });
     } else {
       updatePosHomeState({
         name: order.customer?.name ? order.customer?.name : "",
@@ -50,9 +53,11 @@ const PendingOrdersModal = () => {
       updatePosHomeState({
         deliveryChecked: order.method === "deliveryOrder",
       });
-      updatePosHomeState({ ongoingDelivery: true });
-      updatePosHomeState({ updatingOrder: order });
-      updatePosHomeState({ ongoingOrderListModal: false });
+      updatePosHomeState({
+        ongoingDelivery: true,
+        updatingOrder: order,
+        ongoingOrderListModal: false,
+      });
     }
   };
 

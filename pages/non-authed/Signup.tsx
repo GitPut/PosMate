@@ -109,7 +109,7 @@ function Signup() {
                     placeholder="Enter name"
                     textContentType="name"
                     value={name}
-                    onChangeText={(val) => setname(val.replace(/\s/g, ""))}
+                    onChangeText={(val) => setname(val)}
                     onKeyPress={handleKeyDown}
                   />
                 </View>

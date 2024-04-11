@@ -199,8 +199,9 @@ function GeneralSettings() {
                 onSelectSuggestion
               ) => (
                 <div>
-                  {suggestions.map((suggestion) => (
+                  {suggestions.map((suggestion, index) => (
                     <div
+                      key={index}
                       className="suggestion"
                       onClick={(event) => {
                         onSelectSuggestion(suggestion, event);
@@ -252,36 +253,6 @@ function GeneralSettings() {
         <Pressable activeOpacity={0.8} style={styles.saveBtn} onPress={handleDataUpdate}>
           <Text style={styles.saveBtnTxt}>Save</Text>
         </Pressable>
-      </View>
-      <View style={styles.downloadRow}>
-        <View style={styles.downloadGroup}>
-          <Text style={styles.downloadTxt}>
-            Download our helper software to enable seamless integration of
-            your printer with our service.
-          </Text>
-          <View style={styles.downloadsBtnsRow}>
-            <a
-              href={require("assets/divine-pos-helper.exe")}
-              download="Divine Pos Helper.exe"
-            >
-              <Image
-                source={require("./assets/images/image_E3zi..png")}
-                resizeMode="contain"
-                style={styles.windowsDownloadImg}
-              />
-            </a>
-            <a
-              href={require("assets/divine-pos-helper.pkg")}
-              download="Divine Pos Helper.pkg"
-            >
-              <Image
-                source={require("./assets/images/image_F2vF..png")}
-                resizeMode="contain"
-                style={styles.macDownloadImg}
-              />
-            </a>
-          </View>
-        </View>
       </View>
     </ScrollView>
     // </View>
@@ -387,37 +358,6 @@ const styles = StyleSheet.create({
     color: "rgba(255,245,245,1)",
     fontSize: 14
   },
-  downloadRow: {
-    height: 115,
-    width: '95%'
-  },
-  downloadGroup: {
-    width: 314,
-    height: 115,
-    justifyContent: "space-between"
-  },
-  downloadTxt: {
-    color: "#121212",
-    fontSize: 17,
-    width: 314,
-    height: 64,
-    lineHeight: 14
-  },
-  downloadsBtnsRow: {
-    width: 289,
-    height: 50,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  windowsDownloadImg: {
-    height: 50,
-    width: 132
-  },
-  macDownloadImg: {
-    height: 50,
-    width: 132
-  }
 });
 
 export default GeneralSettings;

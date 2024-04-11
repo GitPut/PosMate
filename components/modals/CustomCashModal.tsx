@@ -20,24 +20,9 @@ import {
 
 const CustomcustomCashModal = () => {
   const { height, width } = useWindowDimensions();
-  const {
-    deliveryChecked,
-    discountAmount,
-    changeDue,
-    savedCustomerDetails,
-    name,
-    phone,
-    address,
-    buzzCode,
-    unitNumber,
-    cartNote,
-    cartSub,
-    customCashModal,
-  } = posHomeState.use();
-  const cart = cartState.use();
+  const { customCashModal } = posHomeState.use();
   const storeDetails = storeDetailState.use();
   const myDeviceDetails = myDeviceDetailsState.use();
-  const customers = customersList.use();
   const [total, setTotal] = useState("");
   const [cash, setCash] = useState("");
   const [managerCodeEntered, setmanagerCodeEntered] = useState("");
@@ -49,6 +34,10 @@ const CustomcustomCashModal = () => {
   };
 
   const CompletePayment = () => {
+    if (!myDeviceDetails.id) {
+      alert("Please set up a device in Settings -> Devices");
+      return;
+    }
     if (
       (storeDetails.settingsPassword.length > 0 &&
         storeDetails.settingsPassword === managerCodeEntered) ||
@@ -128,6 +117,10 @@ const CustomcustomCashModal = () => {
   };
 
   const OpenRegister = () => {
+    if (!myDeviceDetails.id) {
+      alert("Please set up a device in Settings -> Devices");
+      return;
+    }
     if (
       (storeDetails.settingsPassword.length > 0 &&
         storeDetails.settingsPassword === managerCodeEntered) ||

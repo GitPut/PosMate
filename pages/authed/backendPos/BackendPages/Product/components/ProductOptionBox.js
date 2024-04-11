@@ -52,7 +52,7 @@ function ProductOptionBox({
           </View>
           <Pressable
             onPress={deleteProduct}
-            style={[styles.editProductBtn, { backgroundColor: "red" }]}
+            style={[styles.editProductBtn, { backgroundColor: "#d33" }]}
           >
             <Feather name="trash" style={styles.editProductIcon} />
             <Text style={styles.editProductTxt}>Delete Product</Text>

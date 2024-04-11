@@ -94,7 +94,7 @@ function ItemContainer({ product, style }) {
         <Pressable
           onPress={() => {
             if (product.options.length > 0) {
-              fadeIn(); 
+              fadeIn();
             } else {
               addCartState(
                 {
@@ -202,16 +202,18 @@ const styles = StyleSheet.create({
   rightSide: {
     flex: 1, // Take up the remaining space after the image
     justifyContent: "space-between",
-    margin: 6,
+    marginTop: 14,
     alignSelf: "stretch",
+    height: 150,
   },
   familyCombo: {
     fontWeight: "700",
     color: "#121212",
     fontSize: 18,
-    height: 42,
+    height: 60,
     alignSelf: "stretch",
     paddingBottom: 50,
+    width: "90%",
   },
   price: {
     fontWeight: "700",

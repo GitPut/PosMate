@@ -33,25 +33,21 @@ function ProductList(props) {
   const [productTemplatesModalVisible, setproductTemplatesModalVisible] = useState(false)
 
   const confirmText = (props) => {
-    console.log("COnfirm Text: ", props);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       type: "warning",
       showCancelButton: !0,
-      confirmButtonColor: "#3085d6",
+      confirmButtonColor: "#2b3659",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-      confirmButtonClass: "btn btn-primary",
-      cancelButtonClass: "btn btn-danger ml-1",
-      buttonsStyling: !1,
     }).then(function (t) {
       if (t.value) {
         Swal.fire({
           type: "success",
           title: "Deleted!",
-          text: "Your file has been deleted.",
-          confirmButtonClass: "btn btn-success",
+          text: "Your product has been deleted.",
+          confirmButtonColor: "#2b3659",
         });
         let localCatalog = structuredClone(catalog);
         if (localCatalog.products.length > 1) {

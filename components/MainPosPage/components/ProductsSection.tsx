@@ -66,13 +66,13 @@ const ProductsSection = ({ catalog }) => {
               userUid={catalog.docID}
               // Pass inline style or className to ItemContainer if needed
             />
-          ))} 
+          ))}
         </div>
       </div>
     </div>
   );
 };
- 
+
 const styles = {
   scrollAreaProducts: {
     width: "96%",
@@ -84,7 +84,7 @@ const styles = {
   gridContainer: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(215px, 1fr))",
-    gap: "30px",
+    gap: "20px",
     width: "100%",
   },
   // Make sure ItemContainer uses this style or an equivalent CSS class
