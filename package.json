@@ -8,7 +8,8 @@
     "ios": "expo start --ios",
     "web": "NODE_OPTIONS=--openssl-legacy-provider expo start --web",
     "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider npx expo export:web && firebase deploy",
-    "functionsDeploy": "firebase deploy --only functions"
+    "functionsDeploy": "firebase deploy --only functions",
+    "functionsServe": "firebase serve --port 5050 --only functions"
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",

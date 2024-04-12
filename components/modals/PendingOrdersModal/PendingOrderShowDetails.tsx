@@ -117,7 +117,7 @@ function PendingOrderShowDetails({
               disabled={!!element.online}
               onPress={() => {
                 if (storeDetails.settingsPassword.length > 0) {
-                  updatePosHomeState({
+                  updatePosHomeState({ 
                     authPasswordModal: true,
                     pendingAuthAction: `updateOrder${element.id}`,
                   });

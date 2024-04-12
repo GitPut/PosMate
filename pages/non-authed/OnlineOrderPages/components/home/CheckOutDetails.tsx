@@ -61,6 +61,7 @@ function CheckOutDetails({
             currency,
             storeUID: storeDetails.docID,
             orderDetails: newOrderDetails,
+            storeDetails: storeDetails,
           }),
         }
       );

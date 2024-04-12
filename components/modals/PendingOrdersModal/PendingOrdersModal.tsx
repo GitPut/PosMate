@@ -33,7 +33,7 @@ const PendingOrdersModal = () => {
     }
     if (order.isInStoreOrder) {
       db.collection("users")
-        .doc(auth.currentUser?.uid)
+        .doc(auth.currentUser?.uid) 
         .collection("pendingOrders")
         .doc(order.id)
         .delete();

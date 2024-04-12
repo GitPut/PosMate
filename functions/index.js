@@ -217,31 +217,32 @@ exports.sendCustomEmail = functions.https.onRequest((req, res) => {
 exports.processPayment = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
-      const { token, amount, currency, storeUID, orderDetails } = req.body;
+      const { token, amount, currency, storeUID, orderDetails, storeDetails } =
+        req.body;
 
       // Fetch the secret key from Firestore or Realtime Database
-      const configSnapshot = await db.collection("users").doc(storeUID).get();
-      const secretKey = configSnapshot.data().stripeSecretKey;
+      // const configSnapshot = await db.collection("users").doc(storeUID).get();
+      // const secretKey = configSnapshot.data().stripeSecretKey;
 
-      const charge = await stripe(secretKey).charges.create({
-        amount: amount * 100,
-        currency: currency || "cad",
-        source: token,
-      });
+      // const charge = await stripe(secretKey).charges.create({
+      //   amount: amount * 100,
+      //   currency: currency || "cad",
+      //   source: token,
+      // });
 
-      console.log("Payment succeeded:", charge);
+      // console.log("Payment succeeded:", charge);
 
-      await db
-        .collection("users")
-        .doc(storeUID)
-        .collection("pendingOrders")
-        .add(orderDetails);
+      // await db
+      //   .collection("users")
+      //   .doc(storeUID)
+      //   .collection("pendingOrders")
+      //   .add(orderDetails);
 
       const mailOptions = {
         from: "support@divinepos.com",
         to: orderDetails.customer.email,
         subject: "Order Confirmation",
-        html: OrderConfirmationEmailHtml(orderDetails),
+        html: OrderConfirmationEmailHtml(orderDetails, storeDetails),
       };
       return transporter.sendMail(mailOptions, (error, data) => {
         if (error) {
@@ -1395,8 +1396,8 @@ const SettingsPasswordEmailHtml = (password) => {
     `;
 };
 
-const OrderConfirmationEmailHtml = (data) => {
-  return `
+const OrderConfirmationEmailHtml = (element, storeDetails) => {
+  let emailData = `
   <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 
@@ -1532,7 +1533,7 @@ const OrderConfirmationEmailHtml = (data) => {
 														<tr>
 															<td class="pad" style="padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:15px;">
 																<div style="color:#ffffff;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:24px;line-height:120%;text-align:center;mso-line-height-alt:28.799999999999997px;">
-																	<p style="margin: 0; word-break: break-word;"><span>David, thanks for your order!</span></p>
+																	<p style="margin: 0; word-break: break-word;"><span>${element.customer.name.toUpperCase()}, thanks for your order!</span></p>
 																</div>
 															</td>
 														</tr>
@@ -1541,7 +1542,9 @@ const OrderConfirmationEmailHtml = (data) => {
 														<tr>
 															<td class="pad">
 																<div style="color:#ffffff;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:24px;line-height:120%;text-align:center;mso-line-height-alt:28.799999999999997px;">
-																	<p style="margin: 0; word-break: break-word;"><span>January 15, 6:02 pm</span></p>
+																	<p style="margin: 0; word-break: break-word;"><span>${element.date
+                                    .slice(0, 16)
+                                    .replace("T", " ")}</span></p>
 																</div>
 															</td>
 														</tr>
@@ -1551,10 +1554,22 @@ const OrderConfirmationEmailHtml = (data) => {
 														<tr>
 															<td class="pad">
 																<div style="color:#ffffff;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:24px;line-height:120%;text-align:center;mso-line-height-alt:28.799999999999997px;">
-																	<p style="margin: 0; word-break: break-word;"><span>Dream City Pizza</span></p>
-																	<p style="margin: 0; word-break: break-word;"><span>32 Sunrise Drive, Kitchener</span></p>
-																	<p style="margin: 0; word-break: break-word;"><span>DreamCityPizza.com</span></p>
-																	<p style="margin: 0; word-break: break-word;"><span>(226) 600-5925</span></p>
+																	<p style="margin: 0; word-break: break-word;"><span>${
+                                    storeDetails.name
+                                  }</span></p>
+																	<p style="margin: 0; word-break: break-word;"><span>${
+                                    storeDetails.address.label
+                                  }</span></p>
+																	<p style="margin: 0; word-break: break-word;"><span>${
+                                    storeDetails.website
+                                      ? storeDetails.website
+                                      : ""
+                                  }</span></p>
+																	<p style="margin: 0; word-break: break-word;"><span>${
+                                    storeDetails.phoneNumber
+                                      ? storeDetails.phoneNumber
+                                      : ""
+                                  }</span></p>
 																</div>
 															</td>
 														</tr>
@@ -1614,7 +1629,19 @@ const OrderConfirmationEmailHtml = (data) => {
 							</tr>
 						</tbody>
 					</table>
-					<table class="row row-5" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+  `;
+
+  element.cart.map((cartItem) => {
+    let optionsString = "";
+
+    if (cartItem.options) {
+      cartItem.options.map((option) => {
+        optionsString += `${option}<br>`;
+      });
+    }
+
+    emailData += `
+    <table class="row row-5" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 						<tbody>
 							<tr>
 								<td>
@@ -1627,7 +1654,11 @@ const OrderConfirmationEmailHtml = (data) => {
 														<tr>
 															<td class="pad" style="padding-bottom:10px;padding-left:30px;padding-right:10px;padding-top:10px;">
 																<div style="color:#232323;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;"><span><strong><span>BUILD YOUR OWN</span></strong></span></p>
+																	<p style="margin: 0; word-break: break-word;"><span><strong><span>${
+                                    cartItem.quantity > 0
+                                      ? `${cartItem.quantity} X `
+                                      : ""
+                                  }${cartItem.name}</span></strong></span></p>
 																</div>
 															</td>
 														</tr>
@@ -1636,7 +1667,7 @@ const OrderConfirmationEmailHtml = (data) => {
 														<tr>
 															<td class="pad" style="padding-bottom:10px;padding-left:30px;padding-right:10px;">
 																<div style="color:#232323;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:14px;line-height:120%;text-align:left;mso-line-height-alt:16.8px;">
-																	<p style="margin: 0; word-break: break-word;"><span><span>chicken, corn, artichokes, bbq sauce</span></span></p>
+																	<p style="margin: 0; word-break: break-word;"><span><span>${optionsString}</span></span></p>
 																</div>
 															</td>
 														</tr>
@@ -1648,7 +1679,9 @@ const OrderConfirmationEmailHtml = (data) => {
 														<tr>
 															<td class="pad" style="padding-bottom:10px;padding-right:30px;padding-top:10px;">
 																<div style="color:#555555;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:right;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;"><span>$ 9.79</span></p>
+																	<p style="margin: 0; word-break: break-word;"><span>$ ${parseFloat(
+                                    cartItem.price
+                                  ).toFixed(2)}</span></p>
 																</div>
 															</td>
 														</tr>
@@ -1662,55 +1695,11 @@ const OrderConfirmationEmailHtml = (data) => {
 							</tr>
 						</tbody>
 					</table>
-					<table class="row row-6" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-						<tbody>
-							<tr>
-								<td>
-									<table class="row-content" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #1d294e; color: #000000; width: 640px; margin: 0 auto;" width="640">
-										<tbody>
-											<tr>
-												<td class="column column-1" width="66.66666666666667%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #f2f2f2; border-left: 25px solid #1d294e; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px;">
-													<div class="spacer_block block-1" style="height:15px;line-height:15px;font-size:1px;">&#8202;</div>
-													<table class="paragraph_block block-2" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-														<tr>
-															<td class="pad" style="padding-bottom:10px;padding-left:30px;padding-right:10px;padding-top:10px;">
-																<div style="color:#232323;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;"><span><strong><span>HOT PEPPERONI</span></strong></span></p>
-																</div>
-															</td>
-														</tr>
-													</table>
-													<table class="paragraph_block block-3" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-														<tr>
-															<td class="pad" style="padding-bottom:10px;padding-left:30px;padding-right:10px;">
-																<div style="color:#232323;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;"><span><span>pepperoni, jalapenos, hot buffalo sauce,</span></span></p>
-																</div>
-															</td>
-														</tr>
-													</table>
-												</td>
-												<td class="column column-2" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #f2f2f2; border-right: 25px solid #1d294e; vertical-align: top; border-top: 0px; border-bottom: 0px; border-left: 0px;">
-													<div class="spacer_block block-1 mobile_hide" style="height:15px;line-height:15px;font-size:1px;">&#8202;</div>
-													<table class="paragraph_block block-2" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-														<tr>
-															<td class="pad" style="padding-bottom:10px;padding-right:30px;padding-top:10px;">
-																<div style="color:#555555;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:right;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;"><span>$ 8.79</span></p>
-																</div>
-															</td>
-														</tr>
-													</table>
-													<div class="spacer_block block-3" style="height:29px;line-height:29px;font-size:1px;">&#8202;</div>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<table class="row row-7" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+    `;
+  });
+
+  emailData += `
+  <table class="row row-7" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 						<tbody>
 							<tr>
 								<td>
@@ -1787,115 +1776,53 @@ const OrderConfirmationEmailHtml = (data) => {
 							</tr>
 						</tbody>
 					</table>
-					<table class="row row-9" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-						<tbody>
-							<tr>
-								<td>
-									<table class="row-content" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #1d294e; color: #000000; width: 640px; margin: 0 auto;" width="640">
-										<tbody>
-											<tr>
-												<td class="column column-1" width="66.66666666666667%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #f2f2f2; border-left: 25px solid #1d294e; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px;">
-													<table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-														<tr>
-															<td class="pad" style="padding-bottom:10px;padding-left:30px;padding-right:10px;padding-top:10px;">
-																<div style="color:#232323;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;"><span><span>Delivery</span></span></p>
-																</div>
-															</td>
-														</tr>
-													</table>
-												</td>
-												<td class="column column-2" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #f2f2f2; border-right: 25px solid #1d294e; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-bottom: 0px; border-left: 0px;">
-													<table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-														<tr>
-															<td class="pad" style="padding-bottom:10px;padding-right:30px;padding-top:10px;">
-																<div style="color:#555555;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:right;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;"><span>$ 5.00</span></p>
-																</div>
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<table class="row row-10" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-						<tbody>
-							<tr>
-								<td>
-									<table class="row-content" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #1d294e; color: #000000; width: 640px; margin: 0 auto;" width="640">
-										<tbody>
-											<tr>
-												<td class="column column-1" width="66.66666666666667%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #f2f2f2; border-left: 25px solid #1d294e; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px;">
-													<table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-														<tr>
-															<td class="pad" style="padding-bottom:10px;padding-left:30px;padding-right:10px;padding-top:10px;">
-																<div style="color:#232323;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;"><span><span>SUBTOTAL</span></span></p>
-																</div>
-															</td>
-														</tr>
-													</table>
-												</td>
-												<td class="column column-2" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #f2f2f2; border-right: 25px solid #1d294e; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-bottom: 0px; border-left: 0px;">
-													<table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-														<tr>
-															<td class="pad" style="padding-bottom:10px;padding-right:30px;padding-top:10px;">
-																<div style="color:#555555;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:right;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;"><span>$ 23.07</span></p>
-																</div>
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<table class="row row-11" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-						<tbody>
-							<tr>
-								<td>
-									<table class="row-content" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #1d294e; color: #000000; width: 640px; margin: 0 auto;" width="640">
-										<tbody>
-											<tr>
-												<td class="column column-1" width="66.66666666666667%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #f2f2f2; border-left: 25px solid #1d294e; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px;">
-													<table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-														<tr>
-															<td class="pad" style="padding-bottom:10px;padding-left:30px;padding-right:10px;padding-top:10px;">
-																<div style="color:#232323;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;"><span><span>TAX</span></span></p>
-																</div>
-															</td>
-														</tr>
-													</table>
-												</td>
-												<td class="column column-2" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #f2f2f2; border-right: 25px solid #1d294e; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-bottom: 0px; border-left: 0px;">
-													<table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-														<tr>
-															<td class="pad" style="padding-bottom:10px;padding-right:30px;padding-top:10px;">
-																<div style="color:#555555;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:right;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;"><span>$ 5.03</span></p>
-																</div>
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<table class="row row-12" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+          `;
+
+  // if (element.delivery) {
+  //   if (storeDetails.deliveryPrice) {
+  //     emailData += `
+  //     <table class="row row-9" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+  // 					<tbody>
+  // 						<tr>
+  // 							<td>
+  // 								<table class="row-content" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #1d294e; color: #000000; width: 640px; margin: 0 auto;" width="640">
+  // 									<tbody>
+  // 										<tr>
+  // 											<td class="column column-1" width="66.66666666666667%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #f2f2f2; border-left: 25px solid #1d294e; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px;">
+  // 												<table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+  // 													<tr>
+  // 														<td class="pad" style="padding-bottom:10px;padding-left:30px;padding-right:10px;padding-top:10px;">
+  // 															<div style="color:#232323;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
+  // 																<p style="margin: 0; word-break: break-word;"><span><span>Delivery</span></span></p>
+  // 															</div>
+  // 														</td>
+  // 													</tr>
+  // 												</table>
+  // 											</td>
+  // 											<td class="column column-2" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #f2f2f2; border-right: 25px solid #1d294e; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-bottom: 0px; border-left: 0px;">
+  // 												<table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+  // 													<tr>
+  // 														<td class="pad" style="padding-bottom:10px;padding-right:30px;padding-top:10px;">
+  // 															<div style="color:#555555;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:right;mso-line-height-alt:19.2px;">
+  // 																<p style="margin: 0; word-break: break-word;"><span>$ ${storeDetails.deliveryPrice}</span></p>
+  // 															</div>
+  // 														</td>
+  // 													</tr>
+  // 												</table>
+  // 											</td>
+  // 										</tr>
+  // 									</tbody>
+  // 								</table>
+  // 							</td>
+  // 						</tr>
+  // 					</tbody>
+  // 				</table>
+  //     `;
+  //   }
+  // }
+
+  emailData += `
+  <table class="row row-12" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 						<tbody>
 							<tr>
 								<td>
@@ -1918,7 +1845,9 @@ const OrderConfirmationEmailHtml = (data) => {
 														<tr>
 															<td class="pad" style="padding-bottom:10px;padding-right:30px;padding-top:10px;">
 																<div style="color:#555555;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;line-height:120%;text-align:right;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;"><strong><span>$ 27.00</span></strong></p>
+																	<p style="margin: 0; word-break: break-word;"><strong><span>$ ${parseFloat(
+                                    element.total
+                                  ).toFixed(2)}</span></strong></p>
 																</div>
 															</td>
 														</tr>
@@ -1981,7 +1910,9 @@ const OrderConfirmationEmailHtml = (data) => {
 </body>
 
 </html>
-  `;
+`;
+
+  return emailData;
 };
 
 const WelcomeEmailHtml = (name) => {
