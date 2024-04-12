@@ -108,13 +108,14 @@ function ItemContainer({ product, style }) {
             }
           }}
           style={[
-            {
-              backgroundColor: "#ffffff",
-              borderRadius: 20,
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              padding: 20,
-            },
+            // {
+            //   backgroundColor: "#ffffff",
+            //   borderRadius: 20,
+            //   justifyContent: "space-between",
+            //   alignItems: "flex-start",
+            //   padding: 20,
+            // },
+            styles.container,
             style,
           ]}
         >

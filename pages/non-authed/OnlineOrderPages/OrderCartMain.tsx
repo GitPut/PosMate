@@ -630,7 +630,7 @@ function OrderCartMain({
 
 const stylesBigScreen = {
   scrollAreaProducts: {
-    width: "94%",
+    width: "95%",
     height: "60vh",
     justifyContent: "center",
     marginLeft: "auto",
@@ -639,7 +639,7 @@ const stylesBigScreen = {
   gridContainer: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(215px, 1fr))",
-    gap: "30px",
+    gap: "20px",
     width: "100%",
   },
   // Make sure ItemContainer uses this style or an equivalent CSS class

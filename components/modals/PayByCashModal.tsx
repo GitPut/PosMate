@@ -44,6 +44,32 @@ const CashScreen = () => {
       : cartSub * 1.13
   ).toFixed(2);
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      Print({
+        method: "Cash",
+        dontAddToOngoing: false,
+        discountAmount,
+        deliveryChecked,
+        changeDue,
+        savedCustomerDetails,
+        name,
+        phone,
+        address,
+        buzzCode,
+        unitNumber,
+        cartNote,
+        customers,
+        cart,
+        storeDetails,
+        myDeviceDetails,
+      });
+      // setCashModal(false);
+      updatePosHomeState({ cashModal: false });
+      setCash("");
+    }
+  };
+
   return (
     <Modal isVisible={cashModal} animationIn="fadeIn" animationOut="fadeOut">
       <View
@@ -97,6 +123,7 @@ const CashScreen = () => {
                         updatePosHomeState({ changeDue: total });
                       }
                     }}
+                    onKeyPress={handleKeyDown}
                   />
                   <View style={styles.changeDueRow}>
                     <Text style={styles.changeDue}>Change Due:</Text>

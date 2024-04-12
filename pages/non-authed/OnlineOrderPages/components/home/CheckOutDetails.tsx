@@ -238,9 +238,9 @@ function CheckOutDetails({
         </View>
       </View>
       <Pressable
-        style={styles.continueBtn}
+        style={[styles.continueBtn, loading && { opacity: 0.5 }]}
         onPress={handleSubmit}
-        disabled={!stripe}
+        disabled={!stripe || !elements || loading}
       >
         <Text style={styles.continueBtnTxt}>CHECKOUT</Text>
       </Pressable>

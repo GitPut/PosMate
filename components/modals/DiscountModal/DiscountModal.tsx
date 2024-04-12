@@ -26,6 +26,24 @@ const DiscountModal = () => {
     discountAmount ? discountAmount : ""
   );
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      if (
+        !storeDetails.settingsPassword ||
+        storeDetails.settingsPassword === code
+      ) {
+        // setDiscountAmount(localDiscountAmount);
+        // setdiscountModal(false);
+        updatePosHomeState({
+          discountAmount: localDiscountAmount,
+          discountModal: false,
+        });
+      } else {
+        alert("Incorrect Code");
+      }
+    }
+  };
+
   useEffect(() => {
     let newVal = 0;
     for (let i = 0; i < cart.length; i++) {
@@ -106,6 +124,7 @@ const DiscountModal = () => {
                           placeholder="Enter Custom Amount or Percentage"
                           onChangeText={(text) => setLocalDiscountAmount(text)}
                           value={localDiscountAmount}
+                          onKeyPress={handleKeyDown}
                         />
                         <View style={styles.percentageBtnsRow}>
                           <PercentageBtn
@@ -138,6 +157,7 @@ const DiscountModal = () => {
                         placeholder="Enter Manager's Code"
                         onChangeText={(text) => setcode(text)}
                         style={styles.managerCodeInput}
+                        onKeyPress={handleKeyDown}
                       />
                     </View>
                   </View>

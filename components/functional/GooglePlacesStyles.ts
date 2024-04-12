@@ -14,7 +14,7 @@ interface GooglePlacesStylesProps {
   control: (base: StyleFunctionProps) => StyleFunctionProps;
 }
 
-const GooglePlacesStyles: GooglePlacesStylesProps = {
+export const GooglePlacesStyles: GooglePlacesStylesProps = {
   menu: (provided) => ({
     ...provided,
     fontFamily: "sans-serif",
@@ -63,5 +63,3 @@ const GooglePlacesStyles: GooglePlacesStylesProps = {
     borderColor: "#9b9b9b",
   }),
 };
-
-export default GooglePlacesStyles;

@@ -75,7 +75,7 @@ const ProductsSection = ({ catalog }) => {
 
 const styles = {
   scrollAreaProducts: {
-    width: "96%",
+    width: "95%",
     height: "60vh",
     justifyContent: "center",
     marginLeft: "auto",

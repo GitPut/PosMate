@@ -313,15 +313,22 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
           />
         );
       }
-    }
-    // else if (checkCases() === false) {
-    else {
+    } else if (checkCases() === false) {
+      // else {
+      // console.log("Inside else of checkCases() === false");
       const newMyObjProfile = structuredClone(myObjProfile);
       newMyObjProfile.options[index].optionsList.forEach(
         (item, indexOfItem) => {
           if (item.selected === true) {
+            // console.log("item.selected === true");
             newMyObjProfile.options[index].optionsList[indexOfItem].selected =
               false;
+            setmyObjProfile(newMyObjProfile);
+          } else if (item.selectedTimes > 0) {
+            // console.log("item.selectedTimes > 0");
+            newMyObjProfile.options[index].optionsList[
+              indexOfItem
+            ].selectedTimes = 0;
             setmyObjProfile(newMyObjProfile);
           }
         }

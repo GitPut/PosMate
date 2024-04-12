@@ -5,18 +5,11 @@ import {
   useWindowDimensions,
   View,
   TextInput,
-  ViewBase,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Modal from "react-native-modal";
-import Print from "components/MainPosPage/components/Cart/Print";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
-import {
-  cartState,
-  customersList,
-  myDeviceDetailsState,
-  storeDetailState,
-} from "state/state";
+import { myDeviceDetailsState, storeDetailState } from "state/state";
 
 const CustomcustomCashModal = () => {
   const { height, width } = useWindowDimensions();
@@ -189,6 +182,16 @@ const CustomcustomCashModal = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      if (parseFloat(total) > 0 && parseFloat(cash) > 0) {
+        CompletePayment();
+      } else {
+        OpenRegister();
+      }
+    }
+  };
+
   return (
     <Modal
       isVisible={customCashModal}
@@ -248,6 +251,7 @@ const CustomcustomCashModal = () => {
                           setTotal("");
                         }
                       }}
+                      onKeyPress={handleKeyDown}
                     />
                   </View>
                   <View
@@ -272,6 +276,7 @@ const CustomcustomCashModal = () => {
                           setCash("");
                         }
                       }}
+                      onKeyPress={handleKeyDown}
                     />
                   </View>
                   <View style={styles.changeDueRow}>
@@ -299,6 +304,7 @@ const CustomcustomCashModal = () => {
                       onChangeText={(val) => {
                         setmanagerCodeEntered(val);
                       }}
+                      onKeyPress={handleKeyDown}
                     />
                   </View>
                 </View>
@@ -321,7 +327,6 @@ const CustomcustomCashModal = () => {
                   </Pressable>
                   <Pressable
                     style={styles.cancelBtn}
-                    // onPress={() => setcustomCashModal(false)}
                     onPress={() => {
                       updatePosHomeState({ customCashModal: false });
                       Reset();
