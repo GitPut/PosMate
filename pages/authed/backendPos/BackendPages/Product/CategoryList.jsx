@@ -1,31 +1,24 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
-  Image,
   Text,
   Pressable,
   ScrollView,
   TextInput,
 } from "react-native";
-import ProductOptionBox from "./components/ProductOptionBox";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { onlineStoreState, setStoreDetailState, setUserStoreState, userState, userStoreState } from "state/state";
-import { updateData } from "state/firebaseFunctions";
-import { auth, db, storage } from "state/firebaseConfig";
-import ProductImage from "components/ProductImage";
-import { useHistory } from "react-router-dom";
+import { onlineStoreState, userStoreState } from "state/state";
+import { auth, db } from "state/firebaseConfig";
 import Swal from "sweetalert2";
 import CategoryOptionBox from "./components/CategoryOptionBox";
 import AddCategoryModal from "./modals/AddCategoryModal";
 import Modal from "react-native-modal";
 
-function CategoryList(props) {
+function CategoryList() {
   const catalog = userStoreState.use()
   const [searchFilterValue, setsearchFilterValue] = useState('')
-  const userS = userState.use();
   const onlineStoreDetails = onlineStoreState.use()
-  const history = useHistory()
   const [editMode, seteditMode] = useState(false)
   const [addCategoryModal, setaddCategoryModal] = useState(false)
   const [editCategoryModal, seteditCategoryModal] = useState(false)
@@ -126,7 +119,7 @@ function CategoryList(props) {
               />
               <Text style={styles.addNewItemTxt}>Add New Category</Text>
             </Pressable>
-            {catalog.categories.map((category, index) => <div key={index} id={index}>
+            {catalog.categories.map((category, index) => <div key={category} id={category}>
               <CategoryOptionBox
                 style={[styles.productOptionBox, editMode && { height: 322 }]}
                 index={index}

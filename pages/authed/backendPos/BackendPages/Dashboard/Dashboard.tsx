@@ -4,8 +4,6 @@ import {
   View,
   ScrollView,
   useWindowDimensions,
-  Pressable,
-  Text,
 } from "react-native";
 import TotalRevenueBox from "./components/InfoBoxs/TotalRevenueBox";
 import MostOrderedItemsBox from "./components/InfoBoxs/MostOrderedItemsBox";
@@ -14,18 +12,12 @@ import DeliveryOrdersBox from "./components/InfoBoxs/DeliveryOrdersBox";
 import InStoreOrdersBox from "./components/InfoBoxs/InStoreOrdersBox";
 import CustomersBox from "./components/InfoBoxs/CustomersBox";
 import OrderWaitTimeBox from "./components/InfoBoxs/OrderWaitTimeBox";
-import {
-  customersList,
-  transListTableOrgState,
-  userStoreState,
-} from "state/state";
-import { auth, db } from "state/firebaseConfig";
+import { customersList, transListTableOrgState } from "state/state";
 
 function Dashboard() {
   const { width } = useWindowDimensions();
   const transListTableOrg = transListTableOrgState.use();
   const customers = customersList.use();
-  const catalog = userStoreState.use();
 
   return (
     <View style={styles.container}>

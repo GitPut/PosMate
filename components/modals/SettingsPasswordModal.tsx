@@ -41,7 +41,7 @@ const SettingsPasswordModal = () => {
         setinccorectPass(true);
       }
     }
-  };
+  }; 
 
   useFonts({
     Password: require("/assets/password.ttf"),

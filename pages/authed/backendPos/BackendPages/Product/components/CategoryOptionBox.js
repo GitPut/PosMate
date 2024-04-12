@@ -14,7 +14,6 @@ function CategoryOptionBox({
   deleteCategory,
   seteditCategoryModal,
 }) {
-  const history = useHistory();
   const catalog = userStoreState.use();
   let imageUrl = catalog.products.filter(
     (item) => item.category === category && item.imageUrl

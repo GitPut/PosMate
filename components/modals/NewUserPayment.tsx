@@ -16,6 +16,7 @@ import { storeDetailState, woocommerceState } from "state/state";
 import Select from "react-select";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
+import Axios from "axios";
 
 const NewUserPayment = ({ resetLoader }) => {
   const [planType, setplanType] = useState({
@@ -28,6 +29,32 @@ const NewUserPayment = ({ resetLoader }) => {
   const [phoneNumber, setphoneNumber] = useState(storeDetails.phoneNumber);
   const [address, setaddress] = useState(storeDetails.address);
   const [website, setwebsite] = useState(storeDetails.website);
+
+  const SendEmail = () => {
+    const data = JSON.stringify({
+      email: auth.currentUser?.email,
+      name: storeName,
+      isFreeTrial: planType.value === "freeTrial",
+    });
+
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://us-central1-posmate-5fc0a.cloudfunctions.net/sendWelcomeEmail",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    Axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        alert(error);
+      });
+  };
 
   return (
     <>
@@ -143,6 +170,7 @@ const NewUserPayment = ({ resetLoader }) => {
             if (!storeName || !phoneNumber || !address)
               return alert("Please fill in all fields");
 
+            SendEmail();
             resetLoader();
             updateStoreDetails({
               name: storeName,

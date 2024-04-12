@@ -21,6 +21,10 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
   const catalog = userStoreState.use();
 
   const Update = () => {
+    if (categoryName === "") {
+      alert("Category name cannot be empty");
+      return;
+    }
     const localCatalog = structuredClone(catalog);
     const newCategories = [];
     localCatalog.categories = localCatalog.categories.filter(
@@ -60,7 +64,6 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
         height: height,
         width: width,
       }}
-      activeOpacity={1}
     >
       <Pressable>
         <div style={{ cursor: "default" }}>
