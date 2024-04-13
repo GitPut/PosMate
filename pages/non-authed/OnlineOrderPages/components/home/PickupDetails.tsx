@@ -76,6 +76,7 @@ function PickupDetails({
           value={localName}
           onChangeText={(text) => setlocalName(text)}
           textContentType="name"
+          maxLength={25}
         />
         <FieldInputWithLabel
           txtInput="(123) 456-7890"
@@ -84,6 +85,7 @@ function PickupDetails({
           value={localPhoneNumber}
           onChangeText={(text) => setlocalPhoneNumber(text)}
           textContentType="telephoneNumber"
+          maxLength={10}
         />
       </View>
       <Pressable

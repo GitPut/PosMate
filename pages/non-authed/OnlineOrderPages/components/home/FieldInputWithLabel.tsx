@@ -38,6 +38,7 @@ type FieldInputWithLabelProps = {
     | "newPassword"
     | "oneTimeCode";
   onChangeText?: (text: string) => void;
+  maxLength?: number;
 };
 
 const FieldInputWithLabel = memo((props: FieldInputWithLabelProps) => {
@@ -57,6 +58,7 @@ const FieldInputWithLabel = memo((props: FieldInputWithLabelProps) => {
           value={props.value}
           onChangeText={props.onChangeText}
           textContentType={props.textContentType}
+          maxLength={props.maxLength}
         />
       )}
     </View>

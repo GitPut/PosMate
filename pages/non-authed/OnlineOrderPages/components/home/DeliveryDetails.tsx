@@ -150,6 +150,7 @@ function DeliveryDetails({
           value={localName}
           onChangeText={(text) => setlocalName(text)}
           textContentType="name"
+          maxLength={25}
         />
         <FieldInputWithLabel
           txtInput="(123) 456-7890"
@@ -158,6 +159,7 @@ function DeliveryDetails({
           value={localPhoneNumber}
           onChangeText={(text) => setlocalPhoneNumber(text)}
           textContentType="telephoneNumber"
+          maxLength={10}
         />
         <FieldInputWithLabel
           txtInput="Delivery Address"
