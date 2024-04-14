@@ -12,11 +12,10 @@ import {
 import GoBackBtn from "./GoBackBtn";
 import AddToCartBtn from "./AddToCartBtn";
 import { addCartState, cartState, setCartState } from "state/state";
-import { Ionicons } from "@expo/vector-icons/";
 import MultipleTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/MultipleTimeSelectableOptionGroup";
 import DropdownSelectableOption from "components/MainPosPage/components/ProductBuilderModal/DropdownSelectableOption";
 import OneTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/OneTimeSelectableOptionGroup";
-import DisplayOption from "pages/authed/backendPos/BackendPages/Product/components/DisplayOption";
+import { useAlert } from "react-alert";
 
 function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
   const cart = cartState.use();
@@ -27,7 +26,7 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
     myObj.extraDetails ? myObj.extraDetails : ""
   );
   const [openOptions, setopenOptions] = useState(null);
-  const screenWidth = useWindowDimensions().width;
+  const alertP = useAlert();
 
   useEffect(() => {
     settotal(getPrice());
@@ -65,10 +64,7 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
     let stop = false;
 
     myObjProfile.options.forEach((op) => {
-      if (
-        op.optionType === "Dropdown" ||
-        op.optionType === "Row"
-      ) {
+      if (op.optionType === "Dropdown" || op.optionType === "Row") {
         let opWVal = `${op.label}: `;
         const numberOfSelected = op.optionsList.filter(
           (f) => f.selected === true
@@ -88,7 +84,9 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
           });
           opsArray.push(opWVal);
         } else if (numberOfSelected === 0 && op.isRequired === true) {
-          alert(op.label + " is required. Please fill out to add to cart");
+          alertP.error(
+            op.label + " is required. Please fill out to add to cart"
+          );
           stop = true;
         }
       } else {
@@ -401,14 +399,10 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
               }}
             >
               <View>
-              {myObjProfile.options.map((e, index) => (
-                <DisplayOption
-                  key={index}
-                  e={e}
-                  index={index}
-                />
-              ))}
-                </View>
+                {myObjProfile.options.map((e, index) => (
+                  <DisplayOption key={index} e={e} index={index} />
+                ))}
+              </View>
             </ScrollView>
             <View style={styles.totalLblRow}>
               <Text style={styles.totalLbl}>

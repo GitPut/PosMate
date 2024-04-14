@@ -6,8 +6,11 @@ import firebase from "firebase/compat/app";
 import Logo from "assets/dpos-logo-black.png";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { logout } from "state/firebaseFunctions";
+import { useAlert } from "react-alert";
 
 const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
+  const alertP = useAlert();
+
   const sendToCheckout = async () => {
     resetLoader();
     const currentUser = auth.currentUser;
@@ -28,7 +31,7 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
             if (error) {
               // Show an error to your customer and inspect
               // your Cloud Function logs in the Firebase console.
-              alert(`An error occurred: ${error.message}`);
+              alertP.error(`An error occurred`);
             }
 
             if (sessionId) {
@@ -58,7 +61,7 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
         window.location = response.data.url;
       })
       .catch((error) => {
-        alert("Unknown error has occured: ", error);
+        alertP.error("Unknown error has occured");
       });
   };
 

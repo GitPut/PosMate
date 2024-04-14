@@ -9,6 +9,7 @@ import {
 import InputWithLbl from "../components/InputWithLbl";
 import { auth, db } from "state/firebaseConfig";
 import { employeesState, setEmployeesState } from "state/state";
+import { useAlert } from "react-alert";
 
 function AddEmployeeModal({ setaddEmployeeModal, addEmployeeModal }) {
   const { height, width } = useWindowDimensions();
@@ -16,6 +17,7 @@ function AddEmployeeModal({ setaddEmployeeModal, addEmployeeModal }) {
   const [name, setname] = useState("");
   const [role, setrole] = useState("");
   const [pin, setpin] = useState("");
+  const alertP = useAlert();
 
   useEffect(() => {
     if (!addEmployeeModal) {
@@ -34,7 +36,7 @@ function AddEmployeeModal({ setaddEmployeeModal, addEmployeeModal }) {
     };
 
     if (!employee.name) {
-      alert("Please enter a employee name");
+      alertP.error("Please enter a employee name");
       return;
     }
     db.collection("users")

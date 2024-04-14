@@ -16,6 +16,7 @@ import { auth, db, storage } from "state/firebaseConfig";
 import GeneralDropdown from "components/GeneralDropdown";
 import GeneralSwitch from "components/GeneralSwitch";
 import ProductBuilderView from "../components/ProductBuilderView";
+import { useAlert } from "react-alert";
 
 const customSort = (a, b) => {
     // Handle cases where one or both items don't have a rank
@@ -59,6 +60,7 @@ function AddProductModal({
     const scrollViewRef = useRef();
     const targetViewRef = useRef(null);
     const [selectedID, setselectedID] = useState(null)
+    const alertP = useAlert()
 
     useEffect(() => {
         if (existingProduct) {
@@ -227,7 +229,7 @@ function AddProductModal({
         if (event.target.files[0].size < 5000000) {
             setSelectedFile(event.target.files[0]);
         } else {
-            alert("Sorry 5mb files are the max!");
+            alertP.error("Sorry 5mb files are the max!");
         }
     };
 
@@ -527,7 +529,7 @@ function AddProductModal({
                                                             setnewProductOptions([parsed]);
                                                             setindexOn(0);
                                                         } catch (e) {
-                                                            alert("Invalid JSON");
+                                                            alertP.error("Invalid JSON");
                                                         }
                                                     });
                                                 }}

@@ -4,6 +4,7 @@ import FieldInputWithLabel from "./FieldInputWithLabel";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
+import { useAlert } from "react-alert";
 
 function DeliveryDetails({
   storeDetails,
@@ -23,6 +24,7 @@ function DeliveryDetails({
   const [localUnitNumber, setlocalUnitNumber] = useState(
     orderDetails.customer.unitNumber
   );
+const alertP = useAlert();
 
   // Function to calculate distance between two points using Haversine formula
   function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -224,7 +226,7 @@ function DeliveryDetails({
             localPhoneNumber === "" ||
             localAddress === ""
           )
-            return alert("Please fill in all fields");
+            return alertP.error("Please fill in all fields");
           calculateDistanceBetweenAddresses(
             storeDetails.address.value.reference,
             localAddress.value.reference
@@ -235,7 +237,7 @@ function DeliveryDetails({
               );
               if (storeDetails.deliveryRange) {
                 if (distance > parseFloat(storeDetails.deliveryRange)) {
-                  alert("The delivery address is out of range");
+                  alertP.error("The delivery address is out of range");
                 } else {
                   setorderDetails((prev) => ({
                     ...prev,

@@ -8,7 +8,7 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import styled from "styled-components";
+import { useAlert } from "react-alert";
 
 function CheckOutDetails({
   storeDetails,
@@ -19,6 +19,7 @@ function CheckOutDetails({
 }) {
   const [emailAddress, setEmailAddress] = useState("");
   const [loading, setloading] = useState(false);
+  const alertP = useAlert();
 
   const stripe = useStripe();
   const elements = useElements();
@@ -44,7 +45,7 @@ function CheckOutDetails({
 
       if (error) {
         console.error("Error creating token:", error);
-        alert("Error please try again");
+        alertP.error("Error please try again");
         return;
       }
 
@@ -78,18 +79,18 @@ function CheckOutDetails({
               "Payment processing failed. Server message:",
               responseData.message
             );
-            alert("Payment processing failed.");
+            alertP.error("Payment processing failed.");
           }
         } else {
           console.error("Non-JSON response received:", await response.text());
-          alert("Non-JSON response received.");
+          alertP.error("Non-JSON response received.");
         }
       } else {
         throw new Error("Network response was not ok.");
       }
     } catch (jsonError) {
       console.error("Error parsing JSON response or network error:", jsonError);
-      alert("Payment processing failed. Please try again.");
+      alertP.error("Payment processing failed. Please try again.");
     }
   };
 

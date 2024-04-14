@@ -16,6 +16,7 @@ import { auth } from "state/firebaseConfig";
 import { useHistory } from "react-router-dom";
 import Modal from "react-native-modal";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
+import { useAlert } from "react-alert";
 
 const SettingsPasswordModal = () => {
   const { height, width } = useWindowDimensions();
@@ -24,9 +25,8 @@ const SettingsPasswordModal = () => {
   const [inccorectPass, setinccorectPass] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const history = useHistory();
-  const {
-    settingsPasswordModalVis,
-  } = posHomeState.use();
+  const { settingsPasswordModalVis } = posHomeState.use();
+  const alertP = useAlert();
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -41,7 +41,7 @@ const SettingsPasswordModal = () => {
         setinccorectPass(true);
       }
     }
-  }; 
+  };
 
   useFonts({
     Password: require("/assets/password.ttf"),
@@ -66,10 +66,10 @@ const SettingsPasswordModal = () => {
     Axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
-        alert("Settings password has been sent to your account email");
+        alertP.error("Settings password has been sent to your account email");
       })
       .catch(function (error) {
-        alert(error);
+        alertP.error(error);
       });
   };
 
@@ -168,7 +168,11 @@ const SettingsPasswordModal = () => {
                         setinccorectPass(true);
                       }
                     }}
-                    style={styles.goBtn}
+                    style={[
+                      styles.goBtn,
+                      password.length < 1 && { opacity: 0.8 },
+                    ]}
+                    disabled={password.length < 1}
                   >
                     <Text style={styles.goBtnTxt}>Go</Text>
                   </Pressable>

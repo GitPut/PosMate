@@ -10,6 +10,7 @@ import { auth, db } from "state/firebaseConfig";
 import { loadStripe } from "@stripe/stripe-js";
 import GeneralSwitch from "components/GeneralSwitch";
 import PayForOnlineStore from "./components/PayForOnlineStore";
+import { useAlert } from "react-alert";
 
 function OnlineStoreSettings() {
     const onlineStoreDetails = onlineStoreState.use()
@@ -20,6 +21,7 @@ function OnlineStoreSettings() {
     const [stripeSecretKey, setstripeSecretKey] = useState(onlineStoreDetails.stripeSecretKey)
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const [viewVisible, setviewVisible] = useState(false);
+    const alertP = useAlert();
 
     const fadeIn = () => {
         // Will change fadeAnim value to 0 in 3 seconds
@@ -65,7 +67,7 @@ function OnlineStoreSettings() {
                         })
                     })
                 } else {
-                    alert("This url ending is already taken. Please choose another one.")
+                    alertP.error("This url ending is already taken. Please choose another one.")
                 }
             })
             .catch((error) => {
@@ -86,7 +88,7 @@ function OnlineStoreSettings() {
             stripePublicKey: stripePublicKey,
             stripeSecretKey: stripeSecretKey
         })
-        alert("Stripe details updated successfully")
+        alertP.success("Stripe details updated successfully")
     }
 
     const makeOnlineStoreActive = () => {
@@ -148,7 +150,7 @@ function OnlineStoreSettings() {
                     if (error) {
                         // Show an error to your customer and inspect
                         // your Cloud Function logs in the Firebase console.
-                        alert(`An error occurred: ${error.message}`);
+                        alertP.error(`An error occurred`);
                     }
 
                     if (sessionId) {

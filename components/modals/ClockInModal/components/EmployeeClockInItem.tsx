@@ -2,6 +2,7 @@ import React, { Component, useState } from "react";
 import { StyleSheet, View, Text, Pressable, TextInput } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
+import { useAlert } from "react-alert";
 
 function EmployeeClockInItem({
   employee,
@@ -11,6 +12,7 @@ function EmployeeClockInItem({
   style,
 }) {
   const [enteredPin, setenteredPin] = useState("");
+  const alertP = useAlert();
 
   return (
     <View style={[styles.container, style]}>
@@ -33,7 +35,7 @@ function EmployeeClockInItem({
             ]}
             onPress={() => {
               if (enteredPin !== employee.pin && employee.pin)
-                return alert("Wrong PIN");
+                return alertP.error("Wrong PIN");
               const date = new Date();
               if (isClockedIn) {
                 const endTime = `${date.getHours()}:${

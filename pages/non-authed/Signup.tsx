@@ -14,6 +14,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useAlert } from "react-alert";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -25,6 +26,7 @@ function Signup() {
   const { height, width } = useWindowDimensions();
   const [useSmallDesign, setuseSmallDesign] = useState(width < 1024);
   const [secureEntry, setsecureEntry] = useState(true);
+  const alertP = useAlert();
 
   useEffect(() => {
     const third = width / 3;
@@ -39,12 +41,10 @@ function Signup() {
     if (email && password) {
       signUp(email, password, name, phoneNumber).catch((error) => {
         console.log(error);
-        // seterror(error.message);
-        // alert(error.message);
-        alert("There was a issue signing up. Please try again.");
+        alertP.error("There was a issue signing up. Please try again.");
       });
     } else {
-      alert("Please enter your email and password");
+      alertP.error("Please enter your email and password");
     }
   };
 

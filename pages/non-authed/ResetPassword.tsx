@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import Axios from "axios";
+import { useAlert } from "react-alert";
 
 function ResetPassword() {
   const [email, setEmail] = useState("");
@@ -20,6 +21,7 @@ function ResetPassword() {
   const history = useHistory();
   const { height, width } = useWindowDimensions();
   const [useSmallDesign, setuseSmallDesign] = useState(width < 1024);
+  const alertP = useAlert();
 
   useEffect(() => {
     const third = width / 3;
@@ -32,7 +34,7 @@ function ResetPassword() {
 
   const submit = () => {
     if (email === "") {
-      alert("Please enter an email address");
+      alertP.error("Please enter an email address");
       return;
     }
     const data = JSON.stringify({
@@ -52,14 +54,14 @@ function ResetPassword() {
     Axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
-        alert(
+        alertP.error(
           "If we found an account associated with that email address, we've sent a link to reset your password."
         );
       })
       .catch(function (error) {
         console.log(error);
         // seterror(true);
-        alert(
+        alertP.error(
           "There was an error resetting your password. Please try again, or contact us if you continue to have problems."
         );
       });

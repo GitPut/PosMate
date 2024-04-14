@@ -4,6 +4,7 @@ import { Entypo, Ionicons, Feather } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
 import { updateTransList } from "state/firebaseFunctions";
 import { myDeviceDetailsState, storeDetailState } from "state/state";
+import { useAlert } from "react-alert";
 
 function FinishPaymentCash({
   currentOrder,
@@ -17,14 +18,15 @@ function FinishPaymentCash({
   const [cash, setCash] = useState("");
   const storeDetails = storeDetailState.use();
   const myDeviceDetails = myDeviceDetailsState.use();
+  const alertP = useAlert();
 
   const PayByCash = () => {
     if (cash === "") {
-      alert("Please enter the amount of cash recieved");
+      alertP.error("Please enter the amount of cash recieved");
       return;
     }
     if (parseFloat(cash) < parseFloat(total)) {
-      alert("The amount of cash recieved is less than the total");
+      alertP.error("The amount of cash recieved is less than the total");
       return;
     }
     const data = [
@@ -92,21 +94,21 @@ function FinishPaymentCash({
           if (
             err.message.includes("A printer must be specified before printing")
           ) {
-            alert("You must specify a printer in device settings");
+            alertP.error("You must specify a printer in device settings");
           } else if (
             err.message.includes("Unable to establish connection with QZ")
           ) {
-            alert(
+            alertP.error(
               "You do not have Divine POS Helper installed. Please download from general settings"
             );
           } else {
-            alert(
+            alertP.error(
               "An error occured while trying to print. Try refreshing the page and trying again."
             );
           }
         });
     } else {
-      alert('Please set up a device and printer in "Settings -> Devices"');
+      alertP.error('Please set up a device and printer in "Settings -> Devices"');
     }
 
     db.collection("users")

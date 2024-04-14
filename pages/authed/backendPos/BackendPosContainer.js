@@ -23,6 +23,7 @@ import firebase from "firebase/compat/app";
 import MenuBtn from "./components/MenuBtn";
 import index from "./authIndex";
 import HeaderLogoutDropdown from "components/HeaderLogoutDropdown";
+import { useAlert } from "react-alert";
 
 const tz = require("moment-timezone");
 
@@ -39,6 +40,7 @@ function BackendPosContainer(props) {
   let pathname = location.pathname;
   const { height, width } = useWindowDimensions();
   const storeDetails = storeDetailState.use();
+  const alertP = useAlert()
 
   const fadeIn = () => {
     // Will change fadeAnim value to 0 in 3 seconds
@@ -67,7 +69,7 @@ function BackendPosContainer(props) {
         window.location = response.data.url;
       })
       .catch((error) => {
-        alert("Unknown error has occured: ", error);
+        alertP.error("Unknown error has occured: ", error);
       });
   };
 

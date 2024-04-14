@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import Modal from "react-native-modal";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import { myDeviceDetailsState, storeDetailState } from "state/state";
+import { useAlert } from "react-alert";
 
 const CustomcustomCashModal = () => {
   const { height, width } = useWindowDimensions();
@@ -19,6 +20,7 @@ const CustomcustomCashModal = () => {
   const [total, setTotal] = useState("");
   const [cash, setCash] = useState("");
   const [managerCodeEntered, setmanagerCodeEntered] = useState("");
+  const alertP = useAlert();
 
   const Reset = () => {
     setTotal("");
@@ -28,7 +30,7 @@ const CustomcustomCashModal = () => {
 
   const CompletePayment = () => {
     if (!myDeviceDetails.id) {
-      alert("Please set up a device in Settings -> Devices");
+      alertP.error("Please set up a device in Settings -> Devices");
       return;
     }
     if (
@@ -86,15 +88,15 @@ const CustomcustomCashModal = () => {
                 "A printer must be specified before printing"
               )
             ) {
-              alert("You must specify a printer in device settings");
+              alertP.error("You must specify a printer in device settings");
             } else if (
               err.message.includes("Unable to establish connection with QZ")
             ) {
-              alert(
+              alertP.error(
                 "You do not have Divine POS Helper installed. Please download from general settings"
               );
             } else {
-              alert(
+              alertP.error(
                 "An error occured while trying to print. Try refreshing the page and trying again."
               );
             }
@@ -102,16 +104,16 @@ const CustomcustomCashModal = () => {
         updatePosHomeState({ customCashModal: false });
         Reset();
       } else {
-        alert("Please Enter Total Amount");
+        alertP.error("Please Enter Total Amount");
       }
     } else {
-      alert("Incorrect Manager Code");
+      alertP.error("Incorrect Manager Code");
     }
   };
 
   const OpenRegister = () => {
     if (!myDeviceDetails.id) {
-      alert("Please set up a device in Settings -> Devices");
+      alertP.error("Please set up a device in Settings -> Devices");
       return;
     }
     if (
@@ -162,15 +164,15 @@ const CustomcustomCashModal = () => {
           if (
             err.message.includes("A printer must be specified before printing")
           ) {
-            alert("You must specify a printer in device settings");
+            alertP.error("You must specify a printer in device settings");
           } else if (
             err.message.includes("Unable to establish connection with QZ")
           ) {
-            alert(
+            alertP.error(
               "You do not have Divine POS Helper installed. Please download from general settings"
             );
           } else {
-            alert(
+            alertP.error(
               "An error occured while trying to print. Try refreshing the page and trying again."
             );
           }
@@ -178,7 +180,7 @@ const CustomcustomCashModal = () => {
       updatePosHomeState({ customCashModal: false });
       Reset();
     } else {
-      alert("Incorrect Manager Code");
+      alertP.error("Incorrect Manager Code");
     }
   };
 
@@ -310,18 +312,32 @@ const CustomcustomCashModal = () => {
                 </View>
                 <View style={styles.btnsGroup}>
                   <Pressable
-                    style={styles.finishPaymentBtn}
+                    style={[
+                      styles.finishPaymentBtn,
+                      !(parseFloat(total) > 0 && parseFloat(cash) > 0) && {
+                        opacity: 0.8,
+                      },
+                    ]}
                     onPress={() => {
                       CompletePayment();
                     }}
+                    disabled={!(parseFloat(total) > 0 && parseFloat(cash) > 0)}
                   >
                     <Text style={styles.finishPayment}>Finish Payment</Text>
                   </Pressable>
                   <Pressable
-                    style={styles.finishPaymentBtn}
+                    style={[
+                      styles.finishPaymentBtn,
+                      storeDetails.settingsPassword.length > 0 &&
+                        managerCodeEntered.length < 1 && { opacity: 0.8 },
+                    ]}
                     onPress={() => {
                       OpenRegister();
                     }}
+                    disabled={
+                      storeDetails.settingsPassword.length > 0 &&
+                      managerCodeEntered.length < 1
+                    }
                   >
                     <Text style={styles.finishPayment}>Open Register</Text>
                   </Pressable>

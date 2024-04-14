@@ -11,6 +11,7 @@ import PercentageBtn from "./components/PercentageBtn";
 import Modal from "react-native-modal";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import { cartState, storeDetailState } from "state/state";
+import { useAlert } from "react-alert";
 
 const DiscountModal = () => {
   const { height, width } = useWindowDimensions();
@@ -25,6 +26,7 @@ const DiscountModal = () => {
   const [localDiscountAmount, setLocalDiscountAmount] = useState(
     discountAmount ? discountAmount : ""
   );
+  const alertP = useAlert();
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -39,7 +41,7 @@ const DiscountModal = () => {
           discountModal: false,
         });
       } else {
-        alert("Incorrect Code");
+        alertP.error("Incorrect Code");
       }
     }
   };
@@ -182,10 +184,17 @@ const DiscountModal = () => {
                             discountModal: false,
                           });
                         } else {
-                          alert("Incorrect Code");
+                          alertP.error("Incorrect Code");
                         }
                       }}
-                      style={styles.confirmBtn}
+                      style={[
+                        styles.confirmBtn,
+                        !(
+                          (!storeDetails.settingsPassword &&
+                            discountAmount !== "") ||
+                          (code.length > 0 && discountAmount !== "")
+                        ) && { opacity: 0.8 },
+                      ]}
                     >
                       <Text style={styles.confirmLbl}>Confirm</Text>
                     </Pressable>

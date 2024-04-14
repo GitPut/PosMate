@@ -27,6 +27,7 @@ import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import GeneralSwitch from "components/GeneralSwitch";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
+import { useAlert } from "react-alert";
 
 function GeneralSettings() {
   const storeDetails = storeDetailState.use();
@@ -57,6 +58,7 @@ function GeneralSettings() {
   const [useWoocommerce, setuseWoocommerce] = useState(
     wooCredentials.useWoocommerce
   );
+  const alertP = useAlert();
 
   const handleWooDataUpdate = () => {
     if (apiUrl !== null && ck !== null && cs !== null) {
@@ -106,9 +108,9 @@ function GeneralSettings() {
       // if (customBtnExtraFunction) {
       //   customBtnExtraFunction();
       // }
-      alert("Settings updated successfully");
+      alertP.success("Settings updated successfully");
     } else {
-      alert("Please fill in all fields");
+      alertP.error("Please fill in all fields");
     }
   };
 

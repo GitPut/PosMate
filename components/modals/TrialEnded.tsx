@@ -5,6 +5,7 @@ import { auth, db } from "state/firebaseConfig";
 import { loadStripe } from "@stripe/stripe-js";
 import { logout } from "state/firebaseFunctions";
 import Select from "react-select";
+import { useAlert } from "react-alert";
 
 const TrialEnded = ({ resetLoader }) => {
   const [planType, setplanType] = useState({
@@ -12,6 +13,7 @@ const TrialEnded = ({ resetLoader }) => {
     label: "Monthly",
   });
   const [loading, setloading] = useState(false);
+  const alertP = useAlert();
 
   const Checkout = async () => {
     resetLoader();
@@ -42,7 +44,7 @@ const TrialEnded = ({ resetLoader }) => {
           if (error) {
             // Show an error to your customer and inspect
             // your Cloud Function logs in the Firebase console.
-            alert(`An error occurred: ${error.message}`);
+            alertP.error(`An error occurred: ${error.message}`);
           }
 
           if (sessionId) {

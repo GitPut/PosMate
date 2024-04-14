@@ -25,6 +25,7 @@ import ProductsSection from "./components/ProductsSection";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import CustomCashModal from "components/modals/CustomCashModal";
 import AuthPasswordModal from "components/modals/AuthPasswordModal";
+import { useAlert } from "react-alert";
 
 function OrderPagePosHome() {
   const { height, width } = useWindowDimensions();
@@ -32,6 +33,7 @@ function OrderPagePosHome() {
   const cart = cartState.use();
   const storeDetails = storeDetailState.use();
   const myDeviceDetails = myDeviceDetailsState.use();
+  const alertP = useAlert();
 
   const { section, deliveryChecked, saveCustomerModal, discountAmount } =
     posHomeState.use();
@@ -93,15 +95,15 @@ function OrderPagePosHome() {
                     "A printer must be specified before printing"
                   )
                 ) {
-                  alert("You must specify a printer in device settings");
+                  alertP.error("You must specify a printer in device settings");
                 } else if (
                   err.message.includes("Unable to establish connection with QZ")
                 ) {
-                  alert(
+                  alertP.error(
                     "You do not have Divine POS Helper installed. Please download from general settings"
                   );
                 } else {
-                  alert(
+                  alertP.error(
                     "An error occured while trying to print. Try refreshing the page and trying again."
                   );
                 }

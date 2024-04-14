@@ -47,7 +47,7 @@ const CheckoutBtn = () => {
         }}
       >
         <Pressable
-          style={styles.checkoutBtn}
+          style={[styles.checkoutBtn, cart.length < 1 && { opacity: 0.8 }]}
           disabled={cart.length < 1}
           onPress={() => {
             db.collection("users")
@@ -103,7 +103,10 @@ const CheckoutBtn = () => {
         }}
       >
         <Pressable
-          style={styles.checkoutBtn}
+          style={[
+            styles.checkoutBtn,
+            (cart.length < 1 || ongoingDelivery) && { opacity: 0.8 },
+          ]}
           onPress={() => {
             updatePosHomeState({ cashModal: true });
           }}
@@ -112,7 +115,10 @@ const CheckoutBtn = () => {
           <Text style={styles.checkoutLbl}>Cash</Text>
         </Pressable>
         <Pressable
-          style={styles.checkoutBtn}
+          style={[
+            styles.checkoutBtn,
+            (cart.length < 1 || ongoingDelivery) && { opacity: 0.8 },
+          ]}
           onPress={() => {
             Print({
               method: "Card",
@@ -173,13 +179,6 @@ const CheckoutBtn = () => {
       <Pressable
         style={styles.checkoutBtn}
         onPress={() => {
-          // setOngoingDelivery(null);
-          // setDeliveryChecked(false);
-          // setName(null);
-          // setPhone(null);
-          // setAddress(null);
-          // setChangeDue(null);
-          // setDiscountAmount(null);
           resetPosHomeState();
         }}
       >

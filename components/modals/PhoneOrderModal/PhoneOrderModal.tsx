@@ -15,6 +15,7 @@ import GeneralSwitch from "components/GeneralSwitch";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 import Modal from "react-native-modal";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
+import { useAlert } from "react-alert";
 
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
@@ -36,6 +37,7 @@ const PhoneOrderModal = () => {
     deliveryModal,
     updatingOrder,
   } = posHomeState.use();
+  const alertP = useAlert();
 
   // Function to calculate distance between two points using Haversine formula
   function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -157,7 +159,7 @@ const PhoneOrderModal = () => {
                 distance > parseFloat(storeDetails.deliveryRange) &&
                 deliveryChecked
               ) {
-                alert("The delivery address is out of range");
+                alertP.error("The delivery address is out of range");
               }
             }
           }
@@ -186,7 +188,7 @@ const PhoneOrderModal = () => {
                 distance > parseFloat(storeDetails.deliveryRange) &&
                 deliveryChecked
               ) {
-                alert("The delivery address is out of range");
+                alertP.error("The delivery address is out of range");
               }
             }
           }
@@ -402,7 +404,11 @@ const PhoneOrderModal = () => {
                 </View>
                 <View style={styles.bottomGroup}>
                   <Pressable
-                    style={styles.orderButton}
+                    style={[
+                      styles.orderButton,
+                      (!name || !phone) && { opacity: 0.8 },
+                    ]}
+                    disabled={!name || !phone}
                     onPress={() => {
                       if (name && phone) {
                         // setDeliveryModal(false);
@@ -425,15 +431,6 @@ const PhoneOrderModal = () => {
                     style={styles.viewSavedCustomersRow}
                     onPress={() => {
                       setsaveCustomerChecked(false);
-                      // setOngoingDelivery(false);
-                      // setName("");
-                      // setPhone("");
-                      // setAddress(null);
-                      // setBuzzCode("");
-                      // setUnitNumber("");
-                      // setDeliveryChecked(false);
-                      // setDeliveryModal(false);
-                      // setsaveCustomerModal(true);
                       updatePosHomeState({
                         ongoingDelivery: false,
                         name: "",

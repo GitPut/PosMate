@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import OptionsItemOpenInner from "./OptionsItemOpenInner";
 import { Tooltip } from "react-tooltip";
+import { useAlert } from "react-alert";
 
 function OptionsItem({
   item,
@@ -22,6 +23,7 @@ function OptionsItem({
   const [e, sete] = useState(structuredClone(item));
   const [addOptionClicked, setaddOptionClicked] = useState(true);
   const [moveToOptionPos, setmoveToOptionPos] = useState(null);
+  const alertP = useAlert();
 
   const scrollToPositionIncluding = (position) => {
     scrollViewRef.current.measure((fx, fy, width, scrollViewHeight, px, py) => {
@@ -379,7 +381,7 @@ function OptionsItem({
                   });
                   setindexOn(newProductOptions.length);
                 } catch (e) {
-                  alert("Invalid JSON");
+                  alertP.error("Invalid JSON");
                 }
               });
             }}

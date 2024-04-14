@@ -8,7 +8,7 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import styled from "styled-components";
+import { useAlert } from "react-alert";
 
 function CheckOutDetails({
   storeDetails,
@@ -18,6 +18,7 @@ function CheckOutDetails({
 }) {
   const [emailAddress, setEmailAddress] = useState("");
   const [loading, setloading] = useState(false);
+  const alertP = useAlert();
 
   const stripe = useStripe();
   const elements = useElements();
@@ -43,17 +44,17 @@ function CheckOutDetails({
 
       if (error) {
         console.error("Error creating token:", error);
-        alert("Error please try again");
+        alertP.error("Error please try again");
         return;
       }
 
-      console.log("Token:", token);
+      // console.log("Token:", token);
 
-      console.log("token ", token.id);
-      console.log("amount ", orderDetails.total);
-      console.log("storeUID ", storeDetails.docID);
-      console.log("orderDetails ", orderDetails);
-      console.log("newOrderDetails ", newOrderDetails);
+      // console.log("token ", token.id);
+      // console.log("amount ", orderDetails.total);
+      // console.log("storeUID ", storeDetails.docID);
+      // console.log("orderDetails ", orderDetails);
+      // console.log("newOrderDetails ", newOrderDetails);
 
       const response = await fetch(
         "https://us-central1-posmate-5fc0a.cloudfunctions.net/processPayment",
@@ -78,25 +79,25 @@ function CheckOutDetails({
         if (contentType && contentType.indexOf("application/json") !== -1) {
           const responseData = await response.json();
           if (responseData.success) {
-            console.log("Payment processed successfully!");
+            // console.log("Payment processed successfully!");
             setpage(4);
           } else {
-            console.error(
-              "Payment processing failed. Server message:",
-              responseData.message
-            );
-            alert("Payment processing failed.");
+            // console.error(
+            //   "Payment processing failed. Server message:",
+            //   responseData.message
+            // );
+            alertP.error("Payment processing failed.");
           }
         } else {
-          console.error("Non-JSON response received:", await response.text());
-          alert("Non-JSON response received.");
+          // console.error("Non-JSON response received:", await response.text());
+          alertP.error("Non-JSON response received.");
         }
       } else {
         throw new Error("Network response was not ok.");
       }
     } catch (jsonError) {
-      console.error("Error parsing JSON response or network error:", jsonError);
-      alert("Payment processing failed. Please try again.");
+      // console.error("Error parsing JSON response or network error:", jsonError);
+      alertP.error("Payment processing failed. Please try again.");
     }
   };
 

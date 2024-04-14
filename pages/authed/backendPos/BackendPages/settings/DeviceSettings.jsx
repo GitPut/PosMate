@@ -25,6 +25,7 @@ import { Entypo, Ionicons } from "@expo/vector-icons";
 import "react-select2-wrapper/css/select2.css";
 import ReactSelect from "react-select";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
+import { useAlert } from "react-alert";
 
 function Index(props) {
     const deviceTree = deviceTreeState.use()
@@ -33,6 +34,7 @@ function Index(props) {
     const [viewVisible, setviewVisible] = useState(false);
     const [selectedDevice, setselectedDevice] = useState(0)
     const [otherDeviceOptions, setOtherDeviceOptions] = useState([])
+    const alertP = useAlert();
 
     const fadeIn = () => {
         // Will change fadeAnim value to 0 in 3 seconds
@@ -66,7 +68,7 @@ function Index(props) {
                     if (error) {
                         // Show an error to your customer and inspect
                         // your Cloud Function logs in the Firebase console.
-                        alert(`An error occurred: ${error.message}`);
+                        alertP.error("An error occured, please try again later.");
                     }
 
                     if (sessionId) {
@@ -254,7 +256,7 @@ function Index(props) {
                                         if (deviceTree.devices[selectedDevice].id === myDeviceID) {
                                             setMyDeviceDetailsState(deviceTree.devices[selectedDevice])
                                         }
-                                        alert('Device Updated')
+                                        alertP.success("Device Updated!");
                                     }}
                                 >
                                     <Text style={styles.saveDevice}>Save Device</Text>

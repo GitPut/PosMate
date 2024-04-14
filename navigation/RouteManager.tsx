@@ -31,6 +31,7 @@ import NonAuthRoute from "./non-authed/NonAuthRoute";
 import useInterval from "components/functional/useInterval";
 import ScrollToTop from "components/functional/ScrollToTop";
 import PaymentUpdateNotification from "components/modals/PaymentUpdateNotification";
+import { useAlert } from "react-alert";
 
 const RouteManager = () => {
   const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
@@ -47,6 +48,7 @@ const RouteManager = () => {
   const storeDetails = storeDetailState.use();
   const [isWooError, setisWooError] = useState(false);
   const myDeviceDetails = myDeviceDetailsState.use();
+  const alertP = useAlert();
 
   useEffect(() => {
     if (myDeviceDetails.docID && userS) {
@@ -78,15 +80,15 @@ const RouteManager = () => {
                     "A printer must be specified before printing"
                   )
                 ) {
-                  alert("You must specify a printer in device settings");
+                  alertP.error("You must specify a printer in device settings");
                 } else if (
                   err.message.includes("Unable to establish connection with QZ")
                 ) {
-                  alert(
+                  alertP.error(
                     "You do not have Divine POS Helper installed. Please download from general settings"
                   );
                 } else {
-                  alert(
+                  alertP.error(
                     "An error occured while trying to print. Try refreshing the page and trying again."
                   );
                 }
@@ -673,17 +675,17 @@ const RouteManager = () => {
                       "A printer must be specified before printing"
                     )
                   ) {
-                    alert("You must specify a printer in device settings");
+                    alertP.error("You must specify a printer in device settings");
                   } else if (
                     err.message.includes(
                       "Unable to establish connection with QZ"
                     )
                   ) {
-                    alert(
+                    alertP.error(
                       "You do not have Divine POS Helper installed. Please download from general settings"
                     );
                   } else {
-                    alert(
+                    alertP.error(
                       "An error occured while trying to print. Try refreshing the page and trying again."
                     );
                   }
@@ -693,7 +695,7 @@ const RouteManager = () => {
         })
         .catch((e) => {
           console.log("Error has occured when trying to get WooOrders: ", e);
-          alert(
+          alertP.error(
             "There was an error connecting to your woocommerce store. Please refresh the page to try again."
           );
           setisWooError(true);

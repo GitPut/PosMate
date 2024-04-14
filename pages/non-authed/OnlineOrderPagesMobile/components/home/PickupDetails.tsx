@@ -1,6 +1,7 @@
 import React, { Component, useState } from "react";
 import { StyleSheet, View, Pressable, Text } from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
+import { useAlert } from "react-alert";
 
 function PickupDetails({
   storeDetails,
@@ -12,6 +13,7 @@ function PickupDetails({
   const [localPhoneNumber, setlocalPhoneNumber] = useState(
     orderDetails.customer.phone
   );
+  const alertP = useAlert();
 
   return (
     <>
@@ -35,7 +37,7 @@ function PickupDetails({
         style={styles.continueBtn}
         onPress={() => {
           if (localName === "" || localPhoneNumber === "")
-            return alert("Please fill in all fields");
+            return alertP.error("Please fill in all fields");
           setorderDetails((prev) => ({
             ...prev,
             customer: {

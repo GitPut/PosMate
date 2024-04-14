@@ -16,6 +16,7 @@ import AddToCartBtn from "./AddToCartBtn";
 import MultipleTimeSelectableOptionGroup from "./MultipleTimeSelectableOptionGroup";
 import { addCartState, cartState, setCartState } from "state/state";
 import TableOption from "./TableOption";
+import { useAlert } from "react-alert";
 
 function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
   const cart = cartState.use();
@@ -26,6 +27,7 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
     myObj.extraDetails ? myObj.extraDetails : ""
   );
   const [openOptions, setopenOptions] = useState(null);
+  const alertP = useAlert()
 
   useEffect(() => {
     settotal(getPrice());
@@ -83,7 +85,7 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
           });
           opsArray.push(opWVal);
         } else if (numberOfSelected === 0 && op.isRequired === true) {
-          alert(op.label + " is required. Please fill out to add to cart");
+          alertP.error(op.label + " is required. Please fill out to add to cart");
           stop = true;
         }
       } else {

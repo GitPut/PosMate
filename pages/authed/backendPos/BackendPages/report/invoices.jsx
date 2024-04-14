@@ -6,6 +6,7 @@ import { myDeviceDetailsState, setTransListTableOrgState, storeDetailState, tran
 import { Excel as ExcelDownload } from "antd-table-saveas-excel";
 import { auth, db } from "state/firebaseConfig";
 import ReceiptPrint from "components/functional/ReceiptPrint";
+import { useAlert } from "react-alert";
 
 function InvoiceReport() {
   const [startDate, setStartDate] = useState('');
@@ -18,6 +19,7 @@ function InvoiceReport() {
   const [updateBaseSelectedRows, setupdateBaseSelectedRows] = useState(false)
   const transList = transListState.use()
   const myDeviceDetails = myDeviceDetailsState.use();
+  const alertP = useAlert()
 
   const columns = [
     {
@@ -99,22 +101,22 @@ function InvoiceReport() {
               if (
                 err.message.includes("A printer must be specified before printing")
               ) {
-                alert("You must specify a printer in device settings");
+                alertP.error("You must specify a printer in device settings");
               } else if (
                 err.message.includes("Unable to establish connection with QZ")
               ) {
-                alert(
+                alertP.error(
                   "You do not have Divine POS Helper installed. Please download from general settings"
                 );
               } else {
-                alert(
+                alertP.error(
                   "An error occured while trying to print. Try refreshing the page and trying again."
                 );
               }
             });
         }
       } else {
-        alert(
+        alertP.error(
           "Higlight one or multiple receipt then click to print them"
         );
       }
@@ -190,7 +192,7 @@ function InvoiceReport() {
     );
 
     if (filtered.length === 0) {
-      alert(`No sales ${dateName}`);
+      alertP.error(`No sales ${dateName}`);
       return;
     }
 
@@ -260,15 +262,15 @@ function InvoiceReport() {
           if (
             err.message.includes("A printer must be specified before printing")
           ) {
-            alert("You must specify a printer in device settings");
+            alertP.error("You must specify a printer in device settings");
           } else if (
             err.message.includes("Unable to establish connection with QZ")
           ) {
-            alert(
+            alertP.error(
               "You do not have Divine POS Helper installed. Please download from general settings"
             );
           } else {
-            alert(
+            alertP.error(
               "An error occured while trying to print. Try refreshing the page and trying again."
             );
           }

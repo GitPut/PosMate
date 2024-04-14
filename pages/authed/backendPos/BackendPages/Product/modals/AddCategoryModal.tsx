@@ -10,7 +10,7 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { updateData } from "state/firebaseFunctions";
 import { setUserStoreState, userStoreState } from "state/state";
-import GeneralSwitch from "components/GeneralSwitch";
+import { useAlert } from "react-alert";
 
 function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
   const { height, width } = useWindowDimensions();
@@ -22,7 +22,7 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
 
   const Update = () => {
     if (categoryName === "") {
-      alert("Category name cannot be empty");
+      alertP.error("Category name cannot be empty");
       return;
     }
     const localCatalog = structuredClone(catalog);

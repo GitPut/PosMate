@@ -4,25 +4,23 @@ import { useHistory } from "react-router-dom";
 import {
   StyleSheet,
   View,
-  Image,
   Text,
   ImageBackground,
-  Modal,
   Pressable,
   TextInput,
-  Dimensions,
   useWindowDimensions,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useAlert } from "react-alert";
 
 function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [error, seterror] = useState(false);
   const history = useHistory();
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const [useSmallDesign, setuseSmallDesign] = useState(width < 1024);
   const [secureEntry, setsecureEntry] = useState(true);
+  const alertP = useAlert();
 
   useEffect(() => {
     const third = width / 3;
@@ -37,12 +35,10 @@ function Login() {
     if (email && password) {
       signIn(email, password).catch((error) => {
         console.log(error);
-        // seterror(error.message);
-        // alert(error.message);
-        alert("Invalid email or password");
+        alertP.error("Invalid email or password");
       });
     } else {
-      alert("Please enter your email and password");
+      alertP.error("Please enter your email and password");
     }
   };
 

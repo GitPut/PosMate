@@ -17,6 +17,7 @@ import Select from "react-select";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 import Axios from "axios";
+import { useAlert } from "react-alert";
 
 const NewUserPayment = ({ resetLoader }) => {
   const [planType, setplanType] = useState({
@@ -29,6 +30,7 @@ const NewUserPayment = ({ resetLoader }) => {
   const [phoneNumber, setphoneNumber] = useState(storeDetails.phoneNumber);
   const [address, setaddress] = useState(storeDetails.address);
   const [website, setwebsite] = useState(storeDetails.website);
+  const alertP = useAlert();
 
   const SendEmail = () => {
     const data = JSON.stringify({
@@ -52,7 +54,7 @@ const NewUserPayment = ({ resetLoader }) => {
         console.log(JSON.stringify(response.data));
       })
       .catch(function (error) {
-        alert(error);
+        alertP.error(error);
       });
   };
 
@@ -168,7 +170,7 @@ const NewUserPayment = ({ resetLoader }) => {
         <NewUserPaymentUpdate
           CheckOutFunc={async () => {
             if (!storeName || !phoneNumber || !address)
-              return alert("Please fill in all fields");
+              return alertP.error("Please fill in all fields");
 
             SendEmail();
             resetLoader();
@@ -212,7 +214,7 @@ const NewUserPayment = ({ resetLoader }) => {
                     if (error) {
                       // Show an error to your customer and inspect
                       // your Cloud Function logs in the Firebase console.
-                      alert(`An error occurred: ${error.message}`);
+                      alertP.error(`An error occurred`);
                     }
 
                     if (sessionId) {
