@@ -2,7 +2,6 @@ import ReceiptPrint from "components/functional/ReceiptPrint";
 import { auth, db } from "state/firebaseConfig";
 import { resetPosHomeState, updatePosHomeState } from "state/posHomeState";
 import { setCartState, setCustomersList } from "state/state";
-import { useAlert } from "react-alert";
 
 interface PrintProps {
   dontAddToOngoing: boolean;
@@ -53,8 +52,10 @@ const Print = ({ ...props }: PrintProps) => {
     storeDetails,
     myDeviceDetails,
   } = props;
-  const alertP = useAlert();
-
+  // const customers = customersList.use();
+  // const cart = cartState.use();
+  // const storeDetails = storeDetailState.use();
+  // const myDeviceDetails = myDeviceDetailsState.use();
 
   try {
     let newVal = 0;
@@ -100,7 +101,7 @@ const Print = ({ ...props }: PrintProps) => {
     }
 
     if (!myDeviceDetails.id) {
-      return alertP.error("Please set up a device in Settings -> Devices");
+      return alert("Please set up a device in Settings -> Devices");
     }
 
     if (savedCustomerDetails) {
@@ -210,15 +211,17 @@ const Print = ({ ...props }: PrintProps) => {
                 "A printer must be specified before printing"
               )
             ) {
-              alertP.error("You must specify a printer in device settings");
+              alert("You must specify a printer in device settings");
             } else if (
               err.message.includes("Unable to establish connection with QZ")
             ) {
-              alertP.error(
+              alert(
                 "You do not have Divine POS Helper installed. Please download from general settings"
               );
+            } else if (err.message.includes("Cannot find printer with name")) {
+              alert("Printer not found. Please check your printer settings.");
             } else {
-              alertP.error(
+              alert(
                 "An error occured while trying to print. Try refreshing the page and trying again."
               );
             }
@@ -301,15 +304,17 @@ const Print = ({ ...props }: PrintProps) => {
                 "A printer must be specified before printing"
               )
             ) {
-              alertP.error("You must specify a printer in device settings");
+              alert("You must specify a printer in device settings");
             } else if (
               err.message.includes("Unable to establish connection with QZ")
             ) {
-              alertP.error(
+              alert(
                 "You do not have Divine POS Helper installed. Please download from general settings"
               );
+            } else if (err.message.includes("Cannot find printer with name")) {
+              alert("Printer not found. Please check your printer settings.");
             } else {
-              alertP.error(
+              alert(
                 "An error occured while trying to print. Try refreshing the page and trying again."
               );
             }
@@ -380,15 +385,17 @@ const Print = ({ ...props }: PrintProps) => {
                 "A printer must be specified before printing"
               )
             ) {
-              alertP.error("You must specify a printer in device settings");
+              alert("You must specify a printer in device settings");
             } else if (
               err.message.includes("Unable to establish connection with QZ")
             ) {
-              alertP.error(
+              alert(
                 "You do not have Divine POS Helper installed. Please download from general settings"
               );
+            } else if (err.message.includes("Cannot find printer with name")) {
+              alert("Printer not found. Please check your printer settings.");
             } else {
-              alertP.error(
+              alert(
                 "An error occured while trying to print. Try refreshing the page and trying again."
               );
             }

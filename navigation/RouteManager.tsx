@@ -87,6 +87,12 @@ const RouteManager = () => {
                   alertP.error(
                     "You do not have Divine POS Helper installed. Please download from general settings"
                   );
+                } else if (
+                  err.message.includes("Cannot find printer with name")
+                ) {
+                  alertP.error(
+                    "Printer not found. Please check your printer settings."
+                  );
                 } else {
                   alertP.error(
                     "An error occured while trying to print. Try refreshing the page and trying again."
@@ -683,6 +689,12 @@ const RouteManager = () => {
                   ) {
                     alertP.error(
                       "You do not have Divine POS Helper installed. Please download from general settings"
+                    );
+                  } else if (
+                    err.message.includes("Cannot find printer with name")
+                  ) {
+                    alertP.error(
+                      "Printer not found. Please check your printer settings."
                     );
                   } else {
                     alertP.error(
