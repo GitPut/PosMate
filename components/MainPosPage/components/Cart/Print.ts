@@ -2,6 +2,7 @@ import ReceiptPrint from "components/functional/ReceiptPrint";
 import { auth, db } from "state/firebaseConfig";
 import { resetPosHomeState, updatePosHomeState } from "state/posHomeState";
 import { setCartState, setCustomersList } from "state/state";
+import qz from "qz-tray";
 
 interface PrintProps {
   dontAddToOngoing: boolean;
@@ -194,7 +195,6 @@ const Print = ({ ...props }: PrintProps) => {
             printData: data.data,
           });
       } else {
-        const qz = require("qz-tray");
         qz.websocket
           .connect()
           .then(function () {
@@ -287,7 +287,6 @@ const Print = ({ ...props }: PrintProps) => {
             printData: data.data,
           });
       } else {
-        const qz = require("qz-tray");
         qz.websocket
           .connect()
           .then(function () {
@@ -368,7 +367,6 @@ const Print = ({ ...props }: PrintProps) => {
             printData: data.data,
           });
       } else {
-        const qz = require("qz-tray");
         qz.websocket
           .connect()
           .then(function () {

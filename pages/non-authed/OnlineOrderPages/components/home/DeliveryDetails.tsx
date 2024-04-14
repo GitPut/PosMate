@@ -1,21 +1,28 @@
 import React, { Component, useState } from "react";
-import { StyleSheet, View, Pressable, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  Text,
+  useWindowDimensions,
+} from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 import { useAlert } from "react-alert";
+import {
+  OrderDetailsState,
+  setOrderDetailsState,
+  storeDetailState,
+} from "state/state";
 
-function DeliveryDetails({
-  storeDetails,
-  setorderDetails,
-  orderDetails,
-  setpage,
-  width,
-}) {
+function DeliveryDetails() {
+  const orderDetails = OrderDetailsState.use();
+  const storeDetails = storeDetailState.use();
   const [localName, setlocalName] = useState(orderDetails.customer.name);
   const [localPhoneNumber, setlocalPhoneNumber] = useState(
-    orderDetails.customer.phoneNumber
+    orderDetails.customer.phone
   );
   const [localAddress, setlocalAddress] = useState(orderDetails.address);
   const [localBuzzCode, setlocalBuzzCode] = useState(
@@ -24,7 +31,12 @@ function DeliveryDetails({
   const [localUnitNumber, setlocalUnitNumber] = useState(
     orderDetails.customer.unitNumber
   );
-const alertP = useAlert();
+  const [checkingDeliveryRange, setcheckingDeliveryRange] = useState(false);
+  const alertP = useAlert();
+  const width =
+    useWindowDimensions().width > 1000
+      ? 380
+      : useWindowDimensions().width * 0.9;
 
   // Function to calculate distance between two points using Haversine formula
   function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -184,8 +196,9 @@ const alertP = useAlert();
               }}
               renderSuggestions={(active, suggestions, onSelectSuggestion) => (
                 <div>
-                  {suggestions.map((suggestion) => (
+                  {suggestions.map((suggestion, index) => (
                     <div
+                      key={index}
                       className="suggestion"
                       onClick={(event) => {
                         onSelectSuggestion(suggestion, event);
@@ -219,8 +232,13 @@ const alertP = useAlert();
         </View>
       </View>
       <Pressable
-        style={styles.continueBtn}
+        style={[
+          styles.continueBtn,
+          { opacity: checkingDeliveryRange ? 0.8 : 1 },
+        ]}
+        disabled={checkingDeliveryRange}
         onPress={() => {
+          setcheckingDeliveryRange(true);
           if (
             localName === "" ||
             localPhoneNumber === "" ||
@@ -238,38 +256,42 @@ const alertP = useAlert();
               if (storeDetails.deliveryRange) {
                 if (distance > parseFloat(storeDetails.deliveryRange)) {
                   alertP.error("The delivery address is out of range");
+                  setcheckingDeliveryRange(false);
                 } else {
-                  setorderDetails((prev) => ({
-                    ...prev,
+                  setOrderDetailsState({
                     address: localAddress,
                     customer: {
-                      ...prev.customer,
+                      ...orderDetails.customer,
                       name: localName,
-                      phoneNumber: localPhoneNumber,
+                      phone: localPhoneNumber,
                       buzzCode: localBuzzCode,
                       unitNumber: localUnitNumber,
                     },
-                  }));
-                  setpage(4);
+                    delivery: true,
+                  });
+                  setOrderDetailsState({ page: 4 });
+                  setcheckingDeliveryRange(false);
                 }
               } else {
-                setorderDetails((prev) => ({
-                  ...prev,
+                setOrderDetailsState({
                   address: localAddress,
                   customer: {
-                    ...prev.customer,
+                    ...orderDetails.customer,
                     name: localName,
-                    phoneNumber: localPhoneNumber,
+                    phone: localPhoneNumber,
                     buzzCode: localBuzzCode,
                     unitNumber: localUnitNumber,
                   },
-                }));
-                setpage(4);
+                  delivery: true,
+                });
+                setOrderDetailsState({ page: 4 });
+                setcheckingDeliveryRange(false);
               }
             } else {
               alert(
                 "Distance calculation between the store and your location failed. Please refresh page."
               );
+              setcheckingDeliveryRange(false);
             }
           });
         }}

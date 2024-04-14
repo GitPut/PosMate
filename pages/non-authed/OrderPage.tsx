@@ -11,37 +11,31 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "state/firebaseConfig";
 import { useHistory } from "react-router-dom";
-import OnlineOrderHome from "./OnlineOrderPages/OnlineOrderHome";
-import OrderCartMain from "./OnlineOrderPages/OrderCartMain";
-import OnlineOrderHomeCompleted from "./OnlineOrderPages/OnlineOrderHomeCompleted";
-import OnlineOrderHomePickup from "./OnlineOrderPages/OnlineOrderHomePickup";
-import OnlineOrderHomeDelivery from "./OnlineOrderPages/OnlineOrderHomeDelivery";
-import OnlineOrderHomeCheckout from "./OnlineOrderPages/OnlineOrderHomeCheckout";
+import OnlineOrderHome from "./OnlineOrderPages/Home";
+import OrderCartMain from "./OnlineOrderPages/Order";
+import OnlineOrderHomeCompleted from "./OnlineOrderPages/Completed";
+import OnlineOrderHomePickup from "./OnlineOrderPages/Pickup";
+import OnlineOrderHomeDelivery from "./OnlineOrderPages/Delivery";
+import OnlineOrderHomeCheckout from "./OnlineOrderPages/Checkout";
 import ProductBuilderModalMobile from "./OnlineOrderPagesMobile/components/ProductBuilderModal/ProductBuilderModalMobile";
+import {
+  OrderDetailsState,
+  setOrderDetailsState,
+  setProductBuilderState,
+  setStoreDetailState,
+} from "state/state";
 
 const OrderPage = () => {
   const history = useHistory();
   const { urlEnding } = useParams();
-  const [storeDetails, setstoreDetails] = useState({});
   const [catalog, setcatalog] = useState({
     categories: [],
     products: [],
   });
-  const height = useWindowDimensions().height;
   const width = useWindowDimensions().width;
-  const [orderDetails, setorderDetails] = useState({
-    delivery: null,
-    address: null,
-    customer: {
-      name: "",
-      phoneNumber: "",
-      email: "",
-      address: null,
-    },
-  });
-  const [page, setpage] = useState(1);
+  const orderDetails = OrderDetailsState.use();
+  const page = orderDetails.page;
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  const [enterDetailsSection, setenterDetailsSection] = useState(null);
 
   const customSort = (a, b) => {
     // Handle cases where one or both items don't have a rank
@@ -71,7 +65,15 @@ const OrderPage = () => {
 
         const products = [];
 
-        setstoreDetails({
+        setProductBuilderState({
+          product: null,
+          itemIndex: null,
+          imageUrl: "",
+          isOnlineOrder: true,
+          isOpen: false,
+        });
+
+        setStoreDetailState({
           ...querySnapshot.docs[0].data().storeDetails,
           docID: querySnapshot.docs[0].id,
           stripePublicKey: querySnapshot.docs[0].data().stripePublicKey,
@@ -102,7 +104,7 @@ const OrderPage = () => {
                         ...product,
                         index: index + 1,
                       });
-                      return prev; 
+                      return prev;
                     }
 
                     return [
@@ -240,17 +242,12 @@ const OrderPage = () => {
           width: "100%",
           top: 0,
           left: 0,
-          display: page === 4 ? null : "none",
+          display: page === 4 ? undefined : "none",
         }}
       >
         <OrderCartMain
-          storeDetails={storeDetails}
-          setorderDetails={setorderDetails}
-          orderDetails={orderDetails}
-          setpage={setpage}
           catalog={{ categories: catalog.categories, products: data }}
           setshowProduct={setshowProduct}
-          page={page}
         />
       </View>
       {(page === 1 || page === 2 || page === 3 || page === 5 || page === 6) && (
@@ -264,61 +261,11 @@ const OrderPage = () => {
             left: 0,
           }}
         >
-          {page === 2 && (
-            <OnlineOrderHomePickup
-              storeDetails={storeDetails}
-              setorderDetails={setorderDetails}
-              orderDetails={orderDetails}
-              setpage={setpage}
-              page={page}
-            />
-          )}
-          {page === 3 && (
-            <OnlineOrderHomeDelivery
-              storeDetails={storeDetails}
-              setorderDetails={setorderDetails}
-              orderDetails={orderDetails}
-              setpage={setpage}
-              page={page}
-            />
-          )}
-          {/* {page === 4 && (
-        <OrderCartMain
-          storeDetails={storeDetails}
-          setorderDetails={setorderDetails}
-          orderDetails={orderDetails}
-          setpage={setpage}
-          catalog={{ categories: catalog.categories, products: data }}
-          setshowProduct={setshowProduct}
-        />
-      )} */}
-          {page === 5 && (
-            <OnlineOrderHomeCheckout
-              storeDetails={storeDetails}
-              setorderDetails={setorderDetails}
-              orderDetails={orderDetails}
-              setpage={setpage}
-              page={page}
-            />
-          )}
-          {page === 6 && (
-            <OnlineOrderHomeCompleted
-              storeDetails={storeDetails}
-              setorderDetails={setorderDetails}
-              orderDetails={orderDetails}
-              setpage={setpage}
-              page={page}
-            />
-          )}
-          {page === 1 && (
-            <OnlineOrderHome
-              storeDetails={storeDetails}
-              setorderDetails={setorderDetails}
-              orderDetails={orderDetails}
-              setpage={setpage}
-              page={page}
-            />
-          )}
+          {page === 2 && <OnlineOrderHomePickup />}
+          {page === 3 && <OnlineOrderHomeDelivery />}
+          {page === 5 && <OnlineOrderHomeCheckout />}
+          {page === 6 && <OnlineOrderHomeCompleted />}
+          {page === 1 && <OnlineOrderHome />}
         </View>
       )}
       {showProduct && (

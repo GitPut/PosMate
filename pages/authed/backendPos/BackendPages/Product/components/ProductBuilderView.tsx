@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Image, Text, ScrollView } from "react-native";
-import AddToCartBtn from "components/MainPosPage/components/ProductBuilderModal/AddToCartBtn";
-import DropdownSelectableOption from "components/MainPosPage/components/ProductBuilderModal/DropdownSelectableOption";
-import MultipleTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/MultipleTimeSelectableOptionGroup";
-import TableOption from "components/MainPosPage/components/ProductBuilderModal/TableOption";
-import OneTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/OneTimeSelectableOptionGroup";
+import AddToCartBtn from "components/MainPosPage/components/ProductBuilderModal/PosComponents/AddToCartBtn";
+import DropdownSelectableOption from "components/MainPosPage/components/ProductBuilderModal/PosComponents/DropdownSelectableOption";
+import MultipleTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/PosComponents/MultipleTimeSelectableOptionGroup";
+import TableOption from "components/MainPosPage/components/ProductBuilderModal/PosComponents/TableOption";
+import OneTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/PosComponents/OneTimeSelectableOptionGroup";
 import ItemNoOptionsView from "./ItemNoOptionsView";
 
 function ProductBuilderView({ product, imageUrl }) {

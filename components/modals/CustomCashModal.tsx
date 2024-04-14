@@ -11,6 +11,7 @@ import Modal from "react-native-modal-web";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import { myDeviceDetailsState, storeDetailState } from "state/state";
 import { useAlert } from "react-alert";
+import qz from "qz-tray";
 
 const CustomcustomCashModal = () => {
   const { height, width } = useWindowDimensions();
@@ -39,7 +40,6 @@ const CustomcustomCashModal = () => {
       storeDetails.settingsPassword.length === 0
     ) {
       if (parseFloat(total) > 0 && parseFloat(cash) > 0) {
-        const qz = require("qz-tray");
         qz.websocket
           .connect()
           .then(function () {
@@ -125,7 +125,6 @@ const CustomcustomCashModal = () => {
         storeDetails.settingsPassword === managerCodeEntered) ||
       storeDetails.settingsPassword.length === 0
     ) {
-      const qz = require("qz-tray");
       qz.websocket
         .connect()
         .then(function () {

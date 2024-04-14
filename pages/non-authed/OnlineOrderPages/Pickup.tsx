@@ -10,76 +10,38 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
-import CheckOutDetails from "./components/home/CheckOutDetails";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+import {
+  OrderDetailsState,
+  setOrderDetailsState,
+  storeDetailState,
+} from "state/state";
 
-function OnlineOrderHomeCheckout({
-  storeDetails,
-  setorderDetails,
-  orderDetails,
-  setpage,
-  page,
-}) {
+function OnlineOrderHomePickup() {
+  const storeDetails = storeDetailState.use();
+  const orderDetails = OrderDetailsState.use();
+  const page = orderDetails.page;
   const screenWidth = useWindowDimensions().width;
-  const screenHeight = useWindowDimensions().height;
 
   return (
     <View style={styles.container}>
       <View style={styles.backgroundContainer}>
         <View style={styles.plantImgContainer}>
-          {/* <Image
-            source={require("./assets/images/image_JqcD..png")}
-            resizeMode="contain"
-            style={[styles.plantImg, screenWidth < 1000 && { width: 100 }]}
-          /> */}
           <View style={styles.wingImgContainer}>
-            {/* <Image
-              source={
-                screenWidth > 1000
-                  ? require("./assets/images/image_BSgk..png")
-                  : require("./assets/images/sidewings.png")
-              }
-              resizeMode="contain"
-              style={[
-                styles.wingImg,
-                screenWidth < 1000 && {
-                  width: 200,
-                  position: "absolute",
-                  right: 0,
-                  bottom: "15%",
-                },
-              ]}
-            /> */}
             <View style={styles.pizzaImgContainer}>
-              {/* <Image
-                source={require("./assets/images/image_DrUG..png")}
-                resizeMode="contain"
-                style={[
-                  styles.pizzaImg,
-                  screenWidth < 1000 && {
-                    height: 350,
-                    width: 200,
-                    right: 0,
-                    top: 0,
-                    position: "absolute",
-                  },
-                ]}
-              /> */}
               <View style={styles.frontContainer}>
                 <View style={styles.logoGroup}>
                   {storeDetails.hasLogo ? (
                     <Pressable
                       onPress={() => {
                         if (page === 5) {
-                          setpage(4);
+                          setOrderDetailsState({ page: 4 });
                         } else {
-                          setorderDetails({
+                          setOrderDetailsState({
                             ...orderDetails,
                             delivery: false,
                             address: null,
                           });
-                          setpage(1);
+                          setOrderDetailsState({ page: 1 });
                         }
                       }}
                     >
@@ -93,14 +55,14 @@ function OnlineOrderHomeCheckout({
                     <Pressable
                       onPress={() => {
                         if (page === 5) {
-                          setpage(4);
+                          setOrderDetailsState({ page: 4 });
                         } else {
-                          setorderDetails({
+                          setOrderDetailsState({
                             ...orderDetails,
                             delivery: false,
                             address: null,
                           });
-                          setpage(1);
+                          setOrderDetailsState({ page: 1 });
                         }
                       }}
                     >
@@ -121,15 +83,8 @@ function OnlineOrderHomeCheckout({
                   ></Image>
                 </View>
                 {screenWidth > 1000 ? (
-                  <Elements stripe={loadStripe(storeDetails.stripePublicKey)}>
-                    <CheckOutDetails
-                      storeDetails={storeDetails}
-                      setorderDetails={setorderDetails}
-                      orderDetails={orderDetails}
-                      setpage={setpage}
-                      width={screenWidth > 1000 ? 380 : screenWidth * 0.9}
-                    />
-                  </Elements>
+                  <PickupDetails
+                  />
                 ) : (
                   <View
                     style={{
@@ -138,15 +93,8 @@ function OnlineOrderHomeCheckout({
                       width: "100%",
                     }}
                   >
-                    <Elements stripe={loadStripe(storeDetails.stripePublicKey)}>
-                      <CheckOutDetails
-                        storeDetails={storeDetails}
-                        setorderDetails={setorderDetails}
-                        orderDetails={orderDetails}
-                        setpage={setpage}
-                        width={screenWidth > 1000 ? 380 : screenWidth * 0.9}
-                      />
-                    </Elements>
+                    <PickupDetails
+                    />
                   </View>
                 )}
                 <View style={styles.bottomRowGroup}>
@@ -383,4 +331,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OnlineOrderHomeCheckout;
+export default OnlineOrderHomePickup;

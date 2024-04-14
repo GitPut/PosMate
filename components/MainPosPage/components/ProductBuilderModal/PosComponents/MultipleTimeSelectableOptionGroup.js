@@ -1,11 +1,10 @@
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   View,
   Text,
   Pressable,
   ScrollView,
-  TextInput,
   Modal,
 } from "react-native";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
@@ -21,11 +20,14 @@ function MultipleTimeSelectableOptionGroup({
   index,
   e,
   optionsSelectedLabel,
+  scrollY,
 }) {
   const options = e.optionsList;
   const [localMyObjProfile, setlocalMyObjProfile] = useState(myObjProfile);
   const [localOptionsSelectedLabel, setlocalOptionsSelectedLabel] =
     useState("");
+  const dropdownRef = useRef(); // Reference to the original button
+  const [dropdownLayout, setDropdownLayout] = useState();
 
   const onMinusPress = ({ option, listIndex }) => {
     const newMyObjProfile = structuredClone(localMyObjProfile);
@@ -73,25 +75,29 @@ function MultipleTimeSelectableOptionGroup({
         newMyObjProfile.options[index].optionsList[listIndex].selectedTimes = 1;
       }
       setlocalMyObjProfile(newMyObjProfile);
-    } else {
-      // console.log(
-      //   "Didnt Work ",
-      //   "selectedTimesTotal: ",
-      //   selectedTimesTotal,
-      //   " e.numOfSelectable: ",
-      //   e.numOfSelectable
-      // );
     }
   };
 
-  const dropdownRef = useRef(); // Reference to the original button
-  const [dropdownLayout, setDropdownLayout] = useState();
+  useEffect(() => {
+    // Ensure this code runs in a web environment
+    if (dropdownRef.current && typeof window !== "undefined") {
+      const element = dropdownRef.current; // Assuming this ref points to a DOM element
+      // You might need to adjust this to get the actual DOM node in React Native Web
+
+      const boundingRect = element.getBoundingClientRect();
+
+      setDropdownLayout({
+        x: boundingRect.left,
+        y: boundingRect.top, // Adjust based on scroll position
+        width: boundingRect.width,
+        height: boundingRect.height,
+      });
+    }
+  }, [scrollY]); // Recalculate when scroll position changes
 
   useEffect(() => {
-    dropdownRef.current.measureInWindow((x, y, width, height) => {
-      setDropdownLayout({ x, y, width, height });
-    });
-  }, []);
+    setlocalMyObjProfile(myObjProfile);
+  }, [myObjProfile]);
 
   useEffect(() => {
     const optionsSelected = localMyObjProfile.options[index].optionsList.filter(
@@ -132,7 +138,6 @@ function MultipleTimeSelectableOptionGroup({
         <Pressable
           style={styles.dropdown}
           onPress={() => {
-            console.log("openDropdown", openDropdown, id);
             if (openDropdown === id) {
               setopenDropdown(null);
               setmyObjProfile(localMyObjProfile); // Save the local changes
@@ -188,7 +193,6 @@ function MultipleTimeSelectableOptionGroup({
             <Pressable
               style={styles.dropdown}
               onPress={() => {
-                console.log("openDropdown", openDropdown, id);
                 if (openDropdown === id) {
                   setopenDropdown(null);
                   setmyObjProfile(localMyObjProfile); // Save the local changes

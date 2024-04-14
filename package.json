@@ -69,6 +69,7 @@
     "@babel/plugin-transform-private-property-in-object": "^7.24.1",
     "@expo/webpack-config": "~19.0.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
+    "@types/qz-tray": "^2.2.0",
     "@types/react": "~18.2.45",
     "@types/react-alert": "^7.0.6",
     "@types/react-router-dom": "^5.3.3",

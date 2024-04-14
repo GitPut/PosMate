@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
 import {
+  ProductBuilderState,
   cartState,
   myDeviceDetailsState,
   storeDetailState,
   userStoreState,
-  setIsSignedInSettingsState,
 } from "state/state";
-import { useHistory } from "react-router-dom";
 import { auth, db } from "state/firebaseConfig";
 import ReceiptPrint from "components/functional/ReceiptPrint";
 import CashScreen from "components/modals/PayByCashModal";
@@ -26,6 +25,8 @@ import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import CustomCashModal from "components/modals/CustomCashModal";
 import AuthPasswordModal from "components/modals/AuthPasswordModal";
 import { useAlert } from "react-alert";
+import qz from "qz-tray";
+import ProductBuilderModal from "./components/ProductBuilderModal/ProductBuilderModal";
 
 function OrderPagePosHome() {
   const { height, width } = useWindowDimensions();
@@ -37,6 +38,7 @@ function OrderPagePosHome() {
 
   const { section, deliveryChecked, saveCustomerModal, discountAmount } =
     posHomeState.use();
+  const ProductBuilderProps = ProductBuilderState.use();
 
   function parseDate(input: Date) {
     // Check if the input is a Date object
@@ -78,7 +80,6 @@ function OrderPagePosHome() {
           ) {
             console.log("Printing");
             const data = ReceiptPrint(doc.data(), storeDetails);
-            const qz = require("qz-tray");
             qz.websocket
               .connect()
               .then(function () {
@@ -235,6 +236,62 @@ function OrderPagePosHome() {
       <CustomCashModal />
       <DiscountModal />
       <AuthPasswordModal />
+      <Modal
+        isVisible={ProductBuilderProps.isOpen}
+        animationIn="slideInLeft"
+        animationOut="slideOutLeft"
+        backdropOpacity={0}
+      >
+        <View
+          style={{
+            height: height,
+            width: width,
+            flexDirection: "row",
+            left: "-5%",
+          }}
+        >
+          <View
+            style={[
+              width > 1400
+                ? {
+                    height: "100%",
+                    width: "70%",
+                    borderTopRightRadius: 3,
+                  }
+                : {
+                    height: "100%",
+                    width: "100%",
+                    borderTopRightRadius: 3,
+                    left: "-1.5%",
+                  },
+            ]}
+          >
+            {ProductBuilderProps.product && <ProductBuilderModal />}
+          </View>
+          {width > 1400 && (
+            <View
+              style={{
+                flexDirection: "row",
+                height: "100%",
+                width: "37%",
+                position: "relative",
+              }}
+            >
+              <View
+                style={{
+                  shadowColor: "rgba(0,0,0,1)",
+                  shadowOffset: { width: -10, height: 0 },
+                  shadowOpacity: 0.05,
+                  shadowRadius: 10,
+                  width: "100%",
+                  height: "100%",
+                  elevation: 30,
+                }}
+              />
+            </View>
+          )}
+        </View>
+      </Modal>
     </View>
   );
 }

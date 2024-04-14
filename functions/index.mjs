@@ -1,24 +1,20 @@
-// import { createRequire } from "module";
-// const require = createRequire(import.meta.url);
+// Importing modules with ES6 syntax
+import functions from "firebase-functions";
+import admin from "firebase-admin";
+import nodemailer from "nodemailer";
+import stripe from "stripe";
+import cors from "cors";
+import axios from "axios";
 
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-const nodemailer = require("nodemailer");
-const stripe = require("stripe");
-const cors = require("cors")({ origin: true });
+// Additional constants
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
-const axios = require("axios");
+
+// Handling the cors initialization separately as it needs specific handling
+const corsHandler = cors({ origin: true });
 
 admin.initializeApp();
 
 const db = admin.firestore();
-
-// const client = new SMTPClient({
-//   user: "support@divinepos.com",
-//   password: "20Peter12",
-//   host: "smtp.office365.com",
-//   ssl: true,
-// });
 
 //create and config transporter
 let transporter = nodemailer.createTransport({
@@ -36,8 +32,7 @@ let transporter = nodemailer.createTransport({
   },
 });
 
-//export the cloud function called `sendEmail`
-exports.sendEmail = functions.https.onRequest((req, res) => {
+export const sendCustomEmail = functions.https.onRequest((req, res) => {
   //for testing purposes
   console.log(
     "from sendEmail function. The request object is:",
@@ -45,50 +40,7 @@ exports.sendEmail = functions.https.onRequest((req, res) => {
   );
 
   //enable CORS using the `cors` express middleware.
-  cors(req, res, () => {
-    //get contact form data from the req and then assigned it to variables
-    const email = req.body.email;
-    const name = req.body.name;
-    const message = req.body.message;
-
-    //config the email message
-    const mailOptions = {
-      from: email,
-      to: `support@divinepos.com`,
-      subject: "Divine Pos Message",
-      text: message,
-    };
-
-    //call the built in `sendMail` function and return different responses upon success and failure
-    return transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return res.status(500).send({
-          data: {
-            status: 500,
-            message: error.toString(),
-          },
-        });
-      }
-
-      return res.status(200).send({
-        data: {
-          status: 200,
-          message: "sent",
-        },
-      });
-    });
-  });
-});
-
-exports.sendCustomEmail = functions.https.onRequest((req, res) => {
-  //for testing purposes
-  console.log(
-    "from sendEmail function. The request object is:",
-    JSON.stringify(req.body)
-  );
-
-  //enable CORS using the `cors` express middleware.
-  cors(req, res, () => {
+  corsHandler(req, res, () => {
     //get contact form data from the req and then assigned it to variables
     const fromEmail = req.body.fromEmail;
     const toEmail = req.body.toEmail;
@@ -126,9 +78,9 @@ exports.sendCustomEmail = functions.https.onRequest((req, res) => {
 });
 
 //export the cloud function called `sendEmail`
-exports.sendPasswordResetEmail = functions.https.onRequest((req, res) => {
+export const sendPasswordResetEmail = functions.https.onRequest((req, res) => {
   //enable CORS using the `cors` express middleware.
-  cors(req, res, () => {
+  corsHandler(req, res, () => {
     //get contact form data from the req and then assigned it to variables
     const email = req.body.email;
 
@@ -167,9 +119,9 @@ exports.sendPasswordResetEmail = functions.https.onRequest((req, res) => {
 });
 
 //export the cloud function called `sendEmail`
-exports.sendSettingsPass = functions.https.onRequest((req, res) => {
+export const sendSettingsPass = functions.https.onRequest((req, res) => {
   //enable CORS using the `cors` express middleware.
-  cors(req, res, () => {
+  corsHandler(req, res, () => {
     //get contact form data from the req and then assigned it to variables
     const email = req.body.email;
     const password = req.body.password;
@@ -190,53 +142,29 @@ exports.sendSettingsPass = functions.https.onRequest((req, res) => {
   });
 });
 
-exports.sendCustomEmail = functions.https.onRequest((req, res) => {
-  //enable CORS using the `cors` express middleware.
-  cors(req, res, () => {
-    //get contact form data from the req and then assigned it to variables
-    const email = req.body.email;
-    const subject = req.body.subject;
-    const html = req.body.html;
-
-    const mailOptions = {
-      from: "support@divinepos.com",
-      to: email,
-      subject: subject,
-      html: html,
-    };
-    return transporter.sendMail(mailOptions, (error, data) => {
-      if (error) {
-        return res.send(error.toString());
-      }
-      var returnData = JSON.stringify(data);
-      return res.send(`Sent! ${returnData}`);
-    });
-  });
-});
-
-exports.processPayment = functions.https.onRequest(async (req, res) => {
-  cors(req, res, async () => {
+export const processPayment = functions.https.onRequest(async (req, res) => {
+  corsHandler(req, res, async () => {
     try {
       const { token, amount, currency, storeUID, orderDetails, storeDetails } =
         req.body;
 
       // Fetch the secret key from Firestore or Realtime Database
-      // const configSnapshot = await db.collection("users").doc(storeUID).get();
-      // const secretKey = configSnapshot.data().stripeSecretKey;
+      const configSnapshot = await db.collection("users").doc(storeUID).get();
+      const secretKey = configSnapshot.data().stripeSecretKey;
 
-      // const charge = await stripe(secretKey).charges.create({
-      //   amount: amount * 100,
-      //   currency: currency || "cad",
-      //   source: token,
-      // });
+      const charge = await stripe(secretKey).charges.create({
+        amount: amount * 100,
+        currency: currency || "cad",
+        source: token,
+      });
 
-      // console.log("Payment succeeded:", charge);
+      console.log("Payment succeeded:", charge);
 
-      // await db
-      //   .collection("users")
-      //   .doc(storeUID)
-      //   .collection("pendingOrders")
-      //   .add(orderDetails);
+      await db
+        .collection("users")
+        .doc(storeUID)
+        .collection("pendingOrders")
+        .add(orderDetails);
 
       const mailOptions = {
         from: "support@divinepos.com",
@@ -259,8 +187,8 @@ exports.processPayment = functions.https.onRequest(async (req, res) => {
   });
 });
 
-exports.getLatLng = functions.https.onRequest(async (req, res) => {
-  cors(req, res, async () => {
+export const getLatLng = functions.https.onRequest(async (req, res) => {
+  corsHandler(req, res, async () => {
     try {
       const { placeId } = req.body;
 
@@ -294,9 +222,9 @@ exports.getLatLng = functions.https.onRequest(async (req, res) => {
   });
 });
 
-exports.sendWelcomeEmail = functions.https.onRequest((req, res) => {
+export const sendWelcomeEmail = functions.https.onRequest((req, res) => {
   //enable CORS using the `cors` express middleware.
-  cors(req, res, () => {
+  corsHandler(req, res, () => {
     //get contact form data from the req and then assigned it to variables
     const email = req.body.email;
     const name = req.body.name;

@@ -18,15 +18,27 @@ function DropdownSelectableOption({
   value,
   setValue,
   options,
+  scrollY,
 }) {
   const dropdownRef = useRef(); // Reference to the original button
   const [dropdownLayout, setDropdownLayout] = useState();
 
   useEffect(() => {
-    dropdownRef.current.measureInWindow((x, y, width, height) => {
-      setDropdownLayout({ x, y, width, height });
-    });
-  }, []);
+    // Ensure this code runs in a web environment
+    if (dropdownRef.current && typeof window !== "undefined") {
+      const element = dropdownRef.current; // Assuming this ref points to a DOM element
+      // You might need to adjust this to get the actual DOM node in React Native Web
+
+      const boundingRect = element.getBoundingClientRect();
+
+      setDropdownLayout({
+        x: boundingRect.left,
+        y: boundingRect.top, // Adjust based on scroll position
+        width: boundingRect.width,
+        height: boundingRect.height,
+      });
+    }
+  }, [scrollY]); // Recalculate when scroll position changes
 
   return (
     <View style={[styles.container, openDropdown === id && { zIndex: 1000 }]}>

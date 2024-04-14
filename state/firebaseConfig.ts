@@ -38,16 +38,3 @@ export const auth = firebase.auth();
 export const db = firebase.firestore();
 
 export const storage = firebase.storage();
-
-export const sendEmailFunc = (data) => {
-  // firebase
-  //   .functions()
-  //   .httpsCallable("sendEmailTo")(data)
-  //   .then((response) => {
-  //     console.log(response.data);
-  //   })
-  //   .catch((error) => {
-  //     console.error(error);
-  //   });
-  //Disabled for now because i keep getting blank emails i suspect from this function
-};

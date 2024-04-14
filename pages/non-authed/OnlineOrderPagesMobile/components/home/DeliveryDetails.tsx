@@ -5,16 +5,14 @@ import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 import { useAlert } from "react-alert";
+import { OrderDetailsState, setOrderDetailsState, storeDetailState } from "state/state";
 
-function DeliveryDetails({
-  storeDetails,
-  setorderDetails,
-  orderDetails,
-  setpage,
-}) {
+function DeliveryDetails() {
+  const orderDetails = OrderDetailsState.use();
+  const storeDetails = storeDetailState.use();
   const [localName, setlocalName] = useState(orderDetails.customer.name);
   const [localPhoneNumber, setlocalPhoneNumber] = useState(
-    orderDetails.customer.phoneNumber
+    orderDetails.customer.phone
   );
   const [localAddress, setlocalAddress] = useState(orderDetails.address);
   const [localBuzzCode, setlocalBuzzCode] = useState(
@@ -177,32 +175,30 @@ function DeliveryDetails({
                 if (distance > parseFloat(storeDetails.deliveryRange)) {
                   alertP.error("The delivery address is out of range");
                 } else {
-                  setorderDetails((prev) => ({
-                    ...prev,
+                  setOrderDetailsState({
                     address: localAddress,
                     customer: {
-                      ...prev.customer,
+                      ...orderDetails.customer,
                       name: localName,
-                      phoneNumber: localPhoneNumber,
+                      phone: localPhoneNumber,
                       buzzCode: localBuzzCode,
                       unitNumber: localUnitNumber,
                     },
-                  }));
-                  setpage(2);
+                    page: 2,
+                  });
                 }
               } else {
-                setorderDetails((prev) => ({
-                  ...prev,
+                setOrderDetailsState({
                   address: localAddress,
                   customer: {
-                    ...prev.customer,
+                    ...orderDetails.customer,
                     name: localName,
-                    phoneNumber: localPhoneNumber,
+                    phone: localPhoneNumber,
                     buzzCode: localBuzzCode,
                     unitNumber: localUnitNumber,
                   },
-                }));
-                setpage(2);
+                  page: 2,
+                });
               }
             } else {
               alertP.error(

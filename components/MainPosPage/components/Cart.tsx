@@ -13,8 +13,19 @@ import CartItem from "./cartOrder/CartItem";
 import UntitledComponent from "./cartOrder/UntitledComponent";
 import { MaterialIcons } from "@expo/vector-icons";
 import CheckoutBtn from "./Cart/CheckoutBtn";
-import { cartState, setCartState, storeDetailState } from "state/state";
-import { posHomeState, updatePosHomeState } from "state/posHomeState";
+import {
+  OrderDetailsState,
+  ProductBuilderState,
+  cartState,
+  setCartState,
+  setOrderDetailsState,
+  storeDetailState,
+} from "state/state";
+import {
+  posHomeState,
+  setPosHomeState,
+  updatePosHomeState,
+} from "state/posHomeState";
 
 const Cart = () => {
   const { discountAmount, deliveryChecked, cartSub, cartNote } =
@@ -23,28 +34,45 @@ const Cart = () => {
   const storeDetails = storeDetailState.use();
   const { width } = useWindowDimensions();
   const [total, settotal] = useState(0);
+  const isOnlineOrder = ProductBuilderState.use().isOnlineOrder;
+  const orderDetails = OrderDetailsState.use();
+
+  console.log("Order details ", orderDetails);
 
   useEffect(() => {
-    // cartSub > 0
-    //   ? (
-    //       parseFloat(
-    //         deliveryChecked &&
-    //           parseFloat(storeDetails.deliveryPrice) &&
-    //           cartSub > 0
-    //           ? (cartSub - parseFloat(storeDetails.deliveryPrice)).toFixed(2)
-    //           : cartSub.toFixed(2)
-    //       ) +
-    //       parseFloat(
-    //         (
-    //           cartSub *
-    //           (parseFloat(storeDetails.taxRate) >= 0
-    //             ? parseFloat(storeDetails.taxRate) / 100
-    //             : 0.13)
-    //         ).toFixed(2)
-    //       )
-    //     ).toFixed(2)
-    //   : "0.00";
+    if (isOnlineOrder) {
+      if (cart.length > 0) {
+        let newVal = 0;
+        for (let i = 0; i < cart.length; i++) {
+          try {
+            if (cart[i].quantity > 1) {
+              newVal += parseFloat(cart[i].price) * cart[i].quantity;
+              // console.log("Cart item quantity ", cart[i].quantity);
+            } else {
+              newVal += parseFloat(cart[i].price);
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+        if (orderDetails.delivery) {
+          newVal += parseFloat(storeDetails.deliveryPrice);
+        }
 
+        updatePosHomeState({
+          cartSub: newVal,
+          deliveryChecked: orderDetails.delivery,
+        });
+      } else {
+        updatePosHomeState({
+          cartSub: 0,
+          deliveryChecked: orderDetails.delivery,
+        });
+      }
+    }
+  }, [isOnlineOrder, cart, orderDetails]);
+
+  useEffect(() => {
     if (cartSub > 0) {
       settotal(
         cartSub *
@@ -249,7 +277,72 @@ const Cart = () => {
           </View>
         </View>
       </View>
-      <CheckoutBtn />
+      {isOnlineOrder ? (
+        <Pressable
+          style={{
+            width: 170,
+            height: 48,
+            backgroundColor: "#1a2951",
+            borderRadius: 20,
+            justifyContent: "center",
+            alignItems: "center",
+            opacity: cart.length < 1 ? 0.8 : 1,
+          }}
+          disabled={cart.length < 1}
+          onPress={() => {
+            const today = new Date();
+            const transNum = Math.random().toString(36).substr(2, 9);
+
+            if (orderDetails.delivery) {
+              setOrderDetailsState({
+                date: today,
+                transNum: transNum,
+                total: (
+                  cartSub *
+                  (storeDetails.taxRate
+                    ? 1 + parseFloat(storeDetails.taxRate) / 100
+                    : 1.13)
+                ).toFixed(2),
+                method: "deliveryOrder",
+                online: true,
+                cart: cart,
+                page: 5,
+              });
+            } else {
+              setOrderDetailsState({
+                date: today,
+                transNum: transNum,
+                total: (
+                  cartSub *
+                  (storeDetails.taxRate
+                    ? 1 + parseFloat(storeDetails.taxRate) / 100
+                    : 1.13)
+                ).toFixed(2),
+                method: "pickupOrder",
+                online: true,
+                cart: cart,
+                customer: {
+                  ...orderDetails.customer,
+                  address: null,
+                },
+                page: 5,
+              });
+            }
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "700",
+              color: "rgba(255,255,255,1)",
+              fontSize: 20,
+            }}
+          >
+            Checkout
+          </Text>
+        </Pressable>
+      ) : (
+        <CheckoutBtn />
+      )}
     </View>
   );
 };

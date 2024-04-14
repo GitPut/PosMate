@@ -7,14 +7,12 @@ import { Text, Pressable, View } from "react-native";
 import CheckOutDetails from "./components/home/CheckOutDetails";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import { OrderDetailsState, setOrderDetailsState, storeDetailState } from "state/state";
 
-function OnlineOrderHome({
-  storeDetails,
-  setorderDetails,
-  orderDetails,
-  setpage,
-  page,
-}) {
+function OnlineOrderHome() {
+  const orderDetails = OrderDetailsState.use();
+  const storeDetails = storeDetailState.use();
+  const page = orderDetails.page;
   const [enterDetailsSection, setenterDetailsSection] = useState(
     page === 3 ? "checkout" : null
   );
@@ -23,29 +21,17 @@ function OnlineOrderHome({
     if (enterDetailsSection === "delivery") {
       return (
         <DeliveryDetails
-          storeDetails={storeDetails}
-          setorderDetails={setorderDetails}
-          orderDetails={orderDetails}
-          setpage={setpage}
         />
       );
     } else if (enterDetailsSection === "pickup") {
       return (
         <PickupDetails
-          storeDetails={storeDetails}
-          setorderDetails={setorderDetails}
-          orderDetails={orderDetails}
-          setpage={setpage}
         />
       );
     } else if (page === 3) {
       return (
         <Elements stripe={loadStripe(storeDetails.stripePublicKey)}>
           <CheckOutDetails
-            storeDetails={storeDetails}
-            setorderDetails={setorderDetails}
-            orderDetails={orderDetails}
-            setpage={setpage}
           />
         </Elements>
       );
@@ -70,9 +56,9 @@ function OnlineOrderHome({
               <Logo
                 onClick={() => {
                   if (page > 1) {
-                    setpage((prev) => prev - 1);
+                    setOrderDetailsState({page: page - 1})
                   } else {
-                    setorderDetails({
+                    setOrderDetailsState({
                       ...orderDetails,
                       delivery: false,
                       address: null,
@@ -86,9 +72,9 @@ function OnlineOrderHome({
               <Pressable
                 onPress={() => {
                   if (page > 1) {
-                    setpage((prev) => prev - 1);
+                    setOrderDetailsState({ page: page - 1 });
                   } else {
-                    setorderDetails({
+                    setOrderDetailsState({
                       ...orderDetails,
                       delivery: false,
                       address: null,
@@ -117,7 +103,7 @@ function OnlineOrderHome({
                   </PickupBtn>
                   <DeliveryBtn
                     onClick={() => {
-                      setorderDetails({ ...orderDetails, delivery: true });
+                      setOrderDetailsState({ ...orderDetails, delivery: true });
                       setenterDetailsSection("delivery");
                     }}
                   >
@@ -167,10 +153,10 @@ function OnlineOrderHome({
                   }}
                 ></Entypo>
                 <AddressTxt>
-                  {storeDetails.address?.value.structured_formatting.main_text}
+                  {storeDetails.address?.value?.structured_formatting.main_text}
                   {"\n"}
                   {
-                    storeDetails.address?.value.structured_formatting
+                    storeDetails.address?.value?.structured_formatting
                       .secondary_text
                   }
                 </AddressTxt>

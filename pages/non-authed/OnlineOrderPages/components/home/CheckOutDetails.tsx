@@ -9,17 +9,16 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import { useAlert } from "react-alert";
+import { OrderDetailsState, setOrderDetailsState, storeDetailState } from "state/state";
 
 function CheckOutDetails({
-  storeDetails,
-  setorderDetails,
-  orderDetails,
-  setpage,
   width,
 }) {
   const [emailAddress, setEmailAddress] = useState("");
   const [loading, setloading] = useState(false);
   const alertP = useAlert();
+  const orderDetails = OrderDetailsState.use();
+  const storeDetails = storeDetailState.use();
 
   const stripe = useStripe();
   const elements = useElements();
@@ -73,7 +72,9 @@ function CheckOutDetails({
           const responseData = await response.json();
           if (responseData.success) {
             console.log("Payment processed successfully!");
-            setpage(6);
+             setOrderDetailsState({
+               page: 6,
+             });
           } else {
             console.error(
               "Payment processing failed. Server message:",

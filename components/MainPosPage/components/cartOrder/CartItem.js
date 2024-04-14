@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons, Entypo } from "@expo/vector-icons";
 import ProductBuilderModal from "../ProductBuilderModal/ProductBuilderModal";
+import { setProductBuilderState } from "state/state";
 
 function CartItem({
   cartItem,
@@ -20,40 +21,7 @@ function CartItem({
   increaseAction,
   style,
 }) {
-  const [showProductScreen, setshowProductScreen] = useState(false);
-  const xPos = useRef(new Animated.Value(-1000)).current;
-  const shadowOpacity = useRef(new Animated.Value(0)).current;
   const [isOpen, setisOpen] = useState(false);
-  const { width } = useWindowDimensions();
-
-  const fadeIn = () => {
-    // Will change xPos value to 0 in 3 seconds
-    setshowProductScreen(true);
-    Animated.timing(xPos, {
-      toValue: 0,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-    Animated.timing(shadowOpacity, {
-      toValue: 1,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const fadeOut = () => {
-    // Will change xPos value to 0 in 3 seconds
-    Animated.timing(shadowOpacity, {
-      toValue: 0,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-    Animated.timing(xPos, {
-      toValue: -1000,
-      duration: 100,
-      useNativeDriver: false,
-    }).start(() => setshowProductScreen(false));
-  };
 
   return (
     <View style={[styles.container, style]}>
@@ -105,7 +73,17 @@ function CartItem({
           <View style={styles.bottomBtnRow}>
             {!cartItem.editableObj && <View />}
             {cartItem.editableObj && (
-              <Pressable style={styles.cartItemEditBtn} onPress={fadeIn}>
+              <Pressable
+                style={styles.cartItemEditBtn}
+                onPress={() => {
+                  setProductBuilderState({
+                    product: cartItem.editableObj,
+                    itemIndex: index,
+                    imageUrl: cartItem.imageUrl ? cartItem.imageUrl : null,
+                    isOpen: true,
+                  });
+                }}
+              >
                 <MaterialCommunityIcons
                   name="pencil"
                   style={styles.pencilIcon}
@@ -159,46 +137,6 @@ function CartItem({
             </Text>
           )}
         </View>
-      )}
-      {showProductScreen && (
-        <Modal transparent={true}>
-          <Animated.View
-            style={{
-              flex: 1,
-              justifyContent: "flex-end",
-              alignItems: "flex-start",
-              position: "absolute",
-              height: "100%",
-              width: "100%",
-              bottom: 0,
-              left: xPos,
-              zIndex: 0,
-            }}
-          >
-            <View
-              style={[
-                width > 1400
-                  ? {
-                      height: "100%",
-                      width: "70%",
-                      borderTopRightRadius: 3,
-                    }
-                  : {
-                      height: "100%",
-                      width: "100%",
-                      borderTopRightRadius: 3,
-                    },
-              ]}
-            >
-              <ProductBuilderModal
-                product={cartItem.editableObj}
-                itemIndex={index}
-                goBack={() => fadeOut()}
-                imageUrl={cartItem.imageUrl ? cartItem.imageUrl : null}
-              />
-            </View>
-          </Animated.View>
-        </Modal>
       )}
     </View>
   );

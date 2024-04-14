@@ -226,3 +226,91 @@ export const transListTableOrgState = entity<any[]>([]);
 export const setTransListTableOrgState = (val: any[]): void => {
   transListTableOrgState.set(val);
 };
+
+interface ProductBuilderStateProps {
+  product: object | null;
+  itemIndex?: number | null;
+  imageUrl?: string;
+  isOnlineOrder: boolean;
+  isOpen: boolean;
+}
+
+export const ProductBuilderState = entity<ProductBuilderStateProps>({
+  product: null,
+  itemIndex: null,
+  imageUrl: "",
+  isOnlineOrder: false,
+  isOpen: false,
+});
+
+export const setProductBuilderState = (val: ProductBuilderStateProps): void => {
+  const productBuilderState = ProductBuilderState.get();
+  ProductBuilderState.set({ ...productBuilderState, ...val });
+};
+
+export const resetProductBuilderState = (): void => {
+  const productBuilderState = ProductBuilderState.get();
+  ProductBuilderState.set({
+    ...productBuilderState,
+    isOpen: false,
+  });
+  setTimeout(() => {
+    ProductBuilderState.set({
+      product: null,
+      itemIndex: null,
+      imageUrl: "",
+      isOnlineOrder: productBuilderState.isOnlineOrder,
+      isOpen: false,
+    });
+  }, 200);
+};
+
+interface OrderDetailsStateProps {
+  date: Date | null;
+  transNum: string | null;
+  total: string | null;
+  method: "deliveryOrder" | "pickupOrder" | null;
+  online: boolean;
+  delivery: any | null;
+  address: any | null;
+  customer: {
+    name: string;
+    phone: string;
+    email: string;
+    address: any | null;
+    buzzCode?: string;
+    unitNumber?: string;
+  };
+  cart: any[];
+  page: number;
+}
+
+export const OrderDetailsState = entity<OrderDetailsStateProps>({
+  date: null,
+  transNum: null,
+  total: null,
+  method: null,
+  online: true,
+  delivery: null,
+  address: null,
+  customer: {
+    name: "",
+    phone: "",
+    email: "",
+    address: null,
+    buzzCode: "",
+    unitNumber: "",
+  },
+  cart: [],
+  page: 1,
+});
+
+export const setOrderDetailsState = (
+  val: Partial<OrderDetailsStateProps>
+): void => {
+  OrderDetailsState.set({
+    ...OrderDetailsState.get(),
+    ...val,
+    customer: { ...OrderDetailsState.get().customer, ...val.customer },
+  });
+};

@@ -7,6 +7,7 @@ import { Excel as ExcelDownload } from "antd-table-saveas-excel";
 import { auth, db } from "state/firebaseConfig";
 import ReceiptPrint from "components/functional/ReceiptPrint";
 import { useAlert } from "react-alert";
+import qz from "qz-tray";
 
 function InvoiceReport() {
   const [startDate, setStartDate] = useState('');
@@ -75,7 +76,6 @@ function InvoiceReport() {
           const formatedData = ReceiptPrint(element, storeDetails, true);
           data = data.concat(formatedData.data);
         });
-        const qz = require("qz-tray");
         if (
           myDeviceDetails.sendPrintToUserID &&
           myDeviceDetails.useDifferentDeviceToPrint
@@ -256,7 +256,6 @@ function InvoiceReport() {
           printData: data,
         });
     } else {
-      const qz = require("qz-tray");
       qz.websocket
         .connect()
         .then(function () {

@@ -10,73 +10,40 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
+import {
+  OrderDetailsState,
+  setOrderDetailsState,
+  storeDetailState,
+} from "state/state";
 
-function OnlineOrderHomeDelivery({
-  storeDetails,
-  setorderDetails,
-  orderDetails,
-  setpage,
-  page,
-}) {
+function OnlineOrderHome() {
+  const storeDetails = storeDetailState.use();
+  const orderDetails = OrderDetailsState.use();
+  const page = orderDetails.page;
   const screenWidth = useWindowDimensions().width;
-  const screenHeight = useWindowDimensions().height;
 
   return (
     <View style={styles.container}>
       <View style={styles.backgroundContainer}>
         <View style={styles.plantImgContainer}>
-          {/* <Image
-            source={require("./assets/images/image_JqcD..png")}
-            resizeMode="contain"
-            style={[styles.plantImg, screenWidth < 1000 && { width: 100 }]}
-          /> */}
           <View style={styles.wingImgContainer}>
-            {/* <Image
-              source={
-                screenWidth > 1000
-                  ? require("./assets/images/image_BSgk..png")
-                  : require("./assets/images/sidewings.png")
-              }
-              resizeMode="contain"
-              style={[
-                styles.wingImg,
-                screenWidth < 1000 && {
-                  width: 200,
-                  position: "absolute",
-                  right: 0,
-                  bottom: "15%",
-                },
-              ]}
-            /> */}
             <View style={styles.pizzaImgContainer}>
-              {/* <Image
-                source={require("./assets/images/image_DrUG..png")}
-                resizeMode="contain"
-                style={[
-                  styles.pizzaImg,
-                  screenWidth < 1000 && {
-                    height: 350,
-                    width: 200,
-                    right: 0,
-                    top: 0,
-                    position: "absolute",
-                  },
-                ]}
-              /> */}
               <View style={styles.frontContainer}>
                 <View style={styles.logoGroup}>
                   {storeDetails.hasLogo ? (
                     <Pressable
                       onPress={() => {
                         if (page === 5) {
-                          setpage(4);
+                          setOrderDetailsState({
+                            page: 4,
+                          });
                         } else {
-                          setorderDetails({
+                          setOrderDetailsState({
                             ...orderDetails,
                             delivery: false,
                             address: null,
+                            page: 1,
                           });
-                          setpage(1);
                         }
                       }}
                     >
@@ -90,14 +57,16 @@ function OnlineOrderHomeDelivery({
                     <Pressable
                       onPress={() => {
                         if (page === 5) {
-                          setpage(4);
+                          setOrderDetailsState({
+                            page: 4,
+                          });
                         } else {
-                          setorderDetails({
+                          setOrderDetailsState({
                             ...orderDetails,
                             delivery: false,
                             address: null,
+                            page: 1,
                           });
-                          setpage(1);
                         }
                       }}
                     >
@@ -118,29 +87,103 @@ function OnlineOrderHomeDelivery({
                   ></Image>
                 </View>
                 {screenWidth > 1000 ? (
-                  <DeliveryDetails
-                    storeDetails={storeDetails}
-                    setorderDetails={setorderDetails}
-                    orderDetails={orderDetails}
-                    setpage={setpage}
-                    width={screenWidth > 1000 ? 380 : screenWidth * 0.9}
-                  />
+                  <>
+                    {storeDetails.acceptDelivery ? (
+                      <View style={styles.btnContainerRow}>
+                        <Pressable
+                          style={styles.pickupBtn}
+                          onPress={() =>
+                            setOrderDetailsState({
+                              page: 2,
+                            })
+                          }
+                        >
+                          <Text style={styles.pickupBtnTxt}>PICK UP</Text>
+                        </Pressable>
+                        <Pressable
+                          style={styles.deliveryBtn}
+                          onPress={() => {
+                            setOrderDetailsState({
+                              ...orderDetails,
+                              delivery: true,
+                              page: 3,
+                            });
+                          }}
+                        >
+                          <Text style={styles.deliveryBtnTxt}>DELIVERY</Text>
+                        </Pressable>
+                      </View>
+                    ) : (
+                      <div
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Pressable
+                          style={styles.pickupBtn}
+                          onPress={() =>
+                            setOrderDetailsState({
+                              page: 2,
+                            })
+                          }
+                        >
+                          <Text style={styles.pickupBtnTxt}>PICK UP</Text>
+                        </Pressable>
+                      </div>
+                    )}
+                  </>
                 ) : (
-                  <View
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: "100%",
-                    }}
-                  >
-                    <DeliveryDetails
-                      storeDetails={storeDetails}
-                      setorderDetails={setorderDetails}
-                      orderDetails={orderDetails}
-                      setpage={setpage}
-                      width={screenWidth > 1000 ? 380 : screenWidth * 0.9}
-                    />
-                  </View>
+                  <>
+                    {storeDetails.acceptDelivery ? (
+                      <View>
+                        <Pressable
+                          style={[styles.pickupBtn, { marginBottom: 20 }]}
+                          onPress={() =>
+                            setOrderDetailsState({
+                              page: 2,
+                            })
+                          }
+                        >
+                          <Text style={styles.pickupBtnTxt}>PICK UP</Text>
+                        </Pressable>
+                        <Pressable
+                          style={styles.deliveryBtn}
+                          onPress={() => {
+                            setOrderDetailsState({
+                              ...orderDetails,
+                              delivery: true,
+                              page: 3,
+                            });
+                          }}
+                        >
+                          <Text style={styles.deliveryBtnTxt}>DELIVERY</Text>
+                        </Pressable>
+                      </View>
+                    ) : (
+                      <div
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Pressable
+                          style={styles.pickupBtn}
+                          onPress={() =>
+                            setOrderDetailsState({
+                              page: 2,
+                            })
+                          }
+                        >
+                          <Text style={styles.pickupBtnTxt}>PICK UP</Text>
+                        </Pressable>
+                      </div>
+                    )}
+                  </>
                 )}
                 <View style={styles.bottomRowGroup}>
                   <View style={styles.detailsLocationGroup}>
@@ -166,12 +209,12 @@ function OnlineOrderHomeDelivery({
                       ></Entypo>
                       <Text style={styles.addressTxt}>
                         {
-                          storeDetails.address?.value.structured_formatting
+                          storeDetails.address?.value?.structured_formatting
                             .main_text
                         }
                         {"\n"}
                         {
-                          storeDetails.address?.value.structured_formatting
+                          storeDetails.address?.value?.structured_formatting
                             .secondary_text
                         }
                       </Text>
@@ -376,4 +419,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OnlineOrderHomeDelivery;
+export default OnlineOrderHome;

@@ -9,16 +9,14 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import { useAlert } from "react-alert";
+import { OrderDetailsState, setOrderDetailsState, storeDetailState } from "state/state";
 
-function CheckOutDetails({
-  storeDetails,
-  setorderDetails,
-  orderDetails,
-  setpage,
-}) {
+function CheckOutDetails() {
   const [emailAddress, setEmailAddress] = useState("");
   const [loading, setloading] = useState(false);
   const alertP = useAlert();
+  const orderDetails = OrderDetailsState.use();
+  const storeDetails = storeDetailState.use();
 
   const stripe = useStripe();
   const elements = useElements();
@@ -48,14 +46,6 @@ function CheckOutDetails({
         return;
       }
 
-      // console.log("Token:", token);
-
-      // console.log("token ", token.id);
-      // console.log("amount ", orderDetails.total);
-      // console.log("storeUID ", storeDetails.docID);
-      // console.log("orderDetails ", orderDetails);
-      // console.log("newOrderDetails ", newOrderDetails);
-
       const response = await fetch(
         "https://us-central1-posmate-5fc0a.cloudfunctions.net/processPayment",
         {
@@ -80,7 +70,7 @@ function CheckOutDetails({
           const responseData = await response.json();
           if (responseData.success) {
             // console.log("Payment processed successfully!");
-            setpage(4);
+            setOrderDetailsState({page: 4})
           } else {
             // console.error(
             //   "Payment processing failed. Server message:",
@@ -135,8 +125,6 @@ function CheckOutDetails({
           style={[styles.nameField, loading && { opacity: 0.5 }]}
           value={emailAddress}
           onChangeText={(text) => setEmailAddress(text)}
-          customInput={null} // Should be a standard TextInput if needed
-          disabled={loading}
         />
         <FieldInputWithLabel
           label="Card Number*"

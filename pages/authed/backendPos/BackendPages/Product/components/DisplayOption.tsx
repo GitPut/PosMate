@@ -1,7 +1,7 @@
-import DropdownSelectableOption from "components/MainPosPage/components/ProductBuilderModal/DropdownSelectableOption";
-import MultipleTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/MultipleTimeSelectableOptionGroup";
-import OneTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/OneTimeSelectableOptionGroup";
-import TableOption from "components/MainPosPage/components/ProductBuilderModal/TableOption";
+import DropdownSelectableOption from "components/MainPosPage/components/ProductBuilderModal/PosComponents/DropdownSelectableOption";
+import MultipleTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/PosComponents/MultipleTimeSelectableOptionGroup";
+import OneTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/PosComponents/OneTimeSelectableOptionGroup";
+import TableOption from "components/MainPosPage/components/ProductBuilderModal/PosComponents/TableOption";
 import React, { useState } from "react";
 
 const DisplayOption = ({

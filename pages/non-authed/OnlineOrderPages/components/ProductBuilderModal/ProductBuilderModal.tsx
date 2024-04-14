@@ -12,9 +12,9 @@ import {
 import GoBackBtn from "./GoBackBtn";
 import AddToCartBtn from "./AddToCartBtn";
 import { addCartState, cartState, setCartState } from "state/state";
-import MultipleTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/MultipleTimeSelectableOptionGroup";
-import DropdownSelectableOption from "components/MainPosPage/components/ProductBuilderModal/DropdownSelectableOption";
-import OneTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/OneTimeSelectableOptionGroup";
+import MultipleTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/PosComponents/MultipleTimeSelectableOptionGroup";
+import DropdownSelectableOption from "components/MainPosPage/components/ProductBuilderModal/PosComponents/DropdownSelectableOption";
+import OneTimeSelectableOptionGroup from "components/MainPosPage/components/ProductBuilderModal/PosComponents/OneTimeSelectableOptionGroup";
 import { useAlert } from "react-alert";
 
 function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {

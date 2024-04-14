@@ -5,6 +5,7 @@ import { auth, db } from "state/firebaseConfig";
 import { updateTransList } from "state/firebaseFunctions";
 import { myDeviceDetailsState, storeDetailState } from "state/state";
 import { useAlert } from "react-alert";
+import qz from "qz-tray";
 
 function FinishPaymentCash({
   currentOrder,
@@ -66,8 +67,6 @@ function FinishPaymentCash({
       "\x1D" + "\x56" + "\x30",
       "\x10" + "\x14" + "\x01" + "\x00" + "\x05",
     ];
-
-    const qz = require("qz-tray");
 
     if (
       myDeviceDetails.sendPrintToUserID &&

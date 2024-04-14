@@ -2,13 +2,10 @@ import React, { Component, useState } from "react";
 import { StyleSheet, View, Pressable, Text } from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
 import { useAlert } from "react-alert";
+import { OrderDetailsState, setOrderDetailsState } from "state/state";
 
-function PickupDetails({
-  storeDetails,
-  setorderDetails,
-  orderDetails,
-  setpage,
-}) {
+function PickupDetails() {
+  const orderDetails = OrderDetailsState.use();
   const [localName, setlocalName] = useState(orderDetails.customer.name);
   const [localPhoneNumber, setlocalPhoneNumber] = useState(
     orderDetails.customer.phone
@@ -38,15 +35,14 @@ function PickupDetails({
         onPress={() => {
           if (localName === "" || localPhoneNumber === "")
             return alertP.error("Please fill in all fields");
-          setorderDetails((prev) => ({
-            ...prev,
+          setOrderDetailsState({
             customer: {
-              ...prev.customer,
+              ...orderDetails.customer,
               phone: localPhoneNumber,
               name: localName,
             },
-          }));
-          setpage(2);
+            page: 2,
+          });
         }}
       >
         <Text style={styles.continueBtnTxt}>CONTINUE</Text>

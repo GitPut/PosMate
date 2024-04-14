@@ -9,35 +9,41 @@ import {
   useWindowDimensions,
 } from "react-native";
 import CategoryBtn from "./components/cartOrder/CategoryBtn";
-import ItemContainer from "./components/cartOrder/ItemContainer";
 import CartItem from "./components/cartOrder/CartItem";
 import UntitledComponent from "./components/cartOrder/UntitledComponent";
 import { Entypo, Feather } from "@expo/vector-icons";
-import { cartState, setCartState } from "state/state";
+import {
+  OrderDetailsState,
+  ProductBuilderState,
+  cartState,
+  setCartState,
+  setOrderDetailsState,
+  storeDetailState,
+} from "state/state";
 import ItemContainerMobile from "../OnlineOrderPagesMobile/components/cartOrder/ItemContainerMobile";
 import Modal from "react-native-modal-web";
+import ProductBuilderModal from "components/MainPosPage/components/ProductBuilderModal/ProductBuilderModal";
+import ProductsSection from "components/MainPosPage/components/ProductsSection";
+import CategorySection from "components/MainPosPage/components/CategorySection";
+import Cart from "components/MainPosPage/components/Cart";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
 
-function OrderCartMain({
-  storeDetails,
-  setorderDetails,
-  orderDetails,
-  setpage,
-  catalog,
-  setshowProduct,
-  page,
-}) {
-  const [section, setsection] = useState(
-    catalog.categories.length > 0 ? catalog.categories[0] : ""
-  );
+function OrderCartMain({ catalog, setshowProduct }) {
+  const orderDetails = OrderDetailsState.use();
+  const storeDetails = storeDetailState.use();
+  const page = orderDetails.page;
   const [cartSub, setCartSub] = useState(0);
   const cart = cartState.use();
   const [cartOpen, setcartOpen] = useState(false);
-  const screenWidth = useWindowDimensions().width;
-  const screenHeight = useWindowDimensions().height;
+  const { height, width } = useWindowDimensions();
+  const ProductBuilderProps = ProductBuilderState.use();
+  const { section } = posHomeState.use();
 
   useEffect(() => {
     if (page === 4) {
-      setsection(catalog.categories.length > 0 ? catalog.categories[0] : "");
+      if (catalog.categories.length > 0) {
+        updatePosHomeState({ section: catalog.categories[0] });
+      }
     }
   }, [page]);
 
@@ -78,12 +84,12 @@ function OrderCartMain({
 
   return (
     <View style={styles.container}>
-      {screenWidth > 1250 && (
+      {width > 1250 && (
         <View style={styles.leftMenuBarContainer}>
           <Pressable style={styles.menuBtn}>
             <Entypo name="menu" style={styles.menuIcon}></Entypo>
           </Pressable>
-          <Pressable onPress={() => setpage(1)}>
+          <Pressable onPress={() => setOrderDetailsState({ page: 1 })}>
             <Feather name="log-out" style={styles.icon}></Feather>
           </Pressable>
         </View>
@@ -91,11 +97,11 @@ function OrderCartMain({
       <View
         style={[
           styles.menuContainer,
-          screenWidth < 1250 && { width: "62%" },
-          screenWidth < 1000 && { width: "100%" },
+          width > 1300 ? { width: "65%" } : { width: "58%" },
+          width < 1000 && { width: "100%" },
         ]}
       >
-        {screenWidth < 1000 && (
+        {width < 1000 && (
           <View
             style={{
               flexDirection: "row",
@@ -108,7 +114,7 @@ function OrderCartMain({
           >
             <Pressable
               onPress={() => {
-                setpage(1);
+                setOrderDetailsState({ page: 1 });
               }}
               style={{
                 backgroundColor: "#1D294E",
@@ -147,77 +153,9 @@ function OrderCartMain({
             </Pressable>
           </View>
         )}
-        <View style={styles.categoryContainer}>
-          <Text style={styles.lblTxt}>Menu Category</Text>
-          <View style={styles.scrollArea}>
-            <ScrollView
-              horizontal={true}
-              contentContainerStyle={styles.scrollArea_contentContainerStyle}
-            >
-              {catalog.categories?.map((category, index) => {
-                if (
-                  catalog.products.filter(
-                    (x) => x.category === category && x.hasImage
-                  ).length > 0
-                ) {
-                  return (
-                    <CategoryBtn
-                      key={index}
-                      category={category}
-                      onPress={() => {
-                        setsection(category);
-                      }}
-                      isSelected={section === category}
-                      style={styles.activeCategoryBtn}
-                      imageUrl={
-                        catalog.products[
-                          catalog.products.findIndex(
-                            (x) => x.category === category && x.hasImage
-                          )
-                        ]?.imageUrl
-                      }
-                    />
-                  );
-                } else {
-                  return (
-                    <CategoryBtn
-                      key={index}
-                      category={category}
-                      onPress={() => {
-                        setsection(category);
-                      }}
-                      isSelected={section === category}
-                      style={styles.categoryBtn}
-                      imageUrl={null}
-                    />
-                  );
-                }
-              })}
-            </ScrollView>
-          </View>
-        </View>
-        {screenWidth > 1250 ? (
-          <div style={stylesBigScreen.scrollAreaProducts}>
-            <div
-              style={{
-                ...stylesBigScreen.scrollAreaProducts,
-                overflowY: "auto",
-              }}
-            >
-              {/* ScrollView from 'react-native-web' */}
-              <div style={stylesBigScreen.gridContainer}>
-                {catalog.products.map((product, index) => (
-                  <ItemContainer
-                    product={product}
-                    productIndex={index}
-                    key={index}
-                    userUid={catalog.docID}
-                    // Pass inline style or className to ItemContainer if needed
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+        <CategorySection catalog={catalog} section={section} />
+        {width > 1250 ? (
+          <ProductsSection catalog={catalog} />
         ) : (
           <View style={styles.scrollAreaProducts}>
             <ScrollView
@@ -225,196 +163,24 @@ function OrderCartMain({
                 styles.scrollAreaProducts_contentContainerStyle
               }
             >
-              {catalog.products.map((product, index) =>
-                screenWidth > 1250 ? (
-                  <ItemContainer
-                    product={product}
-                    productIndex={index}
-                    key={index}
-                    userUid={catalog.docID}
-                    style={styles.itemContainer}
-                  />
-                ) : (
-                  <ItemContainerMobile
-                    product={product}
-                    productIndex={index}
-                    key={index}
-                    userUid={catalog.docID}
-                    style={{
-                      height: 220,
-                      width: 160, // Ensure this width accounts for any margins or padding
-                      marginBottom: 30,
-                    }}
-                    setshowProduct={setshowProduct}
-                  />
-                )
-              )}
+              {catalog.products.map((product, index) => (
+                <ItemContainerMobile
+                  product={product}
+                  key={index}
+                  style={{
+                    height: 220,
+                    width: 160, // Ensure this width accounts for any margins or padding
+                    marginBottom: 30,
+                  }}
+                  setshowProduct={setshowProduct}
+                />
+              ))}
             </ScrollView>
           </View>
         )}
       </View>
-      {screenWidth > 1000 ? (
-        <View
-          style={[styles.cartContainer, screenWidth < 1250 && { width: "38%" }]}
-        >
-          <Text style={styles.myCartTxt}>My Cart</Text>
-          {cart.length > 0 ? (
-            <View style={styles.cartItems}>
-              <ScrollView
-                horizontal={false}
-                contentContainerStyle={styles.cartItems_contentContainerStyle}
-              >
-                {cart?.map((cartItem, index) => (
-                  <CartItem
-                    style={styles.cartItem1}
-                    key={index}
-                    cartItem={cartItem}
-                    index={index}
-                    removeAction={() => {
-                      console.log("Removing");
-                      const local = structuredClone(cart);
-                      local.splice(index, 1);
-                      setCartState(local);
-                    }}
-                    decreaseAction={() => {
-                      const local = structuredClone(cart);
-                      local[index].quantity--;
-                      setCartState(local);
-                    }}
-                    increaseAction={() => {
-                      const local = structuredClone(cart);
-                      if (local[index].quantity) {
-                        local[index].quantity++;
-                      } else {
-                        local[index].quantity = 2;
-                      }
-                      setCartState(local);
-                    }}
-                  />
-                ))}
-              </ScrollView>
-            </View>
-          ) : (
-            <Image
-              source={require("./assets/images/noItemsImg.png")}
-              style={{ width: 200, height: "35%", resizeMode: "contain" }}
-            />
-          )}
-          <View style={styles.totalsContainer}>
-            <View style={styles.topGroupTotalsContainer}>
-              <UntitledComponent
-                amountValue="N/A"
-                amountLbl="Discount"
-                style={styles.discountRow}
-              />
-              {orderDetails.delivery &&
-                parseFloat(storeDetails.deliveryPrice) && (
-                  <UntitledComponent
-                    amountValue={`$${parseFloat(
-                      storeDetails.deliveryPrice
-                    ).toFixed(2)}`}
-                    amountLbl="Delivery"
-                    style={styles.discountRow}
-                  />
-                )}
-              <UntitledComponent
-                amountValue={
-                  orderDetails.delivery &&
-                  parseFloat(storeDetails.deliveryPrice) &&
-                  cartSub > 0
-                    ? `$${(
-                        cartSub - parseFloat(storeDetails.deliveryPrice)
-                      ).toFixed(2)}`
-                    : `$${cartSub.toFixed(2)}`
-                }
-                amountLbl="Subtotal"
-                style={styles.subtotalRow}
-              />
-              <UntitledComponent
-                amountValue={`$${(
-                  cartSub *
-                  (storeDetails.taxRate ? storeDetails.taxRate / 100 : 0.13)
-                ).toFixed(2)}`}
-                amountLbl="Tax"
-                style={styles.taxRow}
-              />
-            </View>
-            <View style={styles.totalRowGroup}>
-              <View style={styles.totalRow}>
-                <Text style={styles.total2}>Total</Text>
-                <Text style={styles.totalValue}>
-                  $
-                  {(
-                    Math.ceil(
-                      cartSub *
-                        (storeDetails.taxRate
-                          ? 1 + storeDetails.taxRate / 100
-                          : 1.13) *
-                        10
-                    ) / 10
-                  ).toFixed(2)}
-                </Text>
-              </View>
-              {/* <Pressable style={styles.discountCodeBtn}>
-                <Text style={styles.discountCode}>Discount Code</Text>
-              </Pressable> */}
-            </View>
-          </View>
-          <Pressable
-            style={styles.checkoutBtn}
-            disabled={cart.length < 1}
-            onPress={() => {
-              const today = new Date();
-              const transNum = Math.random().toString(36).substr(2, 9);
-
-              if (orderDetails.delivery) {
-                setorderDetails((prev) => ({
-                  date: today,
-                  transNum: transNum,
-                  total: (
-                    cartSub *
-                    (storeDetails.taxRate
-                      ? 1 + storeDetails.taxRate / 100
-                      : 1.13)
-                  ).toFixed(2),
-                  method: "deliveryOrder",
-                  online: true,
-                  cart: cart,
-                  customer: {
-                    name: prev.customer.name,
-                    phone: prev.customer.phone,
-                    address: prev.customer.address,
-                    email: prev.customer.email,
-                  },
-                  address: prev.address,
-                }));
-              } else {
-                setorderDetails((prev) => ({
-                  date: today,
-                  transNum: transNum,
-                  total: (
-                    cartSub *
-                    (storeDetails.taxRate
-                      ? 1 + storeDetails.taxRate / 100
-                      : 1.13)
-                  ).toFixed(2),
-                  method: "pickupOrder",
-                  online: true,
-                  cart: cart,
-                  customer: {
-                    name: prev.customer.name,
-                    phone: prev.customer.phone,
-                    email: prev.customer.email,
-                    address: null,
-                  },
-                }));
-              }
-              setpage(5);
-            }}
-          >
-            <Text style={styles.checkoutLbl}>Checkout</Text>
-          </Pressable>
-        </View>
+      {width > 1000 ? (
+        <Cart />
       ) : (
         <Modal
           isVisible={cartOpen}
@@ -424,8 +190,8 @@ function OrderCartMain({
         >
           <View
             style={{
-              width: screenWidth,
-              height: screenHeight,
+              width: width,
+              height: height,
               justifyContent: "space-evenly",
               alignItems: "center",
               backgroundColor: "white",
@@ -547,7 +313,9 @@ function OrderCartMain({
                 <UntitledComponent
                   amountValue={`$${(
                     cartSub *
-                    (storeDetails.taxRate ? storeDetails.taxRate / 100 : 0.13)
+                    (storeDetails.taxRate
+                      ? parseFloat(storeDetails.taxRate) / 100
+                      : 0.13)
                   ).toFixed(2)}`}
                   amountLbl="Tax"
                   style={styles.taxRow}
@@ -560,7 +328,7 @@ function OrderCartMain({
                       Math.ceil(
                         cartSub *
                           (storeDetails.taxRate
-                            ? 1 + storeDetails.taxRate / 100
+                            ? 1 + parseFloat(storeDetails.taxRate) / 100
                             : 1.13) *
                           10
                       ) / 10
@@ -577,7 +345,7 @@ function OrderCartMain({
                 const transNum = Math.random().toString(36).substr(2, 9);
 
                 if (orderDetails.delivery) {
-                  setorderDetails((prev) => ({
+                  setOrderDetailsState({
                     date: today,
                     transNum: transNum,
                     total: (
@@ -589,18 +357,11 @@ function OrderCartMain({
                     method: "deliveryOrder",
                     online: true,
                     cart: cart,
-                    customer: {
-                      name: prev.customer.name,
-                      phone: prev.customer.phone,
-                      address: prev.customer.address,
-                      email: prev.customer.email,
-                    },
-                    address: prev.address,
-                  }));
+                  });
                   setcartOpen(false);
-                  setpage(5);
+                  setOrderDetailsState({ page: 5 });
                 } else {
-                  setorderDetails((prev) => ({
+                  setOrderDetailsState({
                     date: today,
                     transNum: transNum,
                     total: (
@@ -612,16 +373,10 @@ function OrderCartMain({
                     method: "pickupOrder",
                     online: true,
                     cart: cart,
-                    customer: {
-                      name: prev.customer.name,
-                      phone: prev.customer.phone,
-                      email: prev.customer.email,
-                      address: null,
-                    },
-                  }));
+                  });
                 }
                 setcartOpen(false);
-                setpage(5);
+                setOrderDetailsState({ page: 5 });
               }}
             >
               <Text style={styles.checkoutLbl}>Checkout</Text>
@@ -629,30 +384,65 @@ function OrderCartMain({
           </View>
         </Modal>
       )}
+      <Modal
+        isVisible={ProductBuilderProps.isOpen}
+        animationIn="slideInLeft"
+        animationOut="slideOutLeft"
+        backdropOpacity={0}
+      >
+        <View
+          style={{
+            height: height,
+            width: width,
+            flexDirection: "row",
+            left: "-5%",
+          }}
+        >
+          <View
+            style={[
+              width > 1400
+                ? {
+                    height: "100%",
+                    width: "70%",
+                    borderTopRightRadius: 3,
+                  }
+                : {
+                    height: "100%",
+                    width: "100%",
+                    borderTopRightRadius: 3,
+                    left: "-1.5%",
+                  },
+            ]}
+          >
+            {ProductBuilderProps.product && <ProductBuilderModal />}
+          </View>
+          {width > 1400 && (
+            <View
+              style={{
+                flexDirection: "row",
+                height: "100%",
+                width: "37%",
+                position: "relative",
+              }}
+            >
+              <View
+                style={{
+                  shadowColor: "rgba(0,0,0,1)",
+                  shadowOffset: { width: -10, height: 0 },
+                  shadowOpacity: 0.05,
+                  shadowRadius: 10,
+                  width: "100%",
+                  height: "100%",
+                  elevation: 30,
+                }}
+              />
+            </View>
+          )}
+        </View>
+      </Modal>
     </View>
   );
 }
-
-const stylesBigScreen = {
-  scrollAreaProducts: {
-    width: "95%",
-    height: "60vh",
-    justifyContent: "center",
-    marginLeft: "auto",
-    marginRight: "auto",
-  },
-  gridContainer: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(215px, 1fr))",
-    gap: "20px",
-    width: "100%",
-  },
-  // Make sure ItemContainer uses this style or an equivalent CSS class
-  itemContainer: {
-    height: "160px",
-    marginBottom: "30px",
-  },
-};
 
 const styles = StyleSheet.create({
   container: {

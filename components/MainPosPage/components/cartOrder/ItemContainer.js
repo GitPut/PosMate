@@ -1,52 +1,10 @@
-import React, { useRef, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  Animated,
-  Modal,
-  useWindowDimensions,
-} from "react-native";
-import { addCartState, cartState } from "state/state";
+import React from "react";
+import { StyleSheet, View, Text, Pressable } from "react-native";
+import { addCartState, cartState, setProductBuilderState } from "state/state";
 import ProductImage from "components/ProductImage";
-import ProductBuilderModal from "../ProductBuilderModal/ProductBuilderModal";
 
-function ItemContainer({ product, style }) {
-  const [showProductScreen, setshowProductScreen] = useState(false);
-  const xPos = useRef(new Animated.Value(-1000)).current;
-  const shadowOpacity = useRef(new Animated.Value(0)).current;
+function ItemContainer({ product }) {
   const cart = cartState.use();
-  const screenWidth = useWindowDimensions().width;
-
-  const fadeIn = () => {
-    // Will change xPos value to 0 in 3 seconds
-    setshowProductScreen(true);
-    Animated.timing(xPos, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-    Animated.timing(shadowOpacity, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const fadeOut = () => {
-    // Will change xPos value to 0 in 3 seconds
-    Animated.timing(shadowOpacity, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-    Animated.timing(xPos, {
-      toValue: -1000,
-      duration: 200,
-      useNativeDriver: false,
-    }).start(() => setshowProductScreen(false));
-  };
 
   return (
     <div id={product.id}>
@@ -54,9 +12,12 @@ function ItemContainer({ product, style }) {
         <Pressable
           onPress={() => {
             if (product.options.length > 0) {
-              // navigation.navigate("Product Listing", { product: product });
-              // setshowProductScreen(true);
-              fadeIn();
+              setProductBuilderState({
+                product: product,
+                itemIndex: null,
+                imageUrl: product.imageUrl,
+                isOpen: true,
+              });
             } else {
               addCartState(
                 {
@@ -71,7 +32,7 @@ function ItemContainer({ product, style }) {
               );
             }
           }}
-          style={[styles.container, style]}
+          style={[styles.container]}
         >
           <ProductImage
             source={{ uri: product.imageUrl }}
@@ -92,7 +53,12 @@ function ItemContainer({ product, style }) {
         <Pressable
           onPress={() => {
             if (product.options.length > 0) {
-              fadeIn();
+              setProductBuilderState({
+                product: product,
+                itemIndex: null,
+                imageUrl: null,
+                isOpen: true,
+              });
             } else {
               addCartState(
                 {
@@ -107,17 +73,7 @@ function ItemContainer({ product, style }) {
               );
             }
           }}
-          style={[
-            // {
-            //   backgroundColor: "#ffffff",
-            //   borderRadius: 20,
-            //   justifyContent: "space-between",
-            //   alignItems: "flex-start",
-            //   padding: 20,
-            // },
-            styles.container,
-            style,
-          ]}
+          style={[styles.container]}
         >
           <View>
             <Text style={styles?.familyCombo}>
@@ -139,45 +95,6 @@ function ItemContainer({ product, style }) {
             ></View>
           </View>
         </Pressable>
-      )}
-      {showProductScreen && (
-        <Modal transparent={true}>
-          <Animated.View
-            style={{
-              flex: 1,
-              justifyContent: "flex-end",
-              alignItems: "flex-start",
-              position: "absolute",
-              height: "100%",
-              width: "100%",
-              bottom: 0,
-              left: xPos,
-              zIndex: 0,
-            }}
-          >
-            <View
-              style={[
-                screenWidth > 1400
-                  ? {
-                      height: "100%",
-                      width: "70%",
-                      borderTopRightRadius: 3,
-                    }
-                  : {
-                      height: "100%",
-                      width: "100%",
-                      borderTopRightRadius: 3,
-                    },
-              ]}
-            >
-              <ProductBuilderModal
-                product={product}
-                goBack={() => fadeOut()}
-                imageUrl={product.imageUrl}
-              />
-            </View>
-          </Animated.View>
-        </Modal>
       )}
     </div>
   );

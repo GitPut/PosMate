@@ -6,19 +6,22 @@ import {
   Text,
   TextInput,
   ScrollView,
-  Pressable,
-  useWindowDimensions,
 } from "react-native";
-import GoBackBtn from "./GoBackBtn";
-import OneTimeSelectableOptionGroup from "./OneTimeSelectableOptionGroup";
-import DropdownSelectableOption from "./DropdownSelectableOption";
-import AddToCartBtn from "./AddToCartBtn";
-import MultipleTimeSelectableOptionGroup from "./MultipleTimeSelectableOptionGroup";
-import { addCartState, cartState, setCartState } from "state/state";
-import TableOption from "./TableOption";
+import GoBackBtn from "./PosComponents/GoBackBtn";
+import AddToCartBtn from "./PosComponents/AddToCartBtn";
+import {
+  addCartState,
+  cartState,
+  setCartState,
+  ProductBuilderState,
+  resetProductBuilderState,
+} from "state/state";
 import { useAlert } from "react-alert";
+import DisplayOption from "./PosComponents/DisplayOption";
 
-function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
+function ProductBuilderModal() {
+  const { product, itemIndex, imageUrl, isOnlineOrder } =
+    ProductBuilderState.use();
   const cart = cartState.use();
   const myObj = product;
   const [myObjProfile, setmyObjProfile] = useState(myObj);
@@ -27,7 +30,10 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
     myObj.extraDetails ? myObj.extraDetails : ""
   );
   const [openOptions, setopenOptions] = useState(null);
-  const alertP = useAlert()
+  const alertP = useAlert();
+  const [scrollY, setscrollY] = useState(0);
+
+  const goBack = () => resetProductBuilderState();
 
   useEffect(() => {
     settotal(getPrice());
@@ -85,7 +91,9 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
           });
           opsArray.push(opWVal);
         } else if (numberOfSelected === 0 && op.isRequired === true) {
-          alertP.error(op.label + " is required. Please fill out to add to cart");
+          alertP.error(
+            op.label + " is required. Please fill out to add to cart"
+          );
           stop = true;
         }
       } else {
@@ -112,7 +120,7 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
         extraDetails: extraInput,
       };
 
-      if (itemIndex >= 0) {
+      if (itemIndex) {
         const copyCart = structuredClone(cart);
         copyCart[itemIndex] = {
           name: myObjProfile.name,
@@ -143,217 +151,6 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
       setmyObjProfile(myObj);
       settotal(myObjProfile.price);
       setextraInput("");
-    }
-  };
-
-  const DisplayOption = ({ e, index }) => {
-    const checkCases = () => {
-      if (e.selectedCaseList?.length > 0) {
-        const listOfTrueIfS = [];
-
-        e.selectedCaseList.forEach((ifStatement) => {
-          const caseKeyList = myObjProfile.options.filter(
-            (op) => op.label == ifStatement.selectedCaseKey
-          );
-
-          if (caseKeyList.length > 0) {
-            const caseValueList = caseKeyList[0].optionsList.filter(
-              (opL) => opL.label == ifStatement.selectedCaseValue
-            );
-
-            if (caseValueList.length > 0) {
-              if (caseValueList[0].selected === true) {
-                listOfTrueIfS.push(ifStatement);
-              }
-            }
-          }
-        });
-
-        if (e.selectedCaseList?.length === listOfTrueIfS.length) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return true;
-      }
-    };
-
-    const [optionVal, setoptionVal] = useState();
-
-    const selectedList = e.optionsList.filter((checkOp) => checkOp.selected);
-
-    if (selectedList.length > 0 && !optionVal) {
-      setoptionVal(selectedList[0]);
-    }
-    if (!(e.selectedCaseList?.length > 0) || checkCases()) {
-      if (e.optionType === "Dropdown") {
-        return (
-          <DropdownSelectableOption
-            id={index}
-            setopenDropdown={setopenOptions}
-            openDropdown={openOptions}
-            label={e.label}
-            isRequired={e.isRequired}
-            options={e.optionsList}
-            setValue={({ option, listIndex }) => {
-              const newMyObjProfile = structuredClone(myObjProfile);
-              newMyObjProfile.options[index].optionsList.forEach(
-                (element, indexOfOl) => {
-                  if (element.selected) {
-                    newMyObjProfile.options[index].optionsList[
-                      indexOfOl
-                    ].selected = false;
-                  }
-                }
-              );
-
-              if (option) {
-                newMyObjProfile.options[index].optionsList[listIndex].selected =
-                  true;
-              }
-              setoptionVal(option);
-
-              setmyObjProfile(newMyObjProfile);
-            }}
-            value={optionVal}
-          />
-        );
-      } else if (e.optionType === "Quantity Dropdown") {
-        const optionsSelected = myObjProfile.options[index].optionsList.filter(
-          (op) => op.selectedTimes > 0
-        );
-        const optionsSelectedLabel =
-          optionsSelected.length > 0
-            ? optionsSelected.map((op, index) => {
-                if (index > 0) return `, ${op.label} (${op.selectedTimes})`;
-                return `${op.label} (${op.selectedTimes})`;
-              })
-            : "";
-
-        return (
-          <MultipleTimeSelectableOptionGroup
-            e={e}
-            index={index}
-            myObjProfile={myObjProfile}
-            setmyObjProfile={setmyObjProfile}
-            id={index}
-            setopenDropdown={setopenOptions}
-            openDropdown={openOptions}
-            label={e.label}
-            isRequired={e.isRequired}
-            optionsSelectedLabel={optionsSelectedLabel}
-          />
-        );
-      } else if (e.optionType === "Table View") {
-        const optionsSelected = myObjProfile.options[index].optionsList.filter(
-          (op) => op.selectedTimes > 0
-        );
-        const optionsSelectedLabel =
-          optionsSelected.length > 0
-            ? optionsSelected.map((op, index) => {
-                if (index > 0) return `, ${op.label} (${op.selectedTimes})`;
-                return `${op.label} (${op.selectedTimes})`;
-              })
-            : "";
-
-        return (
-          <TableOption
-            e={e}
-            index={index}
-            myObjProfile={myObjProfile}
-            setmyObjProfile={setmyObjProfile}
-            id={index}
-            setopenDropdown={setopenOptions}
-            openDropdown={openOptions}
-            label={e.label}
-            isRequired={e.isRequired}
-            optionsSelectedLabel={optionsSelectedLabel}
-          />
-        );
-      } else {
-        return (
-          <OneTimeSelectableOptionGroup
-            label={e.label}
-            isRequired={e.isRequired}
-            options={e.optionsList}
-            setValue={({ option, listIndex }) => {
-              if (parseFloat(e.numOfSelectable) === 1) {
-                const newMyObjProfile = structuredClone(myObjProfile);
-                newMyObjProfile.options[index].optionsList.forEach(
-                  (element, indexOfOl) => {
-                    if (element.selected) {
-                      newMyObjProfile.options[index].optionsList[
-                        indexOfOl
-                      ].selected = false;
-                    }
-                  }
-                );
-
-                newMyObjProfile.options[index].optionsList[listIndex].selected =
-                  true;
-                setoptionVal(option);
-                setmyObjProfile(newMyObjProfile);
-              } else {
-                console.log("INside else of one time selectable option group");
-                const newMyObjProfile = structuredClone(myObjProfile);
-                const totalSelected = myObjProfile.options[
-                  index
-                ].optionsList.filter((op) => op.selected === true).length;
-                if (
-                  newMyObjProfile.options[index].optionsList[listIndex].selected
-                ) {
-                  console.log(
-                    "Inside if of one time selectable option group is selected part"
-                  );
-                  newMyObjProfile.options[index].optionsList[
-                    listIndex
-                  ].selected = false;
-                } else {
-                  console.log(
-                    "Inside else of one time selectable option group else part"
-                  );
-                  if (
-                    totalSelected < e.numOfSelectable ||
-                    e.numOfSelectable === 0 ||
-                    !e.numOfSelectable
-                  ) {
-                    console.log(
-                      "Inside if of one time selectable option group else part not selected"
-                    );
-                    newMyObjProfile.options[index].optionsList[
-                      listIndex
-                    ].selected = true;
-                  }
-                }
-                setmyObjProfile(newMyObjProfile);
-              }
-            }}
-            value={e.numOfSelectable === 1 ? optionVal : false}
-          />
-        );
-      }
-    } else if (checkCases() === false) {
-      // else {
-      // console.log("Inside else of checkCases() === false");
-      const newMyObjProfile = structuredClone(myObjProfile);
-      newMyObjProfile.options[index].optionsList.forEach(
-        (item, indexOfItem) => {
-          if (item.selected === true) {
-            // console.log("item.selected === true");
-            newMyObjProfile.options[index].optionsList[indexOfItem].selected =
-              false;
-            setmyObjProfile(newMyObjProfile);
-          } else if (item.selectedTimes > 0) {
-            // console.log("item.selectedTimes > 0");
-            newMyObjProfile.options[index].optionsList[
-              indexOfItem
-            ].selectedTimes = 0;
-            setmyObjProfile(newMyObjProfile);
-          }
-        }
-      );
-      return <></>;
     }
   };
 
@@ -424,10 +221,22 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
                 paddingLeft: 30,
                 paddingRight: 30,
               }}
+              onScroll={(e) => setscrollY(e.nativeEvent.contentOffset.y)}
+              scrollEventThrottle={16}
             >
               <View>
-                {myObjProfile.options.map((e, index) => (
-                  <DisplayOption key={index} e={e} index={index} />
+                {myObjProfile.options.map((option, index) => (
+                  <DisplayOption
+                    key={index}
+                    e={option}
+                    index={index}
+                    myObjProfile={myObjProfile}
+                    setMyObjProfile={setmyObjProfile}
+                    setopenOptions={setopenOptions}
+                    openOptions={openOptions}
+                    scrollY={scrollY}
+                    isOnlineOrder={isOnlineOrder}
+                  />
                 ))}
               </View>
             </ScrollView>
@@ -441,7 +250,7 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
         <View style={styles.addToCartRow}>
           <AddToCartBtn
             style={styles.addToCartBtn}
-            title={itemIndex >= 0 ? "Save" : "Add To Cart"}
+            title={itemIndex ? "Save" : "Add To Cart"}
             onPress={AddToCart}
           />
         </View>

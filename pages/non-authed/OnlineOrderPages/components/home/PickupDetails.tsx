@@ -1,20 +1,26 @@
 import React, { Component, useState } from "react";
-import { StyleSheet, View, Pressable, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  Text,
+  useWindowDimensions,
+} from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
 import { useAlert } from "react-alert";
+import { OrderDetailsState, setOrderDetailsState } from "state/state";
 
-function PickupDetails({
-  storeDetails,
-  setorderDetails,
-  orderDetails,
-  setpage,
-  width,
-}) {
+function PickupDetails() {
+  const orderDetails = OrderDetailsState.use();
   const [localName, setlocalName] = useState(orderDetails.customer.name);
   const [localPhoneNumber, setlocalPhoneNumber] = useState(
     orderDetails.customer.phone
   );
   const alertP = useAlert();
+  const width =
+    useWindowDimensions().width > 1000
+      ? 380
+      : useWindowDimensions().width * 0.9;
 
   const styles = StyleSheet.create({
     fieldsGroup: {
@@ -95,15 +101,15 @@ function PickupDetails({
         onPress={() => {
           if (localName === "" || localPhoneNumber === "")
             return alertP.error("Please fill in all fields");
-          setorderDetails((prev) => ({
-            ...prev,
+          setOrderDetailsState({
             customer: {
-              ...prev.customer,
+              ...orderDetails.customer,
               phone: localPhoneNumber,
               name: localName,
             },
-          }));
-          setpage(4);
+            delivery: false,
+          });
+          setOrderDetailsState({ page: 4 });
         }}
       >
         <Text style={styles.continueBtnTxt}>CONTINUE</Text>
