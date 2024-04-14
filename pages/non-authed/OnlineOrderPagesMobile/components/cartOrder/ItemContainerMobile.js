@@ -1,13 +1,9 @@
-import React, { Component, useEffect, useRef, useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   View,
-  Image,
   Text,
   Pressable,
-  Animated,
-  Modal,
-  useWindowDimensions,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { addCartState, cartState } from "state/state";
@@ -40,7 +36,7 @@ function ItemContainerMobile({ product, style, setshowProduct }) {
           </View>
         )}
         <Text style={styles?.familyCombo}>
-          {product.name ? product.name : "Placeholder"}
+          {product.name}
         </Text>
         <View
           style={[
@@ -55,7 +51,7 @@ function ItemContainerMobile({ product, style, setshowProduct }) {
           ]}
         >
           <Text style={styles?.price}>
-            ${product.price ? product.price : "Placeholder"}
+            ${product.price}
           </Text>
           <Pressable style={styles?.openBtn}>
             <MaterialCommunityIcons

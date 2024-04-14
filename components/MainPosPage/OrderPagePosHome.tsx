@@ -241,13 +241,15 @@ function OrderPagePosHome() {
         animationIn="slideInLeft"
         animationOut="slideOutLeft"
         backdropOpacity={0}
+        style={{
+          margin: 0,
+        }}
       >
         <View
           style={{
             height: height,
             width: width,
             flexDirection: "row",
-            left: "-5%",
           }}
         >
           <View
@@ -262,7 +264,6 @@ function OrderPagePosHome() {
                     height: "100%",
                     width: "100%",
                     borderTopRightRadius: 3,
-                    left: "-1.5%",
                   },
             ]}
           >

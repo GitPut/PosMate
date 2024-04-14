@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Pressable, Text } from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
 import {
@@ -9,11 +9,18 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import { useAlert } from "react-alert";
-import { OrderDetailsState, setOrderDetailsState, storeDetailState } from "state/state";
+import {
+  OrderDetailsState,
+  setOrderDetailsState,
+  storeDetailState,
+} from "state/state";
 
-function CheckOutDetails({
-  width,
-}) {
+const validateEmail = (email) => {
+  const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+  return emailRegex.test(email);
+};
+
+function CheckOutDetails({ width }) {
   const [emailAddress, setEmailAddress] = useState("");
   const [loading, setloading] = useState(false);
   const alertP = useAlert();
@@ -28,8 +35,16 @@ function CheckOutDetails({
     setloading(true);
     event.preventDefault();
 
+    if (!validateEmail(emailAddress)) {
+      alertP.error("Please enter a valid email address.");
+      setloading(false);
+      return;
+    }
+
     if (!stripe || !elements) {
       console.log("Stripe.js has not yet loaded.");
+      alertP.error("Error please try again");
+      setloading(false);
       return;
     }
 
@@ -45,6 +60,7 @@ function CheckOutDetails({
       if (error) {
         console.error("Error creating token:", error);
         alertP.error("Error please try again");
+        setloading(false);
         return;
       }
 
@@ -72,19 +88,21 @@ function CheckOutDetails({
           const responseData = await response.json();
           if (responseData.success) {
             console.log("Payment processed successfully!");
-             setOrderDetailsState({
-               page: 6,
-             });
+            setOrderDetailsState({
+              page: 6,
+            });
           } else {
             console.error(
               "Payment processing failed. Server message:",
               responseData.message
             );
             alertP.error("Payment processing failed.");
+            setloading(false);
           }
         } else {
           console.error("Non-JSON response received:", await response.text());
           alertP.error("Non-JSON response received.");
+          setloading(false);
         }
       } else {
         throw new Error("Network response was not ok.");
@@ -92,6 +110,7 @@ function CheckOutDetails({
     } catch (jsonError) {
       console.error("Error parsing JSON response or network error:", jsonError);
       alertP.error("Payment processing failed. Please try again.");
+      setloading(false);
     }
   };
 
@@ -241,9 +260,14 @@ function CheckOutDetails({
         </View>
       </View>
       <Pressable
-        style={[styles.continueBtn, loading && { opacity: 0.5 }]}
+        style={[
+          styles.continueBtn,
+          (!stripe || !elements || loading || emailAddress === "") && {
+            opacity: 0.5,
+          },
+        ]}
         onPress={handleSubmit}
-        disabled={!stripe || !elements || loading}
+        disabled={!stripe || !elements || loading || emailAddress === ""}
       >
         <Text style={styles.continueBtnTxt}>CHECKOUT</Text>
       </Pressable>

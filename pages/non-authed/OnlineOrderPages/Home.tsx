@@ -1,7 +1,5 @@
-import React, { Component, useState } from "react";
+import React from "react";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
-import DeliveryDetails from "./components/home/DeliveryDetails";
-import PickupDetails from "./components/home/PickupDetails";
 import {
   Text,
   Pressable,

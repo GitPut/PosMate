@@ -6,6 +6,7 @@ import {
   Pressable,
   ScrollView,
   Modal,
+  useWindowDimensions,
 } from "react-native";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 
@@ -22,6 +23,7 @@ function DropdownSelectableOption({
 }) {
   const dropdownRef = useRef(); // Reference to the original button
   const [dropdownLayout, setDropdownLayout] = useState();
+  const width = useWindowDimensions().width;
 
   useEffect(() => {
     // Ensure this code runs in a web environment
@@ -41,11 +43,19 @@ function DropdownSelectableOption({
   }, [scrollY]); // Recalculate when scroll position changes
 
   return (
-    <View style={[styles.container, openDropdown === id && { zIndex: 1000 }]}>
-      <Text style={styles.lbl}>
+    <View
+      style={[
+        width > 800 ? styles.container : styles.containerMobile,
+        openDropdown === id && { zIndex: 1000 },
+      ]}
+    >
+      <Text style={width > 800 ? styles.lbl : styles.lblMobile}>
         {label} {isRequired ? "*" : ""}
       </Text>
-      <View ref={dropdownRef} style={{ width: "70%" }}>
+      <View
+        ref={dropdownRef}
+        style={width < 800 ? { width: "100%" } : { width: "70%" }}
+      >
         <Pressable
           style={styles.dropdown}
           onPress={() => {
@@ -188,7 +198,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 20,
+    alignSelf: "stretch",
     height: 44,
+  },
+  containerMobile: {
     marginBottom: 20,
     alignSelf: "stretch",
   },
@@ -196,6 +210,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#3e3f41",
     width: "25%",
+  },
+  lblMobile: {
+    fontWeight: "700",
+    color: "#3e3f41",
+    width: "100%",
+    marginBottom: 10,
   },
   dropdown: {
     width: "100%",

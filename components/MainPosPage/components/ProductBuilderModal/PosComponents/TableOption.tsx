@@ -24,10 +24,7 @@ function TableOption({
   e,
   optionsSelectedLabel,
 }) {
-  const options = e.optionsList;
   const [localMyObjProfile, setlocalMyObjProfile] = useState(myObjProfile);
-  const [localOptionsSelectedLabel, setlocalOptionsSelectedLabel] =
-    useState("");
   const [modalVisible, setmodalVisible] = useState(false);
   const { height, width } = useWindowDimensions();
 
@@ -77,30 +74,8 @@ function TableOption({
         newMyObjProfile.options[index].optionsList[listIndex].selectedTimes = 1;
       }
       setlocalMyObjProfile(newMyObjProfile);
-    } else {
-      // console.log(
-      //   "Didnt Work ",
-      //   "selectedTimesTotal: ",
-      //   selectedTimesTotal,
-      //   " e.numOfSelectable: ",
-      //   e.numOfSelectable
-      // );
     }
   };
-
-  useEffect(() => {
-    const optionsSelected = localMyObjProfile.options[index].optionsList.filter(
-      (op) => op.selectedTimes > 0
-    );
-    setlocalOptionsSelectedLabel(
-      optionsSelected.length > 0
-        ? optionsSelected.map((op, index) => {
-            if (index > 0) return `, ${op.label} (${op.selectedTimes})`;
-            return `${op.label} (${op.selectedTimes})`;
-          })
-        : ""
-    );
-  }, [localMyObjProfile]);
 
   const clearOptions = () => {
     const newMyObjProfile = structuredClone(localMyObjProfile);
@@ -119,11 +94,18 @@ function TableOption({
   };
 
   return (
-    <View style={[styles.container, openDropdown === id && { zIndex: 1000 }]}>
-      <Text style={styles.lbl}>
+    <View
+      style={[
+        width > 800 ? styles.container : styles.containerMobile,
+        openDropdown === id && { zIndex: 1000 },
+      ]}
+    >
+      <Text style={width > 800 ? styles.lbl : styles.lblMobile}>
         {label} {isRequired ? "*" : ""}
       </Text>
-      <View style={{ width: "70%" }}>
+      <View
+        style={width < 800 ? { width: "100%" } : { width: "70%" }}
+      >
         <Pressable
           style={styles.dropdown}
           onPress={() => {
@@ -263,20 +245,30 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    height: 44,
     marginBottom: 20,
     alignSelf: "stretch",
+    height: 44,
+  },
+  containerMobile: {
+    marginBottom: 20,
+    alignSelf: "stretch",
+  },
+  lbl: {
+    fontWeight: "700",
+    color: "#3e3f41",
+    width: "25%",
+  },
+  lblMobile: {
+    fontWeight: "700",
+    color: "#3e3f41",
+    width: "100%",
+    marginBottom: 10,
   },
   modalContainer: {
     backgroundColor: "rgba(255,255,255,1)",
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
-  },
-  lbl: {
-    fontWeight: "700",
-    color: "#3e3f41",
-    width: "25%",
   },
   dropdown: {
     width: "100%",

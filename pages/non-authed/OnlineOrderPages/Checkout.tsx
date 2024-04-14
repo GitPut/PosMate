@@ -1,7 +1,5 @@
-import React, { Component, useState } from "react";
+import React from "react";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
-import DeliveryDetails from "./components/home/DeliveryDetails";
-import PickupDetails from "./components/home/PickupDetails";
 import {
   Text,
   Pressable,
@@ -10,16 +8,20 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
-import CheckOutDetails from "./components/home/CheckOutDetails";
+import CheckOutDetails from "./components/CheckOutDetails";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { OrderDetailsState, setOrderDetailsState, storeDetailState } from "state/state";
+import {
+  OrderDetailsState,
+  setOrderDetailsState,
+  storeDetailState,
+} from "state/state";
 
 function OnlineOrderHomeCheckout() {
- const storeDetails = storeDetailState.use();
- const orderDetails = OrderDetailsState.use();
- const page = orderDetails.page;
- const screenWidth = useWindowDimensions().width;
+  const storeDetails = storeDetailState.use();
+  const orderDetails = OrderDetailsState.use();
+  const page = orderDetails.page;
+  const screenWidth = useWindowDimensions().width;
 
   return (
     <View style={styles.container}>
@@ -35,13 +37,13 @@ function OnlineOrderHomeCheckout() {
                         if (page === 5) {
                           setOrderDetailsState({
                             page: 4,
-                          })
+                          });
                         } else {
                           setOrderDetailsState({
                             ...orderDetails,
                             delivery: false,
                             address: null,
-                            page: 1
+                            page: 1,
                           });
                         }
                       }}
@@ -56,15 +58,15 @@ function OnlineOrderHomeCheckout() {
                     <Pressable
                       onPress={() => {
                         if (page === 5) {
-                           setOrderDetailsState({
-                             page: 4,
-                           });
+                          setOrderDetailsState({
+                            page: 4,
+                          });
                         } else {
                           setOrderDetailsState({
                             ...orderDetails,
                             delivery: false,
                             address: null,
-                            page: 1
+                            page: 1,
                           });
                         }
                       }}

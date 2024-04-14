@@ -6,6 +6,7 @@ import {
   Text,
   TextInput,
   ScrollView,
+  useWindowDimensions,
 } from "react-native";
 import GoBackBtn from "./PosComponents/GoBackBtn";
 import AddToCartBtn from "./PosComponents/AddToCartBtn";
@@ -32,6 +33,8 @@ function ProductBuilderModal() {
   const [openOptions, setopenOptions] = useState(null);
   const alertP = useAlert();
   const [scrollY, setscrollY] = useState(0);
+  const [outerScrollY, setouterScrollY] = useState(0);
+  const width = useWindowDimensions().width;
 
   const goBack = () => resetProductBuilderState();
 
@@ -156,105 +159,135 @@ function ProductBuilderModal() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.productBuilderGroup}>
+      <ScrollView
+        style={{ width: "100%", height: "100%" }}
+        contentContainerStyle={{
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        onScroll={(e) => setouterScrollY(e.nativeEvent.contentOffset.y)}
+        scrollEventThrottle={16}
+      >
         <View
-          style={[
-            styles.goBackRow,
-            // !myObj.description ? { marginBottom: 20 } : { marginBottom: 120 },
-            { marginBottom: 100 },
-          ]}
+          style={
+            width > 800
+              ? styles.productBuilderGroup
+              : styles.productBuilderGroupMobile
+          }
         >
-          <GoBackBtn onPress={goBack} style={styles.goBackBtn} />
-        </View>
-        <View style={styles.leftRightGroup}>
-          <View style={styles.leftSideGroup}>
-            <View style={styles.itemInfoContainer}>
-              <Image
-                source={
-                  imageUrl
-                    ? { uri: imageUrl }
-                    : require("../../assets/images/image_xJCw..png")
-                }
-                resizeMode="contain"
-                style={[
-                  styles.itemImg,
-                  myObj.description && { width: 300, height: 150 },
-                ]}
-              />
-              <View style={styles.itemInfoTxtGroup}>
-                <View style={styles.topTxtGroup}>
-                  <Text style={styles.productName}>{myObj.name}</Text>
+          <View
+            style={[
+              styles.goBackRow,
+              // !myObj.description ? { marginBottom: 20 } : { marginBottom: 120 },
+              width > 800 ? { marginBottom: 100 } : { marginBottom: 50 },
+            ]}
+          >
+            <GoBackBtn onPress={goBack} />
+          </View>
+          <View style={width > 800 && styles.groupsContainer}>
+            <View style={width > 800 && styles.leftSideGroup}>
+              <View style={styles.itemInfoContainer}>
+                <Image
+                  source={
+                    imageUrl
+                      ? { uri: imageUrl }
+                      : require("../../assets/images/image_xJCw..png")
+                  }
+                  resizeMode="contain"
+                  style={[
+                    styles.itemImg,
+                    myObj.description && { width: 300, height: 150 },
+                    width < 800 && { width: 300, height: 200 },
+                  ]}
+                />
+                <View style={styles.itemInfoTxtGroup}>
+                  <View style={styles.topTxtGroup}>
+                    <Text style={styles.productName}>{myObj.name}</Text>
+                    <>
+                      {myObj.calorieDetails && (
+                        <Text style={styles.calorieDetails}>
+                          {myObj.calorieDetails}
+                        </Text>
+                      )}
+                    </>
+                  </View>
                   <>
-                    {myObj.calorieDetails && (
-                      <Text style={styles.calorieDetails}>280 cal/slice</Text>
+                    {myObj.description && (
+                      <Text style={styles.description}>
+                        Description: {myObj.description}
+                      </Text>
                     )}
                   </>
                 </View>
-                <>
-                  {myObj.description && (
-                    <Text style={styles.description}>
-                      Description: {myObj.description}
-                    </Text>
-                  )}
-                </>
+              </View>
+              <View
+                style={[
+                  styles.writeNoteContainer,
+                  width < 800 && { marginTop: 15 },
+                ]}
+              >
+                <Text style={styles.notesLbl}>Notes:</Text>
+                <TextInput
+                  style={styles.noteInput}
+                  placeholder="Write any extra info here..."
+                  placeholderTextColor="#90949a"
+                  multiline={true}
+                  numberOfLines={4}
+                  onChangeText={(val) => setextraInput(val)}
+                  value={extraInput}
+                />
               </View>
             </View>
-            <View style={styles.writeNoteContainer}>
-              <Text style={styles.notesLbl}>Notes:</Text>
-              <TextInput
-                style={styles.noteInput}
-                placeholder="Write any extra info here..."
-                placeholderTextColor="#90949a"
-                multiline={true}
-                numberOfLines={4}
-                onChangeText={(val) => setextraInput(val)}
-                value={extraInput}
-              />
-            </View>
-          </View>
-          <View style={styles.rightSideGroup}>
-            <ScrollView
-              contentContainerStyle={{
-                height: "90%",
-                width: "100%",
-                padding: 20,
-                paddingLeft: 30,
-                paddingRight: 30,
-              }}
-              onScroll={(e) => setscrollY(e.nativeEvent.contentOffset.y)}
-              scrollEventThrottle={16}
+            <View
+              style={
+                width > 800
+                  ? styles.rightSideGroup
+                  : styles.rightSideGroupMobile
+              }
             >
-              <View>
-                {myObjProfile.options.map((option, index) => (
-                  <DisplayOption
-                    key={index}
-                    e={option}
-                    index={index}
-                    myObjProfile={myObjProfile}
-                    setMyObjProfile={setmyObjProfile}
-                    setopenOptions={setopenOptions}
-                    openOptions={openOptions}
-                    scrollY={scrollY}
-                    isOnlineOrder={isOnlineOrder}
-                  />
-                ))}
+              <ScrollView
+                contentContainerStyle={{
+                  height: "90%",
+                  width: "100%",
+                  padding: 20,
+                  paddingLeft: 30,
+                  paddingRight: 30,
+                }}
+                onScroll={(e) => setscrollY(e.nativeEvent.contentOffset.y)}
+                scrollEventThrottle={16}
+              >
+                <View>
+                  {myObjProfile.options.map((option, index) => (
+                    <DisplayOption
+                      key={index}
+                      e={option}
+                      index={index}
+                      myObjProfile={myObjProfile}
+                      setMyObjProfile={setmyObjProfile}
+                      setopenOptions={setopenOptions}
+                      openOptions={openOptions}
+                      isOnlineOrder={isOnlineOrder}
+                      scrollY={width > 800 ? scrollY : outerScrollY}
+                    />
+                  ))}
+                </View>
+              </ScrollView>
+              <View style={styles.totalLblRow}>
+                <Text style={styles.totalLbl}>
+                  Total: ${parseFloat(total).toFixed(2)}
+                </Text>
               </View>
-            </ScrollView>
-            <View style={styles.totalLblRow}>
-              <Text style={styles.totalLbl}>
-                Total: ${parseFloat(total).toFixed(2)}
-              </Text>
             </View>
           </View>
+          <View style={styles.addToCartRow}>
+            <AddToCartBtn
+              style={styles.addToCartBtn}
+              title={itemIndex ? "Save" : "Add To Cart"}
+              onPress={AddToCart}
+            />
+          </View>
         </View>
-        <View style={styles.addToCartRow}>
-          <AddToCartBtn
-            style={styles.addToCartBtn}
-            title={itemIndex ? "Save" : "Add To Cart"}
-            onPress={AddToCart}
-          />
-        </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -272,6 +305,12 @@ const styles = StyleSheet.create({
     height: "85%",
     justifyContent: "space-between",
   },
+  productBuilderGroupMobile: {
+    width: "90%",
+    justifyContent: "space-between",
+    paddingTop: 40,
+    paddingBottom: 40,
+  },
   goBackRow: {
     alignSelf: "stretch",
   },
@@ -279,7 +318,7 @@ const styles = StyleSheet.create({
     height: 32,
     width: 126,
   },
-  leftRightGroup: {
+  groupsContainer: {
     height: "70%",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -358,6 +397,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 10,
     zIndex: 999,
+  },
+  rightSideGroupMobile: {
+    backgroundColor: "white",
+    borderRadius: 10,
+    zIndex: 999,
+    marginTop: 15,
   },
   oneTimeSelectableOptionGroup: {
     marginBottom: 20,

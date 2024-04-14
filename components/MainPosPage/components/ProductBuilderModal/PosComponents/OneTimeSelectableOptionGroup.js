@@ -1,5 +1,5 @@
-import React, { Component, useEffect, useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import React from "react";
+import { StyleSheet, View, Text, useWindowDimensions } from "react-native";
 import OneTimeSelectableBtn from "./OneTimeSelectableBtn";
 
 function OneTimeSelectableOptionGroup({
@@ -9,12 +9,23 @@ function OneTimeSelectableOptionGroup({
   value,
   setValue,
 }) {
+  const width = useWindowDimensions().width;
+
+  const stylesGrid = {
+    gridContainer: {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", // Fixed syntax
+      gap: "10px",
+      width: width > 800 ? "70%" : "100%",
+    },
+  };
+
   return (
-    <View style={[styles.container]}>
-      <Text style={styles.lbl}>
+    <View style={[width > 800 ? styles.container : styles.containerMobile]}>
+      <Text style={width > 800 ? styles.lbl : styles.lblMobile}>
         {label} {isRequired ? "*" : ""}
       </Text>
-      <View style={styles.optionsRow}>
+      <div style={stylesGrid.gridContainer}>
         {options.map((option, listIndex) => {
           return (
             <OneTimeSelectableBtn
@@ -47,7 +58,7 @@ function OneTimeSelectableOptionGroup({
             />
           );
         })}
-      </View>
+      </div>
     </View>
   );
 }
@@ -56,15 +67,24 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
+    alignItems: "center",
+    marginBottom: 20,
+    alignSelf: "stretch",
+  },
+  containerMobile: {
     marginBottom: 20,
     alignSelf: "stretch",
   },
   lbl: {
     fontWeight: "700",
-    color: "#121212",
-    fontSize: 14,
+    color: "#3e3f41",
     width: "25%",
+  },
+  lblMobile: {
+    fontWeight: "700",
+    color: "#3e3f41",
+    width: "100%",
+    marginBottom: 10,
   },
   optionsRow: {
     width: "70%",
@@ -78,13 +98,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   nonActiveOneTimeSelectableBtn: {
-    minHeight: 33,
-    maxHeight: 50,
-    minWidth: 110,
-    maxWidth: 160,
-    marginRight: 7,
-    marginBottom: 15,
+    width: "100%",
     padding: 5,
+    height: 33,
   },
   nonActiveOneTimeSelectableBtn1: {
     height: 33,

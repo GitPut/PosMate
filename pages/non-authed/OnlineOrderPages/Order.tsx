@@ -8,9 +8,6 @@ import {
   ScrollView,
   useWindowDimensions,
 } from "react-native";
-import CategoryBtn from "./components/cartOrder/CategoryBtn";
-import CartItem from "./components/cartOrder/CartItem";
-import UntitledComponent from "./components/cartOrder/UntitledComponent";
 import { Entypo, Feather } from "@expo/vector-icons";
 import {
   OrderDetailsState,
@@ -27,6 +24,7 @@ import ProductsSection from "components/MainPosPage/components/ProductsSection";
 import CategorySection from "components/MainPosPage/components/CategorySection";
 import Cart from "components/MainPosPage/components/Cart";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
+import CartMobile from "./phoneComponents/CartMobile";
 
 function OrderCartMain({ catalog, setshowProduct }) {
   const orderDetails = OrderDetailsState.use();
@@ -154,248 +152,31 @@ function OrderCartMain({ catalog, setshowProduct }) {
           </View>
         )}
         <CategorySection catalog={catalog} section={section} />
-        {width > 1250 ? (
-          <ProductsSection catalog={catalog} />
-        ) : (
-          <View style={styles.scrollAreaProducts}>
-            <ScrollView
-              contentContainerStyle={
-                styles.scrollAreaProducts_contentContainerStyle
-              }
-            >
-              {catalog.products.map((product, index) => (
-                <ItemContainerMobile
-                  product={product}
-                  key={index}
-                  style={{
-                    height: 220,
-                    width: 160, // Ensure this width accounts for any margins or padding
-                    marginBottom: 30,
-                  }}
-                  setshowProduct={setshowProduct}
-                />
-              ))}
-            </ScrollView>
-          </View>
-        )}
+        <ProductsSection catalog={catalog} />
       </View>
       {width > 1000 ? (
         <Cart />
       ) : (
-        <Modal
-          isVisible={cartOpen}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          style={{ margin: 0 }}
-        >
-          <View
-            style={{
-              width: width,
-              height: height,
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              backgroundColor: "white",
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                width: "90%",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: 10,
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  setcartOpen(false);
-                }}
-              >
-                <Feather
-                  onPress={() => {
-                    setcartOpen(false);
-                  }}
-                  name="chevron-down"
-                  style={{ color: "grey" }}
-                  size={40}
-                />
-              </Pressable>
-              <View
-                style={{
-                  backgroundColor: "#1D294E",
-                  borderRadius: 10,
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: 80,
-                  height: 40,
-                  flexDirection: "row",
-                  padding: 15,
-                }}
-              >
-                <Feather
-                  name="shopping-cart"
-                  style={{ color: "white" }}
-                  size={22}
-                />
-                <Text style={{ color: "white", fontSize: 20 }}>
-                  {cart.length}
-                </Text>
-              </View>
-            </View>
-            <Text style={styles.myCartTxt}>My Cart</Text>
-            {cart.length > 0 ? (
-              <View style={styles.cartItems}>
-                <ScrollView
-                  horizontal={false}
-                  contentContainerStyle={styles.cartItems_contentContainerStyle}
-                >
-                  {cart?.map((cartItem, index) => (
-                    <CartItem
-                      style={styles.cartItem1}
-                      key={index}
-                      cartItem={cartItem}
-                      index={index}
-                      removeAction={() => {
-                        console.log("Removing");
-                        const local = structuredClone(cart);
-                        local.splice(index, 1);
-                        setCartState(local);
-                      }}
-                      decreaseAction={() => {
-                        const local = structuredClone(cart);
-                        local[index].quantity--;
-                        setCartState(local);
-                      }}
-                      increaseAction={() => {
-                        const local = structuredClone(cart);
-                        if (local[index].quantity) {
-                          local[index].quantity++;
-                        } else {
-                          local[index].quantity = 2;
-                        }
-                        setCartState(local);
-                      }}
-                    />
-                  ))}
-                </ScrollView>
-              </View>
-            ) : (
-              <Image
-                source={require("./assets/images/noItemsImg.png")}
-                style={{ width: 200, height: "35%", resizeMode: "contain" }}
-              />
-            )}
-            <View style={[styles.totalsContainer, { height: 150 }]}>
-              <View style={styles.topGroupTotalsContainer}>
-                {orderDetails.delivery &&
-                  parseFloat(storeDetails.deliveryPrice) && (
-                    <UntitledComponent
-                      amountValue={`$${parseFloat(
-                        storeDetails.deliveryPrice
-                      ).toFixed(2)}`}
-                      amountLbl="Delivery"
-                      style={styles.discountRow}
-                    />
-                  )}
-                <UntitledComponent
-                  amountValue={
-                    orderDetails.delivery &&
-                    parseFloat(storeDetails.deliveryPrice) &&
-                    cartSub > 0
-                      ? `$${(
-                          cartSub - parseFloat(storeDetails.deliveryPrice)
-                        ).toFixed(2)}`
-                      : `$${cartSub.toFixed(2)}`
-                  }
-                  amountLbl="Subtotal"
-                  style={styles.subtotalRow}
-                />
-                <UntitledComponent
-                  amountValue={`$${(
-                    cartSub *
-                    (storeDetails.taxRate
-                      ? parseFloat(storeDetails.taxRate) / 100
-                      : 0.13)
-                  ).toFixed(2)}`}
-                  amountLbl="Tax"
-                  style={styles.taxRow}
-                />
-                <View style={styles.totalRow}>
-                  <Text style={styles.total2}>Total</Text>
-                  <Text style={styles.totalValue}>
-                    $
-                    {(
-                      Math.ceil(
-                        cartSub *
-                          (storeDetails.taxRate
-                            ? 1 + parseFloat(storeDetails.taxRate) / 100
-                            : 1.13) *
-                          10
-                      ) / 10
-                    ).toFixed(2)}
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <Pressable
-              style={[styles.checkoutBtn, { margin: 20 }]}
-              disabled={cart.length < 1}
-              onPress={() => {
-                const today = new Date();
-                const transNum = Math.random().toString(36).substr(2, 9);
-
-                if (orderDetails.delivery) {
-                  setOrderDetailsState({
-                    date: today,
-                    transNum: transNum,
-                    total: (
-                      cartSub *
-                      (storeDetails.taxRate
-                        ? 1 + storeDetails.taxRate / 100
-                        : 1.13)
-                    ).toFixed(2),
-                    method: "deliveryOrder",
-                    online: true,
-                    cart: cart,
-                  });
-                  setcartOpen(false);
-                  setOrderDetailsState({ page: 5 });
-                } else {
-                  setOrderDetailsState({
-                    date: today,
-                    transNum: transNum,
-                    total: (
-                      cartSub *
-                      (storeDetails.taxRate
-                        ? 1 + storeDetails.taxRate / 100
-                        : 1.13)
-                    ).toFixed(2),
-                    method: "pickupOrder",
-                    online: true,
-                    cart: cart,
-                  });
-                }
-                setcartOpen(false);
-                setOrderDetailsState({ page: 5 });
-              }}
-            >
-              <Text style={styles.checkoutLbl}>Checkout</Text>
-            </Pressable>
-          </View>
-        </Modal>
+        <CartMobile
+          cartOpen={cartOpen}
+          setcartOpen={setcartOpen}
+          cartSub={cartSub}
+        />
       )}
       <Modal
         isVisible={ProductBuilderProps.isOpen}
         animationIn="slideInLeft"
         animationOut="slideOutLeft"
         backdropOpacity={0}
+        style={{
+          margin: 0,
+        }}
       >
         <View
           style={{
             height: height,
             width: width,
             flexDirection: "row",
-            left: "-5%",
           }}
         >
           <View
@@ -410,34 +191,11 @@ function OrderCartMain({ catalog, setshowProduct }) {
                     height: "100%",
                     width: "100%",
                     borderTopRightRadius: 3,
-                    left: "-1.5%",
                   },
             ]}
           >
             {ProductBuilderProps.product && <ProductBuilderModal />}
           </View>
-          {width > 1400 && (
-            <View
-              style={{
-                flexDirection: "row",
-                height: "100%",
-                width: "37%",
-                position: "relative",
-              }}
-            >
-              <View
-                style={{
-                  shadowColor: "rgba(0,0,0,1)",
-                  shadowOffset: { width: -10, height: 0 },
-                  shadowOpacity: 0.05,
-                  shadowRadius: 10,
-                  width: "100%",
-                  height: "100%",
-                  elevation: 30,
-                }}
-              />
-            </View>
-          )}
         </View>
       </Modal>
     </View>

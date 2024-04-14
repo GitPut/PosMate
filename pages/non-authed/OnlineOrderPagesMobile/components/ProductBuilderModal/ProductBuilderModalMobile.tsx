@@ -279,7 +279,9 @@ function ProductBuilderModalMobile({ product, itemIndex, goBack, imageUrl }) {
           });
           opsArray.push(opWVal);
         } else if (numberOfSelected === 0 && op.isRequired === true) {
-          alertP.error(op.label + " is required. Please fill out to add to cart");
+          alertP.error(
+            op.label + " is required. Please fill out to add to cart"
+          );
           stop = true;
         }
       } else {

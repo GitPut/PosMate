@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
-import DeliveryDetails from "./components/home/DeliveryDetails";
-import PickupDetails from "./components/home/PickupDetails";
+import DeliveryDetails from "./components/DeliveryDetails";
+import PickupDetails from "./components/PickupDetails";
 import {
   Text,
   Pressable,
@@ -83,8 +83,7 @@ function OnlineOrderHomePickup() {
                   ></Image>
                 </View>
                 {screenWidth > 1000 ? (
-                  <PickupDetails
-                  />
+                  <PickupDetails />
                 ) : (
                   <View
                     style={{
@@ -93,8 +92,7 @@ function OnlineOrderHomePickup() {
                       width: "100%",
                     }}
                   >
-                    <PickupDetails
-                    />
+                    <PickupDetails />
                   </View>
                 )}
                 <View style={styles.bottomRowGroup}>

@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -97,7 +97,11 @@ function PickupDetails() {
         />
       </View>
       <Pressable
-        style={styles.continueBtn}
+        style={[
+          styles.continueBtn,
+          (localName === "" || localPhoneNumber === "") && { opacity: 0.8 },
+        ]}
+        disabled={localName === "" || localPhoneNumber === ""}
         onPress={() => {
           if (localName === "" || localPhoneNumber === "")
             return alertP.error("Please fill in all fields");

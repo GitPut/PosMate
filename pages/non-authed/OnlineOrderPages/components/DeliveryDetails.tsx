@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, {  useState } from "react";
 import {
   StyleSheet,
   View,
@@ -234,9 +234,22 @@ function DeliveryDetails() {
       <Pressable
         style={[
           styles.continueBtn,
-          { opacity: checkingDeliveryRange ? 0.8 : 1 },
+          {
+            opacity:
+              checkingDeliveryRange ||
+              localAddress === "" ||
+              localName === "" ||
+              localPhoneNumber === ""
+                ? 0.8
+                : 1,
+          },
         ]}
-        disabled={checkingDeliveryRange}
+        disabled={
+          checkingDeliveryRange ||
+          localAddress === "" ||
+          localName === "" ||
+          localPhoneNumber === ""
+        }
         onPress={() => {
           setcheckingDeliveryRange(true);
           if (

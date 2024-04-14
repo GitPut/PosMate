@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
-function GoBackBtn({ style, onPress }) {
+function GoBackBtn({  onPress }) {
   return (
-    <Pressable style={[styles.container, style]} onPress={onPress}>
+    <Pressable style={[styles.container]} onPress={onPress}>
       <Entypo name="chevron-left" style={styles.backIcon} />
-      <Text style={styles.lbl}>Dashboard</Text>
+      <Text style={styles.lbl}>Go Back</Text>
     </Pressable>
   );
 }
@@ -16,6 +16,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    height: 32,
+    width: 110,
   },
   backIcon: {
     color: "#070707",

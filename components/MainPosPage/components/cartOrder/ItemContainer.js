@@ -1,101 +1,75 @@
 import React from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  useWindowDimensions,
+} from "react-native";
 import { addCartState, cartState, setProductBuilderState } from "state/state";
 import ProductImage from "components/ProductImage";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 function ItemContainer({ product }) {
   const cart = cartState.use();
+  const { width } = useWindowDimensions();
 
   return (
     <div id={product.id}>
-      {product.hasImage ? (
-        <Pressable
-          onPress={() => {
-            if (product.options.length > 0) {
-              setProductBuilderState({
-                product: product,
-                itemIndex: null,
+      <Pressable
+        onPress={() => {
+          if (product.options.length > 0) {
+            setProductBuilderState({
+              product: product,
+              itemIndex: null,
+              imageUrl: product.imageUrl,
+              isOpen: true,
+            });
+          } else {
+            addCartState(
+              {
+                name: product.name,
+                price: product.price,
+                description: product.description,
+                options: [],
+                extraDetails: null,
                 imageUrl: product.imageUrl,
-                isOpen: true,
-              });
-            } else {
-              addCartState(
-                {
-                  name: product.name,
-                  price: product.price,
-                  description: product.description,
-                  options: [],
-                  extraDetails: null,
-                  imageUrl: product.imageUrl,
-                },
-                cart
-              );
-            }
-          }}
-          style={[styles.container]}
-        >
+              },
+              cart
+            );
+          }
+        }}
+        style={width > 1250 ? styles.container : styles.containerMobile}
+      >
+        {product.hasImage && (
           <ProductImage
             source={{ uri: product.imageUrl }}
             resizeMode="contain"
-            style={styles?.itemImg}
+            style={[styles.itemImg, width < 1250 && { height: 100 }]}
           />
-          <View style={styles?.rightSide}>
-            <Text style={styles?.familyCombo}>
-              {product.name ? product.name : "Placeholder"}
-            </Text>
-            <Text style={styles?.price}>
-              ${product.price ? product.price : "Placeholder"}
-            </Text>
-            <View style={styles?.openBtnRow}></View>
+        )}
+        <View style={styles.rightSide}>
+          <Text style={styles.familyCombo}>{product.name}</Text>
+          <View
+            style={[
+              {
+                width: "90%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: 10,
+                paddingTop: 10,
+                marginBottom: 20,
+              },
+            ]}
+          >
+            <Text style={styles.price}>${product.price}</Text>
+            <View style={styles.openBtn}>
+              <MaterialCommunityIcons name="plus" style={styles.plusIcon} />
+            </View>
           </View>
-        </Pressable>
-      ) : (
-        <Pressable
-          onPress={() => {
-            if (product.options.length > 0) {
-              setProductBuilderState({
-                product: product,
-                itemIndex: null,
-                imageUrl: null,
-                isOpen: true,
-              });
-            } else {
-              addCartState(
-                {
-                  name: product.name,
-                  price: product.price,
-                  description: product.description,
-                  options: [],
-                  extraDetails: null,
-                  imageUrl: null,
-                },
-                cart
-              );
-            }
-          }}
-          style={[styles.container]}
-        >
-          <View>
-            <Text style={styles?.familyCombo}>
-              {product.name ? product.name : "Placeholder"}
-            </Text>
-            <Text style={styles?.price}>
-              ${product.price ? product.price : "Placeholder"}
-            </Text>
-            <View
-              style={[
-                styles?.openBtnRow,
-                {
-                  width: 250,
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                  alignItems: "flex-end",
-                },
-              ]}
-            ></View>
-          </View>
-        </Pressable>
-      )}
+        </View>
+      </Pressable>
     </div>
   );
 }
@@ -109,6 +83,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 160, // Fixed height for each container
     width: "100%", // Take up the full width available
+    paddingLeft: 10,
+  },
+  containerMobile: {
+    backgroundColor: "#ffffff",
+    borderRadius: 20,
+    justifyContent: "center", // or 'flex-start' if you want all items aligned to the start
+    alignItems: "center",
+    height: 240, // Fixed height for each container
+    width: "100%", // Take up the full width available
+    paddingLeft: 10,
+    paddingTop: 10,
   },
   itemImg: {
     height: 133, // Fixed height for the image
@@ -126,26 +111,17 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#121212",
     fontSize: 18,
-    height: 60,
     alignSelf: "stretch",
-    paddingBottom: 50,
     width: "90%",
   },
   price: {
     fontWeight: "700",
     color: "#00c93b",
     fontSize: 18,
-    height: 24,
-    alignSelf: "stretch",
-  },
-  openBtnRow: {
-    height: 42,
-    alignItems: "flex-end",
-    alignSelf: "stretch",
   },
   openBtn: {
     width: 35,
-    height: 32,
+    height: 35,
     backgroundColor: "rgba(255,255,255,1)",
     borderRadius: 100,
     shadowColor: "rgba(0,0,0,1)",
