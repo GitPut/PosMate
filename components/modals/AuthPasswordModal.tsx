@@ -10,11 +10,8 @@ import React, { useState } from "react";
 import { storeDetailState } from "state/state";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFonts } from "expo-font";
-import Modal from "react-native-modal";
-import {
-  posHomeState,
-  updatePosHomeState,
-} from "state/posHomeState";
+import Modal from "react-native-modal-web";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
 
 const AuthPasswordModal = () => {
   const { height, width } = useWindowDimensions();
@@ -30,7 +27,10 @@ const AuthPasswordModal = () => {
         storeDetails.settingsPassword === password) ||
       storeDetails.settingsPassword.length === 0
     ) {
-      updatePosHomeState({ managerAuthorizedStatus: true, authPasswordModal: false });
+      updatePosHomeState({
+        managerAuthorizedStatus: true,
+        authPasswordModal: false,
+      });
       setpassword("");
       setinccorectPass(false);
       setShowPassword(false);
@@ -69,7 +69,10 @@ const AuthPasswordModal = () => {
       >
         <Pressable
           onPress={() => {
-            updatePosHomeState({ authPasswordModal: false, pendingAuthAction: ""});
+            updatePosHomeState({
+              authPasswordModal: false,
+              pendingAuthAction: "",
+            });
           }}
           style={{
             justifyContent: "center",

@@ -13,7 +13,7 @@ import { addCustomerDetailsToDb } from "state/firebaseFunctions";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import GeneralSwitch from "components/GeneralSwitch";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import { useAlert } from "react-alert";
 

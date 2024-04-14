@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import EmployeeItem from "./components/EmployeeItem";
 import { employeesState } from "state/state";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 import AddEmployeeModal from "./modals/AddEmployeeModal";
 
 const EmployeesReport = () => {

@@ -19,7 +19,7 @@ import SavedCustomersModal from "components/modals/SavedCustomersModal/SavedCust
 import ClockinModal from "components/modals/ClockInModal/ClockinModal";
 import LeftMenuBar from "./components/LeftMenuBar";
 import Cart from "./components/Cart";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 import CategorySection from "./components/CategorySection";
 import ProductsSection from "./components/ProductsSection";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";

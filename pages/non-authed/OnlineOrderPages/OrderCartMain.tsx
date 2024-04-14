@@ -15,7 +15,7 @@ import UntitledComponent from "./components/cartOrder/UntitledComponent";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { cartState, setCartState } from "state/state";
 import ItemContainerMobile from "../OnlineOrderPagesMobile/components/cartOrder/ItemContainerMobile";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 
 function OrderCartMain({
   storeDetails,
@@ -198,7 +198,12 @@ function OrderCartMain({
         </View>
         {screenWidth > 1250 ? (
           <div style={stylesBigScreen.scrollAreaProducts}>
-            <div style={{ ...stylesBigScreen.scrollAreaProducts, overflowY: "auto" }}>
+            <div
+              style={{
+                ...stylesBigScreen.scrollAreaProducts,
+                overflowY: "auto",
+              }}
+            >
               {/* ScrollView from 'react-native-web' */}
               <div style={stylesBigScreen.gridContainer}>
                 {catalog.products.map((product, index) => (

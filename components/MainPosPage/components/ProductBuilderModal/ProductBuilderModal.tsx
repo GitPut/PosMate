@@ -142,7 +142,7 @@ function ProductBuilderModal({ product, itemIndex, goBack, imageUrl }) {
       goBack();
       setmyObjProfile(myObj);
       settotal(myObjProfile.price);
-      setextraInput(null);
+      setextraInput("");
     }
   };
 

@@ -16,7 +16,7 @@ import { auth, db, storage } from "state/firebaseConfig";
 import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
 import AddProductModal from "./modals/AddProductModal";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 import ProductTemplatesModal from "./modals/ProductTemplatesModal";
 
 function ProductList(props) {
@@ -179,7 +179,7 @@ function ProductList(props) {
         </ScrollView>
       </View>
       <Modal
-        isVisible={addProductModal || existingProduct}
+        isVisible={(addProductModal || existingProduct) ? true : false}
         animationIn="fadeIn"
         animationOut="fadeOut"
       >
@@ -206,7 +206,7 @@ function ProductList(props) {
         </View>
       </Modal>
       <Modal
-        isVisible={productTemplatesModalVisible}
+        isVisible={productTemplatesModalVisible ? true : false}
         animationIn="fadeIn"
         animationOut="fadeOut"
       >

@@ -9,7 +9,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Entypo, MaterialIcons, Ionicons } from "@expo/vector-icons";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 import OptionSelectorItemContainer from "./OptionSelectorItemContainer";
 
 function TableOption({
@@ -119,9 +119,7 @@ function TableOption({
   };
 
   return (
-    <View
-      style={[styles.container, openDropdown === id && { zIndex: 1000 }]}
-    >
+    <View style={[styles.container, openDropdown === id && { zIndex: 1000 }]}>
       <Text style={styles.lbl}>
         {label} {isRequired ? "*" : ""}
       </Text>

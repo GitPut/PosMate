@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import { customersList } from "state/state";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import SavedCustomerItem from "./components/SavedCustomerItem";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 import CustomerDetailsModal from "./CustomerDetailsModal";
 import { updatePosHomeState } from "state/posHomeState";
 

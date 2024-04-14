@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import PercentageBtn from "./components/PercentageBtn";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import { cartState, storeDetailState } from "state/state";
 import { useAlert } from "react-alert";

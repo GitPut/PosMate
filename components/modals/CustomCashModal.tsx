@@ -7,7 +7,7 @@ import {
   TextInput,
 } from "react-native";
 import React, { useState } from "react";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import { myDeviceDetailsState, storeDetailState } from "state/state";
 import { useAlert } from "react-alert";
@@ -169,7 +169,9 @@ const CustomcustomCashModal = () => {
             err.message.includes("A printer must be specified before printing")
           ) {
             alertP.error("You must specify a printer in device settings");
-          } else if (err.message.includes("Unable to establish connection with QZ")) {
+          } else if (
+            err.message.includes("Unable to establish connection with QZ")
+          ) {
             alertP.error(
               "You do not have Divine POS Helper installed. Please download from general settings"
             );

@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import { employeesState, setEmployeesState } from "state/state";
 import { Ionicons } from "@expo/vector-icons";
 import EmployeeClockInItem from "./components/EmployeeClockInItem";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 
 const ClockinModal = () => {

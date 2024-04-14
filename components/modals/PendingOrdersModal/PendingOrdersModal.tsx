@@ -12,7 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import PendingOrderItem from "./components/PendingOrderItem";
 import PendingOrderShowDetails from "./PendingOrderShowDetails";
 import FinishPaymentCash from "./FinishPaymentCash";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import { setCartState } from "state/state";
 import { auth, db } from "state/firebaseConfig";

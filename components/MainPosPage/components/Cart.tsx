@@ -163,7 +163,7 @@ const Cart = () => {
                 marginBottom: 10,
               }}
               multiline={true}
-              value={cartNote}
+              value={cartNote ? cartNote : ""}
               onChangeText={(text) => {
                 updatePosHomeState({ cartNote: text });
               }}

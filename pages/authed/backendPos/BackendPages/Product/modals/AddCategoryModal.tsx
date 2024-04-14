@@ -19,6 +19,7 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
   );
   const [categoryPosition, setcategoryPosition] = useState(index);
   const catalog = userStoreState.use();
+  const alertP = useAlert();
 
   const Update = () => {
     if (categoryName === "") {

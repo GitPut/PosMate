@@ -13,7 +13,7 @@ import { auth, db } from "state/firebaseConfig";
 import Swal from "sweetalert2";
 import CategoryOptionBox from "./components/CategoryOptionBox";
 import AddCategoryModal from "./modals/AddCategoryModal";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 
 function CategoryList() {
   const catalog = userStoreState.use()
@@ -133,7 +133,7 @@ function CategoryList() {
         </ScrollView>
       </View>
       <Modal
-        isVisible={addCategoryModal}
+        isVisible={addCategoryModal ? true : false}
         animationIn="fadeIn"
         animationOut="fadeOut"
       >
@@ -153,7 +153,7 @@ function CategoryList() {
         </View>
       </Modal>
       <Modal
-        isVisible={editCategoryModal}
+        isVisible={editCategoryModal ? true : false}
         animationIn="fadeIn"
         animationOut="fadeOut"
       >

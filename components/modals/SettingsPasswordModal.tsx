@@ -14,7 +14,7 @@ import { useFonts } from "expo-font";
 import Axios from "axios";
 import { auth } from "state/firebaseConfig";
 import { useHistory } from "react-router-dom";
-import Modal from "react-native-modal";
+import Modal from "react-native-modal-web";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import { useAlert } from "react-alert";
 
