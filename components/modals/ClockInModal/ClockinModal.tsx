@@ -17,7 +17,7 @@ import { posHomeState, updatePosHomeState } from "state/posHomeState";
 const ClockinModal = () => {
   const { height, width } = useWindowDimensions();
   const employees = employeesState.use();
-  const {clockinModal} = posHomeState.use();
+  const { clockinModal } = posHomeState.use();
 
   return (
     <Modal isVisible={clockinModal} animationIn="fadeIn" animationOut="fadeOut">
@@ -49,7 +49,7 @@ const ClockinModal = () => {
                   <Pressable
                     onPress={() => updatePosHomeState({ clockinModal: false })}
                   >
-                    <Ionicons name="md-close" style={styles.closeIcon} />
+                    <Ionicons name="close" style={styles.closeIcon} />
                   </Pressable>
                 </View>
                 <View style={styles.secondAreaContainer}>
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   employeesScrollView_contentContainerStyle: {
-    height: '100%',
+    height: "100%",
     width: 421,
     alignItems: "center",
     paddingTop: 3,

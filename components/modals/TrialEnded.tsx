@@ -113,15 +113,15 @@ const TrialEnded = ({ resetLoader }) => {
           )}
           <View style={styles.group7}>
             <Text style={styles.cloudBased}>Cloud-Based</Text>
-            <IoniconsIcon name="ios-checkmark" style={styles.checkIcon} />
+            <IoniconsIcon name="checkmark" style={styles.checkIcon} />
           </View>
           <View style={styles.group7}>
             <Text style={styles.cloudBased}>Easy to Use</Text>
-            <IoniconsIcon name="ios-checkmark" style={styles.checkIcon} />
+            <IoniconsIcon name="checkmark" style={styles.checkIcon} />
           </View>
           <View style={styles.group7}>
             <Text style={styles.cloudBased}>24/H Support</Text>
-            <IoniconsIcon name="ios-checkmark" style={styles.checkIcon} />
+            <IoniconsIcon name="checkmark" style={styles.checkIcon} />
           </View>
           <View
             style={{

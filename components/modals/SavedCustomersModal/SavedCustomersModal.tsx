@@ -8,9 +8,7 @@ import {
   TextInput,
 } from "react-native";
 import React, { useState } from "react";
-import {
-  customersList,
-} from "state/state";
+import { customersList } from "state/state";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import SavedCustomerItem from "./components/SavedCustomerItem";
 import Modal from "react-native-modal";
@@ -29,7 +27,7 @@ const SavedCustomersModal = () => {
     updatePosHomeState({
       saveCustomerModal: false,
       deliveryModal: false,
-    })
+    });
   };
 
   return (
@@ -60,7 +58,7 @@ const SavedCustomersModal = () => {
                   <Entypo name="chevron-left" style={styles.goBackIcon} />
                 </Pressable>
                 <Pressable onPress={closeAll}>
-                  <Ionicons name="md-close" style={styles.closeIcon} />
+                  <Ionicons name="close" style={styles.closeIcon} />
                 </Pressable>
               </View>
               <Text style={styles.savedCustomersTxt}>Saved Customers</Text>

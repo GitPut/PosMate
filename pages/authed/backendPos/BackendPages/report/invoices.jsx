@@ -333,13 +333,13 @@ function InvoiceReport() {
               }}
             >
               <Ionicons
-                name="md-close"
+                name="close"
                 style={styles.clearIcon}
               />
             </Pressable>
             <Pressable onPress={SearchDate} style={styles.searchFilterBtn}>
               <Ionicons
-                name="ios-search"
+                name="search"
                 style={styles.searchIcon}
               />
             </Pressable>

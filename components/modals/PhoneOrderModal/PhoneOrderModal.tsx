@@ -282,7 +282,7 @@ const PhoneOrderModal = () => {
                         }
                       }}
                     >
-                      <Ionicons name="md-close" style={styles.escapeIcon} />
+                      <Ionicons name="close" style={styles.escapeIcon} />
                     </Pressable>
                   </View>
                   <Text style={styles.phoneOrder}>Phone Order</Text>

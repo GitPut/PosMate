@@ -89,7 +89,7 @@ function CustomerDetailsModal({
                     closeAll();
                   }}
                 >
-                  <Ionicons name="md-close" style={styles.closeIcon} />
+                  <Ionicons name="close" style={styles.closeIcon} />
                 </Pressable>
               </View>
               {edit ? (
@@ -385,7 +385,7 @@ function CustomerDetailsModal({
                           address: customerSelected.address,
                           buzzCode: customerSelected.buzzCode,
                           unitNumber: customerSelected.unitNumber,
-                        })
+                        });
                         setcustomerSelected(null);
                         closeAll();
                       }}
@@ -399,7 +399,7 @@ function CustomerDetailsModal({
                           address: customerSelected.address,
                           buzzCode: customerSelected.buzzCode,
                           unitNumber: customerSelected.unitNumber,
-                        })
+                        });
                         setcustomerSelected(null);
                         closeAll();
                       }}
@@ -432,7 +432,7 @@ function CustomerDetailsModal({
                       address: customerSelected.address,
                       buzzCode: customerSelected.buzzCode,
                       unitNumber: customerSelected.unitNumber,
-                    })
+                    });
                     setcustomerSelected(null);
                     closeAll();
                   }}

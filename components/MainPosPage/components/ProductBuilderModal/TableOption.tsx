@@ -204,7 +204,7 @@ function TableOption({
                           alignItems: "center",
                         }}
                       >
-                        <Ionicons name="ios-refresh" style={styles.resetIcon} />
+                        <Ionicons name="refresh" style={styles.resetIcon} />
                       </Pressable>
                       <Text style={styles.optionName}>{e.label}</Text>
                       <Pressable

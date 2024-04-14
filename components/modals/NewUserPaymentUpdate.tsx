@@ -74,7 +74,7 @@ function NewUserPaymentUpdate({
               : styles.notActiveIconContainer
           }
         >
-          <IoniconsIcon name="md-person" style={styles.icon} />
+          <IoniconsIcon name="person" style={styles.icon} />
         </View>
         <View
           style={

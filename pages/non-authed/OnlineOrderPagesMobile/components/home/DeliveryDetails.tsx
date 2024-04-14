@@ -123,8 +123,9 @@ function DeliveryDetails({
               }}
               renderSuggestions={(active, suggestions, onSelectSuggestion) => (
                 <div>
-                  {suggestions.map((suggestion) => (
+                  {suggestions.map((suggestion, index) => (
                     <div
+                      key={index}
                       className="suggestion"
                       onClick={(event) => {
                         onSelectSuggestion(suggestion, event);

@@ -6,7 +6,7 @@ function SavedCustomerItem({ style, customerName }) {
   return (
     <View style={[styles.container, style]}>
       <View style={styles.leftSide1}>
-        <Ionicons name="md-person" style={styles.savedCustomerIcon1} />
+        <Ionicons name="person" style={styles.savedCustomerIcon1} />
         <Text style={styles.savedCustomerName1}>{customerName}</Text>
       </View>
       <Entypo name="chevron-right" style={styles.onpressCustomerDetailsIcon2} />

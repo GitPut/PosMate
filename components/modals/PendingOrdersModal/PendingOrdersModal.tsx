@@ -33,7 +33,7 @@ const PendingOrdersModal = () => {
     }
     if (order.isInStoreOrder) {
       db.collection("users")
-        .doc(auth.currentUser?.uid) 
+        .doc(auth.currentUser?.uid)
         .collection("pendingOrders")
         .doc(order.id)
         .delete();
@@ -143,7 +143,7 @@ const PendingOrdersModal = () => {
                       updatePosHomeState({ ongoingOrderListModal: false })
                     }
                   >
-                    <Ionicons name="md-close" style={styles.closeIcon} />
+                    <Ionicons name="close" style={styles.closeIcon} />
                   </Pressable>
                 </View>
                 <View style={styles.secondAreaContainer}>

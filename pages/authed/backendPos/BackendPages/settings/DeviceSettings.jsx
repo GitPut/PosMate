@@ -175,7 +175,7 @@ function Index(props) {
                                         }}
                                     >
                                         <Ionicons
-                                            name="md-key"
+                                            name="key"
                                             style={styles.setToMyIDIcon}
                                         />
                                     </Pressable>

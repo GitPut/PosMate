@@ -67,7 +67,7 @@ function PendingOrderShowDetails({
             onPress={() => setongoingOrderListModal(false)}
             style={styles.closeIconContainer}
           >
-            <Ionicons name="md-close" style={styles.closeIcon}></Ionicons>
+            <Ionicons name="close" style={styles.closeIcon}></Ionicons>
           </Pressable>
         </View>
         <View style={styles.orderDetailsContainer}>
@@ -117,7 +117,7 @@ function PendingOrderShowDetails({
               disabled={!!element.online}
               onPress={() => {
                 if (storeDetails.settingsPassword.length > 0) {
-                  updatePosHomeState({ 
+                  updatePosHomeState({
                     authPasswordModal: true,
                     pendingAuthAction: `updateOrder${element.id}`,
                   });

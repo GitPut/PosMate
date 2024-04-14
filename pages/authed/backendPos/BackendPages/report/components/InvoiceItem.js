@@ -60,7 +60,7 @@ function InvoiceItem({
           top: 10,
         }}
       >
-        <Ionicons name="md-close" size={24} color="white" />
+        <Ionicons name="close" size={24} color="white" />
       </Pressable>
     </View>
   );
