@@ -13,9 +13,6 @@ import Modal from "react-native-modal-web";
 import OptionSelectorItemContainer from "./OptionSelectorItemContainer";
 
 function TableOption({
-  setopenDropdown,
-  openDropdown,
-  id,
   label,
   isRequired,
   myObjProfile,
@@ -27,6 +24,10 @@ function TableOption({
   const [localMyObjProfile, setlocalMyObjProfile] = useState(myObjProfile);
   const [modalVisible, setmodalVisible] = useState(false);
   const { height, width } = useWindowDimensions();
+
+  useEffect(() => {
+    setlocalMyObjProfile(myObjProfile);
+  }, [myObjProfile]);
 
   const onMinusPress = ({ option, listIndex }) => {
     const newMyObjProfile = structuredClone(localMyObjProfile);
@@ -94,18 +95,11 @@ function TableOption({
   };
 
   return (
-    <View
-      style={[
-        width > 800 ? styles.container : styles.containerMobile,
-        openDropdown === id && { zIndex: 1000 },
-      ]}
-    >
+    <View style={[width > 800 ? styles.container : styles.containerMobile]}>
       <Text style={width > 800 ? styles.lbl : styles.lblMobile}>
         {label} {isRequired ? "*" : ""}
       </Text>
-      <View
-        style={width < 800 ? { width: "100%" } : { width: "70%" }}
-      >
+      <View style={width < 800 ? { width: "100%" } : { width: "70%" }}>
         <Pressable
           style={styles.dropdown}
           onPress={() => {
@@ -125,12 +119,7 @@ function TableOption({
               <MaterialIcons name="clear" size={24} color="red" />
             </Pressable>
           ) : (
-            <Entypo
-              name={
-                openDropdown === id ? "chevron-small-up" : "chevron-small-down"
-              }
-              style={styles.downIcon}
-            />
+            <Entypo name="chevron-small-down" style={styles.downIcon} />
           )}
         </Pressable>
       </View>

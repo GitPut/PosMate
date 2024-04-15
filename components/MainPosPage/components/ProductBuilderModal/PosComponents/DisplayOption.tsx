@@ -22,7 +22,7 @@ const DisplayOption = ({
           ?.optionsList.find(
             (opL) => opL.label === ifStatement.selectedCaseValue
           );
-        console.log("Option in checkCases: ", option);
+        // console.log("Option in checkCases: ", option);
         return option?.selected;
       });
     }
@@ -40,6 +40,7 @@ const DisplayOption = ({
         setMyObjProfile((prev) => {
           const newOptions = [...prev.options];
           const newProfile = structuredClone(prev);
+          console.log("PREV: ", prev);
           // console.log("Option label: ", newProfile.options[index].label);
           // console.log("Option list: ", newProfile.options[index].optionsList);
           newProfile.options[index].optionsList.forEach((option) => {
@@ -52,7 +53,6 @@ const DisplayOption = ({
           return { ...prev, options: newOptions };
         });
         setOptionVal(null); // Reset the currently selected option value if any
-        console.log("e ", e);
       } else {
         if (e.defaultValue) {
           console.log("Default value: ", e.defaultValue);
@@ -78,17 +78,34 @@ const DisplayOption = ({
   }, [e.optionsList]);
 
   const handleValueChange = (option, listIndex) => {
-    const newProfile = structuredClone(myObjProfile);
-    const optionsList = newProfile.options[index].optionsList;
+    // const newProfile = structuredClone(myObjProfile);
+    // const optionsList = newProfile.options[index].optionsList;
 
-    optionsList.forEach((option) => (option.selected = false));
+    // optionsList.forEach((option) => (option.selected = false));
 
-    if (option) {
-      optionsList[listIndex].selected = true;
-    }
+    // if (option) {
+    //   optionsList[listIndex].selected = true;
+    // }
 
-    setOptionVal(option);
-    setMyObjProfile(newProfile);
+    // setOptionVal(option);
+    // setMyObjProfile(newProfile);
+
+    //NEW VERSION MAYBE CHANGE BACK IF NOT WORKING
+
+    setMyObjProfile((prev) => {
+      const newOptions = [...prev.options];
+      const newProfile = structuredClone(prev);
+      newProfile.options[index].optionsList.forEach((option) => {
+        option.selected = false;
+      });
+
+      if (option) {
+        newProfile.options[index].optionsList[listIndex].selected = true;
+      }
+
+      newOptions[index] = newProfile.options[index];
+      return { ...prev, options: newOptions };
+    });
   };
 
   const renderOptionByType = () => {
