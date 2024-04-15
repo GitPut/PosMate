@@ -40,7 +40,7 @@ const DisplayOption = ({
         setMyObjProfile((prev) => {
           const newOptions = [...prev.options];
           const newProfile = structuredClone(prev);
-          console.log("PREV: ", prev);
+          // console.log("PREV: ", prev);
           // console.log("Option label: ", newProfile.options[index].label);
           // console.log("Option list: ", newProfile.options[index].optionsList);
           newProfile.options[index].optionsList.forEach((option) => {
@@ -55,7 +55,7 @@ const DisplayOption = ({
         setOptionVal(null); // Reset the currently selected option value if any
       } else {
         if (e.defaultValue) {
-          console.log("Default value: ", e.defaultValue);
+          // console.log("Default value: ", e.defaultValue);
           const defaultOption = e.optionsList.find(
             (op) => op.label === e.defaultValue.label
           );
