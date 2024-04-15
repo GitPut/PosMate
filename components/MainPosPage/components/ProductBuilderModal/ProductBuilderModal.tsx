@@ -160,132 +160,144 @@ function ProductBuilderModal() {
     <View style={styles.container}>
       <div
         style={{
-          height: "100%",
-          overflowY: "auto",
-          overflowX: "hidden",
-          width: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          width: "100%",
+          height: "100%",
+          overflowY: "auto", // Ensure scrolling only happens when necessary
+          overflowX: "hidden",
         }}
       >
-        <View
-          style={
-            width > 800
-              ? styles.productBuilderGroup
-              : styles.productBuilderGroupMobile
-          }
+        <div
+          style={{
+            width: width > 800 ? "95%" : "100%", // Responsive width
+            justifyContent: width > 800 ? "center" : "space-between",
+            display: "flex",
+            flexDirection: width > 800 ? "row" : "column", // Responsive flex direction
+            alignItems: "center",
+            margin: "auto", // Center horizontally in all cases
+            height: "96%",
+          }}
         >
-          <View style={[styles.goBackRow, { marginBottom: 50 }]}>
-            <GoBackBtn onPress={goBack} />
-          </View>
           <View
-            style={[
-              width > 800 && styles.groupsContainer,
-              myObj.description && { marginTop: 50 },
-            ]}
+            style={
+              width > 800
+                ? styles.productBuilderGroup
+                : styles.productBuilderGroupMobile
+            }
           >
-            <View style={width > 800 && styles.leftSideGroup}>
-              <View style={styles.itemInfoContainer}>
-                <Image
-                  source={
-                    imageUrl
-                      ? { uri: imageUrl }
-                      : require("../../assets/images/image_xJCw..png")
-                  }
-                  resizeMode="contain"
-                  style={[
-                    styles.itemImg,
-                    myObj.description && { width: 300, height: 150 },
-                    width < 800 && { width: 300, height: 200 },
-                  ]}
-                />
-                <View style={styles.itemInfoTxtGroup}>
-                  <View style={styles.topTxtGroup}>
-                    <Text style={styles.productName}>{myObj.name}</Text>
+            <View style={[styles.goBackRow, { marginBottom: 50 }]}>
+              <GoBackBtn onPress={goBack} />
+            </View>
+            <View
+              style={[
+                width > 800 && styles.groupsContainer,
+                myObj.description && { marginTop: 50 },
+              ]}
+            >
+              <View style={width > 800 && styles.leftSideGroup}>
+                <View style={styles.itemInfoContainer}>
+                  <Image
+                    source={
+                      imageUrl
+                        ? { uri: imageUrl }
+                        : require("../../assets/images/image_xJCw..png")
+                    }
+                    resizeMode="contain"
+                    style={[
+                      styles.itemImg,
+                      myObj.description && { width: 300, height: 150 },
+                      width < 800 && { width: 300, height: 200 },
+                    ]}
+                  />
+                  <View style={styles.itemInfoTxtGroup}>
+                    <View style={styles.topTxtGroup}>
+                      <Text style={styles.productName}>{myObj.name}</Text>
+                      <>
+                        {myObj.calorieDetails && (
+                          <Text style={styles.calorieDetails}>
+                            {myObj.calorieDetails}
+                          </Text>
+                        )}
+                      </>
+                    </View>
                     <>
-                      {myObj.calorieDetails && (
-                        <Text style={styles.calorieDetails}>
-                          {myObj.calorieDetails}
+                      {myObj.description && (
+                        <Text style={styles.description}>
+                          Description: {myObj.description}
                         </Text>
                       )}
                     </>
                   </View>
-                  <>
-                    {myObj.description && (
-                      <Text style={styles.description}>
-                        Description: {myObj.description}
-                      </Text>
-                    )}
-                  </>
+                </View>
+                <View
+                  style={[
+                    styles.writeNoteContainer,
+                    width < 800 && { marginTop: 15 },
+                  ]}
+                >
+                  <Text style={styles.notesLbl}>Notes:</Text>
+                  <TextInput
+                    style={styles.noteInput}
+                    placeholder="Write any extra info here..."
+                    placeholderTextColor="#90949a"
+                    multiline={true}
+                    numberOfLines={4}
+                    onChangeText={(val) => setextraInput(val)}
+                    value={extraInput}
+                  />
                 </View>
               </View>
               <View
-                style={[
-                  styles.writeNoteContainer,
-                  width < 800 && { marginTop: 15 },
-                ]}
+                style={
+                  width > 800
+                    ? styles.rightSideGroup
+                    : styles.rightSideGroupMobile
+                }
               >
-                <Text style={styles.notesLbl}>Notes:</Text>
-                <TextInput
-                  style={styles.noteInput}
-                  placeholder="Write any extra info here..."
-                  placeholderTextColor="#90949a"
-                  multiline={true}
-                  numberOfLines={4}
-                  onChangeText={(val) => setextraInput(val)}
-                  value={extraInput}
-                />
+                <ScrollView
+                  contentContainerStyle={{
+                    height: "90%",
+                    width: "100%",
+                    padding: 20,
+                    paddingLeft: 30,
+                    paddingRight: 30,
+                  }}
+                  onScroll={(e) => setscrollY(e.nativeEvent.contentOffset.y)}
+                  scrollEventThrottle={16}
+                >
+                  {myObjProfile.options.map((option, index) => (
+                    <DisplayOption
+                      key={index}
+                      e={option}
+                      index={index}
+                      myObjProfile={myObjProfile}
+                      setMyObjProfile={setmyObjProfile}
+                      setopenOptions={setopenOptions}
+                      openOptions={openOptions}
+                      isOnlineOrder={isOnlineOrder}
+                      scrollY={scrollY}
+                    />
+                  ))}
+                </ScrollView>
+                <View style={styles.totalLblRow}>
+                  <Text style={styles.totalLbl}>
+                    Total: ${parseFloat(total).toFixed(2)}
+                  </Text>
+                </View>
               </View>
             </View>
-            <View
-              style={
-                width > 800
-                  ? styles.rightSideGroup
-                  : styles.rightSideGroupMobile
-              }
-            >
-              <ScrollView
-                contentContainerStyle={{
-                  height: "90%",
-                  width: "100%",
-                  padding: 20,
-                  paddingLeft: 30,
-                  paddingRight: 30,
-                }}
-                onScroll={(e) => setscrollY(e.nativeEvent.contentOffset.y)}
-                scrollEventThrottle={16}
-              >
-                {myObjProfile.options.map((option, index) => (
-                  <DisplayOption
-                    key={index}
-                    e={option}
-                    index={index}
-                    myObjProfile={myObjProfile}
-                    setMyObjProfile={setmyObjProfile}
-                    setopenOptions={setopenOptions}
-                    openOptions={openOptions}
-                    isOnlineOrder={isOnlineOrder}
-                    scrollY={scrollY}
-                  />
-                ))}
-              </ScrollView>
-              <View style={styles.totalLblRow}>
-                <Text style={styles.totalLbl}>
-                  Total: ${parseFloat(total).toFixed(2)}
-                </Text>
-              </View>
+            <View style={styles.addToCartRow}>
+              <AddToCartBtn
+                style={styles.addToCartBtn}
+                title={itemIndex ? "Save" : "Add To Cart"}
+                onPress={AddToCart}
+              />
             </View>
           </View>
-          <View style={styles.addToCartRow}>
-            <AddToCartBtn
-              style={styles.addToCartBtn}
-              title={itemIndex ? "Save" : "Add To Cart"}
-              onPress={AddToCart}
-            />
-          </View>
-        </View>
+        </div>
       </div>
     </View>
   );

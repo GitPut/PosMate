@@ -209,7 +209,7 @@ function HomeScreen() {
   }, [section]);
 
   return (
-    <View style={[styles.container, { maxHeight: height, maxWidth: width }]}>
+    <View style={[styles.container]}>
       {width > 1250 && <LeftMenuBar />}
       <View
         style={[
@@ -356,6 +356,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(238,242,255,1)",
     flexDirection: "row",
     alignItems: "center",
+    height: "100%",
+    width: "100%",
   },
   menuContainer: {
     alignSelf: "stretch",
