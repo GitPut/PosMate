@@ -42,6 +42,13 @@ export const userStoreState = entity<{ products: any[]; categories: any[] }>({
   categories: [],
 });
 
+export const updateUserStoreState = (val: any): void => {
+  userStoreState.set((prevState: any) => ({
+    ...prevState,
+    ...val,
+  }));
+}
+
 export const setUserStoreState = (val: any): void => {
   // console.log("Setting user store state: ", val);
   userStoreState.set(val);

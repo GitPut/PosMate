@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import ProductOptionBox from "./components/ProductOptionBox";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { onlineStoreState, setStoreDetailState, setUserStoreState, userState, userStoreState } from "state/state";
+import { onlineStoreState, setStoreDetailState, setUserStoreState, updateUserStoreState, userState, userStoreState } from "state/state";
 import { updateData } from "state/firebaseFunctions";
 import { auth, db, storage } from "state/firebaseConfig";
 import { useHistory } from "react-router-dom";
@@ -55,7 +55,6 @@ function ProductList(props) {
         } else {
           localCatalog.products = [];
         }
-        setUserStoreState({ categories: localCatalog.categories, products: localCatalog.products })
         db.collection("users")
           .doc(userS.uid)
           .collection("products")
@@ -68,6 +67,7 @@ function ProductList(props) {
             .doc(props.id.toString())
             .delete()
         }
+        updateUserStoreState({ products: localCatalog.products })
       }
     });
   };

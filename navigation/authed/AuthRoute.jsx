@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import HomeScreen from 'pages/authed/pos/HomeScreen';
+import HomeScreen from 'pages/authed/pos/HomeScreenOld';
 import { useHistory } from "react-router-dom";
 import BackendPosContainer from 'pages/authed/backendPos/BackendPosContainer';
 

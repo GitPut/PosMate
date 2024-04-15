@@ -80,7 +80,7 @@ function OptionsItemOpenInner({
             <GeneralDropdown
               style={styles.categoryDropDownBox}
               placeholder="Choose Type"
-              value={e.optionType} 
+              value={e.optionType}
               setValue={(val) => {
                 if (e.optionType) {
                   setnewProductOptions((prev) => {

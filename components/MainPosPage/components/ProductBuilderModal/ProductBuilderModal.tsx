@@ -33,7 +33,6 @@ function ProductBuilderModal() {
   const [openOptions, setopenOptions] = useState(null);
   const alertP = useAlert();
   const [scrollY, setscrollY] = useState(0);
-  const [outerScrollY, setouterScrollY] = useState(0);
   const width = useWindowDimensions().width;
 
   const goBack = () => resetProductBuilderState();
@@ -123,7 +122,7 @@ function ProductBuilderModal() {
         extraDetails: extraInput,
       };
 
-      if (itemIndex) {
+      if (itemIndex !== null) {
         const copyCart = structuredClone(cart);
         copyCart[itemIndex] = {
           name: myObjProfile.name,
@@ -159,14 +158,17 @@ function ProductBuilderModal() {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        style={{ width: "100%", height: "100%" }}
-        contentContainerStyle={{
+      <div
+        style={{
+          height: "100%",
+          overflowY: "auto",
+          overflowX: "hidden",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
         }}
-        onScroll={(e) => setouterScrollY(e.nativeEvent.contentOffset.y)}
-        scrollEventThrottle={16}
       >
         <View
           style={
@@ -175,16 +177,15 @@ function ProductBuilderModal() {
               : styles.productBuilderGroupMobile
           }
         >
-          <View
-            style={[
-              styles.goBackRow,
-              // !myObj.description ? { marginBottom: 20 } : { marginBottom: 120 },
-              width > 800 ? { marginBottom: 100 } : { marginBottom: 50 },
-            ]}
-          >
+          <View style={[styles.goBackRow, { marginBottom: 50 }]}>
             <GoBackBtn onPress={goBack} />
           </View>
-          <View style={width > 800 && styles.groupsContainer}>
+          <View
+            style={[
+              width > 800 && styles.groupsContainer,
+              myObj.description && { marginTop: 50 },
+            ]}
+          >
             <View style={width > 800 && styles.leftSideGroup}>
               <View style={styles.itemInfoContainer}>
                 <Image
@@ -256,21 +257,19 @@ function ProductBuilderModal() {
                 onScroll={(e) => setscrollY(e.nativeEvent.contentOffset.y)}
                 scrollEventThrottle={16}
               >
-                <View>
-                  {myObjProfile.options.map((option, index) => (
-                    <DisplayOption
-                      key={index}
-                      e={option}
-                      index={index}
-                      myObjProfile={myObjProfile}
-                      setMyObjProfile={setmyObjProfile}
-                      setopenOptions={setopenOptions}
-                      openOptions={openOptions}
-                      isOnlineOrder={isOnlineOrder}
-                      scrollY={width > 800 ? scrollY : outerScrollY}
-                    />
-                  ))}
-                </View>
+                {myObjProfile.options.map((option, index) => (
+                  <DisplayOption
+                    key={index}
+                    e={option}
+                    index={index}
+                    myObjProfile={myObjProfile}
+                    setMyObjProfile={setmyObjProfile}
+                    setopenOptions={setopenOptions}
+                    openOptions={openOptions}
+                    isOnlineOrder={isOnlineOrder}
+                    scrollY={scrollY}
+                  />
+                ))}
               </ScrollView>
               <View style={styles.totalLblRow}>
                 <Text style={styles.totalLbl}>
@@ -287,7 +286,7 @@ function ProductBuilderModal() {
             />
           </View>
         </View>
-      </ScrollView>
+      </div>
     </View>
   );
 }

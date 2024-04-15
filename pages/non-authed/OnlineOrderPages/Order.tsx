@@ -20,7 +20,7 @@ import ProductsSection from "components/MainPosPage/components/ProductsSection";
 import CategorySection from "components/MainPosPage/components/CategorySection";
 import Cart from "components/MainPosPage/components/Cart";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
-import CartMobile from "./phoneComponents/CartMobile";
+import CartMobile from "components/MainPosPage/phoneComponents/CartMobile";
 
 function OrderCartMain({ catalog }) {
   const orderDetails = OrderDetailsState.use();

@@ -22,6 +22,7 @@ const DisplayOption = ({
           ?.optionsList.find(
             (opL) => opL.label === ifStatement.selectedCaseValue
           );
+        console.log("Option in checkCases: ", option);
         return option?.selected;
       });
     }
@@ -36,13 +37,35 @@ const DisplayOption = ({
     if (isConditionMet !== isMet) {
       setIsConditionMet(isMet);
       if (!isMet) {
-        const newProfile = structuredClone(myObjProfile);
-        newProfile.options[index].optionsList.forEach((option) => {
-          option.selected = false;
-          option.selectedTimes = 0;
+        setMyObjProfile((prev) => {
+          const newOptions = [...prev.options];
+          const newProfile = structuredClone(prev);
+          // console.log("Option label: ", newProfile.options[index].label);
+          // console.log("Option list: ", newProfile.options[index].optionsList);
+          newProfile.options[index].optionsList.forEach((option) => {
+            // if (option.selected) console.log("Selected option: ", option.label);
+            option.selected = false;
+            option.selectedTimes = 0;
+          });
+
+          newOptions[index] = newProfile.options[index];
+          return { ...prev, options: newOptions };
         });
-        setMyObjProfile(newProfile);
         setOptionVal(null); // Reset the currently selected option value if any
+        console.log("e ", e);
+      } else {
+        if (e.defaultValue) {
+          console.log("Default value: ", e.defaultValue);
+          const defaultOption = e.optionsList.find(
+            (op) => op.label === e.defaultValue.label
+          );
+          if (defaultOption) {
+            handleValueChange(
+              defaultOption,
+              e.optionsList.indexOf(defaultOption)
+            );
+          }
+        }
       }
     }
   }, [myObjProfile.options, index]); // Refined to listen on specific changes

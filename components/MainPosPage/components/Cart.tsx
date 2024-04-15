@@ -37,8 +37,6 @@ const Cart = () => {
   const isOnlineOrder = ProductBuilderState.use().isOnlineOrder;
   const orderDetails = OrderDetailsState.use();
 
-  console.log("Order details ", orderDetails);
-
   useEffect(() => {
     if (isOnlineOrder) {
       if (cart.length > 0) {

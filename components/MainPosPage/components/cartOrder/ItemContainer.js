@@ -19,6 +19,7 @@ function ItemContainer({ product }) {
       <Pressable
         onPress={() => {
           if (product.options.length > 0) {
+            console.log("product", product);
             setProductBuilderState({
               product: product,
               itemIndex: null,
@@ -42,11 +43,13 @@ function ItemContainer({ product }) {
         style={width > 1250 ? styles.container : styles.containerMobile}
       >
         {product.hasImage && (
-          <ProductImage
-            source={{ uri: product.imageUrl }}
-            resizeMode="contain"
-            style={[styles.itemImg, width < 1250 && { height: 100 }]}
-          />
+          <View>
+            <ProductImage
+              source={{ uri: product.imageUrl }}
+              resizeMode="contain"
+              style={[styles.itemImg, width < 1250 && { height: 100 }]}
+            />
+          </View>
         )}
         <View style={styles.rightSide}>
           <Text style={styles.familyCombo}>{product.name}</Text>

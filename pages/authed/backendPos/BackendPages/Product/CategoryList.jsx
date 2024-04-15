@@ -8,7 +8,7 @@ import {
   TextInput,
 } from "react-native";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { onlineStoreState, userStoreState } from "state/state";
+import { onlineStoreState, setUserStoreState, updateUserStoreState, userStoreState } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 import Swal from "sweetalert2";
 import CategoryOptionBox from "./components/CategoryOptionBox";
@@ -65,6 +65,7 @@ function CategoryList() {
             })
             .catch((e) => console.log("ERROR HAS OCCURE FB: ", e));
         }
+        updateUserStoreState({ categories: localCatalog.categories })
       }
     });
   };

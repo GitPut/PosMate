@@ -59,7 +59,6 @@ function DropdownSelectableOption({
         <Pressable
           style={styles.dropdown}
           onPress={() => {
-            console.log("openDropdown", openDropdown, id);
             if (openDropdown === id) {
               setopenDropdown(null);
             } else {
@@ -79,7 +78,6 @@ function DropdownSelectableOption({
             <Pressable
               onPress={() => {
                 setValue({ option: null, listIndex: null });
-                console.log("hello");
               }}
               style={{ marginTop: 5, marginRight: 5 }}
             >
@@ -117,7 +115,6 @@ function DropdownSelectableOption({
             <Pressable
               style={styles.dropdown}
               onPress={() => {
-                console.log("openDropdown", openDropdown, id);
                 if (openDropdown === id) {
                   setopenDropdown(null);
                 } else {
