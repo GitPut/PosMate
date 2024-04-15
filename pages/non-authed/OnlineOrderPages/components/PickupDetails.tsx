@@ -17,66 +17,13 @@ function PickupDetails() {
     orderDetails.customer.phone
   );
   const alertP = useAlert();
-  const width =
-    useWindowDimensions().width > 1000
-      ? 380
-      : useWindowDimensions().width * 0.9;
-
-  const styles = StyleSheet.create({
-    fieldsGroup: {
-      width: width,
-      height: 179,
-      justifyContent: "space-between",
-    },
-    nameField: {
-      height: 70,
-      width: width,
-    },
-    addressField: {
-      height: 70,
-      width: width,
-    },
-    buzzCodeAndPhoneRow: {
-      width: width,
-      height: 70,
-      flexDirection: "row",
-      justifyContent: "space-between",
-    },
-    buzzCodeField: {
-      height: 70,
-      width: 175,
-    },
-    phoneNumberField: {
-      height: 70,
-      width: 175,
-    },
-    continueBtn: {
-      width: 219,
-      height: 60,
-      backgroundColor: "rgba(238,125,67,1)",
-      borderRadius: 60,
-      justifyContent: "center",
-      alignItems: "center",
-      shadowColor: "rgba(0,0,0,1)",
-      shadowOffset: {
-        width: 3,
-        height: 3,
-      },
-      elevation: 30,
-      shadowOpacity: 0.2,
-      shadowRadius: 10,
-      marginTop: 20,
-    },
-    continueBtnTxt: {
-      color: "rgba(255,255,255,1)",
-      fontSize: 18,
-      fontWeight: "700",
-    },
-  });
+  const { width } = useWindowDimensions();
 
   return (
     <>
-      <View style={styles.fieldsGroup}>
+      <View
+        style={[styles.fieldsGroup, width < 1000 && { width: width * 0.9 }]}
+      >
         <FieldInputWithLabel
           txtInput="Name"
           label="Name*"
@@ -121,5 +68,57 @@ function PickupDetails() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  fieldsGroup: {
+    width: 380,
+    height: 179,
+    justifyContent: "space-between",
+  },
+  nameField: {
+    height: 70,
+    width: "100%",
+  },
+  addressField: {
+    height: 70,
+    width: "100%",
+  },
+  buzzCodeAndPhoneRow: {
+    width: "100%",
+    height: 70,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  buzzCodeField: {
+    height: 70,
+    width: 175,
+  },
+  phoneNumberField: {
+    height: 70,
+    width: 175,
+  },
+  continueBtn: {
+    width: 219,
+    height: 60,
+    backgroundColor: "rgba(238,125,67,1)",
+    borderRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "rgba(0,0,0,1)",
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    elevation: 30,
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    marginTop: 20,
+  },
+  continueBtnTxt: {
+    color: "rgba(255,255,255,1)",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+});
 
 export default PickupDetails;

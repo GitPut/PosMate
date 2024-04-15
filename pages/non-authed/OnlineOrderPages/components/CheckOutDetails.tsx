@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Pressable, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  Text,
+  useWindowDimensions,
+} from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
 import {
   CardCvcElement,
@@ -20,12 +26,13 @@ const validateEmail = (email) => {
   return emailRegex.test(email);
 };
 
-function CheckOutDetails({ width }) {
+function CheckOutDetails() {
   const [emailAddress, setEmailAddress] = useState("");
   const [loading, setloading] = useState(false);
   const alertP = useAlert();
   const orderDetails = OrderDetailsState.use();
   const storeDetails = storeDetailState.use();
+  const { width } = useWindowDimensions();
 
   const stripe = useStripe();
   const elements = useElements();
@@ -139,64 +146,11 @@ function CheckOutDetails({ width }) {
     hidePostalCode: true,
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      width: width,
-    },
-    fieldsGroup: {
-      width: width,
-      height: 250,
-      justifyContent: "space-between",
-    },
-    nameField: {
-      height: 70,
-      width: width,
-    },
-    addressField: {
-      height: 70,
-      width: width,
-    },
-    buzzCodeAndPhoneRow: {
-      width: width,
-      height: 70,
-      flexDirection: "row",
-      justifyContent: "space-between",
-    },
-    buzzCodeField: {
-      height: 70,
-      width: width === 380 ? 175 : "48%",
-    },
-    phoneNumberField: {
-      height: 70,
-      width: width === 380 ? 175 : "48%",
-    },
-    continueBtn: {
-      width: 219,
-      height: 60,
-      backgroundColor: "rgba(238,125,67,1)",
-      borderRadius: 60,
-      justifyContent: "center",
-      alignItems: "center",
-      shadowColor: "rgba(0,0,0,1)",
-      shadowOffset: {
-        width: 3,
-        height: 3,
-      },
-      elevation: 30,
-      shadowOpacity: 0.2,
-      shadowRadius: 10,
-      marginTop: 10,
-    },
-    continueBtnTxt: {
-      color: "rgba(255,255,255,1)",
-      fontSize: 18,
-      fontWeight: "700",
-    },
-  });
-
   return (
     <>
-      <View style={styles.fieldsGroup}>
+      <View
+        style={[styles.fieldsGroup, width < 1000 && { width: width * 0.9 }]}
+      >
         <FieldInputWithLabel
           label="Email Address*"
           txtInput="Email Address"
@@ -274,5 +228,57 @@ function CheckOutDetails({ width }) {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  fieldsGroup: {
+    width: 380,
+    height: 250,
+    justifyContent: "space-between",
+  },
+  nameField: {
+    height: 70,
+    width: "100%",
+  },
+  addressField: {
+    height: 70,
+    width: "100%",
+  },
+  buzzCodeAndPhoneRow: {
+    width: "100%",
+    height: 70,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  buzzCodeField: {
+    height: 70,
+    width: "48%",
+  },
+  phoneNumberField: {
+    height: 70,
+    width: "48%",
+  },
+  continueBtn: {
+    width: 219,
+    height: 60,
+    backgroundColor: "rgba(238,125,67,1)",
+    borderRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "rgba(0,0,0,1)",
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    elevation: 30,
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    marginTop: 10,
+  },
+  continueBtnTxt: {
+    color: "rgba(255,255,255,1)",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+});
 
 export default CheckOutDetails;

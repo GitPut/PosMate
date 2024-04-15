@@ -1,23 +1,76 @@
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, Image } from "react-native";
-import React from "react";
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+  Image,
+} from "react-native";
+import React, { useEffect } from "react";
 import Modal from "react-native-modal-web";
-import { OrderDetailsState, cartState, setCartState, setOrderDetailsState, storeDetailState } from "state/state";
+import {
+  OrderDetailsState,
+  ProductBuilderState,
+  cartState,
+  setCartState,
+  setOrderDetailsState,
+  storeDetailState,
+} from "state/state";
 import UntitledComponent from "components/MainPosPage/components/cartOrder/UntitledComponent";
 import CartItem from "components/MainPosPage/components/cartOrder/CartItem";
-import {Feather} from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { updatePosHomeState } from "state/posHomeState";
 
-const CartMobile = ({cartOpen, setcartOpen, cartSub}) => {
+const CartMobile = ({ cartOpen, setcartOpen, cartSub }) => {
   const { height, width } = useWindowDimensions();
   const cart = cartState.use();
   const storeDetails = storeDetailState.use();
   const orderDetails = OrderDetailsState.use();
+  const isOnlineOrder = ProductBuilderState.use().isOnlineOrder;
+
+  useEffect(() => {
+    if (isOnlineOrder) {
+      if (cart.length > 0) {
+        let newVal = 0;
+        for (let i = 0; i < cart.length; i++) {
+          try {
+            if (cart[i].quantity > 1) {
+              newVal += parseFloat(cart[i].price) * cart[i].quantity;
+              // console.log("Cart item quantity ", cart[i].quantity);
+            } else {
+              newVal += parseFloat(cart[i].price);
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+        if (orderDetails.delivery) {
+          newVal += parseFloat(storeDetails.deliveryPrice);
+        }
+
+        updatePosHomeState({
+          cartSub: newVal,
+          deliveryChecked: orderDetails.delivery,
+        });
+      } else {
+        updatePosHomeState({
+          cartSub: 0,
+          deliveryChecked: orderDetails.delivery,
+        });
+      }
+    }
+  }, [isOnlineOrder, cart, orderDetails]);
 
   return (
     <Modal
       isVisible={cartOpen}
       animationIn="slideInUp"
       animationOut="slideOutDown"
-      style={{ margin: 0 }}
+      backdropOpacity={0}
+      style={{
+        margin: 0,
+      }}
     >
       <View
         style={{
@@ -166,7 +219,11 @@ const CartMobile = ({cartOpen, setcartOpen, cartSub}) => {
           </View>
         </View>
         <Pressable
-          style={[styles.checkoutBtn, { margin: 20 }]}
+          style={[
+            styles.checkoutBtn,
+            { margin: 20 },
+            cart.length < 1 && { opacity: 0.8 },
+          ]}
           disabled={cart.length < 1}
           onPress={() => {
             const today = new Date();
@@ -178,29 +235,37 @@ const CartMobile = ({cartOpen, setcartOpen, cartSub}) => {
                 transNum: transNum,
                 total: (
                   cartSub *
-                  (storeDetails.taxRate ? 1 + parseFloat(storeDetails.taxRate) / 100 : 1.13)
+                  (storeDetails.taxRate
+                    ? 1 + parseFloat(storeDetails.taxRate) / 100
+                    : 1.13)
                 ).toFixed(2),
                 method: "deliveryOrder",
                 online: true,
                 cart: cart,
+                page: 5,
               });
               setcartOpen(false);
-              setOrderDetailsState({ page: 5 });
             } else {
               setOrderDetailsState({
                 date: today,
                 transNum: transNum,
                 total: (
                   cartSub *
-                  (storeDetails.taxRate ? 1 + parseFloat(storeDetails.taxRate) / 100 : 1.13)
+                  (storeDetails.taxRate
+                    ? 1 + parseFloat(storeDetails.taxRate) / 100
+                    : 1.13)
                 ).toFixed(2),
                 method: "pickupOrder",
                 online: true,
                 cart: cart,
+                customer: {
+                  ...orderDetails.customer,
+                  address: null,
+                },
+                page: 5,
               });
+              setcartOpen(false);
             }
-            setcartOpen(false);
-            setOrderDetailsState({ page: 5 });
           }}
         >
           <Text style={styles.checkoutLbl}>Checkout</Text>

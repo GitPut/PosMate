@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -33,10 +33,7 @@ function DeliveryDetails() {
   );
   const [checkingDeliveryRange, setcheckingDeliveryRange] = useState(false);
   const alertP = useAlert();
-  const width =
-    useWindowDimensions().width > 1000
-      ? 380
-      : useWindowDimensions().width * 0.9;
+  const width = useWindowDimensions().width;
 
   // Function to calculate distance between two points using Haversine formula
   function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -96,67 +93,11 @@ function DeliveryDetails() {
     }
   }
 
-  //////////////////////////
-
-  const styles = StyleSheet.create({
-    container: {
-      width: width,
-      height: 390,
-    },
-    fieldsGroup: {
-      width: width,
-      height: 325,
-      justifyContent: "space-between",
-    },
-    nameField: {
-      height: 70,
-      width: width,
-    },
-    addressField: {
-      height: 70,
-      width: width,
-    },
-    buzzCodeAndPhoneRow: {
-      width: width,
-      height: 70,
-      flexDirection: "row",
-      justifyContent: "space-between",
-    },
-    buzzCodeField: {
-      height: 70,
-      width: width === 380 ? 175 : "48%",
-    },
-    phoneNumberField: {
-      height: 70,
-      width: width === 380 ? 175 : "48%",
-    },
-    continueBtn: {
-      width: 219,
-      height: 60,
-      backgroundColor: "rgba(238,125,67,1)",
-      borderRadius: 60,
-      justifyContent: "center",
-      alignItems: "center",
-      shadowColor: "rgba(0,0,0,1)",
-      shadowOffset: {
-        width: 3,
-        height: 3,
-      },
-      elevation: 30,
-      shadowOpacity: 0.2,
-      shadowRadius: 10,
-      marginTop: 10,
-    },
-    continueBtnTxt: {
-      color: "rgba(255,255,255,1)",
-      fontSize: 18,
-      fontWeight: "700",
-    },
-  });
-
   return (
     <>
-      <View style={styles.fieldsGroup}>
+      <View
+        style={[styles.fieldsGroup, width < 1000 && { width: width * 0.9 }]}
+      >
         <FieldInputWithLabel
           txtInput="Name"
           label="Name*"
@@ -314,5 +255,57 @@ function DeliveryDetails() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  fieldsGroup: {
+    width: 380,
+    height: 325,
+    justifyContent: "space-between",
+  },
+  nameField: {
+    height: 70,
+    width: "100%",
+  },
+  addressField: {
+    height: 70,
+    width: "100%",
+  },
+  buzzCodeAndPhoneRow: {
+    width: "100%",
+    height: 70,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  buzzCodeField: {
+    height: 70,
+    width: "48%",
+  },
+  phoneNumberField: {
+    height: 70,
+    width: "48%",
+  },
+  continueBtn: {
+    width: 219,
+    height: 60,
+    backgroundColor: "rgba(238,125,67,1)",
+    borderRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "rgba(0,0,0,1)",
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    elevation: 30,
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    marginTop: 10,
+  },
+  continueBtnTxt: {
+    color: "rgba(255,255,255,1)",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+});
 
 export default DeliveryDetails;

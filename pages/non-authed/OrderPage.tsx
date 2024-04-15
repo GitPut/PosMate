@@ -17,10 +17,8 @@ import OnlineOrderHomeCompleted from "./OnlineOrderPages/Completed";
 import OnlineOrderHomePickup from "./OnlineOrderPages/Pickup";
 import OnlineOrderHomeDelivery from "./OnlineOrderPages/Delivery";
 import OnlineOrderHomeCheckout from "./OnlineOrderPages/Checkout";
-import ProductBuilderModalMobile from "./OnlineOrderPagesMobile/components/ProductBuilderModal/ProductBuilderModalMobile";
 import {
   OrderDetailsState,
-  setOrderDetailsState,
   setProductBuilderState,
   setStoreDetailState,
 } from "state/state";
@@ -32,10 +30,11 @@ const OrderPage = () => {
     categories: [],
     products: [],
   });
-  const width = useWindowDimensions().width;
   const orderDetails = OrderDetailsState.use();
   const page = orderDetails.page;
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [data, setdata] = useState([]);
+  const screenWidth = useWindowDimensions().width;
 
   const customSort = (a, b) => {
     // Handle cases where one or both items don't have a rank
@@ -140,47 +139,6 @@ const OrderPage = () => {
     }).start(() => (document.getElementById("loader").style.display = "none"));
   };
 
-  const [data, setdata] = useState([]);
-  const [showProduct, setshowProduct] = useState(null);
-  const xPosProduct = useRef(new Animated.Value(-1000)).current;
-  const shadowOpacity = useRef(new Animated.Value(0)).current;
-
-  const fadeInProduct = () => {
-    // Will change xPos value to 0 in 3 seconds
-    Animated.timing(xPosProduct, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-    Animated.timing(shadowOpacity, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const fadeOutProduct = () => {
-    // Will change xPos value to 0 in 3 seconds
-    Animated.timing(shadowOpacity, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-    Animated.timing(xPosProduct, {
-      toValue: -1000,
-      duration: 200,
-      useNativeDriver: false,
-    }).start(() => setshowProduct(null));
-  };
-
-  useEffect(() => {
-    if (showProduct) {
-      fadeInProduct();
-    }
-  }, [showProduct]);
-
-  const screenWidth = useWindowDimensions().width;
-
   return (
     <View
       style={{
@@ -247,7 +205,6 @@ const OrderPage = () => {
       >
         <OrderCartMain
           catalog={{ categories: catalog.categories, products: data }}
-          setshowProduct={setshowProduct}
         />
       </View>
       {(page === 1 || page === 2 || page === 3 || page === 5 || page === 6) && (
@@ -267,54 +224,6 @@ const OrderPage = () => {
           {page === 6 && <OnlineOrderHomeCompleted />}
           {page === 1 && <OnlineOrderHome />}
         </View>
-      )}
-      {showProduct && (
-        <div
-          style={{
-            position: "absolute",
-            zIndex: 25,
-            left: 0,
-            top: 0,
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <Animated.View
-            style={{
-              flex: 1,
-              justifyContent: "flex-end",
-              alignItems: "flex-start",
-              position: "absolute",
-              height: "100%",
-              width: "100%",
-              bottom: 0,
-              left: xPosProduct,
-              zIndex: 0,
-            }}
-          >
-            <View
-              style={[
-                width > 1250
-                  ? {
-                      height: "100%",
-                      width: "72%",
-                      borderTopRightRadius: 3,
-                    }
-                  : {
-                      height: "100%",
-                      width: "100%",
-                      borderTopRightRadius: 3,
-                    },
-              ]}
-            >
-              <ProductBuilderModalMobile
-                product={showProduct}
-                goBack={() => fadeOutProduct()}
-                imageUrl={showProduct.imageUrl}
-              />
-            </View>
-          </Animated.View>
-        </div>
       )}
       <div
         id="loader"

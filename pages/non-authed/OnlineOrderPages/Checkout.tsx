@@ -89,9 +89,7 @@ function OnlineOrderHomeCheckout() {
                 </View>
                 {screenWidth > 1000 ? (
                   <Elements stripe={loadStripe(storeDetails.stripePublicKey)}>
-                    <CheckOutDetails
-                      width={screenWidth > 1000 ? 380 : screenWidth * 0.9}
-                    />
+                    <CheckOutDetails />
                   </Elements>
                 ) : (
                   <View
@@ -102,9 +100,7 @@ function OnlineOrderHomeCheckout() {
                     }}
                   >
                     <Elements stripe={loadStripe(storeDetails.stripePublicKey)}>
-                      <CheckOutDetails
-                        width={screenWidth > 1000 ? 380 : screenWidth * 0.9}
-                      />
+                      <CheckOutDetails />
                     </Elements>
                   </View>
                 )}

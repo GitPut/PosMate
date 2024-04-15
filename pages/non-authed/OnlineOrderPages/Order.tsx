@@ -3,9 +3,7 @@ import {
   StyleSheet,
   View,
   Pressable,
-  Image,
   Text,
-  ScrollView,
   useWindowDimensions,
 } from "react-native";
 import { Entypo, Feather } from "@expo/vector-icons";
@@ -13,11 +11,9 @@ import {
   OrderDetailsState,
   ProductBuilderState,
   cartState,
-  setCartState,
   setOrderDetailsState,
   storeDetailState,
 } from "state/state";
-import ItemContainerMobile from "../OnlineOrderPagesMobile/components/cartOrder/ItemContainerMobile";
 import Modal from "react-native-modal-web";
 import ProductBuilderModal from "components/MainPosPage/components/ProductBuilderModal/ProductBuilderModal";
 import ProductsSection from "components/MainPosPage/components/ProductsSection";
@@ -26,7 +22,7 @@ import Cart from "components/MainPosPage/components/Cart";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import CartMobile from "./phoneComponents/CartMobile";
 
-function OrderCartMain({ catalog, setshowProduct }) {
+function OrderCartMain({ catalog }) {
   const orderDetails = OrderDetailsState.use();
   const storeDetails = storeDetailState.use();
   const page = orderDetails.page;
