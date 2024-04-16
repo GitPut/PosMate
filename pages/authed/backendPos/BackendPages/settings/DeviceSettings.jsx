@@ -313,7 +313,7 @@ function Index(props) {
                             </Text>
                             <View style={styles.downloadsBtnsRow}>
                                 <a
-                                    href={require("assets/divine-pos-helper.exe")}
+                                    href='https://divinepos.com/wp-content/uploads/Divine%20POS%20Helper.exe'
                                     download="Divine Pos Helper.exe"
                                 >
                                     <Image
@@ -323,7 +323,7 @@ function Index(props) {
                                     />
                                 </a>
                                 <a
-                                    href={require("assets/divine-pos-helper.pkg")}
+                                    href='https://divinepos.com/wp-content/uploads/Divine%20POS%20Helper.pkg'
                                     download="Divine Pos Helper.pkg"
                                 >
                                     <Image
