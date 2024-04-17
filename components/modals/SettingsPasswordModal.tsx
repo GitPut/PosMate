@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { setIsSignedInSettingsState, storeDetailState } from "state/state";
-import Feather from "@expo/vector-icons/Feather";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFonts } from "expo-font";
 import Axios from "axios";
@@ -122,6 +121,7 @@ const SettingsPasswordModal = () => {
                     textContentType="none"
                     autoCorrect={false}
                     onKeyPress={handleKeyDown}
+                    autoFocus={true}
                   />
                   <View
                     style={{

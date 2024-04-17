@@ -22,7 +22,7 @@ interface PosHomeState {
   clockinModal: boolean;
   discountModal: boolean;
   discountAmount: any;
-  cartNote: any;
+  cartNote: string;
   customCashModal: boolean;
   authPasswordModal: boolean;
   managerAuthorizedStatus: boolean;
@@ -51,7 +51,7 @@ export const posHomeState = entity<PosHomeState>({
   clockinModal: false,
   discountModal: false,
   discountAmount: null,
-  cartNote: null,
+  cartNote: '',
   customCashModal: false,
   authPasswordModal: false,
   managerAuthorizedStatus: false,

@@ -8,7 +8,7 @@ const ProductsSection = ({ catalog }) => {
   const styles = {
     scrollAreaProducts: {
       width: "95%",
-      height: "60vh",
+      height: width > 800 ? "60vh" : "50vh",
       justifyContent: "center",
       marginLeft: "auto",
       marginRight: "auto",

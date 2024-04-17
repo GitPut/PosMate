@@ -54,7 +54,7 @@ interface ReceiptElement {
   method?: "deliveryOrder" | "pickupOrder";
   cart?: LineItem[];
   transNum?: string;
-  cartNote?: string;
+  cartNote: string;
   customer?: {
     name?: string;
     phone?: string;
@@ -389,7 +389,7 @@ function ReceiptPrint(
       data.push(
         "\x0A",
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-        element.cartNote
+        element.cartNote?.length > 0
           ? "\x0A" + "\x0A" + "Note: " + element.cartNote + "\x0A" + "\x0A"
           : "\x0A" + "\x0A",
         "Customer Name: " + element.customer?.name,
@@ -521,7 +521,7 @@ function ReceiptPrint(
       data.push(
         "\x0A",
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-        element.cartNote
+        element.cartNote?.length > 0
           ? "\x0A" + "\x0A" + "Note: " + element.cartNote + "\x0A" + "\x0A"
           : "\x0A" + "\x0A",
         "Customer Name: " + element.customer?.name,
@@ -625,7 +625,7 @@ function ReceiptPrint(
         data.push(
           "\x0A",
           "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-          element.cartNote
+          element.cartNote?.length > 0
             ? "\x0A" + "\x0A" + "Note: " + element.cartNote + "\x0A" + "\x0A"
             : "\x0A" + "\x0A",
           "Payment Method: " + element.paymentMethod + "\x0A" + "\x0A",
@@ -660,7 +660,7 @@ function ReceiptPrint(
         data.push(
           "\x0A",
           "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
-          element.cartNote
+          element.cartNote?.length > 0
             ? "\x0A" + "\x0A" + "Note: " + element.cartNote + "\x0A" + "\x0A"
             : "\x0A" + "\x0A",
           "Payment Method: " + element.paymentMethod + "\x0A" + "\x0A",

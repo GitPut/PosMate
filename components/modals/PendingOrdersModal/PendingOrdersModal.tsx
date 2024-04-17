@@ -28,7 +28,7 @@ const PendingOrdersModal = () => {
 
   const updateOrderHandler = (order) => {
     setCartState(order.cart);
-    if (order.cartNote) {
+    if (order.cartNote?.length > 0) {
       updatePosHomeState({ cartNote: order.cartNote });
     }
     if (order.isInStoreOrder) {
@@ -197,7 +197,7 @@ const PendingOrdersModal = () => {
                             }
                           });
 
-                          if (element.cartNote) {
+                          if (element.cartNote?.length > 0) {
                             cartString += `\nNote: ${element.cartNote}`;
                           }
                           return (

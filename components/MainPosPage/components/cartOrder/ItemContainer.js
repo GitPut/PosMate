@@ -23,7 +23,7 @@ function ItemContainer({ product }) {
             setProductBuilderState({
               product: product,
               itemIndex: null,
-              imageUrl: product.imageUrl,
+              imageUrl: product.imageUrl ? product.imageUrl : null,
               isOpen: true,
             });
           } else {
@@ -34,7 +34,7 @@ function ItemContainer({ product }) {
                 description: product.description,
                 options: [],
                 extraDetails: null,
-                imageUrl: product.imageUrl,
+                imageUrl: product.imageUrl ? product.imageUrl : null,
               },
               cart
             );

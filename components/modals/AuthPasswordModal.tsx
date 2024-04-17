@@ -101,6 +101,7 @@ const AuthPasswordModal = () => {
                     textContentType="none"
                     autoCorrect={false}
                     onKeyPress={handleKeyDown}
+                    autoFocus={true}
                   />
                   <View
                     style={{

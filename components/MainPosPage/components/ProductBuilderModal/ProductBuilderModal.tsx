@@ -188,7 +188,14 @@ function ProductBuilderModal() {
                 : styles.productBuilderGroupMobile
             }
           >
-            <View style={[styles.goBackRow, { marginBottom: 50 }]}>
+            <View
+              style={[
+                styles.goBackRow,
+                myObj.description && width > 800
+                  ? { marginBottom: 35 }
+                  : !myObj.description && width > 800 && { marginBottom: 50 },
+              ]}
+            >
               <GoBackBtn onPress={goBack} />
             </View>
             <View
@@ -198,7 +205,12 @@ function ProductBuilderModal() {
               ]}
             >
               <View style={width > 800 && styles.leftSideGroup}>
-                <View style={styles.itemInfoContainer}>
+                <View
+                  style={[
+                    styles.itemInfoContainer,
+                    width > 800 && { height: "60%" },
+                  ]}
+                >
                   <Image
                     source={
                       imageUrl
@@ -232,23 +244,25 @@ function ProductBuilderModal() {
                     </>
                   </View>
                 </View>
-                <View
-                  style={[
-                    styles.writeNoteContainer,
-                    width < 800 && { marginTop: 15 },
-                  ]}
-                >
-                  <Text style={styles.notesLbl}>Notes:</Text>
-                  <TextInput
-                    style={styles.noteInput}
-                    placeholder="Write any extra info here..."
-                    placeholderTextColor="#90949a"
-                    multiline={true}
-                    numberOfLines={4}
-                    onChangeText={(val) => setextraInput(val)}
-                    value={extraInput}
-                  />
-                </View>
+                {width > 800 && (
+                  <View
+                    style={[
+                      styles.writeNoteContainer,
+                      width < 800 && { marginTop: 15, height: "25%" },
+                    ]}
+                  >
+                    <Text style={styles.notesLbl}>Notes:</Text>
+                    <TextInput
+                      style={styles.noteInput}
+                      placeholder="Write any extra info here..."
+                      placeholderTextColor="#90949a"
+                      multiline={true}
+                      numberOfLines={4}
+                      onChangeText={(val) => setextraInput(val)}
+                      value={extraInput}
+                    />
+                  </View>
+                )}
               </View>
               <View
                 style={
@@ -289,6 +303,23 @@ function ProductBuilderModal() {
                 </View>
               </View>
             </View>
+            {width < 800 && <View
+              style={[
+                styles.writeNoteContainer,
+                width < 800 && { marginTop: 15, height: 120 },
+              ]}
+            >
+              <Text style={styles.notesLbl}>Notes:</Text>
+              <TextInput
+                style={styles.noteInput}
+                placeholder="Write any extra info here..."
+                placeholderTextColor="#90949a"
+                multiline={true}
+                numberOfLines={4}
+                onChangeText={(val) => setextraInput(val)}
+                value={extraInput}
+              />
+            </View>}
             <View style={styles.addToCartRow}>
               <AddToCartBtn
                 style={styles.addToCartBtn}
@@ -319,7 +350,7 @@ const styles = StyleSheet.create({
   productBuilderGroupMobile: {
     width: "90%",
     justifyContent: "space-between",
-    paddingTop: 40,
+    paddingTop: 10,
     paddingBottom: 40,
   },
   goBackRow: {
@@ -341,7 +372,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   itemInfoContainer: {
-    height: "60%",
     borderRadius: 20,
     backgroundColor: "rgba(255,255,255,1)",
     alignItems: "center",
@@ -413,7 +443,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 10,
     zIndex: 999,
-    marginTop: 15,
+    marginTop: 20,
   },
   oneTimeSelectableOptionGroup: {
     marginBottom: 20,

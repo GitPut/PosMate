@@ -19,6 +19,7 @@ function OnlineStoreSettings() {
     const [urlEnding, seturlEnding] = useState(onlineStoreDetails.urlEnding)
     const [stripePublicKey, setstripePublicKey] = useState(onlineStoreDetails.stripePublicKey)
     const [stripeSecretKey, setstripeSecretKey] = useState(onlineStoreDetails.stripeSecretKey)
+    const [onlineStoreActive, setonlineStoreActive] = useState(onlineStoreDetails.onlineStoreActive)
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const [viewVisible, setviewVisible] = useState(false);
     const alertP = useAlert();
@@ -38,6 +39,10 @@ function OnlineStoreSettings() {
     };
 
     const startOnlineStore = () => {
+        if (!urlEnding) {
+            alertP.error("Please enter a url ending")
+            return
+        }
         db.collection("public").where("urlEnding", "==", urlEnding)
             .get()
             .then((querySnapshot) => {
@@ -46,26 +51,31 @@ function OnlineStoreSettings() {
                         storeDetails: storeDetails,
                         categories: catalog.categories,
                         urlEnding: urlEnding,
-                        stripePublicKey: stripePublicKey,
+                        stripePublicKey: stripePublicKey?.length > 0 ? stripePublicKey : null,
                     }).then(() => {
                         catalog.products.forEach((product) => {
                             db.collection("public").doc(auth.currentUser.uid).collection("products").doc(product.id).set(product)
+                            console.log('product added to public: ', product)
                         })
                         db.collection('users').doc(auth.currentUser.uid).update({
-                            onlineStoreActive: true,
+                            onlineStoreActive: onlineStoreActive,
                             onlineStoreSetUp: true,
                             urlEnding: urlEnding,
-                            stripePublicKey: stripePublicKey,
-                            stripeSecretKey: stripeSecretKey
+                            stripePublicKey: stripePublicKey?.length > 0 ? stripePublicKey : null,
+                            stripeSecretKey: stripeSecretKey?.length > 0 ? stripeSecretKey : null
                         })
                         setOnlineStoreState({
-                            onlineStoreActive: true,
+                            ...onlineStoreDetails,
+                            onlineStoreActive: onlineStoreActive,
                             onlineStoreSetUp: true,
                             urlEnding: urlEnding,
-                            stripePublicKey: stripePublicKey,
-                            stripeSecretKey: stripeSecretKey
+                            stripePublicKey: stripePublicKey?.length > 0 ? stripePublicKey : null,
+                            stripeSecretKey: stripeSecretKey?.length > 0 ? stripeSecretKey : null
                         })
-                    })
+                    }).catch((error) => {
+                        console.error("Error writing document: ", error);
+                    }
+                    )
                 } else {
                     alertP.error("This url ending is already taken. Please choose another one.")
                 }
@@ -75,59 +85,33 @@ function OnlineStoreSettings() {
             });
     }
 
-    const updateStripeDetails = () => {
+    const UpdateStoreDetails = () => {
+        catalog.products.forEach((product) => {
+            db.collection("public").doc(auth.currentUser.uid).collection("products").doc(product.id).set(product)
+        })
         db.collection('users').doc(auth.currentUser.uid).update({
+            onlineStoreActive: onlineStoreActive,
+            onlineStoreSetUp: true,
+            urlEnding: urlEnding,
             stripePublicKey: stripePublicKey,
             stripeSecretKey: stripeSecretKey
         })
-        db.collection("public").doc(auth.currentUser.uid).update({
+        db.collection('public').doc(auth.currentUser.uid).update({
+            onlineStoreActive: onlineStoreActive,
+            onlineStoreSetUp: true,
+            urlEnding: urlEnding,
+            storeDetails: storeDetails,
+            categories: catalog.categories,
             stripePublicKey: stripePublicKey
         })
         setOnlineStoreState({
             ...onlineStoreDetails,
+            onlineStoreActive: onlineStoreActive,
             stripePublicKey: stripePublicKey,
             stripeSecretKey: stripeSecretKey
         })
-        alertP.success("Stripe details updated successfully")
-    }
 
-    const makeOnlineStoreActive = () => {
-        if (!onlineStoreDetails.onlineStoreActive) {
-            catalog.products.forEach((product) => {
-                db.collection("public").doc(auth.currentUser.uid).collection("products").doc(product.id).set(product)
-            })
-            db.collection('users').doc(auth.currentUser.uid).update({
-                onlineStoreActive: true,
-                onlineStoreSetUp: true,
-                urlEnding: urlEnding,
-            })
-            db.collection('public').doc(auth.currentUser.uid).update({
-                onlineStoreActive: true,
-                onlineStoreSetUp: true,
-                urlEnding: urlEnding,
-                storeDetails: storeDetails,
-                categories: catalog.categories,
-            })
-            setOnlineStoreState({
-                ...onlineStoreDetails,
-                onlineStoreActive: true,
-            })
-        } else {
-            db.collection('users').doc(auth.currentUser.uid).update({
-                onlineStoreActive: false,
-                onlineStoreSetUp: true,
-                urlEnding: urlEnding
-            })
-            db.collection('public').doc(auth.currentUser.uid).update({
-                onlineStoreActive: false,
-                onlineStoreSetUp: true,
-                urlEnding: urlEnding
-            })
-            setOnlineStoreState({
-                ...onlineStoreDetails,
-                onlineStoreActive: false,
-            })
-        }
+        alertP.success("Online store details updated successfully")
     }
 
     const payOnlineStore = async () => {
@@ -138,8 +122,8 @@ function OnlineStoreSettings() {
             .doc(auth.currentUser.uid)
             .collection("checkout_sessions")
             .add({
+                price: 'price_1OdwZqCIw3L7DOwIj1Fu96SW', // fake price
                 // price: 'price_1Ocw7JCIw3L7DOwIWpAyVUiB', // real price
-                price: 'price_1Ocw7JCIw3L7DOwIWpAyVUiB', // real price
                 success_url: window.location.href, // return user to this screen on successful purchase
                 cancel_url: window.location.href, // return user to this screen on failed purchase
             })
@@ -157,7 +141,7 @@ function OnlineStoreSettings() {
                         // We have a session, let's redirect to Checkout
                         // Init Stripe
                         const stripe = await loadStripe(
-                            "pk_live_51MHqrvCIw3L7DOwI0ol9CTCSH7mQXTLKpxTWKzmwOY1MdKwaYwhdJq6WTpkWdBeql3sS44JmybynlRnaO2nSa1FK001dHiEOZO" // todo enter your public stripe key here
+                            "pk_live_51MHqrvCIw3L7DOwI0ol9CTCSH7mQXTLKpxTWKzmwOY1MdKwaYwhdJq6WTpkWdBeql3sS44JmybynlRnaO2nSa1FK001dHiEOZO"
                         );
                         console.log(`redirecting`);
                         await stripe.redirectToCheckout({ sessionId });
@@ -179,7 +163,7 @@ function OnlineStoreSettings() {
                         <View style={styles.inputsGroup}>
                             <View style={styles.urlEndingInputGroup}>
                                 <Text style={styles.onlineUrlEndingTxt}>Online URL Ending</Text>
-                                {onlineStoreDetails.onlineStoreSetUp ? <Pressable activeOpacity={1} style={[styles.uRLBox, { justifyContent: 'center' }]}><Text>{onlineStoreDetails.urlEnding}</Text></Pressable> : <TextInput style={styles.uRLBox} placeholder="EX: https://auth.divinepos.com/order/yoururlname" value={onlineStoreDetails.urlEnding ? onlineStoreDetails.urlEnding : urlEnding}
+                                {onlineStoreDetails.onlineStoreSetUp ? <Pressable activeOpacity={1} style={[styles.uRLBox, { justifyContent: 'center' }]}><Text>{onlineStoreDetails.urlEnding}</Text></Pressable> : <TextInput style={styles.uRLBox} placeholder="yourstorename" value={onlineStoreDetails.urlEnding ? onlineStoreDetails.urlEnding : urlEnding}
                                     onChangeText={(text) => { if (!onlineStoreDetails.onlineStoreSetUp) { seturlEnding(text.replace(/[^a-zA-Z-]/g, '').toLowerCase()) } }} />}
                             </View>
                             <View style={styles.stripePublicKeyInputGroup}>
@@ -192,14 +176,14 @@ function OnlineStoreSettings() {
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <Text style={{ fontWeight: '700', marginRight: 10, }}>Online Store Active Status:</Text>
-                                <GeneralSwitch isActive={onlineStoreDetails.onlineStoreActive} toggleSwitch={makeOnlineStoreActive} />
+                                <GeneralSwitch isActive={onlineStoreActive} toggleSwitch={() => setonlineStoreActive(prev => !prev)} />
                             </View>
                         </View>
                         <View style={styles.bottomBtnGroup}>
                             <Text style={styles.readInfo}>
                                 {onlineStoreDetails.onlineStoreSetUp ? '*Your Store Url Has Already Been Set' : '*Once Confirmed Your Url CAN NOT BE CHANGED'}
                             </Text>
-                            {onlineStoreDetails.onlineStoreSetUp ? <Pressable style={styles.confirmBtn} activeOpacity={0.7} onPress={updateStripeDetails}>
+                            {onlineStoreDetails.onlineStoreSetUp ? <Pressable style={styles.confirmBtn} activeOpacity={0.7} onPress={UpdateStoreDetails}>
                                 <Text style={styles.confirmTxtBtn}>Update</Text>
                             </Pressable> : <Pressable style={styles.confirmBtn} activeOpacity={0.7} onPress={startOnlineStore}>
                                 <Text style={styles.confirmTxtBtn}>Confirm</Text>

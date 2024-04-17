@@ -139,23 +139,36 @@ function InvoiceReport() {
 
     const startDateConverted = new Date(startDate);
     startDateConverted.setHours(0, 0, 0, 0); // Set to start of the day
+    startDateConverted.setDate(startDateConverted.getDate() + 1); // Add a day to the start date
     const endDateConverted = new Date(endDate);
+    endDateConverted.setDate(endDateConverted.getDate() + 1); // Add a day to the end date
     endDateConverted.setHours(23, 59, 59, 999); // Set to end of the day
 
     // Filter the list based on the date range
     const filtered = transListTableOrg.filter((item) => {
-      let itemDate = item.originalData.date_created
-        ? new Date(item.originalData.date_created)
-        : new Date(item.originalData.date.seconds * 1000);
+      let itemDate
 
-      // const isCorrectFilter = search.length > 0 ? (item.id.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase())) : true
+      if (item.date) {
+        itemDate = new Date(`${item.date.slice(0, 10)}T00:00`);
+      }
+      // else if (item.originalData.date_created) {
+      //   itemDate = new Date(item.originalData.date_created);
+      // } else if (item.originalData.date) {
+      //   itemDate = new Date(item.originalData.date.seconds * 1000);
+      // }
+      else {
+        return false;
+      }
 
       // Check if the item's date is within the start and end dates
       return (
         itemDate >= startDateConverted &&
         itemDate <= endDateConverted
       );
-    });
+    }).sort((a, b) => {
+      return new Date(`${b.date.slice(0, 10)}T00:00`) - new Date(`${a.date.slice(0, 10)}T00:00`);
+    }
+    );
 
     // Update the state with the filtered list
     setFilteredTransList(filtered);

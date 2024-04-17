@@ -192,7 +192,7 @@ function OnlineOrderHome() {
                           styles.phoneNumberIcon,
                           screenWidth < 1000 && { fontSize: 35 },
                         ]}
-                      ></FontAwesome>
+                      />
                       <Text style={styles.phoneNumberTxt}>
                         {storeDetails.phoneNumber}
                       </Text>
@@ -204,7 +204,7 @@ function OnlineOrderHome() {
                           styles.addressIcon,
                           screenWidth < 1000 && { fontSize: 35 },
                         ]}
-                      ></Entypo>
+                      />
                       <Text style={styles.addressTxt}>
                         {
                           storeDetails.address?.value?.structured_formatting
@@ -371,30 +371,28 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   phoneNumberRow: {
-    width: 231,
     height: 65,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
   },
   phoneNumberIcon: {
     color: "rgba(255,255,255,1)",
     fontSize: 50,
+    marginRight: 15,
   },
   phoneNumberTxt: {
     color: "rgba(255,255,255,1)",
     fontSize: 25,
   },
   addressRow: {
-    width: 231,
     height: 65,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
   },
   addressIcon: {
     color: "rgba(255,255,255,1)",
     fontSize: 50,
+    marginRight: 10
   },
   addressTxt: {
     color: "rgba(255,255,255,1)",

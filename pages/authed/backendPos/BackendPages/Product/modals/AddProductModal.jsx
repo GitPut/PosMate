@@ -17,6 +17,7 @@ import GeneralDropdown from "components/GeneralDropdown";
 import GeneralSwitch from "components/GeneralSwitch";
 import ProductBuilderView from "../components/ProductBuilderView";
 import { useAlert } from "react-alert";
+import Swal from "sweetalert2";
 
 const customSort = (a, b) => {
     // Handle cases where one or both items don't have a rank
@@ -61,6 +62,24 @@ function AddProductModal({
     const targetViewRef = useRef(null);
     const [selectedID, setselectedID] = useState(null)
     const alertP = useAlert()
+
+    const confirmText = () => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You will lose your new product!",
+            type: "warning",
+            showCancelButton: !0,
+            confirmButtonColor: "#2b3659",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, discard!",
+        }).then(function (t) {
+            if (t.value) {
+                setaddProductModal(false)
+                setexistingProduct(null)
+                setisProductTemplate(false)
+            }
+        });
+    };
 
     useEffect(() => {
         if (existingProduct) {
@@ -542,9 +561,15 @@ function AddProductModal({
                             </View>
                             <View style={styles.cancelAndSaveBtns}>
                                 <Pressable style={styles.cancelBtn} onPress={() => {
-                                    setaddProductModal(false)
-                                    setexistingProduct(null)
-                                    setisProductTemplate(false)
+                                    if (existingProduct && JSON.stringify(existingProduct) !== JSON.stringify(newProduct)) {
+                                        confirmText()
+                                    } else if (!existingProduct && newProduct.name.length > 0) {
+                                        confirmText()
+                                    } else {
+                                        setaddProductModal(false)
+                                        setexistingProduct(null)
+                                        setisProductTemplate(false)
+                                    }
                                 }}>
                                     <Text style={styles.cancelTxt}>Cancel</Text>
                                 </Pressable>

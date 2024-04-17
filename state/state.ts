@@ -187,16 +187,16 @@ export const setEmployeesState = (val: any[]): void => {
 export const onlineStoreState = entity<{
   onlineStoreActive: boolean;
   onlineStoreSetUp: boolean;
-  urlEnding: null;
-  stripePublicKey: null;
-  stripeSecretKey: null;
+  urlEnding: string;
+  stripePublicKey: string;
+  stripeSecretKey: string;
   paidStatus: null;
 }>({
   onlineStoreActive: false,
   onlineStoreSetUp: false,
-  urlEnding: null,
-  stripePublicKey: null,
-  stripeSecretKey: null,
+  urlEnding: '',
+  stripePublicKey: '',
+  stripeSecretKey: '',
   paidStatus: null,
 });
 

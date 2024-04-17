@@ -89,7 +89,6 @@ const OrderPage = () => {
               // Move logging and operations that depend on 'products' being populated inside the .then() block
               if (products.length > 0) {
                 setdata([]);
-                const newData = [];
                 products.sort(customSort).map((product, index) => {
                   setdata((prev) => {
                     const productsWithCategory = prev.filter(
@@ -127,6 +126,9 @@ const OrderPage = () => {
         });
 
         fadeOut();
+      })
+      .catch((e) => {
+        console.log("Error has occurred");
       });
   }, []);
 

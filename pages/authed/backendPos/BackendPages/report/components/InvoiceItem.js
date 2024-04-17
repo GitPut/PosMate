@@ -35,7 +35,7 @@ function InvoiceItem({
         <Text style={styles.peterPutros}>{item.name ? item.name : "N/A"}</Text>
       </View>
       <View style={styles.dateCont1}>
-        <Text style={styles.may252025}>{item.date}</Text>
+        <Text style={styles.may252025}>{item.date?.slice(0, -2)}</Text>
       </View>
       <View style={styles.totalCont1}>
         <Text style={styles.total3}>${item.amount}</Text>

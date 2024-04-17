@@ -341,6 +341,25 @@ const Print = ({ ...props }: PrintProps) => {
 
       const data = ReceiptPrint(element, storeDetails);
 
+      // console.log(
+      //   "Data fields: ",
+      //   "date: ",
+      //   today,
+      //   "\ntransNum: ",
+      //   transNum,
+      //   "\ntotal: ",
+      //   data.total,
+      //   "\nmethod: ",
+      //   "inStoreOrder",
+      //   "\npaymentMethod: ",
+      //   method,
+      //   "\ncart: ",
+      //   finalCart,
+      //   "\ncartNote: ",
+      //   cartNote
+      // );
+      // return
+
       db.collection("users")
         .doc(auth.currentUser?.uid)
         .collection("pendingOrders")
