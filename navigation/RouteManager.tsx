@@ -19,16 +19,17 @@ import {
 } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 import { updateFreeTrial } from "state/firebaseFunctions";
-import NewUserPayment from "components/modals/NewUserPayment";
-import { Animated, Image } from "react-native";
-import TrialEnded from "components/modals/TrialEnded";
+import { Animated, Image, View } from "react-native";
+import TrialEnded from "components/UserPaymentScreens/TrialEnded/TrialEnded";
 import qz from "qz-tray";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import AuthRoute from "./authed/AuthRoute";
 import NonAuthRoute from "./non-authed/NonAuthRoute";
 import ScrollToTop from "components/functional/ScrollToTop";
-import PaymentUpdateNotification from "components/modals/PaymentUpdateNotification";
+import PaymentUpdateNotification from "components/UserPaymentScreens/PaymentDeclined/PaymentUpdateNotification";
 import { useAlert } from "react-alert";
+import NewUserPayment from "components/UserPaymentScreens/NewUserPayment/NewUserPayment";
+import Modal from "react-native-modal-web";
 
 const RouteManager = () => {
   const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
@@ -252,6 +253,37 @@ const RouteManager = () => {
                       }
                     }
 
+                    //if they are subscribed to pos plan
+                    if (element.data().role === "Premium Plan") {
+                      if (element.data().status === "active") {
+                        setisSubscribed(true);
+                        setisNewUser(false);
+                        setOnlineStoreState({
+                          urlEnding: doc.data()?.urlEnding,
+                          onlineStoreActive: doc.data()?.onlineStoreActive,
+                          onlineStoreSetUp: doc.data()?.onlineStoreSetUp,
+                          stripePublicKey: doc.data()?.stripePublicKey,
+                          stripeSecretKey: doc.data()?.stripeSecretKey,
+                          paidStatus: "active",
+                        });
+                        extraDevicesPayingFor += 1;
+                        if (doc.data()?.freeTrial) {
+                          setTrialDetailsState({
+                            endDate: null,
+                            hasEnded: null,
+                          });
+                          updateFreeTrial(null);
+                        }
+                      } else if (element.data().status === "canceled") {
+                        setisSubscribed(false);
+                        setisNewUser(false);
+                        setisCanceled(true);
+                      } else {
+                        setisSubscribed(false);
+                        setisNewUser(false);
+                      }
+                    }
+
                     //if they are subscribed to online store
                     if (element.data().role === "Online Store") {
                       if (element.data().status === "active") {
@@ -395,6 +427,13 @@ const RouteManager = () => {
                   }
                 });
 
+                //tonys uid for extra devices
+                // console.log("USER UID ", user.uid);
+                if (user.uid == "J6rAf2opwnSKAhefbOZW6HJdx1h2") {
+                  // console.log("Matches uid");
+                  extraDevicesPayingFor = 3;
+                }
+
                 setDeviceTreeState({ devices: devices, extraDevicesPayingFor });
               });
 
@@ -417,7 +456,7 @@ const RouteManager = () => {
               });
 
             setloading(false);
-            fadeOut();
+            setviewVisible(false);
 
             return () => {
               unsub();
@@ -439,27 +478,8 @@ const RouteManager = () => {
     };
   }, [savedUserState]);
 
-  const fadeIn = () => {
-    // Will change fadeAnim value to 0 in 3 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const fadeOut = () => {
-    // Will change fadeAnim value to 0 in 3 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 500,
-      useNativeDriver: false,
-    }).start(() => setviewVisible(false));
-  };
-
   const resetLoader = () => {
     setviewVisible(true);
-    fadeIn();
   };
 
   const NavigationContent = () => {
@@ -485,14 +505,20 @@ const RouteManager = () => {
         {userS && (
           <>
             <NavigationContent />
-            {viewVisible && (
-              <Animated.View
+            <Modal
+              isVisible={viewVisible}
+              animationIn="fadeIn"
+              animationOut="fadeOut"
+              style={{
+                margin: 0,
+              }}
+              backdropOpacity={0}
+            >
+              <View
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
                   backgroundColor: "white",
-                  position: "absolute",
-                  opacity: fadeAnim,
                   height: "100%",
                   width: "100%",
                 }}
@@ -502,8 +528,8 @@ const RouteManager = () => {
                   // source={require("assets/divinepos-loading.gif")}
                   style={{ width: 450, height: 450, resizeMode: "contain" }}
                 />
-              </Animated.View>
-            )}
+              </View>
+            </Modal>
           </>
         )}
         {!userS && !loading && <Route path="/" component={NonAuthRoute} />}

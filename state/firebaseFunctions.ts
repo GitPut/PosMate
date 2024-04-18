@@ -32,6 +32,9 @@ export const signUp = (
             email: email,
           },
         });
+      userAuth.user.updateProfile({
+        displayName: name,
+      });
     }
   });
 

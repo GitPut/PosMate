@@ -1,4 +1,5 @@
 import { entity } from "simpler-state";
+import { AddressType } from "types/global";
 
 export const userState = entity<null>(null);
 
@@ -47,7 +48,7 @@ export const updateUserStoreState = (val: any): void => {
     ...prevState,
     ...val,
   }));
-}
+};
 
 export const setUserStoreState = (val: any): void => {
   // console.log("Setting user store state: ", val);
@@ -70,9 +71,9 @@ export const setWoocommerceState = (val: any): void => {
   woocommerceState.set(val);
 };
 
-export const storeDetailState = entity<{
+interface StoreDetailsStateProps {
   name: string;
-  address: string;
+  address: AddressType;
   phoneNumber: string;
   website: string;
   comSelected: string;
@@ -81,7 +82,9 @@ export const storeDetailState = entity<{
   taxRate: string;
   acceptDelivery: boolean;
   deliveryRange: string;
-}>({
+}
+
+export const storeDetailState = entity<StoreDetailsStateProps>({
   name: "",
   address: "",
   phoneNumber: "",
@@ -194,9 +197,9 @@ export const onlineStoreState = entity<{
 }>({
   onlineStoreActive: false,
   onlineStoreSetUp: false,
-  urlEnding: '',
-  stripePublicKey: '',
-  stripeSecretKey: '',
+  urlEnding: "",
+  stripePublicKey: "",
+  stripeSecretKey: "",
   paidStatus: null,
 });
 

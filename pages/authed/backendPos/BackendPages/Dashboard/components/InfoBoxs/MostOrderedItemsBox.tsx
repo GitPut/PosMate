@@ -93,10 +93,15 @@ const MostOrderedItemsBox = ({ style, allTransactions }) => {
         return {
           name: item[0],
           orders: item[1],
-          imageUrl:
-            catalog.products[
-              catalog.products.findIndex((product) => product.name === item[0])
-            ].imageUrl ?? "https://via.placeholder.com/50",
+          imageUrl: catalog.products[
+            catalog.products.findIndex((product) => product.name === item[0])
+          ]?.imageUrl
+            ? catalog.products[
+                catalog.products.findIndex(
+                  (product) => product.name === item[0]
+                )
+              ]?.imageUrl
+            : "https://via.placeholder.com/50",
         };
       });
     };
@@ -199,7 +204,7 @@ const styles = StyleSheet.create({
     width: 326,
     height: 240,
     justifyContent: "space-between",
-    marginTop: 10
+    marginTop: 10,
   },
   mostOrderItemsListItem1: {
     height: 70,

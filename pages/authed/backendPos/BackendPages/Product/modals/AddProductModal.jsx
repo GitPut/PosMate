@@ -116,15 +116,15 @@ function AddProductModal({
 
     function handleDataUpdate() {
         if (!newProduct.name) {
-            seterror('Please enter a product name')
+            alertP.error('Please enter a product name')
             return
         }
-        if (!newProduct.category) {
-            seterror('Please select a category')
-            return
-        }
+        // if (!newProduct.category) {
+        //     alertP.error('Please select a category')
+        //     return
+        // }
         if (!newProduct.price) {
-            seterror('Please enter a price')
+            alertP.error('Please enter a price')
             return
         }
 
@@ -255,9 +255,15 @@ function AddProductModal({
     return (
         <Pressable
             onPress={() => {
-                setaddProductModal(false)
-                setexistingProduct(null)
-                setisProductTemplate(false)
+                if (existingProduct && JSON.stringify(existingProduct) !== JSON.stringify(newProduct)) {
+                    confirmText()
+                } else if (!existingProduct && newProduct.name.length > 0) {
+                    confirmText()
+                } else {
+                    setaddProductModal(false)
+                    setexistingProduct(null)
+                    setisProductTemplate(false)
+                }
             }}
             style={{
                 justifyContent: "center",

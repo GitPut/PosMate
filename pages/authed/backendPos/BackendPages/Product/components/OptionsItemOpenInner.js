@@ -1,8 +1,6 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text, Pressable, TextInput } from "react-native";
 import OptionSelectionItem from "./OptionSelectionItem";
-import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Switch } from "react-native";
 import GeneralDropdown from "components/GeneralDropdown";
 import OptionIfStatementItem from "./OptionIfStatementItem";
 import generateRandomKey from "components/functional/GenerateRandomKey";
@@ -124,7 +122,7 @@ function OptionsItemOpenInner({
               });
             }}
             value={e.numOfSelectable}
-            placeholder="Enter Selection Limit"
+            placeholder="Leave empty for no limit"
           />
         </View>
       </View>

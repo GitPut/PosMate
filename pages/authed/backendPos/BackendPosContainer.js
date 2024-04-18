@@ -22,8 +22,8 @@ import {
 import firebase from "firebase/compat/app";
 import MenuBtn from "./components/MenuBtn";
 import index from "./authIndex";
-import HeaderLogoutDropdown from "components/HeaderLogoutDropdown";
 import { useAlert } from "react-alert";
+import Header from "../../../components/Header/Header";
 
 const tz = require("moment-timezone");
 
@@ -39,8 +39,7 @@ function BackendPosContainer(props) {
   const location = useLocation();
   let pathname = location.pathname;
   const { height, width } = useWindowDimensions();
-  const storeDetails = storeDetailState.use();
-  const alertP = useAlert()
+  const alertP = useAlert();
 
   const fadeIn = () => {
     // Will change fadeAnim value to 0 in 3 seconds
@@ -209,31 +208,13 @@ function BackendPosContainer(props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => {
-            history.push("/authed/dashboard");
-            setSideMenu("");
-          }}
-          activeOpacity={0.8}
-        >
-          <Image
-            source={require("./assets/images/image_nrJg..png")}
-            resizeMode="contain"
-            style={styles.logo}
-          />
-        </Pressable>
-        <View style={styles.rightSideRow}>
-          <Pressable
-            onPress={() => history.push("/pos")}
-            activeOpacity={0.8}
-            style={styles.backToPOSBtn}
-          >
-            <Text style={styles.pos}>POS</Text>
-          </Pressable>
-          <HeaderLogoutDropdown styles={styles} storeDetails={storeDetails} />
-        </View>
-      </View>
+      <Header
+        onPressLogo={() => {
+          history.push("/authed/dashboard");
+          setSideMenu("");
+        }}
+        isPosHeader={true}
+      />
       <View style={[styles.bottom, { height: height - 75, paddingTop: 50 }]}>
         <View style={styles.leftMenu}>
           <View style={[styles.menuOptionsContainer, { height: "100%" }]}>

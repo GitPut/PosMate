@@ -276,7 +276,12 @@ function Index(props) {
                             </View>
                         </View>
                             :
-                            <View>
+                            <View style={{
+                                height: 400,
+                                width: 358,
+                                justifyContent: "center",
+                                alignItems: "center"
+                            }}>
                                 <Text>No Devices Found</Text>
                             </View>
                         }
@@ -288,7 +293,7 @@ function Index(props) {
                             <Pressable style={styles.nextDeviceBtn} activeOpacity={0.8}
                                 onPress={
                                     () => {
-                                        if (deviceTree.devices.length < 2 + deviceTree.extraDevicesPayingFor) {
+                                        if (deviceTree.devices.length < 1 + deviceTree.extraDevicesPayingFor) {
                                             db.collection('users').doc(auth.currentUser.uid).collection('devices').add({ name: `Device${deviceTree.devices.length}`, id: null, printToPrinter: null }).then((docRef) => {
                                                 const clone = { ...deviceTree }
                                                 clone.devices.push({ name: "", id: null, printToPrinter: null, sendPrintToUserID: null, docID: docRef.id })

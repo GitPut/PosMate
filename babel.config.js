@@ -17,6 +17,7 @@ module.exports = function (api) {
             components: "./components",
             pages: "./pages",
             state: "./state",
+            types: "./types",
           },
         },
       ],

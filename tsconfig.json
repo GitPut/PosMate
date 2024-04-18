@@ -16,7 +16,8 @@
       "components/*": ["components/*"],
       "navigation/*": ["navigation/*"],
       "pages/*": ["pages/*"],
-      "state/*": ["state/*"]
+      "state/*": ["state/*"],
+      "types/*": ["types/*"]
     },
   },
   "extends": "expo/tsconfig.base",

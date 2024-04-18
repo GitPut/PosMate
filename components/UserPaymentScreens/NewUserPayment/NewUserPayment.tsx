@@ -1,195 +1,200 @@
-import React from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
-import EntypoIcon from "@expo/vector-icons/Entypo";
-import IoniconsIcon from "@expo/vector-icons/Ionicons";
-import MaterialCommunityIconsIcon from "@expo/vector-icons/MaterialCommunityIcons";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  useWindowDimensions,
+} from "react-native";
+import React, { useState } from "react";
+import { auth, db } from "state/firebaseConfig";
+import { loadStripe } from "@stripe/stripe-js";
+import { updateFreeTrial, updateStoreDetails } from "state/firebaseFunctions";
+import { storeDetailState } from "state/state";
+import Axios from "axios";
+import { useAlert } from "react-alert";
+import PlanStage from "./components/PlanStage";
+import Header from "components/Header/Header";
+import SideBar from "./components/SideBar";
+import DetailsStage from "./components/DetailsStage";
+import { AddressType } from "types/global";
 
-function NewUserPaymentUpdate({
-  currentStageNum,
-  currentStageLbl,
-  StageContent,
-  planType,
-  CheckOutFunc,
-}) {
-  const StageStepView = ({ stageNum, stageLbl, stageDesc }) => {
-    return (
-      <View style={{ flexDirection: "row" }}>
-        <Text
-          style={{
-            fontWeight: "600",
-            color: "rgba(255,255,255,1)",
-            fontSize: 30,
-            opacity: stageNum <= currentStageNum ? 1 : 0.5,
-          }}
-        >
-          {stageNum}
-        </Text>
-        <View style={styles.subscription1StackStack}>
-          <View style={{ flexDirection: "row" }}>
-            <Text
-              style={{
-                fontWeight: "600",
-                color: "rgba(255,255,255,1)",
-                fontSize: 25,
-                marginRight: 25,
-                opacity: stageNum <= currentStageNum ? 1 : 0.5,
-              }}
-            >
-              {stageLbl}
-            </Text>
-            {stageNum < currentStageNum && (
-              <View style={styles.stageChecked}>
-                <EntypoIcon name="check" style={styles.checkedIcon} />
-              </View>
-            )}
-          </View>
-          <Text
-            style={{
-              fontWeight: "500",
-              color: "rgba(155,155,155,1)",
-              fontSize: 22,
-              opacity: stageNum <= currentStageNum ? 1 : 0.5,
-            }}
-          >
-            {stageDesc}
-          </Text>
-        </View>
-      </View>
-    );
+const NewUserPayment = ({ resetLoader }) => {
+  const [planType, setplanType] = useState<string | null>(null);
+  const [stageNum, setstageNum] = useState(1);
+  const storeDetails = storeDetailState.use();
+  const [storeName, setstoreName] = useState(storeDetails.name);
+  const [phoneNumber, setphoneNumber] = useState(storeDetails.phoneNumber);
+  const [address, setaddress] = useState<string | AddressType>(
+    storeDetails.address
+  );
+  const [website, setwebsite] = useState(storeDetails.website);
+  const [paymentTerm, setpaymentTerm] = useState<string>("monthly");
+  const alertP = useAlert();
+  const { height } = useWindowDimensions();
+
+  const SendEmail = () => {
+    const data = JSON.stringify({
+      email: auth.currentUser?.email,
+      name: storeName,
+      isFreeTrial: planType === "freeTrial",
+    });
+
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://us-central1-posmate-5fc0a.cloudfunctions.net/sendWelcomeEmail",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    Axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        alertP.error(error);
+      });
   };
 
-  const StageIconBar = () => {
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <View
-          style={
-            1 <= currentStageNum
-              ? styles.ActiveIconContainer
-              : styles.notActiveIconContainer
+  const CheckOutFunc = async () => {
+    resetLoader();
+    updateStoreDetails({
+      name: storeName,
+      phoneNumber: phoneNumber,
+      address: address,
+      website: website ? website : "",
+      deliveryPrice: "",
+      settingsPassword: "",
+      taxRate: 13,
+    });
+
+    if (planType === "freeTrial") {
+      // Get today's date
+      const tomorrow = new Date();
+      // Change the date by adding 1 to it (tomorrow + 1 = tomorrow)
+      tomorrow.setDate(tomorrow.getDate() + 14);
+      // return yyyy-mm-dd format
+      updateFreeTrial(tomorrow);
+      SendEmail();
+    } else {
+      let priceId;
+      if (paymentTerm === "monthly") {
+        if (planType === "standard") {
+          priceId = "price_1Mb2s4CIw3L7DOwI5PDx3qKx"; // Standard price monthly
+        } else if (planType === "premium") {
+          priceId = "price_1P6zUFCIw3L7DOwIo9SCcg2R"; // Premium price monthly
+        }
+      } else {
+        if (planType === "standard") {
+          priceId = "price_1Mb2s4CIw3L7DOwIF00zPa4q"; // Standard price yearly
+        } else if (planType === "premium") {
+          priceId = "price_1P6zV2CIw3L7DOwIsuPy0rnM"; // Premium price yearly
+        }
+      }
+      await db
+        .collection("users")
+        .doc(auth.currentUser.uid)
+        .collection("checkout_sessions")
+        .add({
+          price: priceId, // todo price Id from your products price in the Stripe Dashboard
+          success_url: `${window.location.origin}/success`,
+          cancel_url: `${window.location.origin}/cancelled`,
+        })
+        .then((docRef) => {
+          // Wait for the checkoutSession to get attached by the extension
+          docRef.onSnapshot(async (snap) => {
+            const { error, sessionId } = snap.data();
+            if (error) {
+              // Show an error to your customer and inspect
+              // your Cloud Function logs in the Firebase console.
+              alertP.error(`An error occurred`);
+            }
+
+            if (sessionId) {
+              // We have a session, let's redirect to Checkout
+              // Init Stripe
+              const stripe = await loadStripe(
+                "pk_live_51MHqrvCIw3L7DOwI0ol9CTCSH7mQXTLKpxTWKzmwOY1MdKwaYwhdJq6WTpkWdBeql3sS44JmybynlRnaO2nSa1FK001dHiEOZO" // todo enter your public stripe key here
+              );
+              console.log(`redirecting`);
+              await stripe.redirectToCheckout({ sessionId });
+            }
+          });
+        })
+        .finally(() => {
+          // Check if the current page is the success page
+          if (window.location.pathname === "/success") {
+            SendEmail(); // Call the function to send an email
+            window.location.reload(); // Reload the page
           }
-        >
-          <IoniconsIcon name="person" style={styles.icon} />
-        </View>
-        <View
-          style={
-            2 <= currentStageNum ? styles.greyDivider : styles.darkGreyDivider
-          }
-        />
-        <View
-          style={
-            2 <= currentStageNum
-              ? styles.ActiveIconContainer
-              : styles.notActiveIconContainer
-          }
-        >
-          <MaterialCommunityIconsIcon name="store" style={styles.icon} />
-        </View>
-        <View
-          style={
-            3 <= currentStageNum ? styles.greyDivider : styles.darkGreyDivider
-          }
-        />
-        <View
-          style={
-            3 <= currentStageNum
-              ? styles.ActiveIconContainer
-              : styles.notActiveIconContainer
-          }
-        >
-          <EntypoIcon name="link" style={styles.icon} />
-        </View>
-      </View>
-    );
+        });
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.leftContainer}>
-        <View style={styles.storeDetailsTxtContainer}>
-          <Text style={styles.storeDetails}>{currentStageLbl}</Text>
-          <View style={styles.rect13}></View>
-        </View>
-        <StageContent />
-      </View>
-      <View style={styles.rightContainer}>
-        <StageIconBar />
-        <View style={styles.pageStatusTxtContainer}>
-          <StageStepView
-            stageNum={1}
-            stageLbl="Subscription"
-            stageDesc="Plan Info"
-          />
-          <View
-            style={{
-              height: 55,
-              width: 2,
-              backgroundColor: "rgba(155,155,155,1)",
-              marginLeft: 10,
-              marginBottom: 10,
+    <>
+      <Header />
+      <View style={[styles.container, { height: height - 75 }]}>
+        <View style={styles.leftContainer}>
+          <ScrollView
+            style={{ width: "100%" }}
+            contentContainerStyle={{
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 10,
             }}
-          />
-          <StageStepView
-            stageNum={2}
-            stageLbl="Store Setup"
-            stageDesc="Store Info"
-          />
+          >
+            {stageNum === 1 && (
+              <PlanStage
+                planType={planType}
+                setplanType={setplanType}
+                setpaymentTerm={setpaymentTerm}
+                paymentTerm={paymentTerm}
+              />
+            )}
+            {stageNum === 2 && (
+              <DetailsStage
+                setstageNum={setstageNum}
+                setstoreName={setstoreName}
+                setphoneNumber={setphoneNumber}
+                setwebsite={setwebsite}
+                setaddress={setaddress}
+                address={address}
+                paymentTerm={paymentTerm}
+                setpaymentTerm={setpaymentTerm}
+                planType={planType}
+                storeName={storeName}
+                phoneNumber={phoneNumber}
+                website={website}
+              />
+            )}
+          </ScrollView>
         </View>
-        <View style={styles.priceAndBtnContainer}>
-          <View style={styles.group18}>
-            <View style={styles.planPrice1Row}>
-              <Text style={styles.planPrice1}>Plan Price:</Text>
-              {planType.value === "monthly" && (
-                <Text style={styles.wooCommerce1}>$50.00 / Monthly</Text>
-              )}
-              {planType.value === "yearly" && (
-                <Text style={styles.wooCommerce1}>$480.00 / Yearly</Text>
-              )}
-              {planType.value === "freeTrial" && (
-                <Text style={styles.wooCommerce1}>2 Week Free Trial</Text>
-              )}
-            </View>
-          </View>
-          <View style={styles.group17}>
-            <Pressable
-              style={[
-                styles.rect34,
-                currentStageNum === 2 && {
-                  backgroundColor: "rgba(20,112,239,1)",
-                },
-              ]}
-              disabled={currentStageNum < 2}
-              onPress={CheckOutFunc}
-            >
-              <Text
-                style={[
-                  styles.checkOut1,
-                  currentStageNum === 2 && { opacity: 1, color: "white" },
-                ]}
-              >
-                Check Out
-              </Text>
-            </Pressable>
-          </View>
-        </View>
+        <SideBar
+          stageNum={stageNum}
+          setstageNum={setstageNum}
+          planType={planType}
+          CheckOutFunc={CheckOutFunc}
+          detailsFilledOut={
+            storeName?.length > 0 && phoneNumber?.length > 0 && !!address
+          }
+        />
       </View>
-    </View>
+    </>
   );
-}
+};
+
+export default NewUserPayment;
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     width: "100%",
-    height: "100%",
+    backgroundColor: "#EEF2FF",
   },
   leftContainer: {
-    width: "70%",
+    width: "72%",
     height: "100%",
     alignItems: "center",
     justifyContent: "space-around",
@@ -458,7 +463,7 @@ const styles = StyleSheet.create({
   rightContainer: {
     width: "30%",
     height: "100%",
-    backgroundColor: "rgba(31,35,48,1)",
+    backgroundColor: "#1D294E",
     shadowColor: "rgba(85,85,85,1)",
     shadowOffset: {
       width: -3,
@@ -788,5 +793,3 @@ const styles = StyleSheet.create({
     opacity: 0.26,
   },
 });
-
-export default NewUserPaymentUpdate;
