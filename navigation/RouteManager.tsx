@@ -164,9 +164,6 @@ const RouteManager = () => {
               categories: doc.data()?.categories ? doc.data()?.categories : [],
             });
 
-            if (doc.data()?.wooCredentials) {
-              setWoocommerceState(doc.data()?.wooCredentials);
-            }
             if (doc.data()?.storeDetails) {
               setStoreDetailState(doc.data()?.storeDetails);
             }
@@ -532,40 +529,36 @@ const RouteManager = () => {
     <Router>
       <ScrollToTop />
       <Switch>
-        {auth.currentUser && (
-          <>
-            <NavigationContent />
-            <Modal
-              isVisible={viewVisible}
-              animationIn="fadeIn"
-              animationOut="fadeOut"
-              style={{
-                margin: 0,
-              }}
-              backdropOpacity={0}
-            >
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "white",
-                  height: "100%",
-                  width: "100%",
-                }}
-              >
-                <Image
-                  source={require("assets/loading.gif")}
-                  // source={require("assets/divinepos-loading.gif")}
-                  style={{ width: 450, height: 450, resizeMode: "contain" }}
-                />
-              </View>
-            </Modal>
-          </>
-        )}
+        {auth.currentUser && <NavigationContent />}
         {!auth.currentUser && !loading && (
           <Route path="/" component={NonAuthRoute} />
         )}
       </Switch>
+      <Modal
+        isVisible={viewVisible}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        style={{
+          margin: 0,
+        }}
+        backdropOpacity={0}
+      >
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "white",
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          <Image
+            source={require("assets/loading.gif")}
+            // source={require("assets/divinepos-loading.gif")}
+            style={{ width: 450, height: 450, resizeMode: "contain" }}
+          />
+        </View>
+      </Modal>
     </Router>
   );
 };
