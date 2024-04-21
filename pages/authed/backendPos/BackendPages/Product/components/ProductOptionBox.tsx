@@ -41,12 +41,6 @@ function ProductOptionBox({
           : product.name}
       </Text>
       <Text style={styles.productPriceTxt}>${product.price}</Text>
-      {/* <Pressable
-        style={{ padding: 5, backgroundColor: "grey" }}
-        onPress={copyProduct}
-      >
-        <Text>Copy</Text>
-      </Pressable> */}
       {editMode ? (
         <View>
           <View style={[styles.editProductBtn, { borderRadius: 0 }]}>

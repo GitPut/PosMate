@@ -29,6 +29,7 @@ const DisplayOption = ({
   isOnlineOrder,
 }: DisplayOptionProps) => {
   const checkCases = () => {
+    if (!e.selectedCaseList) return true;
     if (e.selectedCaseList?.length > 0) {
       return e.selectedCaseList.every((ifStatement) => {
         const option = myObjProfile.options
@@ -73,7 +74,6 @@ const DisplayOption = ({
         setOptionVal(null); // Reset the currently selected option value if any
       } else {
         if (e.defaultValue) {
-          console.log("Default value: ", e.defaultValue);
           const defaultOption = e.optionsList.find(
             (op) => op.label === e.defaultValue?.label
           );
@@ -166,7 +166,7 @@ const DisplayOption = ({
             setopenDropdown={setopenOptions}
             openDropdown={openOptions}
             label={e.label ?? ""}
-            isRequired={e.isRequired}
+            isRequired={e.isRequired ? true : false}
             options={e.optionsList}
             setValue={({
               option,
@@ -191,7 +191,7 @@ const DisplayOption = ({
             setopenDropdown={setopenOptions}
             openDropdown={openOptions}
             label={e.label ?? ""}
-            isRequired={e.isRequired}
+            isRequired={e.isRequired ? true : false}
             optionsSelectedLabel={optionsSelectedLabel}
             scrollY={scrollY}
             setMyObjProfile={setMyObjProfile}
@@ -201,7 +201,7 @@ const DisplayOption = ({
         return (
           <OneTimeSelectableOptionGroup
             label={e.label ?? ""}
-            isRequired={e.isRequired}
+            isRequired={e.isRequired ? true : false}
             options={e.optionsList}
             setValue={({
               option,

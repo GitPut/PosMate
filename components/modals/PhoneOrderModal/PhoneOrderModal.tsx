@@ -80,13 +80,13 @@ const PhoneOrderModal = () => {
       const responseData = await response.json();
 
       if (response.ok && responseData.success) {
-        console.log("Success!");
+        // console.log("Success!");
         return responseData.data;
       } else {
-        console.error(responseData.message);
+        // console.error(responseData.message);
       }
     } catch (jsonError) {
-      console.error("Error parsing JSON response:", jsonError);
+      // console.error("Error parsing JSON response:", jsonError);
     }
   }
 
@@ -111,6 +111,7 @@ const PhoneOrderModal = () => {
       buzzCode: buzzCode ? buzzCode : null,
       unitNumber: unitNumber ? unitNumber : null,
       orders: [],
+      id: "",
     }).then((docRef) => {
       // setsavedCustomerDetails({
       //   name: name,
@@ -158,9 +159,9 @@ const PhoneOrderModal = () => {
           address.value?.reference
         ).then((distance) => {
           if (distance !== null) {
-            console.log(
-              `Distance between addresses: ${distance.toFixed(2)} km`
-            );
+            // console.log(
+            //   `Distance between addresses: ${distance.toFixed(2)} km`
+            // );
             if (storeDetails.deliveryRange) {
               if (
                 distance > parseFloat(storeDetails.deliveryRange) &&
@@ -172,7 +173,8 @@ const PhoneOrderModal = () => {
           }
         });
       } catch {
-        console.log("Error calculating distance between addresses");
+        // console.log("Error calculating distance between addresses");
+        alertP.error("Error calculating distance between addresses");
       }
     }
   }, []);
@@ -188,9 +190,9 @@ const PhoneOrderModal = () => {
           localAddress.value.reference
         ).then((distance) => {
           if (distance !== null) {
-            console.log(
-              `Distance between addresses: ${distance.toFixed(2)} km`
-            );
+            // console.log(
+            //   `Distance between addresses: ${distance.toFixed(2)} km`
+            // );
             if (storeDetails.deliveryRange) {
               if (
                 distance > parseFloat(storeDetails.deliveryRange) &&
@@ -202,7 +204,8 @@ const PhoneOrderModal = () => {
           }
         });
       } catch {
-        console.log("Error calculating distance between addresses");
+        // console.log("Error calculating distance between addresses");
+        alertP.error("Error calculating distance between addresses");
       }
     }
   }, [localAddress]);
@@ -291,7 +294,7 @@ const PhoneOrderModal = () => {
                     <MaterialIcons
                       name="person"
                       style={styles.customerIcon}
-                    ></MaterialIcons>
+                    />
                     <TextInput
                       placeholder="Enter name"
                       style={styles.namedTxtBox}
@@ -305,7 +308,7 @@ const PhoneOrderModal = () => {
                     <FontAwesome
                       name="phone"
                       style={styles.numberIcon}
-                    ></FontAwesome>
+                    />
                     <TextInput
                       placeholder="Enter phone number"
                       style={styles.phoneNumberTxtBox}

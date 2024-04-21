@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import productTemplateCatalog from "../assets/productTemplateCatalog";
+import productTemplateCatalog from "../components/productTemplateCatalog";
 import ProductOptionBox from "../components/ProductOptionBox";
 import { ProductProp } from "types/global";
 
@@ -129,7 +129,12 @@ function ProductTemplatesModal({
                       ...product,
                       isTemplate: true,
                       id: Math.random().toString(36).substr(2, 9),
+                      name: product.name,
+                      price: product.price,
+                      options: product.options ?? [],
+                      description: product.description,
                     };
+
                     return (
                       <div key={index} id={product.id}>
                         <ProductOptionBox
@@ -137,7 +142,7 @@ function ProductTemplatesModal({
                           product={newProduct}
                           setexistingProduct={(val) => {
                             setexistingProduct(val);
-                            setisProductTemplate(true)
+                            setisProductTemplate(true);
                             setproductTemplatesModalVisible(false);
                           }}
                           isTemplate={true}

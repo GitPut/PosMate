@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
 import RevenueBox from "../RevenueBox";
 import OrdersBox from "../OrdersBox";
-import SearchDate from "components/functional/SearchDateFunction";
 import { TransListStateItem } from "types/global";
+import SearchDateTransactions from "components/functional/SearchDateTransactions";
 
 const PickupOrdersBox = ({
   allTransactions,
@@ -70,7 +70,7 @@ const PickupOrdersBox = ({
 
     if (dateRange) {
       const { start, end } = dateRange;
-      filteredTransactions = SearchDate({
+      filteredTransactions = SearchDateTransactions({
         startDate: start,
         endDate: end,
         transactions: allTransactions,
@@ -80,7 +80,7 @@ const PickupOrdersBox = ({
       filteredTransactions = allTransactions;
     }
 
-    const { orders, revenue } = calculateTotals(filteredTransactions);
+    const { orders, revenue } = calculateTotals(filteredTransactions ?? []);
     setdetails({ orders, revenue: parseFloat(revenue) });
   }, [period, allTransactions]);
 
@@ -96,9 +96,9 @@ const PickupOrdersBox = ({
         <View style={styles.pickupOrdersRevAndOrdersContainer}>
           <RevenueBox
             style={styles.revenueBox}
-            revenueValue={details.revenue}
+            revenueValue={details.revenue.toString()}
           />
-          <OrdersBox style={styles.ordersBox} ordersValue={details.orders} />
+          <OrdersBox style={styles.ordersBox} ordersValue={details.orders.toString()} />
         </View>
       </View>
     </View>

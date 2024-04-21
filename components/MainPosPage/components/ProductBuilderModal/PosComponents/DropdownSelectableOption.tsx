@@ -184,7 +184,7 @@ function DropdownSelectableOption({
                           priceIncrease:
                             optionI.priceIncrease !== null
                               ? optionI.priceIncrease
-                              : 0,
+                              : '0',
                           id: optionI.id,
                         },
                         listIndex: listIndex,

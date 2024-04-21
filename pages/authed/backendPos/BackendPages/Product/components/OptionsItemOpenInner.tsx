@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, Pressable, TextInput } from "react-native";
 import OptionSelectionItem from "./OptionSelectionItem";
-import GeneralDropdown from "components/GeneralDropdown";
 import OptionIfStatementItem from "./OptionIfStatementItem";
 import generateRandomKey from "components/functional/GenerateRandomKey";
 import GeneralSwitch from "components/GeneralSwitch";
 import { Option, ProductProp } from "types/global";
+import GeneralDropdownStringOptions from "components/GeneralDropdownStringOptions";
+import GeneralDropdownArrayOptions from "components/GeneralDropdownArrayOptions";
 
 interface OptionsItemOpenInnerProps {
   item: Option;
@@ -40,12 +41,17 @@ function OptionsItemOpenInner({
   const [highlightedOptionID, sethighlightedOptionID] = useState<string | null>(
     null
   );
+  const DropdownOptions: { label: string; value?: string; id?: string }[] = [];
+  const caseList = e.selectedCaseList ?? [];
 
-  // const optionLbls: string[] = newProduct.options.map(function (el) {
-  //   if (el.label !== e.label && el.label) {
-  //     return el.label;
-  //   }
-  // });
+  testMap.forEach((testOption) =>
+    DropdownOptions.push({
+      ...testOption,
+      label: testOption.label ?? "",
+      id: testOption.id,
+    })
+  );
+
   const optionLbls: string[] = [];
   newProduct.options.forEach((element) => {
     if (element.label !== e.label && element.label) {
@@ -78,8 +84,7 @@ function OptionsItemOpenInner({
         <View style={styles.optionTypeGroup1}>
           <Text style={styles.optionTypeDropdownLbl1}>Option Type</Text>
           <View>
-            <GeneralDropdown
-              // style={styles.categoryDropDownBox}
+            <GeneralDropdownStringOptions
               placeholder="Choose Type"
               value={e.optionType}
               setValue={(val) => {
@@ -134,7 +139,7 @@ function OptionsItemOpenInner({
         <View style={styles.optionRequiredRow1}>
           <Text style={styles.isOptionTxt1}>Is Option Required?:</Text>
           <GeneralSwitch
-            isActive={e.isRequired}
+            isActive={e.isRequired ? true : false}
             toggleSwitch={() => {
               sete((prevState) => ({
                 ...prevState,
@@ -153,14 +158,12 @@ function OptionsItemOpenInner({
           <View style={styles.optionTypeGroup1}>
             <Text style={styles.optionTypeDropdownLbl1}>Default Value</Text>
             <View>
-              <GeneralDropdown
-                style={styles.categoryDropDownBox}
+              <GeneralDropdownArrayOptions
                 placeholder="Default Value"
                 value={e.defaultValue ? e.defaultValue.label : null}
-                setValue={(
-                  val: { label: string; value: string; id: string },
-                  valIndex: number
-                ) => {
+                setValue={(val, valIndex) => {
+                  if (typeof valIndex !== "number" && valIndex === undefined)
+                    return;
                   settestMap((prev) => {
                     const clone = structuredClone(prev);
                     clone.forEach((element, indexOfOl) => {
@@ -173,9 +176,14 @@ function OptionsItemOpenInner({
                     }
                     return clone;
                   });
+                  if (typeof val !== "object") return;
                   setnewProductOptions((prev) => {
                     const clone = structuredClone(prev);
-                    clone[index].defaultValue = val;
+                    clone[index].defaultValue = {
+                      ...val,
+                      label: val.label,
+                      id: val.id ?? "",
+                    };
 
                     clone[index].optionsList.forEach((element, indexOfOl) => {
                       if (element.selected) {
@@ -191,13 +199,16 @@ function OptionsItemOpenInner({
                   });
                   sete((prevState) => {
                     const clone = structuredClone(prevState);
-                    clone.defaultValue = val;
+                    clone.defaultValue = {
+                      ...val,
+                      label: val.label,
+                      id: val.id ?? "",
+                    };
                     return clone;
                   });
                 }}
-                options={testMap}
+                options={DropdownOptions}
                 scrollY={scrollY}
-                isDefaultValueDropdown={true}
               />
             </View>
           </View>
@@ -213,7 +224,6 @@ function OptionsItemOpenInner({
           indexInnerList={indexInnerList}
           testMap={testMap}
           settestMap={settestMap}
-          newProductOptions={newProductOptions}
           setnewProductOptions={setnewProductOptions}
           index={index}
           setmoveToOptionPos={(pos) => {
@@ -254,8 +264,8 @@ function OptionsItemOpenInner({
         </Pressable>
       </View>
       <View style={styles.spacer6}></View>
-      {e.selectedCaseList?.length > 0 &&
-        e.selectedCaseList.map((ifStatement, indexOfIf) => (
+      {caseList.length > 0 &&
+        caseList.map((ifStatement, indexOfIf) => (
           <OptionIfStatementItem
             key={indexOfIf}
             style={styles.optionSelectionItem1}
@@ -269,7 +279,7 @@ function OptionsItemOpenInner({
             newProduct={newProduct}
           />
         ))}
-      {e.selectedCaseList?.length > 0 && <View style={styles.spacer7}></View>}
+      {caseList.length > 0 && <View style={styles.spacer7}></View>}
       {optionLbls.length > 1 && (
         <View style={[styles.addAnotherSelectionBtnRow1]}>
           <Pressable
@@ -299,15 +309,18 @@ function OptionsItemOpenInner({
                   ],
                 }));
               } else {
-                console.log("Added new if statement");
                 let clone: Option[] = [];
                 setnewProductOptions((prev) => {
                   clone = structuredClone(prev);
-                  clone[index].selectedCaseList.push({
+                  const cloneCaseList = clone[index].selectedCaseList ?? [];
+                  cloneCaseList.push({
                     selectedCaseKey: null,
                     selectedCaseValue: null,
                     id: id,
                   } as never);
+
+                  clone[index].selectedCaseList = cloneCaseList;
+
                   return clone;
                 });
                 sete((prev) => ({

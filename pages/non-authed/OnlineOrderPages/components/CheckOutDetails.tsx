@@ -49,7 +49,7 @@ function CheckOutDetails() {
     }
 
     if (!stripe || !elements) {
-      console.log("Stripe.js has not yet loaded.");
+      // console.log("Stripe.js has not yet loaded.");
       alertP.error("Error please try again");
       setloading(false);
       return;
@@ -94,7 +94,7 @@ function CheckOutDetails() {
         if (contentType && contentType.indexOf("application/json") !== -1) {
           const responseData = await response.json();
           if (responseData.success) {
-            console.log("Payment processed successfully!");
+            // console.log("Payment processed successfully!");
             setOrderDetailsState({
               page: 6,
             });

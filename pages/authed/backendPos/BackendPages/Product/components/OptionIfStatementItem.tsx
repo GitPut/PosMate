@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, View, Text, Pressable, ViewStyle } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import GeneralDropdown from "components/GeneralDropdown";
-import { Option, ProductProp, SelectedCaseListItem } from "types/global";
+import { Option, ProductProp } from "types/global";
+import GeneralDropdownStringOptions from "components/GeneralDropdownStringOptions";
 
 interface IfStatement {
   selectedCaseKey: string | null;
@@ -15,7 +15,9 @@ interface OptionIfStatementItemProps {
   indexOfIf: number;
   scrollY: number;
   index: number;
-  setnewProductOptions: (val: ((prev: Option[]) => Option[]) | Option[]) => void;
+  setnewProductOptions: (
+    val: ((prev: Option[]) => Option[]) | Option[]
+  ) => void;
   sete: (val: ((prev: Option) => Option) | Option) => void;
   ifOptionOptions: string[];
   newProduct: ProductProp;
@@ -35,36 +37,36 @@ function OptionIfStatementItem({
   const local = newProduct.options.filter(
     (localE) => localE.label == ifStatement.selectedCaseKey
   );
-  const optionLblsValuesLocal =
-    local.length > 0
-      ? local[0].optionsList.map(function (el) {
-          return el.label;
-        })
-      : [];
+  const optionLblsValuesLocal: string[] = [];
+
+  if (local.length > 0) {
+    local[0].optionsList.forEach((el) => {
+      if (!el.label) return;
+      optionLblsValuesLocal.push(el.label);
+    });
+  }
 
   return (
     <View style={[styles.container, style]}>
       <View style={styles.optionSelectionNameInputGroup}>
         <Text style={styles.selectionNameInputLbl}>If Option</Text>
-        <GeneralDropdown
+        <GeneralDropdownStringOptions
           placeholder="Choose Option"
           value={ifStatement.selectedCaseKey}
           setValue={(val) => {
-            if (typeof val === "string" || val === null) {
-              let clone: Option[] = [];
-              setnewProductOptions((prev) => {
-                clone = structuredClone(prev);
-                const selectedCaseList = clone[index].selectedCaseList;
-                if (selectedCaseList) {
-                  selectedCaseList[indexOfIf].selectedCaseKey = val;
-                }
-                return clone;
-              });
-              sete((prev) => ({
-                ...prev,
-                selectedCaseList: clone[index].selectedCaseList,
-              }));
-            }
+            let clone: Option[] = [];
+            setnewProductOptions((prev) => {
+              clone = structuredClone(prev);
+              const selectedCaseList = clone[index].selectedCaseList;
+              if (selectedCaseList) {
+                selectedCaseList[indexOfIf].selectedCaseKey = val;
+              }
+              return clone;
+            });
+            sete((prev) => ({
+              ...prev,
+              selectedCaseList: clone[index].selectedCaseList,
+            }));
           }}
           options={ifOptionOptions.filter((ifOptionValue) =>
             !ifOptionValue || ifOptionValue === "" ? false : true
@@ -77,25 +79,23 @@ function OptionIfStatementItem({
       </View>
       <View style={styles.selectionPriceIncreaseInputGroup}>
         <Text style={styles.selectionPriceIncreaseLbl}>Value Of Option</Text>
-        <GeneralDropdown
+        <GeneralDropdownStringOptions
           placeholder="Choose Option"
           value={ifStatement?.selectedCaseValue}
           setValue={(val) => {
-            if (typeof val === "string" || val === null) {
-              let clone: Option[] = [];
-              setnewProductOptions((prev) => {
-                clone = structuredClone(prev);
-                const selectedCaseList = clone[index].selectedCaseList;
-                if (selectedCaseList) {
-                  selectedCaseList[indexOfIf].selectedCaseValue = val;
-                }
-                return clone;
-              });
-              sete((prev) => ({
-                ...prev,
-                selectedCaseList: clone[index].selectedCaseList,
-              }));
-            }
+            let clone: Option[] = [];
+            setnewProductOptions((prev) => {
+              clone = structuredClone(prev);
+              const selectedCaseList = clone[index].selectedCaseList;
+              if (selectedCaseList) {
+                selectedCaseList[indexOfIf].selectedCaseValue = val;
+              }
+              return clone;
+            });
+            sete((prev) => ({
+              ...prev,
+              selectedCaseList: clone[index].selectedCaseList,
+            }));
           }}
           options={optionLblsValuesLocal}
           scrollY={scrollY}

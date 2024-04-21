@@ -106,7 +106,7 @@ function Index() {
 
   useEffect(() => {
     if (deviceTree.devices.length > 1) {
-      console.log("deviceTree.devices", deviceTree.devices);
+      // console.log("deviceTree.devices", deviceTree.devices);
       const newDeviceTreeDevices = [];
       for (let index = 0; index < deviceTree.devices.length; index++) {
         const element = deviceTree.devices[index];

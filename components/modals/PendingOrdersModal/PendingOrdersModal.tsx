@@ -25,6 +25,7 @@ const PendingOrdersModal = () => {
     element: null,
     index: null,
     cart: [],
+    date: null
   });
   const xPos = useRef(new Animated.Value(0)).current;
   const { ongoingListState, ongoingOrderListModal } = posHomeState.use();
@@ -82,7 +83,7 @@ const PendingOrdersModal = () => {
         //   customFuncAfter();
         console.log("I turned this off because i dont know what it does");
       } else {
-        setcurrentOrder({ element: null, index: null, cart: [] });
+        setcurrentOrder({ element: null, index: null, cart: [], date: null });
       }
     });
   };
@@ -146,7 +147,7 @@ const PendingOrdersModal = () => {
 
                           let cartString = "";
 
-                          element.cart.map((cartItem, index) => {
+                          element.cart?.map((cartItem, index) => {
                             cartString += `${index + 1}. Name: ${
                               cartItem.name
                             }\n`;
@@ -154,7 +155,7 @@ const PendingOrdersModal = () => {
                             if (cartItem.quantity) {
                               cartString += `     Quantity: ${cartItem.quantity}\n`;
                               cartString += `     Price: $${
-                                cartItem.price * cartItem.quantity
+                                parseFloat(cartItem.price) * parseFloat(cartItem.quantity)
                               }`;
                             } else {
                               cartString += `    Price: $${cartItem.price}`;
@@ -176,7 +177,7 @@ const PendingOrdersModal = () => {
                             }
                           });
 
-                          if (element.cartNote?.length > 0) {
+                          if (element.cartNote?.length ?? 0 > 0) {
                             cartString += `\nNote: ${element.cartNote}`;
                           }
                           return (

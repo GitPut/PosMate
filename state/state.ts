@@ -18,7 +18,10 @@ export const setCartState = (val: CartItemProp[]): void => {
   cartState.set(val);
 };
 
-export const addCartState = (val: CartItemProp, currentState: CartItemProp[]): void => {
+export const addCartState = (
+  val: CartItemProp,
+  currentState: CartItemProp[]
+): void => {
   const doesExist = currentState.findIndex(
     (item: CartItemProp) =>
       item.name === val.name &&
@@ -32,7 +35,10 @@ export const addCartState = (val: CartItemProp, currentState: CartItemProp[]): v
       delete copyItem.quantity;
 
       if (JSON.stringify(copyItem) === JSON.stringify(val)) {
-        return { ...item, quantity: item.quantity ? item.quantity + 1 : 2 };
+        return {
+          ...item,
+          quantity: item.quantity ? String(item.quantity + 1) : "2",
+        };
       } else {
         return item;
       }
@@ -246,7 +252,7 @@ interface OrderDetailsStateProps {
   method: "deliveryOrder" | "pickupOrder" | null;
   online: boolean;
   delivery: boolean | null;
-  address: AddressType | null;
+  address?: AddressType | null;
   customer: {
     name: string;
     phone: string;

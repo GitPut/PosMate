@@ -34,10 +34,10 @@ let transporter = nodemailer.createTransport({
 
 export const sendCustomEmail = functions.https.onRequest((req, res) => {
   //for testing purposes
-  console.log(
-    "from sendEmail function. The request object is:",
-    JSON.stringify(req.body)
-  );
+  // console.log(
+  //   "from sendEmail function. The request object is:",
+  //   JSON.stringify(req.body)
+  // );
 
   //enable CORS using the `cors` express middleware.
   corsHandler(req, res, () => {
@@ -158,7 +158,7 @@ export const processPayment = functions.https.onRequest(async (req, res) => {
         source: token,
       });
 
-      console.log("Payment succeeded:", charge);
+      // console.log("Payment succeeded:", charge);
 
       await db
         .collection("users")

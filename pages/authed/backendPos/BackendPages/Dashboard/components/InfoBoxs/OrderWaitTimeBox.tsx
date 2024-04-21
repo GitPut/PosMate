@@ -1,8 +1,9 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
-import SearchDate from "components/functional/SearchDateFunction";
 import { TransListStateItem } from "types/global";
+import ParseDate from "components/functional/ParseDate";
+import SearchDateTransactions from "components/functional/SearchDateTransactions";
 
 const OrderWaitTimeBox = ({
   allTransactions,
@@ -27,14 +28,10 @@ const OrderWaitTimeBox = ({
       let totalOrders = 0;
       transactions.forEach((transaction) => {
         //get time between date and dateCompleted
-        const date = transaction.originalData?.date_created
-          ? new Date(transaction.originalData?.date_created)
-          : new Date(transaction.originalData?.date.seconds * 1000);
+        const date = ParseDate(transaction.date);
 
         if (transaction.originalData?.dateCompleted) {
-          const dateCompleted = new Date(
-            transaction.originalData.dateCompleted.seconds * 1000
-          );
+          const dateCompleted = ParseDate(transaction.originalData?.dateCompleted);
 
           const diff = Number(dateCompleted) - Number(date);
           const minutes = Math.floor(diff / 60000);
@@ -101,12 +98,12 @@ const OrderWaitTimeBox = ({
     };
 
     const { start, end } = getDateRange(period);
-    const filtered = SearchDate({
+    const filtered = SearchDateTransactions({
       startDate: start,
       endDate: end,
       transactions: allTransactions,
     });
-    const totals = calculateTotals(filtered);
+    const totals = calculateTotals(filtered ?? []);
     setdetails(totals);
   }, [period, allTransactions]);
 

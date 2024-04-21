@@ -10,6 +10,8 @@ import {
   TextInput,
   ScrollView,
   useWindowDimensions,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useAlert } from "react-alert";
@@ -36,8 +38,8 @@ function Signup() {
 
   const attemptSignUp = () => {
     if (email && password) {
-      signUp(email, password, name, phoneNumber).catch((error) => {
-        console.log(error);
+      signUp(email, password, name, phoneNumber).catch(() => {
+        // console.log(error);
         alertP.error("There was a issue signing up. Please try again.");
       });
     } else {
@@ -45,8 +47,10 @@ function Signup() {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       attemptSignUp();
     }
   };

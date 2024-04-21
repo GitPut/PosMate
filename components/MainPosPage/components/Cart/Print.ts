@@ -59,11 +59,11 @@ const Print = ({ ...props }: PrintProps) => {
     const finalCart = cart;
     for (let i = 0; i < cart.length; i++) {
       const element = cart[i];
-      const quantity = element.quantity ? element.quantity : 1;
+      const quantity = parseFloat(element.quantity ?? "1");
       try {
-        newVal += cart[i].price * quantity;
+        newVal += parseFloat(cart[i].price) * quantity;
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     }
     if (deliveryChecked) {
@@ -75,17 +75,17 @@ const Print = ({ ...props }: PrintProps) => {
         const discount = parseFloat(discountAmount.replace("%", "")) / 100;
         finalCart.push({
           name: "Cart Discount: " + discount * 100 + "%",
-          price: -(newVal * discount),
+          price: (-(newVal * discount)).toString(),
           description: "Discount Applied to Cart",
           options: [],
           extraDetails: null,
           quantityNotChangable: true,
-          percent: discount,
+          percent: discount.toString(),
         });
       } else {
         finalCart.push({
           name: "Cart Discount: " + discountAmount,
-          price: -parseFloat(discountAmount),
+          price: (-parseFloat(discountAmount)).toString(),
           description: "Discount Applied to Cart",
           options: [],
           extraDetails: null,
@@ -144,16 +144,17 @@ const Print = ({ ...props }: PrintProps) => {
         customer: {
           name: name,
           phone: phone,
-          address: address,
+          address: address ?? null,
           buzzCode: buzzCode,
           unitNumber: unitNumber,
         },
+        id: transNum,
       };
 
       const data = ReceiptPrint(element, storeDetails);
 
       if (!dontAddToOngoing) {
-        console.log("Adding to pending orders");
+        // console.log("Adding to pending orders");
         db.collection("users")
           .doc(auth.currentUser?.uid)
           .collection("pendingOrders")
@@ -178,7 +179,7 @@ const Print = ({ ...props }: PrintProps) => {
         myDeviceDetails.sendPrintToUserID &&
         myDeviceDetails.useDifferentDeviceToPrint
       ) {
-        console.log("Sending print to different user");
+        // console.log("Sending print to different user");
         db.collection("users")
           .doc(auth.currentUser?.uid)
           .collection("devices")
@@ -197,9 +198,9 @@ const Print = ({ ...props }: PrintProps) => {
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
-            console.error("error printing: ", err);
-            console.log("data: ", data);
-            console.log("myDeviceDetails: ", myDeviceDetails);
+            // console.error("error printing: ", err);
+            // console.log("data: ", data);
+            // console.log("myDeviceDetails: ", myDeviceDetails);
             if (
               err.message.includes(
                 "A printer must be specified before printing"
@@ -243,12 +244,13 @@ const Print = ({ ...props }: PrintProps) => {
           phone: phone,
           // address: address,
         },
+        id: transNum,
       };
 
       const data = ReceiptPrint(element, storeDetails);
 
       if (!dontAddToOngoing) {
-        console.log("Adding to pending orders");
+        // console.log("Adding to pending orders");
         db.collection("users")
           .doc(auth.currentUser?.uid)
           .collection("pendingOrders")
@@ -271,7 +273,7 @@ const Print = ({ ...props }: PrintProps) => {
         myDeviceDetails.sendPrintToUserID &&
         myDeviceDetails.useDifferentDeviceToPrint
       ) {
-        console.log("Sending print to different user");
+        // console.log("Sending print to different user");
         db.collection("users")
           .doc(auth.currentUser?.uid)
           .collection("devices")
@@ -290,9 +292,9 @@ const Print = ({ ...props }: PrintProps) => {
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
-            console.error("error printing: ", err);
-            console.log("data: ", data);
-            console.log("myDeviceDetails: ", myDeviceDetails);
+            // console.error("error printing: ", err);
+            // console.log("data: ", data);
+            // console.log("myDeviceDetails: ", myDeviceDetails);
             if (
               err.message.includes(
                 "A printer must be specified before printing"
@@ -334,6 +336,7 @@ const Print = ({ ...props }: PrintProps) => {
         },
         changeDue: changeDue,
         paymentMethod: method,
+        id: transNum,
       };
 
       const data = ReceiptPrint(element, storeDetails);
@@ -354,7 +357,7 @@ const Print = ({ ...props }: PrintProps) => {
         myDeviceDetails.sendPrintToUserID &&
         myDeviceDetails.useDifferentDeviceToPrint
       ) {
-        console.log("Sending print to different user");
+        // console.log("Sending print to different user");
         db.collection("users")
           .doc(auth.currentUser?.uid)
           .collection("devices")
@@ -373,9 +376,9 @@ const Print = ({ ...props }: PrintProps) => {
           })
           .then(qz.websocket.disconnect)
           .catch(function (err) {
-            console.error("error printing: ", err);
-            console.log("data: ", data);
-            console.log("myDeviceDetails: ", myDeviceDetails);
+            // console.error("error printing: ", err);
+            // console.log("data: ", data);
+            // console.log("myDeviceDetails: ", myDeviceDetails);
             if (
               err.message.includes(
                 "A printer must be specified before printing"
@@ -402,7 +405,7 @@ const Print = ({ ...props }: PrintProps) => {
     setCartState([]);
     resetPosHomeState();
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 

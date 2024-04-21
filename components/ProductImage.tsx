@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 
 interface ProductImageProps {
   source: ImageSourcePropType;
-  style: ImageStyle;
+  style: ImageStyle | ImageStyle[];
   resizeMode: ImageStyle["resizeMode"];
 }
 

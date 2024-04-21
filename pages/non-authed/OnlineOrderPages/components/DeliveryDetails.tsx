@@ -26,7 +26,7 @@ function DeliveryDetails() {
     orderDetails.customer.phone
   );
   const [localAddress, setlocalAddress] = useState<AddressType | null>(
-    orderDetails.address
+    orderDetails.address ?? null
   );
   const [localBuzzCode, setlocalBuzzCode] = useState(
     orderDetails.customer.buzzCode
@@ -78,7 +78,7 @@ function DeliveryDetails() {
       const responseData = await response.json();
 
       if (response.ok && responseData.success) {
-        console.log("Success!");
+        // console.log("Success!");
         return responseData.data;
       } else {
         console.error(responseData.message);
@@ -141,26 +141,11 @@ function DeliveryDetails() {
               // onSelect={handleAddress}
               selectProps={{
                 value: localAddress,
-                onChange: (address) => setlocalAddress(address),
+                onChange: (address: AddressType) => setlocalAddress(address),
                 defaultValue: localAddress,
                 menuPortalTarget: document.body,
                 styles: GooglePlacesStyles,
               }}
-              renderSuggestions={(active, suggestions, onSelectSuggestion) => (
-                <div>
-                  {suggestions.map((suggestion, index) => (
-                    <div
-                      key={index}
-                      className="suggestion"
-                      onClick={(event) => {
-                        onSelectSuggestion(suggestion, event);
-                      }}
-                    >
-                      {suggestion.description}
-                    </div>
-                  ))}
-                </div>
-              )}
             />
           )}
         />
@@ -213,36 +198,14 @@ function DeliveryDetails() {
           )
             return alertP.error("Please fill in all fields");
 
-          if (!storeDetails || !localAddress) return;
-
-          if (
-            !(
-              typeof storeDetails.address === "object" &&
-              "value" in storeDetails.address &&
-              typeof storeDetails.address.value === "object" &&
-              "reference" in storeDetails.address.value
-            )
-          )
-            return;
-
-          if (
-            !(
-              typeof localAddress === "object" &&
-              "value" in localAddress &&
-              typeof localAddress.value === "object" &&
-              "reference" in localAddress.value
-            )
-          )
-            return;
-
           calculateDistanceBetweenAddresses(
-            storeDetails.address.value.reference,
-            localAddress.value.reference
+            storeDetails.address?.value?.reference ?? '',
+            localAddress?.value.reference ?? ''
           ).then((distance) => {
             if (distance !== null) {
-              console.log(
-                `Distance between addresses: ${distance.toFixed(2)} km`
-              );
+              // console.log(
+              //   `Distance between addresses: ${distance.toFixed(2)} km`
+              // );
               if (storeDetails.deliveryRange) {
                 if (distance > parseFloat(storeDetails.deliveryRange)) {
                   alertP.error("The delivery address is out of range");

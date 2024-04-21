@@ -111,8 +111,8 @@ const RouteManager = () => {
 
   const customSort = (a: ProductProp, b: ProductProp) => {
     // Handle cases where one or both items don't have a rank
-    const rankA = a.rank || Number.MAX_SAFE_INTEGER;
-    const rankB = b.rank || Number.MAX_SAFE_INTEGER;
+    const rankA = parseInt(a.rank ?? "0") || Number.MAX_SAFE_INTEGER;
+    const rankB = parseInt(b.rank ?? "0") || Number.MAX_SAFE_INTEGER;
 
     // Compare based on ranks
     return rankA - rankB;
@@ -140,7 +140,7 @@ const RouteManager = () => {
                   docs.forEach((element) => {
                     const productData = element.data();
 
-                    products.push({ 
+                    products.push({
                       ...productData,
                       name: productData.name,
                       price: productData.price,
@@ -152,8 +152,11 @@ const RouteManager = () => {
                   products.sort(customSort);
                 }
               })
-              .catch((e) =>
-                console.log("Error has occured with db products: ", e)
+              .catch(() =>
+                // console.log("Error has occured with db products: ", e)
+                alertP.error(
+                  "An error has occured with starting up the app. Please refresh the page."
+                )
               );
 
             setUserStoreState({
@@ -338,7 +341,10 @@ const RouteManager = () => {
                 }
               })
               .catch(() =>
-                console.log("Error has occured with db extra devices")
+                // console.log("Error has occured with db extra devices")
+                alertP.error(
+                  "An error has occured with starting up the app. Please refresh the page."
+                )
               );
 
             doc.ref
@@ -364,8 +370,11 @@ const RouteManager = () => {
 
                 setCustomersList(newCustomerList);
               })
-              .catch((e) =>
-                console.log("Error has occured with db customers: ", e)
+              .catch(() =>
+                // console.log("Error has occured with db customers: ", e)
+                alertP.error(
+                  "An error has occured with starting up the app. Please refresh the page."
+                )
               );
 
             if (doc.data()?.freeTrial) {
@@ -479,7 +488,12 @@ const RouteManager = () => {
               unsub();
             };
           })
-          .catch((e) => console.log("Error has occured with db users: ", e));
+          .catch(() => {
+            // console.log("Error has occured with db users: ", e)
+            alertP.error(
+              "An error has occured with starting up the app. Please refresh the page."
+            );
+          });
       } else {
         localStorage.removeItem("savedUserState");
         setUserStoreState({ products: [], categories: [] });

@@ -28,7 +28,7 @@ const Cart = () => {
     posHomeState.use();
   const cart = cartState.use();
   const storeDetails = storeDetailState.use();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const [total, settotal] = useState(0);
   const isOnlineOrder = ProductBuilderState.use().isOnlineOrder;
   const orderDetails = OrderDetailsState.use();
@@ -41,12 +41,11 @@ const Cart = () => {
           try {
             if (cart[i].quantity ?? 0 > 1) {
               newVal += parseFloat(cart[i].price ?? '0')* parseFloat(cart[i].quantity ?? '1');
-              // console.log("Cart item quantity ", cart[i].quantity);
             } else {
               newVal += parseFloat(cart[i].price ?? '0');
             }
           } catch (error) {
-            console.log(error);
+            // console.log(error);
           }
         }
         if (orderDetails.delivery) {
@@ -116,7 +115,7 @@ const Cart = () => {
           <View style={{ height: 40, width: 40 }} />
         )}
       </View>
-      <View style={styles.cartItems}>
+      <View style={[styles.cartItems, {height: height * 0.4}]}>
         {cart.length > 0 ? (
           <ScrollView
             horizontal={false}
@@ -129,7 +128,6 @@ const Cart = () => {
                 cartItem={cartItem}
                 index={index}
                 removeAction={() => {
-                  console.log("Removing");
                   const local = structuredClone(cart);
                   local.splice(index, 1);
                   setCartState(local);
@@ -370,7 +368,6 @@ const styles = StyleSheet.create({
   },
   cartItems: {
     width: "90%",
-    height: "40%",
   },
   cartItems_contentContainerStyle: {
     height: "100%",

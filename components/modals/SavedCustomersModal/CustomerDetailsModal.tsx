@@ -200,25 +200,6 @@ function CustomerDetailsModal({
                             menuPortalTarget: document.body,
                             styles: GooglePlacesStyles,
                           }}
-                          renderSuggestions={(
-                            active,
-                            suggestions,
-                            onSelectSuggestion
-                          ) => (
-                            <div style={{ width: "80%" }}>
-                              {suggestions.map((suggestion, index) => (
-                                <div
-                                  key={index}
-                                  className="suggestion"
-                                  onClick={(event) => {
-                                    onSelectSuggestion(suggestion, event);
-                                  }}
-                                >
-                                  {suggestion.description}
-                                </div>
-                              ))}
-                            </div>
-                          )}
                         />
                       </View>
                       <View
@@ -312,8 +293,9 @@ function CustomerDetailsModal({
                             buzzCode: newBuzzCode,
                             unitNumber: newUnitNumber,
                           })
-                          .then(() => console.log("Customer updated"))
-                          .catch((e) => console.log(e));
+                          // .catch((e) => {
+                          //   // console.log(e)
+                          // });
                         const clone = [...customers];
                         const index = clone.findIndex(
                           (e) => e.id === customerSelected.id

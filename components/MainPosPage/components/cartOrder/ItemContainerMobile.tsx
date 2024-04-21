@@ -37,7 +37,7 @@ function ItemContainerMobile({ product, style, setshowProduct } : ItemContainerM
         {product.hasImage && (
           <View>
             <ProductImage
-              source={{ uri: product.imageUrl }}
+              source={{ uri: product.imageUrl ?? '' }}
               resizeMode="contain"
               style={styles?.itemImg}
             />

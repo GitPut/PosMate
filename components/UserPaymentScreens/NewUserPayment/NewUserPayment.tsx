@@ -53,11 +53,11 @@ const NewUserPayment = ({ resetLoader }: NewUserPaymentProps) => {
     };
 
     Axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
+      .then(function () {
+        // console.log(JSON.stringify(response.data));
       })
-      .catch(function (error) {
-        alertP.error(error);
+      .catch(function () {
+        // alertP.error(error);
       });
   };
 
@@ -66,11 +66,11 @@ const NewUserPayment = ({ resetLoader }: NewUserPaymentProps) => {
     updateStoreDetails({
       name: storeName,
       phoneNumber: phoneNumber,
-      address: address,
+      address: address ?? undefined,
       website: website ? website : "",
       deliveryPrice: "",
       settingsPassword: "",
-      taxRate: 13,
+      taxRate: '13',
     });
 
     if (planType === "freeTrial") {
@@ -121,7 +121,7 @@ const NewUserPayment = ({ resetLoader }: NewUserPaymentProps) => {
               const stripe = await loadStripe(
                 "pk_live_51MHqrvCIw3L7DOwI0ol9CTCSH7mQXTLKpxTWKzmwOY1MdKwaYwhdJq6WTpkWdBeql3sS44JmybynlRnaO2nSa1FK001dHiEOZO" // todo enter your public stripe key here
               );
-              console.log(`redirecting`);
+              if (!stripe) return;
               await stripe.redirectToCheckout({ sessionId });
             }
           });

@@ -9,7 +9,8 @@ const ItemNoOptionsView = ({ product }: {product: ProductProp}) => {
       {product.hasImage ? (
         <View style={[styles.container]}>
           <ProductImage
-            source={{ uri: product.imageUrl }}
+            source={{
+              uri: product.imageUrl ?? '' }}
             resizeMode="contain"
             style={styles?.itemImg}
           />

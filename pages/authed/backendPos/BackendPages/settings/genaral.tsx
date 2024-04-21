@@ -61,11 +61,14 @@ function GeneralSettings() {
       updateStoreDetails({
         name: name ? name : "",
         phoneNumber: phoneNumber ? phoneNumber : "",
-        address: address ? address : "",
+        address: address && address,
         website: website ? website : "",
         deliveryPrice: deliveryPrice ? deliveryPrice : "",
         settingsPassword: settingsPassword ? settingsPassword : "",
-        taxRate: parseFloat(taxRate) >= 0 ? parseFloat(taxRate) : 13,
+        taxRate: (parseFloat(taxRate) >= 0
+          ? parseFloat(taxRate)
+          : 13
+        ).toString(),
         onlineStoreActive: onlineStoreDetails.onlineStoreActive
           ? onlineStoreDetails.onlineStoreActive
           : false,
@@ -160,21 +163,6 @@ function GeneralSettings() {
                 menuPortalTarget: document.body,
                 styles: GooglePlacesStyles,
               }}
-              renderSuggestions={(active, suggestions, onSelectSuggestion) => (
-                <div>
-                  {suggestions.map((suggestion, index) => (
-                    <div
-                      key={index}
-                      className="suggestion"
-                      onClick={(event) => {
-                        onSelectSuggestion(suggestion, event);
-                      }}
-                    >
-                      {suggestion.description}
-                    </div>
-                  ))}
-                </div>
-              )}
             />
           </View>
           <View style={styles.acceptDeliveryGroup}>

@@ -1,8 +1,8 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
-import SearchDate from "components/functional/SearchDateFunction";
-import { CustomerProp, TransListStateItem } from "types/global";
+import { CustomerProp } from "types/global";
+import SearchDateCustomers from "components/functional/SearchDateCustomers";
 
 const CustomersBox = ({ customers }: { customers: CustomerProp[] }) => {
   const [period, setperiod] = useState("Today");
@@ -11,9 +11,9 @@ const CustomersBox = ({ customers }: { customers: CustomerProp[] }) => {
   });
 
   useEffect(() => {
-    const calculateTotals = (transactions: CustomerProp[] | TransListStateItem[]) => {
+    const calculateTotals = (allCustomers: CustomerProp[]) => {
       let totalNewCustomers = 0;
-      transactions.forEach(() => {
+      allCustomers.forEach(() => {
         totalNewCustomers += 1;
       });
       return {
@@ -64,7 +64,7 @@ const CustomersBox = ({ customers }: { customers: CustomerProp[] }) => {
 
     if (dateRange) {
       const { start, end } = dateRange;
-      filteredCustomers = SearchDate({
+      filteredCustomers = SearchDateCustomers({
         startDate: start,
         endDate: end,
         customers: customers,

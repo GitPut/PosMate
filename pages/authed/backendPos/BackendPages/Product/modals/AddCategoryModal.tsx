@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -13,14 +13,18 @@ import { setUserStoreState, userStoreState } from "state/state";
 import { useAlert } from "react-alert";
 
 interface AddCategoryModalProps {
-  setaddCategoryModal: (val: boolean) => void;
+  setaddCategoryModal: (val: boolean | string | null) => void;
   existingCategory?: string | null;
   index: number;
 }
 
-function AddCategoryModal({ setaddCategoryModal, existingCategory, index }: AddCategoryModalProps) {
+function AddCategoryModal({
+  setaddCategoryModal,
+  existingCategory,
+  index,
+}: AddCategoryModalProps) {
   const { height, width } = useWindowDimensions();
-  const [categoryName, setcategoryName] = useState(
+  const [categoryName, setcategoryName] = useState<string>(
     existingCategory ? existingCategory : ""
   );
   const [categoryPosition, setcategoryPosition] = useState(index);
@@ -33,7 +37,7 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }: AddC
       return;
     }
     const localCatalog = structuredClone(catalog);
-    const newCategories = [];
+    const newCategories: string[] = [];
     localCatalog.categories = localCatalog.categories.filter(
       (category) => category !== existingCategory
     );
@@ -123,10 +127,7 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }: AddC
                 >
                   <Text style={styles.cancelTxt}>Cancel</Text>
                 </Pressable>
-                <Pressable
-                  onPress={Update}
-                  style={styles.saveBox}
-                >
+                <Pressable onPress={Update} style={styles.saveBox}>
                   <Text style={styles.saveTxt}>Save</Text>
                 </Pressable>
               </View>

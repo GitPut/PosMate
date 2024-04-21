@@ -8,6 +8,8 @@ import {
   Pressable,
   TextInput,
   useWindowDimensions,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import Axios from "axios";
@@ -49,20 +51,22 @@ function ResetPassword() {
     };
 
     Axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
+      .then(function () {
+        // console.log(JSON.stringify(response.data));
         alertP.success("We've sent a link to reset your password.");
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch(function () {
+        // console.log(error);
         // seterror(true);
         alertP.error("There was an error resetting your password.");
       });
     setEmail("");
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       submit();
     }
   };

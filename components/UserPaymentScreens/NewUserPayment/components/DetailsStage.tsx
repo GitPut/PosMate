@@ -100,25 +100,6 @@ function DetailsStage({
                       menuPortalTarget: document.body,
                       styles: GooglePlacesStyles,
                     }}
-                    renderSuggestions={(
-                      active,
-                      suggestions,
-                      onSelectSuggestion
-                    ) => (
-                      <div>
-                        {suggestions.map((suggestion, index) => (
-                          <div
-                            key={index}
-                            className="suggestion"
-                            onClick={(event) => {
-                              onSelectSuggestion(suggestion, event);
-                            }}
-                          >
-                            {suggestion.description}
-                          </div>
-                        ))}
-                      </div>
-                    )}
                   />
                 )}
               />

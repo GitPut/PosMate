@@ -44,7 +44,7 @@ function OptionsItem({
 }: OptionsItemProps) {
   const [e, sete] = useState(structuredClone(item));
   const [addOptionClicked, setaddOptionClicked] = useState(true);
-  const [moveToOptionPos, setmoveToOptionPos] = useState(null);
+  const [moveToOptionPos, setmoveToOptionPos] = useState<number | null>(null);
   const alertP = useAlert();
 
   const scrollToPositionIncluding = (position: number) => {
@@ -86,12 +86,15 @@ function OptionsItem({
             // Calculate the bottom position of the element within the ScrollView
             let elementBottomPosition = y + height;
 
+            const caseList =
+              newProductOptions[index].selectedCaseList ?? []
+
             if (
               addOptionClicked &&
-              newProductOptions[index].selectedCaseList?.length > 0
+              caseList.length > 0
             ) {
               elementBottomPosition -=
-                135 * newProductOptions[index].selectedCaseList.length;
+                135 * caseList.length;
               setaddOptionClicked(false);
               if (moveToOptionPos !== null) {
                 elementBottomPosition -=
@@ -103,7 +106,7 @@ function OptionsItem({
             }
 
             // Get the ScrollView's height and the current scroll position
-            scrollViewRef.current.measure(
+            scrollViewRef.current?.measure(
               (
                 _fx: number,
                 _fy: number,
@@ -124,7 +127,7 @@ function OptionsItem({
                     0,
                     elementBottomPosition - scrollViewHeight
                   );
-                  scrollViewRef.current.scrollTo({
+                  scrollViewRef.current?.scrollTo({
                     y: positionToScroll,
                     animated: true,
                   });
@@ -196,7 +199,7 @@ function OptionsItem({
                   }));
                   setindexOn(null);
                   scrollToPositionIncluding(100);
-                  setselectedID(item.id);
+                  setselectedID(item.id ?? '');
                 }
               }}
               nativeID="moveDownBtn"
@@ -237,7 +240,7 @@ function OptionsItem({
                   }));
                   setindexOn(null);
                   scrollToPositionIncluding(-100);
-                  setselectedID(item.id);
+                  setselectedID(item.id ?? '');
                 }
               }}
               nativeID="moveUpBtn"

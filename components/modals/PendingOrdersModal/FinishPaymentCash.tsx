@@ -50,9 +50,9 @@ function FinishPaymentCash({
       "Pickup Order Paid" + "\x0A", // text and line break
       `Transaction ID ${element?.transNum}` + "\x0A",
       "\x0A",
-      `Customer Name: ${element?.customer.name}` + "\x0A", // text and line break
+      `Customer Name: ${element?.customer?.name}` + "\x0A", // text and line break
       "\x0A",
-      `Customer Phone: ${element?.customer.phone}` + "\x0A", // text and line break
+      `Customer Phone: ${element?.customer?.phone}` + "\x0A", // text and line break
       "\x0A",
       "\x0A",
       "\x0A",
@@ -78,7 +78,7 @@ function FinishPaymentCash({
       myDeviceDetails.sendPrintToUserID &&
       myDeviceDetails.useDifferentDeviceToPrint
     ) {
-      console.log("Sending print to different user");
+      // console.log("Sending print to different user");
       db.collection("users")
         .doc(auth.currentUser?.uid)
         .collection("devices")
@@ -128,6 +128,7 @@ function FinishPaymentCash({
       .collection("pendingOrders")
       .doc(currentOrder?.element?.id)
       .delete();
+    if (!currentOrder.element) return;
     updateTransList(currentOrder.element);
     setcurrentOrder({ element: null, index: null });
   };
@@ -138,6 +139,7 @@ function FinishPaymentCash({
       .collection("pendingOrders")
       .doc(currentOrder.element?.id)
       .delete();
+    if (!currentOrder.element) return;
     updateTransList(currentOrder.element);
     setcurrentOrder({ element: null, index: null });
   };

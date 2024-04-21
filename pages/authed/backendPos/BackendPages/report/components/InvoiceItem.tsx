@@ -30,7 +30,7 @@ function InvoiceItem({
           style={styles.checkbox2}
           onPress={() => {
             setbaseSelectedRows((prev) => {
-              if (prev.includes(item.id)) {
+              if (prev.includes(item.id!)) {
                 return prev.filter((id) => id !== item.id);
               } else {
                 return [...prev, item.id];

@@ -104,14 +104,14 @@ function MultipleTimeSelectableOptionGroup({
     selectedItems.map((op) => {
       selectedTimesTotal +=
         op.countsAs ?? false
-          ? parseFloat(op.selectedTimes ?? "0") * thisItemCountsAs ?? 1
+          ? parseFloat(op.selectedTimes ?? "0") * thisItemCountsAs
           : parseFloat(op.selectedTimes ?? "0");
     });
 
     if (
-      (e.numOfSelectable ?? 0 >= selectedTimesTotal) ||
+      parseFloat(e.numOfSelectable ?? "0") >= selectedTimesTotal ||
       !e.numOfSelectable ||
-      e.numOfSelectable === 0
+      e.numOfSelectable === "0"
     ) {
       const selectedTimes = parseFloat(
         newMyObjProfile.options[index].optionsList[listIndex].selectedTimes ??
@@ -153,7 +153,7 @@ function MultipleTimeSelectableOptionGroup({
 
   useEffect(() => {
     const optionsSelected = localMyObjProfile.options[index].optionsList.filter(
-      (op) => op.selectedTimes ?? 0 > 0
+      (op) => parseFloat(op.selectedTimes ?? "0") > 0
     );
     setlocalOptionsSelectedLabel(
       optionsSelected.length > 0

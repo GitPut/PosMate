@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, ChangeEventHandler, DetailedHTMLProps, InputHTMLAttributes, useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -20,12 +20,12 @@ import {
   userStoreState,
 } from "state/state";
 import { auth, db, storage } from "state/firebaseConfig";
-import GeneralDropdown from "components/GeneralDropdown";
 import GeneralSwitch from "components/GeneralSwitch";
 import ProductBuilderView from "../components/ProductBuilderView";
 import { useAlert } from "react-alert";
 import Swal from "sweetalert2";
 import { ProductProp } from "types/global";
+import GeneralDropdownStringOptions from "components/GeneralDropdownStringOptions";
 
 interface AddProductModalProps {
   addProductModal: boolean;
@@ -38,8 +38,8 @@ interface AddProductModalProps {
 
 const customSort = (a: ProductProp, b: ProductProp) => {
   // Handle cases where one or both items don't have a rank
-  const rankA = a.rank || Number.MAX_SAFE_INTEGER;
-  const rankB = b.rank || Number.MAX_SAFE_INTEGER;
+  const rankA = parseFloat(a.rank ?? '0') || Number.MAX_SAFE_INTEGER;
+  const rankB = parseFloat(b.rank ?? '0') || Number.MAX_SAFE_INTEGER;
 
   // Compare based on ranks
   return rankA - rankB;
@@ -80,7 +80,6 @@ function AddProductModal({
   const hiddenFileInput = useRef<HTMLInputElement>(null);
   const [scrollY, setScrollY] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
-  const targetViewRef = useRef(null);
   const [selectedID, setselectedID] = useState<string | null>(null);
   const alertP = useAlert();
 
@@ -88,8 +87,7 @@ function AddProductModal({
     Swal.fire({
       title: "Are you sure?",
       text: "You will lose your new product!",
-      type: "warning",
-      showCancelButton: !0,
+      showCancelButton: true,
       confirmButtonColor: "#2b3659",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, discard!",
@@ -286,7 +284,8 @@ function AddProductModal({
     setisProductTemplate(false);
   }
 
-  const changeHandler = (event) => {
+  const changeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
     if (event.target.files[0].size < 5000000) {
       setSelectedFile(event.target.files[0]);
     } else {
@@ -517,7 +516,7 @@ function AddProductModal({
                     </View>
                     <View style={styles.productCategoryInputGroup}>
                       <Text style={styles.category}>Category</Text>
-                      <GeneralDropdown
+                      <GeneralDropdownStringOptions
                         placeholder="Choose Category"
                         value={
                           newProduct?.category ? newProduct.category : null
@@ -611,7 +610,6 @@ function AddProductModal({
                         setindexOn={setindexOn}
                         scrollY={scrollY}
                         scrollViewRef={scrollViewRef}
-                        ref={targetViewRef}
                         selectedID={selectedID}
                         setselectedID={setselectedID}
                       />

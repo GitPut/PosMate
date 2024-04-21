@@ -10,16 +10,14 @@ import DropDownMenuBtn from "./components/DropDownMenuBtn";
 import React, { useEffect, useRef, useState } from "react";
 import { Route, useHistory, useLocation, withRouter } from "react-router-dom";
 import { auth, db } from "state/firebaseConfig";
-import {
-  setTransListState,
-  setTransListTableOrgState,
-} from "state/state";
+import { setTransListState, setTransListTableOrgState } from "state/state";
 import firebase from "firebase/compat/app";
 import MenuBtn from "./components/MenuBtn";
 import index from "./authIndex";
 import { useAlert } from "react-alert";
 import Header from "../../../components/Header/Header";
 import { TransListStateItem } from "types/global";
+import ParseDate from "components/functional/ParseDate";
 
 function BackendPosContainer(props: { match: { url: string } }) {
   const { match } = props;
@@ -59,7 +57,6 @@ function BackendPosContainer(props: { match: { url: string } }) {
         locale: "auto",
       })
       .then((response) => {
-        console.log(response.data);
         window.location = response.data.url;
       })
       .catch((error) => {
@@ -153,18 +150,14 @@ function BackendPosContainer(props: { match: { url: string } }) {
           setTransListTableOrg((prevState) => {
             const newList = [
               ...prevState.sort((a, b) => {
-                const aDate = new Date(
-                  a.originalData?.date_created
-                    ? a.originalData.date_created
-                    : a.originalData?.date.seconds * 1000
-                );
-                const bDate = new Date(
-                  b.originalData?.date_created
-                    ? b.originalData.date_created
-                    : b.originalData?.date.seconds * 1000
-                );
+                const aDate = ParseDate(a.date);
+                const bDate = ParseDate(b.date);
 
-                return bDate - aDate;
+                if (aDate && bDate) {
+                  return bDate.getTime() - aDate.getTime();
+                } else {
+                  return 0;
+                }
               }),
             ];
             setTransList(newList);

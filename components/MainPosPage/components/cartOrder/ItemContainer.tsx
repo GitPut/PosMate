@@ -12,10 +12,10 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ProductProp } from "types/global";
 
 interface ItemContainerProps {
-  product: ProductProp
+  product: ProductProp;
 }
 
-function ItemContainer({ product } : ItemContainerProps) {
+function ItemContainer({ product }: ItemContainerProps) {
   const cart = cartState.use();
   const { width } = useWindowDimensions();
 
@@ -24,7 +24,6 @@ function ItemContainer({ product } : ItemContainerProps) {
       <Pressable
         onPress={() => {
           if (product.options.length > 0) {
-            console.log("product", product);
             setProductBuilderState({
               product: product,
               itemIndex: null,
@@ -50,9 +49,9 @@ function ItemContainer({ product } : ItemContainerProps) {
         {product.hasImage && (
           <View>
             <ProductImage
-              source={{ uri: product.imageUrl }}
+              source={{ uri: product.imageUrl ?? "" }}
               resizeMode="contain"
-              style={[styles.itemImg, width < 1250 && { height: 100 }]}
+              style={[styles.itemImg, width < 1250 ? { height: 100 } : {}]}
             />
           </View>
         )}

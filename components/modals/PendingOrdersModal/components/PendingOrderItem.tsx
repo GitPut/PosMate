@@ -6,10 +6,10 @@ import { auth, db } from "state/firebaseConfig";
 import { updateTransList } from "state/firebaseFunctions";
 import { storeDetailState } from "state/state";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
-import { CurrentOrderProp, OngoingListStateProp } from "types/global";
+import { CurrentOrderProp, TransListStateItem } from "types/global";
 
 interface PendingOrderItemProps {
-  element: OngoingListStateProp;
+  element: TransListStateItem;
   index: number;
   style: ViewStyle;
   date: Date | null;
@@ -59,7 +59,7 @@ function PendingOrderItem({
         <View style={styles.orderNumberContainer}>
           <Text style={styles.orderNumberLabel}>Order Number:</Text>
           <Text style={styles.orderNumberValue}>
-            {element.transNum.toUpperCase()}
+            {element.transNum?.toUpperCase()}
           </Text>
         </View>
       </View>
@@ -94,15 +94,11 @@ function PendingOrderItem({
               fadeIn();
               setcurrentOrder({
                 element: element,
-                index: index,
+                index: index.toString(),
                 type: "view",
                 cartString: cartString,
                 date: date,
               });
-              // updateOrderHandler({
-              //   ...element,
-              //   index: index,
-              // });
             }}
           >
             <Feather name="edit" style={styles.editIcon}></Feather>
@@ -139,7 +135,7 @@ function PendingOrderItem({
                 if (element.method === "pickupOrder") {
                   setcurrentOrder({
                     element: element,
-                    index: index,
+                    index: index.toString(),
                     type: "pay",
                     cartString: cartString,
                     date: date,

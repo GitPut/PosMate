@@ -28,39 +28,39 @@ function ProductList() {
   const [isProductTemplate, setisProductTemplate] = useState<boolean>(false)
   const [productTemplatesModalVisible, setproductTemplatesModalVisible] = useState<boolean>(false)
 
-  const confirmText = (props: ProductProp) => {
+  const confirmText = (ProductID: string) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
-      type: "warning",
-      showCancelButton: !0,
+      showCancelButton: true,
       confirmButtonColor: "#2b3659",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
     }).then(function (t) {
       if (t.value) {
         Swal.fire({
-          type: "success",
           title: "Deleted!",
           text: "Your product has been deleted.",
           confirmButtonColor: "#2b3659",
         });
         const localCatalog = structuredClone(catalog);
         if (localCatalog.products.length > 1) {
-          localCatalog.products = localCatalog.products.filter((item) => item.id !== props.id);
+          localCatalog.products = localCatalog.products.filter(
+            (item) => item.id !== ProductID
+          );
         } else {
           localCatalog.products = [];
         }
         db.collection("users")
           .doc(auth.currentUser?.uid)
           .collection("products")
-          .doc(props.id.toString())
+          .doc(ProductID)
           .delete()
         if (onlineStoreDetails.onlineStoreSetUp) {
           db.collection("public")
             .doc(auth.currentUser?.uid)
             .collection("products")
-            .doc(props.id.toString())
+            .doc(ProductID)
             .delete()
         }
         updateUserStoreState({ products: localCatalog.products })
@@ -161,7 +161,7 @@ function ProductList() {
                 style={[styles.productOptionBox, editMode ? { height: 322 } : {}]}
                 product={product}
                 editMode={editMode}
-                deleteProduct={() => confirmText(product)}
+                deleteProduct={() => confirmText(product.id)}
                 setexistingProduct={setexistingProduct}
               />
             </div>)}

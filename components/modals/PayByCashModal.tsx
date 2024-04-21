@@ -5,6 +5,8 @@ import {
   useWindowDimensions,
   View,
   TextInput,
+  TextInputKeyPressEventData,
+  NativeSyntheticEvent,
 } from "react-native";
 import React, { useState } from "react";
 import Modal from "react-native-modal-web";
@@ -44,8 +46,10 @@ const CashScreen = () => {
       : cartSub * 1.13
   ).toFixed(2);
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       Print({
         method: "Cash",
         dontAddToOngoing: false,
@@ -124,6 +128,7 @@ const CashScreen = () => {
                       }
                     }}
                     onKeyPress={handleKeyDown}
+                    autoFocus={true}
                   />
                   <View style={styles.changeDueRow}>
                     <Text style={styles.changeDue}>Change Due:</Text>

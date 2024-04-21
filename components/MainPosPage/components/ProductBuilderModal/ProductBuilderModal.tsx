@@ -105,7 +105,7 @@ function ProductBuilderModal() {
         }
       } else {
         const selectedItems = op.optionsList.filter(
-          (op) => op.selectedTimes ?? 0 > 0
+          (op) => parseFloat(op.selectedTimes ?? '0') > 0
         );
         if (selectedItems.length > 0) {
           let opWVal = `${op.label}:\n`;
@@ -128,6 +128,7 @@ function ProductBuilderModal() {
         options: myObjProfile.options,
         total: total.toString(),
         extraDetails: extraInput,
+        id: myObjProfile.id,
       };
 
       if (!itemIndex) {

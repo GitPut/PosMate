@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
 import MostOrderItemsListItem from "../MostOrderItemsListItem";
 import { userStoreState } from "state/state";
-import SearchDate from "components/functional/SearchDateFunction";
 import { TransListStateItem } from "types/global";
+import SearchDateTransactions from "components/functional/SearchDateTransactions";
 
 interface MostOrderedItemsObject {
   name: string;
@@ -66,7 +66,7 @@ const MostOrderedItemsBox = ({ style, allTransactions }: MostOrderedItemsBoxProp
 
     if (dateRange) {
       const { start, end } = dateRange;
-      filteredTransactions = SearchDate({
+      filteredTransactions = SearchDateTransactions({
         startDate: start,
         endDate: end,
         transactions: allTransactions,
@@ -107,7 +107,7 @@ const MostOrderedItemsBox = ({ style, allTransactions }: MostOrderedItemsBoxProp
       });
     };
 
-    const calculated = calculateMostOrderedItems(filteredTransactions);
+    const calculated = calculateMostOrderedItems(filteredTransactions ?? []);
 
     setmostOrderProducts(calculated);
   }, [period, allTransactions]);
@@ -128,7 +128,7 @@ const MostOrderedItemsBox = ({ style, allTransactions }: MostOrderedItemsBoxProp
             <MostOrderItemsListItem
               key={index}
               itemName={item.name}
-              itemNumOfOrders={item.orders}
+              itemNumOfOrders={item.orders.toString()}
               imageUrl={item.imageUrl}
             />
           ))}

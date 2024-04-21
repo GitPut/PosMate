@@ -9,23 +9,17 @@ import {
 } from "react-native";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 
-interface GeneralDropdownProps<T> {
+interface GeneralDropdownStringOptionsProps {
   placeholder: string;
   value: string | null;
-  setValue: T;
-  options: Array<{ label: string; value: string }> | string[];
+  setValue: (value: string | null, index?: number) => void;
+  options: string[];
   scrollY: number;
-  isDefaultValueDropdown?: boolean | null;
 }
 
-// Define separate function signatures for setValue based on the type of options
-type SetValueFunction =
-  | ((value: string | null, index?: number) => void)
-  | ((value: { label: string; value: string; id?: string }, index?: number) => void);
-
 // Define function overloads for setValue
-function GeneralDropdown(
-  props: GeneralDropdownProps<SetValueFunction>
+function GeneralDropdownStringOptions(
+  props: GeneralDropdownStringOptionsProps
 ): JSX.Element {
   const { placeholder, value, setValue, options, scrollY } = props;
   const dropdownRef = useRef<View>(null); // Reference to the original button
@@ -130,29 +124,11 @@ function GeneralDropdown(
                 }}
               >
                 {options.map((option, listIndex) => {
-                  let valueTxt: string = "";
-                  if (typeof option === "object" && "label" in option) {
-                    valueTxt = option.label;
-                  } else {
-                    valueTxt = option;
-                  }
-
                   return (
                     <Pressable
                       key={listIndex}
                       onPress={() => {
-                        if (typeof option === "object") {
-                          setValue(
-                            option as {
-                              label: string;
-                              value: string;
-                              id?: string;
-                            },
-                            listIndex
-                          );
-                        } else {
-                          setValue(option as string, listIndex);
-                        }
+                        setValue(option, listIndex);
                         setopenDropdown(false);
                       }}
                       style={[
@@ -169,7 +145,7 @@ function GeneralDropdown(
                         },
                       ]}
                     >
-                      <Text style={styles.placeholder}>{valueTxt}</Text>
+                      <Text style={styles.placeholder}>{option}</Text>
                     </Pressable>
                   );
                 })}
@@ -217,4 +193,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GeneralDropdown;
+export default GeneralDropdownStringOptions;

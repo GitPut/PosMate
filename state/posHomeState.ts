@@ -1,5 +1,5 @@
 import { entity } from "simpler-state";
-import { AddressType, CustomerProp, OngoingListStateProp } from "types/global";
+import { AddressType, CustomerProp, OngoingListStateProp, TransListStateItem } from "types/global";
 
 interface PosHomeState {
   section: string;
@@ -19,7 +19,7 @@ interface PosHomeState {
   ongoingOrderListModal: boolean;
   settingsPasswordModalVis: boolean;
   updatingOrder: OngoingListStateProp | null;
-  ongoingListState: OngoingListStateProp[];
+  ongoingListState: TransListStateItem[];
   clockinModal: boolean;
   discountModal: boolean;
   discountAmount: string | null;

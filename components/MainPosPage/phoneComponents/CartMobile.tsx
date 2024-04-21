@@ -48,7 +48,7 @@ const CartMobile = ({ cartOpen, setcartOpen, cartSub }: CartMobileProps) => {
               newVal += parseFloat(cart[i].price);
             }
           } catch (error) {
-            console.log(error);
+            // console.log(error);
           }
         }
         if (orderDetails.delivery) {

@@ -9,6 +9,8 @@ import {
   Pressable,
   TextInput,
   useWindowDimensions,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useAlert } from "react-alert";
@@ -33,8 +35,8 @@ function Login() {
 
   const attemptSignIn = () => {
     if (email && password) {
-      signIn(email, password).catch((error) => {
-        console.log(error);
+      signIn(email, password).catch(() => {
+        // console.log(error);
         alertP.error("Invalid email or password");
       });
     } else {
@@ -42,8 +44,10 @@ function Login() {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       attemptSignIn();
     }
   };

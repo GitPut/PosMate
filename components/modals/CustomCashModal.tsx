@@ -5,6 +5,8 @@ import {
   useWindowDimensions,
   View,
   TextInput,
+  TextInputKeyPressEventData,
+  NativeSyntheticEvent,
 } from "react-native";
 import React, { useState } from "react";
 import Modal from "react-native-modal-web";
@@ -193,8 +195,10 @@ const CustomcustomCashModal = () => {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       if (parseFloat(total) > 0 && parseFloat(cash) > 0) {
         CompletePayment();
       } else {

@@ -5,6 +5,8 @@ import {
   TextInput,
   Text,
   useWindowDimensions,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from "react-native";
 import React, { useState } from "react";
 import { setIsSignedInSettingsState, storeDetailState } from "state/state";
@@ -27,12 +29,14 @@ const SettingsPasswordModal = () => {
   const { settingsPasswordModalVis } = posHomeState.use();
   const alertP = useAlert();
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       if (password == storeDetails.settingsPassword) {
         setIsSignedInSettingsState(true);
         history.push("/authed/dashboard");
-        localStorage.setItem("isAuthedBackend", 'true');
+        localStorage.setItem("isAuthedBackend", "true");
         // setsettingsPasswordModalVis(false);
         updatePosHomeState({ settingsPasswordModalVis: false });
         setinccorectPass(false);
@@ -63,8 +67,7 @@ const SettingsPasswordModal = () => {
     };
 
     Axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
+      .then(function () {
         alertP.error("Settings password has been sent to your account email");
       })
       .catch(function (error) {

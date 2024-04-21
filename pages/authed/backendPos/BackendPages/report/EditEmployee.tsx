@@ -181,12 +181,21 @@ function EditEmployee() {
                                     setdateSelected(null)
                                     setstartTime(null)
                                     setendTime(null)
-                                    const dateSelectedElement = document.getElementById('dateSelected');
-                                    const endTimeElement = document.getElementById('endTime');
-                                    const startTimeElement = document.getElementById('startTime');
-                                    if (endTimeElement) endTimeElement.value = null;
-                                    if (startTimeElement) startTimeElement.value = null;
-                                    if (dateSelectedElement) dateSelectedElement.value = null;
+                                    const dateSelectedElement: HTMLInputElement | null =
+                                      document.getElementById(
+                                        "dateSelected"
+                                      ) as HTMLInputElement;
+                                    const endTimeElement: HTMLInputElement | null =
+                                      document.getElementById(
+                                        "endTime"
+                                      ) as HTMLInputElement;
+                                    const startTimeElement: HTMLInputElement | null =
+                                      document.getElementById(
+                                        "startTime"
+                                      ) as HTMLInputElement;
+                                    if (endTimeElement) endTimeElement.value = '';
+                                    if (startTimeElement) startTimeElement.value = '';
+                                    if (dateSelectedElement) dateSelectedElement.value = '';
                                 }}>
                                 <Text style={styles.addBtnTxt}>Add</Text>
                             </Pressable>

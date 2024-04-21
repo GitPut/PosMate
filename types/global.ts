@@ -24,14 +24,14 @@ export type AddressType = {
 export type SelectedCaseListItem = {
   selectedCaseKey: string | null;
   selectedCaseValue: string | null;
-  id: string;
+  id?: string;
 };
 
 export type ProductProp = {
   name: string;
   price: string;
   description: string;
-  options: Option[];
+  options: Option[] | [];
   total?: string;
   extraDetails?: string;
   calorieDetails?: string;
@@ -49,13 +49,13 @@ export type Option = {
   label: string | null;
   optionType: string | null;
   optionsList: OptionsList[];
-  isRequired: boolean;
-  selectedCaseList: SelectedCaseListItem[] | [];
+  isRequired?: boolean;
+  selectedCaseList?: SelectedCaseListItem[] | [];
   defaultValue?: OptionsList;
   selected?: boolean;
   selectedTimes?: string;
   numOfSelectable?: string | null;
-  id: string;
+  id?: string;
 };
 
 export type OptionsList = {
@@ -88,6 +88,7 @@ export type EditableProductObj = {
   calorieDetails?: string;
   total: string;
   extraDetails: string;
+  id: string;
 };
 
 export type MyDeviceDetailsProps = {
@@ -105,7 +106,7 @@ export type MyDeviceDetailsProps = {
 
 export type StoreDetailsProps = {
   name: string;
-  address?: AddressType;
+  address?: AddressType | null;
   phoneNumber: string;
   website: string;
   deliveryPrice: string;
@@ -143,17 +144,17 @@ export type OngoingListStateProp = {
   customer: {
     name: string;
     phone: string;
-    address: AddressType | null;
-  };
-  date: { seconds?: number | string } | Date | string;
+    address?: AddressType | null;
+  } | null;
+  date: { seconds: number | string } | Date | string;
   method: string;
   online: boolean;
   isInStoreOrder: boolean;
   transNum: string;
   total: string;
-  index?: number | null;
+  index?: string | null;
   date_created?: string;
-  dateCompleted?: string;
+  dateCompleted?: { seconds: number | string } | Date | string;
 };
 
 export type Employee = {
@@ -182,17 +183,17 @@ export type Device = {
 
 export type TransListStateItem = {
   id: string;
-  name: string;
-  date: { seconds?: number | string } | Date | string;
-  amount: string;
-  system: string;
-  method: string;
-  type: string;
-  docID: string;
+  name?: string;
+  date: { seconds: number | string } | Date | string;
+  amount?: string;
+  system?: string;
+  method?: string;
+  type?: string;
+  docID?: string;
   customer?: {
     name: string;
     phone: string;
-    address: AddressType | null;
+    address?: AddressType | null;
     unitNumber?: string | null;
     buzzCode?: string | null;
   };
@@ -205,6 +206,7 @@ export type TransListStateItem = {
   transNum?: string;
   changeDue?: string;
   date_created?: string;
+  isInStoreOrder?: string;
 };
 
 export type HourItem = {
@@ -223,11 +225,11 @@ export type UserStoreStateProps = {
 };
 
 export type CurrentOrderProp = {
-  element: OngoingListStateProp | null;
-  index: number | null;
+  element: TransListStateItem | null;
+  index?: string | null;
   type?: string | null;
   cartString?: string | null;
-  date?: { seconds?: number } | Date | string | null;
+  date: { seconds: number } | Date | string | null;
   cart?: CartItemProp[];
   cartNote?: string | null;
   isInStoreOrder?: boolean | null;

@@ -79,7 +79,7 @@ function OnlineStoreSettings() {
                   .collection("products")
                   .doc(product.id)
                   .set(product);
-                console.log("product added to public: ", product);
+                // console.log("product added to public: ", product);
               });
               db.collection("users")
                 .doc(auth.currentUser?.uid)
@@ -112,9 +112,9 @@ function OnlineStoreSettings() {
           );
         }
       })
-      .catch((error) => {
-        console.log("Error getting documents: ", error);
-      });
+      // .catch((error) => {
+      //   // console.log("Error getting documents: ", error);
+      // });
   };
 
   const UpdateStoreDetails = () => {
@@ -179,7 +179,7 @@ function OnlineStoreSettings() {
             const stripe = await loadStripe(
               "pk_live_51MHqrvCIw3L7DOwI0ol9CTCSH7mQXTLKpxTWKzmwOY1MdKwaYwhdJq6WTpkWdBeql3sS44JmybynlRnaO2nSa1FK001dHiEOZO"
             );
-            console.log(`redirecting`);
+
             if (!stripe) return;
             await stripe.redirectToCheckout({ sessionId });
           }

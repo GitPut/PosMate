@@ -1,11 +1,10 @@
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import React, { useEffect, useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
-import { Fontisto } from "@expo/vector-icons";
-import SearchDate from "components/functional/SearchDateFunction";
 import BarGraph from "./BarGraph";
 import { TransListStateItem } from "types/global";
 import ParseDate from "components/functional/ParseDate";
+import SearchDateTransactions from "components/functional/SearchDateTransactions";
 
 const TotalRevenueBox = ({
   style,
@@ -16,7 +15,9 @@ const TotalRevenueBox = ({
 }) => {
   const [period, setperiod] = useState("Today");
   const [details, setdetails] = useState({ orders: 0, revenue: 0 });
-  const [data, setdata] = useState([]);
+  const [data, setdata] = useState<
+    { name: string; uv: number; pv: number; amt: number }[]
+  >([]);
 
   useEffect(() => {
     const calculateTotals = (transactions: TransListStateItem[]) => {
@@ -73,7 +74,7 @@ const TotalRevenueBox = ({
 
     if (dateRange) {
       const { start, end } = dateRange;
-      filteredTransactions = SearchDate({
+      filteredTransactions = SearchDateTransactions({
         startDate: start,
         endDate: end,
         transactions: allTransactions,
@@ -83,9 +84,9 @@ const TotalRevenueBox = ({
       filteredTransactions = allTransactions;
     }
 
-    const { orders, revenue } = calculateTotals(filteredTransactions);
+    const { orders, revenue } = calculateTotals(filteredTransactions ?? []);
 
-    setdetails({ orders, revenue });
+    setdetails({ orders, revenue: parseFloat(revenue) });
 
     const localData = [
       {
@@ -190,7 +191,7 @@ const TotalRevenueBox = ({
           <View style={styles.amountContainer}>
             <View style={styles.amountRow}>
               <Text style={styles.totalRevenue1}>
-                ${parseFloat(details.revenue).toFixed(2)}
+                ${details.revenue.toFixed(2)}
               </Text>
               <View>
                 <DropdownPeriod value={period} setValue={setperiod} />

@@ -62,7 +62,7 @@ function CartItem({
         >
           <View style={[styles.topRowTxt]}>
             <Text style={styles.cartItemQuantity}>
-              {cartItem.quantity ? cartItem.quantity : 1}
+              {parseFloat(cartItem.quantity ?? "1")}
             </Text>
             <View style={styles.xPlusNameGroup}>
               <Text style={styles.txtX}>x</Text>
@@ -70,7 +70,7 @@ function CartItem({
             </View>
             <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
               <Text style={styles.cartItemPrice}>
-                ${cartItem.price.toFixed(2)}
+                ${parseFloat(cartItem.price).toFixed(2)}
               </Text>
               <Text style={[styles.cartItemPrice, { fontSize: 8 }]}>/EA.</Text>
             </View>
@@ -82,7 +82,7 @@ function CartItem({
               <Pressable
                 style={styles.cartItemEditBtn}
                 onPress={() => {
-                  if(!cartItem.editableObj) return;
+                  if (!cartItem.editableObj) return;
                   setProductBuilderState({
                     product: {
                       name: cartItem.editableObj.name,
@@ -91,6 +91,7 @@ function CartItem({
                       options: cartItem.editableObj.options,
                       total: cartItem.editableObj.price,
                       extraDetails: cartItem.editableObj.extraDetails,
+                      id: cartItem.editableObj.id,
                     },
                     itemIndex: index,
                     imageUrl: cartItem.imageUrl ? cartItem.imageUrl : null,
@@ -107,7 +108,7 @@ function CartItem({
             <Pressable
               style={styles.cartItemDecreaseBtn}
               onPress={() => {
-                if (cartItem.quantity === 1) {
+                if (parseFloat(cartItem.quantity ?? "0") === 1) {
                   removeAction();
                 } else {
                   decreaseAction();
@@ -136,7 +137,8 @@ function CartItem({
         >
           {cartItem.options &&
             cartItem.options.map((option, key) => (
-              <Text key={key}
+              <Text
+                key={key}
                 // style={styles.optionTxt}
               >
                 {option}
@@ -144,14 +146,14 @@ function CartItem({
             ))}
           {cartItem.description && (
             <Text
-              // style={styles.optionTxt}
+            // style={styles.optionTxt}
             >
               Description: {cartItem.description}
             </Text>
           )}
           {cartItem.extraDetails && (
             <Text
-              // style={styles.optionTxt}
+            // style={styles.optionTxt}
             >
               Written Note: {cartItem.extraDetails}
             </Text>

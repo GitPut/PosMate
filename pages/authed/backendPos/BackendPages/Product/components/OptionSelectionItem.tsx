@@ -73,7 +73,7 @@ function OptionSelectionItem({
             });
             settestMap(cloneOuter);
           }}
-          value={eInnerList?.label}
+          value={eInnerList?.label ?? ''}
           placeholder="Enter Name (Ex: Small, Pepperoni, Extra Cheese) "
         />
       </View>

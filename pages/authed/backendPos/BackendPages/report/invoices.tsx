@@ -254,7 +254,7 @@ function InvoiceReport() {
     const salesTotal = filtered.length;
 
     filtered.forEach((item) => {
-      todayTotal += parseFloat(item.amount);
+      todayTotal += parseFloat(item.amount ?? '0');
     });
 
     const data = [
@@ -346,7 +346,7 @@ function InvoiceReport() {
       }
       return (
         item.id.toLowerCase().includes(search.toLowerCase()) ||
-        item.name.toLowerCase().includes(search.toLowerCase())
+        item.name?.toLowerCase().includes(search.toLowerCase())
       );
     }
     return true;

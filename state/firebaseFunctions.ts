@@ -1,4 +1,4 @@
-import { TransListStateItem } from "types/global";
+import { CustomerProp, StoreDetailsProps, TransListStateItem } from "types/global";
 import { auth, db } from "./firebaseConfig";
 
 export const signIn = (email: string, password: string) =>
@@ -22,7 +22,6 @@ export const signUp = (
             address: null,
             phoneNumber: null,
             website: null,
-            comSelected: null,
             deliveryPrice: null,
             taxRate: 13,
           },
@@ -45,16 +44,10 @@ export const updateData = (categories: string[]) => {
     .update({
       categories: categories,
     })
-    .catch((e) => console.log("ERROR HAS OCCURE FB: ", e));
+    // .catch((e) => console.log("ERROR HAS OCCURE FB: ", e));
 };
 
-// export const updateWooCredentials = (wooCredentials: any) => {
-//   db.collection("users").doc(auth.currentUser?.uid).update({
-//     wooCredentials: wooCredentials,
-//   });
-// };
-
-export const updateTransList = (receipt: TransListStateItem) => {
+export const updateTransList = (receipt: Partial<TransListStateItem>) => {
   db.collection("users")
     .doc(auth.currentUser?.uid)
     .collection("transList")
@@ -64,7 +57,7 @@ export const updateTransList = (receipt: TransListStateItem) => {
     });
 };
 
-export const updateStoreDetails = (storeDetails: any) => {
+export const updateStoreDetails = (storeDetails: Partial<StoreDetailsProps>) => {
   db.collection("users").doc(auth.currentUser?.uid).update({
     storeDetails: storeDetails,
   });
@@ -75,7 +68,7 @@ export const updateStoreDetails = (storeDetails: any) => {
   }
 };
 
-export const updateFreeTrial = (endDate: any) => {
+export const updateFreeTrial = (endDate: Date | null) => {
   db.collection("users")
     .doc(auth.currentUser?.uid)
     .update({
@@ -94,7 +87,7 @@ export const logout = () => {
   window.location.href = "https://divinepos.com";
 };
 
-export const addCustomerDetailsToDb = (customer: any) =>
+export const addCustomerDetailsToDb = (customer: CustomerProp) =>
   db
     .collection("users")
     .doc(auth.currentUser?.uid)

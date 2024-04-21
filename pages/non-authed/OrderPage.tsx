@@ -35,10 +35,10 @@ const OrderPage = () => {
   const [data, setdata] = useState<ProductProp[]>([]);
   const screenWidth = useWindowDimensions().width;
 
-  const customSort = (a, b) => {
+  const customSort = (a: ProductProp, b: ProductProp) => {
     // Handle cases where one or both items don't have a rank
-    const rankA = a.rank || Number.MAX_SAFE_INTEGER;
-    const rankB = b.rank || Number.MAX_SAFE_INTEGER;
+    const rankA = parseFloat(a.rank ?? '0') || Number.MAX_SAFE_INTEGER;
+    const rankB = parseFloat(b.rank ?? '0') || Number.MAX_SAFE_INTEGER;
 
     // Compare based on ranks
     return rankA - rankB;
@@ -50,13 +50,13 @@ const OrderPage = () => {
       .get()
       .then((querySnapshot) => {
         if (querySnapshot.empty) {
-          console.log("No existing online store");
+          // console.log("No existing online store");
           //send them to a 404 page
           history.push("/404");
         }
 
         if (!querySnapshot.docs[0].data().onlineStoreActive) {
-          console.log("Store is not active");
+          // console.log("Store is not active");
           //send them to a 404 page
           history.push("/404");
         }
@@ -129,7 +129,7 @@ const OrderPage = () => {
               }
             }
           })
-          .catch((e) => console.log("Error has occurred with db: ", e));
+          // .catch((e) => console.log("Error has occurred with db: ", e));
 
         setcatalog({
           categories: querySnapshot.docs[0].data().categories,
@@ -139,9 +139,9 @@ const OrderPage = () => {
 
         fadeOut();
       })
-      .catch((e) => {
-        console.log("Error has occurred");
-      });
+      // .catch((e) => {
+      //   console.log("Error has occurred");
+      // });
   }, []);
 
   const fadeOut = () => {

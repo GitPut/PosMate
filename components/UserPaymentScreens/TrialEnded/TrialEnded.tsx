@@ -61,7 +61,7 @@ const TrialEnded = ({ resetLoader }: TrialEndedProps) => {
             const stripe = await loadStripe(
               "pk_live_51MHqrvCIw3L7DOwI0ol9CTCSH7mQXTLKpxTWKzmwOY1MdKwaYwhdJq6WTpkWdBeql3sS44JmybynlRnaO2nSa1FK001dHiEOZO" // todo enter your public stripe key here
             );
-            console.log(`redirecting`);
+            if (!stripe) return;
             await stripe.redirectToCheckout({ sessionId });
           }
         });

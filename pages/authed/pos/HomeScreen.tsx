@@ -36,7 +36,7 @@ import ProductBuilderModal from "components/MainPosPage/components/ProductBuilde
 import CartMobile from "components/MainPosPage/phoneComponents/CartMobile";
 import { Feather } from "@expo/vector-icons";
 import ParseDate from "components/functional/ParseDate";
-import { OngoingListStateProp } from "types/global";
+import { TransListStateItem } from "types/global";
 
 function HomeScreen() {
   const { height, width } = useWindowDimensions();
@@ -67,7 +67,7 @@ function HomeScreen() {
       .doc(auth.currentUser?.uid)
       .collection("pendingOrders")
       .onSnapshot((snapshot) => {
-        const list: OngoingListStateProp[] = [];
+        const list: TransListStateItem[] = [];
         snapshot.forEach((doc) => {
           list.push({
             ...doc.data(),
@@ -87,6 +87,7 @@ function HomeScreen() {
           ) {
             const data = ReceiptPrint(
               {
+                ...doc.data(),
                 cart: doc.data().cart,
                 cartNote: doc.data().cartNote,
                 date: doc.data().date,
@@ -94,6 +95,7 @@ function HomeScreen() {
                 paymentMethod: doc.data().paymentMethod,
                 total: doc.data().total,
                 transNum: doc.data().transNum,
+                id: doc.data().id,
               },
               storeDetails
             );
@@ -173,7 +175,7 @@ function HomeScreen() {
             parseFloat(cart[i]?.price ?? 0) *
             parseFloat(cart[i]?.quantity ?? "1");
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       }
       if (deliveryChecked) {

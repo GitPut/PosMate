@@ -55,7 +55,7 @@ function OrderCartMain({ catalog }: { catalog: UserStoreStateProps }) {
             newVal += parseFloat(cart[i].price);
           }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       }
       if (orderDetails.delivery) {
