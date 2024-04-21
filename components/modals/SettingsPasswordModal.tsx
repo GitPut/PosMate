@@ -32,7 +32,7 @@ const SettingsPasswordModal = () => {
       if (password == storeDetails.settingsPassword) {
         setIsSignedInSettingsState(true);
         history.push("/authed/dashboard");
-        localStorage.setItem("isAuthedBackend", true);
+        localStorage.setItem("isAuthedBackend", 'true');
         // setsettingsPasswordModalVis(false);
         updatePosHomeState({ settingsPasswordModalVis: false });
         setinccorectPass(false);
@@ -163,7 +163,7 @@ const SettingsPasswordModal = () => {
                         // setsettingsPasswordModalVis(false);
                         updatePosHomeState({ settingsPasswordModalVis: false });
                         setinccorectPass(false);
-                        localStorage.setItem("isAuthedBackend", true);
+                        localStorage.setItem("isAuthedBackend", 'true');
                       } else {
                         setinccorectPass(true);
                       }
@@ -207,7 +207,6 @@ const styles = StyleSheet.create({
     height: 51,
     alignItems: "center",
     justifyContent: "space-between",
-    margin: "",
     marginTop: 29,
   },
   settingsLabel: {
@@ -232,7 +231,6 @@ const styles = StyleSheet.create({
     height: 65,
     justifyContent: "space-between",
     alignItems: "center",
-    margin: "",
     marginBottom: 16,
   },
   goBtn: {

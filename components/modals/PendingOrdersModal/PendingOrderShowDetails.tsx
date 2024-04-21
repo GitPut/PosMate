@@ -1,32 +1,40 @@
-import React, { Component, useEffect } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View, Text, Pressable, ScrollView } from "react-native";
 import { Entypo, Ionicons, Feather } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
 import { updateTransList } from "state/firebaseFunctions";
 import { storeDetailState } from "state/state";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
+import { CurrentOrderProp, OngoingListStateProp } from "types/global";
+
+interface PendingOrderShowDetailsProps {
+  updateOrderHandler: (val: OngoingListStateProp) => void;
+  currentOrder: CurrentOrderProp;
+  fadeOut: (val: boolean) => void;
+  setcurrentOrder: (val: CurrentOrderProp) => void;
+  setongoingOrderListModal: (val: boolean) => void;
+}
 
 function PendingOrderShowDetails({
   currentOrder,
   updateOrderHandler,
-  fadeIn,
   fadeOut,
   setcurrentOrder,
   setongoingOrderListModal,
-}) {
-  const { element, index, type, cartString, date } = currentOrder;
+}: PendingOrderShowDetailsProps) {
+  const { element, index, cartString, date } = currentOrder;
   const storeDetails = storeDetailState.use();
   const { managerAuthorizedStatus, pendingAuthAction } = posHomeState.use();
 
   useEffect(() => {
     if (
       managerAuthorizedStatus &&
-      pendingAuthAction === `cancelOrder${element.id}`
+      pendingAuthAction === `cancelOrder${element?.id}`
     ) {
       db.collection("users")
-        .doc(auth.currentUser.uid)
+        .doc(auth.currentUser?.uid)
         .collection("pendingOrders")
-        .doc(element.id)
+        .doc(element?.id)
         .delete();
       updatePosHomeState({
         managerAuthorizedStatus: false,
@@ -35,12 +43,13 @@ function PendingOrderShowDetails({
       fadeOut(false);
     } else if (
       managerAuthorizedStatus &&
-      pendingAuthAction === `updateOrder${element.id}`
+      pendingAuthAction === `updateOrder${element?.id}` &&
+      element?.id
     ) {
       updateOrderHandler({
         ...element,
         index: index,
-        isInStoreOrder: !element.online && !element.customer,
+        isInStoreOrder: !element?.online && !element?.customer,
       });
       fadeOut(false);
     }
@@ -74,36 +83,38 @@ function PendingOrderShowDetails({
           <View style={styles.orderNameRow}>
             <Text style={styles.orderNameLabel}>Order Name:</Text>
             <Text style={styles.orderNameValue}>
-              {element.customer ? element.customer?.name?.toUpperCase() : "N/A"}
+              {element?.customer
+                ? element.customer?.name?.toUpperCase()
+                : "N/A"}
             </Text>
           </View>
           <View style={styles.orderNumberRow}>
             <Text style={styles.orderNumberLabel}>Order Number:</Text>
             <Text style={styles.orderNumberValue}>
-              {element.transNum.toUpperCase()}
+              {element?.transNum.toUpperCase()}
             </Text>
           </View>
           <View style={styles.divider}></View>
           <View style={styles.orderTypeWithDateRow}>
-            {element.online && (
+            {element?.online && (
               <Text style={[styles.orderType, { color: "#01C550" }]}>
                 Online Order{"\n"}
                 {element.method === "pickupOrder" && "Pickup"}
                 {element.method === "deliveryOrder" && "Delivery"}
               </Text>
             )}
-            {!element.online && element.customer && (
+            {!element?.online && element?.customer && (
               <Text style={[styles.orderType, { color: "#FF0F00" }]}>
                 Phone Order{"\n"}
                 {element.method === "pickupOrder" && "Pickup"}
                 {element.method === "deliveryOrder" && "Delivery"}
               </Text>
             )}
-            {!element.online && !element.customer && (
+            {!element?.online && !element?.customer && (
               <Text style={[styles.orderType]}>
                 POS Order{"\n"}
-                {element.method === "pickupOrder" && "Pickup"}
-                {element.method === "deliveryOrder" && "Delivery"}
+                {element?.method === "pickupOrder" && "Pickup"}
+                {element?.method === "deliveryOrder" && "Delivery"}
               </Text>
             )}
             <Text style={styles.orderDate}>{date?.toLocaleTimeString()}</Text>
@@ -114,14 +125,14 @@ function PendingOrderShowDetails({
             <Text style={styles.cartDetailsOrderLabel}>Order:</Text>
             <Pressable
               // disabled={!(element.method !== "inStoreOrder" && !element.online)}
-              disabled={!!element.online}
+              disabled={!!element?.online}
               onPress={() => {
                 if (storeDetails.settingsPassword.length > 0) {
                   updatePosHomeState({
                     authPasswordModal: true,
-                    pendingAuthAction: `updateOrder${element.id}`,
+                    pendingAuthAction: `updateOrder${element?.id}`,
                   });
-                } else {
+                } else if (element && element.id) {
                   updateOrderHandler({
                     ...element,
                     index: index,
@@ -137,7 +148,7 @@ function PendingOrderShowDetails({
                 style={[
                   styles.editIcon,
                   // element.method !== "inStoreOrder" && !element.online
-                  !element.online ? { color: "black" } : { color: "grey" },
+                  !element?.online ? { color: "black" } : { color: "grey" },
                 ]}
               />
             </Pressable>
@@ -151,13 +162,13 @@ function PendingOrderShowDetails({
               if (storeDetails.settingsPassword.length > 0) {
                 updatePosHomeState({
                   authPasswordModal: true,
-                  pendingAuthAction: `cancelOrder${element.id}`,
+                  pendingAuthAction: `cancelOrder${element?.id}`,
                 });
               } else {
                 db.collection("users")
-                  .doc(auth.currentUser.uid)
+                  .doc(auth.currentUser?.uid)
                   .collection("pendingOrders")
-                  .doc(element.id)
+                  .doc(element?.id)
                   .delete();
                 fadeOut(false);
               }
@@ -168,16 +179,16 @@ function PendingOrderShowDetails({
           <Pressable
             style={styles.completeBtn}
             onPress={() => {
-              if (element.online) {
+              if (element?.online) {
                 db.collection("users")
-                  .doc(auth.currentUser.uid)
+                  .doc(auth.currentUser?.uid)
                   .collection("pendingOrders")
                   .doc(element.id)
                   .delete();
                 updateTransList(element);
                 fadeOut(false);
               } else {
-                if (element.method === "pickupOrder") {
+                if (element?.method === "pickupOrder") {
                   //   fadeOut(() => {
                   setcurrentOrder({
                     element: element,
@@ -191,9 +202,9 @@ function PendingOrderShowDetails({
                   // fadeOut(false);
                 } else {
                   db.collection("users")
-                    .doc(auth.currentUser.uid)
+                    .doc(auth.currentUser?.uid)
                     .collection("pendingOrders")
-                    .doc(element.id)
+                    .doc(element?.id)
                     .delete();
                   updateTransList(element);
                   fadeOut(false);

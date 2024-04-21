@@ -139,13 +139,11 @@ function OnlineOrderHomeCompleted() {
                       ></Entypo>
                       <Text style={styles.addressTxt}>
                         {
-                          storeDetails.address?.value?.structured_formatting
-                            .main_text
+                          storeDetails.address?.value?.structured_formatting?.main_text
                         }
                         {"\n"}
                         {
-                          storeDetails.address?.value?.structured_formatting
-                            .secondary_text
+                          storeDetails.address?.value?.structured_formatting?.secondary_text
                         }
                       </Text>
                     </View>

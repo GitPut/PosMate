@@ -1,8 +1,13 @@
 import React from "react";
 import ItemContainer from "./cartOrder/ItemContainer";
 import { useWindowDimensions } from "react-native";
+import { UserStoreStateProps } from "types/global";
 
-const ProductsSection = ({ catalog }) => {
+interface ProductsSectionProps {
+  catalog: UserStoreStateProps;
+}
+
+const ProductsSection = ({ catalog } : ProductsSectionProps) => {
   const { width } = useWindowDimensions();
 
   const styles = {

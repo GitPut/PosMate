@@ -14,16 +14,17 @@ import SavedCustomerItem from "./components/SavedCustomerItem";
 import Modal from "react-native-modal-web";
 import CustomerDetailsModal from "./CustomerDetailsModal";
 import { updatePosHomeState } from "state/posHomeState";
+import { CustomerProp } from "types/global";
 
 const SavedCustomersModal = () => {
-  const [customerSelected, setcustomerSelected] = useState(null);
+  const [customerSelected, setcustomerSelected] = useState<CustomerProp | null>(
+    null
+  );
   const { height, width } = useWindowDimensions();
   const [search, setsearch] = useState("");
   const customers = customersList.use();
 
   const closeAll = () => {
-    // setDeliveryModal(false);
-    // setSaveCustomerModal(false);
     updatePosHomeState({
       saveCustomerModal: false,
       deliveryModal: false,
@@ -113,7 +114,7 @@ const SavedCustomersModal = () => {
             </View>
           </View>
           <Modal
-            isVisible={customerSelected}
+            isVisible={customerSelected !== null ? true : false}
             animationIn="fadeIn"
             animationOut="fadeOut"
             backdropOpacity={0}

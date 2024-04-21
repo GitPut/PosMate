@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import React, { useEffect, useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
 import MostOrderItemsListItem from "../MostOrderItemsListItem";
 import { userStoreState } from "state/state";
 import SearchDate from "components/functional/SearchDateFunction";
+import { TransListStateItem } from "types/global";
 
 interface MostOrderedItemsObject {
   name: string;
@@ -11,7 +12,12 @@ interface MostOrderedItemsObject {
   imageUrl: string;
 }
 
-const MostOrderedItemsBox = ({ style, allTransactions }) => {
+interface MostOrderedItemsBoxProps {
+  style: ViewStyle;
+  allTransactions: TransListStateItem[];
+}
+
+const MostOrderedItemsBox = ({ style, allTransactions }: MostOrderedItemsBoxProps) => {
   const [period, setperiod] = useState("Today");
   const [mostOrderProducts, setmostOrderProducts] = useState<
     MostOrderedItemsObject[]
@@ -19,8 +25,15 @@ const MostOrderedItemsBox = ({ style, allTransactions }) => {
   const catalog = userStoreState.use();
 
   useEffect(() => {
-    const getDateRange = (period) => {
+    const getDateRange = (period: string) => {
       const today = new Date();
+ const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+      const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+       const yearStart = new Date(today.getFullYear(), 0, 1);
+       const yearEnd = new Date(today.getFullYear(), 11, 31);
+
       switch (period) {
         case "Today":
           return {
@@ -28,28 +41,16 @@ const MostOrderedItemsBox = ({ style, allTransactions }) => {
             end: new Date().toDateString(),
           };
         case "This Week":
-          const weekStart = new Date(
-            today.setDate(today.getDate() - today.getDay())
-          );
-          const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
           return {
             start: weekStart.toDateString(),
             end: weekEnd.toDateString(),
           };
         case "This Month":
-          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-          const monthEnd = new Date(
-            today.getFullYear(),
-            today.getMonth() + 1,
-            0
-          );
           return {
             start: monthStart.toDateString(),
             end: monthEnd.toDateString(),
           };
         case "This Year":
-          const yearStart = new Date(today.getFullYear(), 0, 1);
-          const yearEnd = new Date(today.getFullYear(), 11, 31);
           return {
             start: yearStart.toDateString(),
             end: yearEnd.toDateString(),
@@ -75,10 +76,10 @@ const MostOrderedItemsBox = ({ style, allTransactions }) => {
       filteredTransactions = allTransactions;
     }
 
-    const calculateMostOrderedItems = (transactions) => {
+    const calculateMostOrderedItems = (transactions: TransListStateItem[]) => {
       const mostOrderedItems = {};
       transactions.forEach((transaction) => {
-        transaction.cart.forEach((item) => {
+        transaction.cart?.forEach((item) => {
           if (mostOrderedItems[item.name]) {
             mostOrderedItems[item.name] += 1;
           } else {

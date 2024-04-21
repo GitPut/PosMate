@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import ProductImage from "components/ProductImage";
+import { ProductProp } from "types/global";
 
-const ItemNoOptionsView = ({ product }) => {
+const ItemNoOptionsView = ({ product }: {product: ProductProp}) => {
   return (
     <View style={{ marginTop: 50 }}>
       {product.hasImage ? (

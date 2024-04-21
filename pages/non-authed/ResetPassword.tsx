@@ -3,10 +3,8 @@ import { useHistory } from "react-router-dom";
 import {
   StyleSheet,
   View,
-  Image,
   Text,
   ImageBackground,
-  Modal,
   Pressable,
   TextInput,
   useWindowDimensions,
@@ -18,7 +16,7 @@ import { useAlert } from "react-alert";
 function ResetPassword() {
   const [email, setEmail] = useState("");
   const history = useHistory();
-  const { height, width } = useWindowDimensions();
+  const {  width } = useWindowDimensions();
   const [useSmallDesign, setuseSmallDesign] = useState(width < 1024);
   const alertP = useAlert();
 

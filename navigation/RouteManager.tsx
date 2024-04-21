@@ -9,13 +9,9 @@ import {
   setOnlineStoreState,
   setStoreDetailState,
   setTrialDetailsState,
-  setUserState,
   setUserStoreState,
   setWoocommerceState,
-  storeDetailState,
   trialDetailsState,
-  userState,
-  woocommerceState,
 } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 import { updateFreeTrial } from "state/firebaseFunctions";
@@ -30,29 +26,31 @@ import PaymentUpdateNotification from "components/UserPaymentScreens/PaymentDecl
 import { useAlert } from "react-alert";
 import NewUserPayment from "components/UserPaymentScreens/NewUserPayment/NewUserPayment";
 import Modal from "react-native-modal-web";
+import { CustomerProp, Device, Employee, ProductProp } from "types/global";
 
 const RouteManager = () => {
-  const savedUserState = JSON.parse(localStorage.getItem("savedUserState"));
-  const userS = userState.use();
-  const [loading, setloading] = useState(true);
-  const [isNewUser, setisNewUser] = useState(null);
-  const [isSubscribed, setisSubscribed] = useState(null);
+  const savedUserState = JSON.parse(
+    localStorage.getItem("savedUserState") as string
+  );
+  const [loading, setloading] = useState<boolean | null>(true);
+  const [isNewUser, setisNewUser] = useState<boolean | null>(null);
+  const [isSubscribed, setisSubscribed] = useState<boolean | null>(null);
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  const [viewVisible, setviewVisible] = useState(true);
-  const [isCanceled, setisCanceled] = useState(null);
+  const [viewVisible, setviewVisible] = useState<boolean>(true);
+  const [isCanceled, setisCanceled] = useState<boolean | null>(null);
   const trialDetails = trialDetailsState.use();
-  const wooCredentials = woocommerceState.use();
-  const [wooOrders, setwooOrders] = useState([]);
-  const storeDetails = storeDetailState.use();
-  const [isWooError, setisWooError] = useState(false);
   const myDeviceDetails = myDeviceDetailsState.use();
   const alertP = useAlert();
+  // const wooCredentials = woocommerceState.use();
+  // const [wooOrders, setwooOrders] = useState([]);
+  // const storeDetails = storeDetailState.use();
+  // const [isWooError, setisWooError] = useState(false);
 
   useEffect(() => {
-    if (myDeviceDetails.docID && userS) {
+    if (myDeviceDetails.docID && auth.currentUser) {
       // console.log("Listening for print requests");
       db.collection("users")
-        .doc(userS.uid)
+        .doc(auth.currentUser?.uid)
         .collection("devices")
         .doc(myDeviceDetails.docID)
         .collection("printRequests")
@@ -63,6 +61,7 @@ const RouteManager = () => {
             qz.websocket
               .connect()
               .then(function () {
+                if (!myDeviceDetails.printToPrinter) return;
                 const config = qz.configs.create(
                   myDeviceDetails.printToPrinter
                 );
@@ -96,8 +95,10 @@ const RouteManager = () => {
               });
             //print then delete
 
+            if (!myDeviceDetails.docID) return;
+
             db.collection("users")
-              .doc(userS.uid)
+              .doc(auth.currentUser?.uid)
               .collection("devices")
               .doc(myDeviceDetails.docID)
               .collection("printRequests")
@@ -106,9 +107,9 @@ const RouteManager = () => {
           });
         });
     }
-  }, [myDeviceDetails, userS]);
+  }, [myDeviceDetails]);
 
-  const customSort = (a, b) => {
+  const customSort = (a: ProductProp, b: ProductProp) => {
     // Handle cases where one or both items don't have a rank
     const rankA = a.rank || Number.MAX_SAFE_INTEGER;
     const rankB = b.rank || Number.MAX_SAFE_INTEGER;
@@ -118,25 +119,17 @@ const RouteManager = () => {
   };
 
   useEffect(() => {
-    setUserState(savedUserState);
-
     const unsubscribeAuthStateChanged = auth.onAuthStateChanged((user) => {
       fadeAnim.setValue(1);
       setviewVisible(true);
       if (user) {
-        localStorage.setItem("savedUserState", true);
-        setUserState(user);
-
-        // let customers = localStorage.getItem("customers");
-        // if (customers) {
-        //   customers = JSON.parse(customers);
-        // }
+        localStorage.setItem("savedUserState", "true");
 
         db.collection("users")
           .doc(user.uid)
           .get()
           .then((doc) => {
-            const products = [];
+            const products: ProductProp[] = [];
             let extraDevicesPayingFor = 0;
 
             doc.ref
@@ -145,7 +138,16 @@ const RouteManager = () => {
               .then((docs) => {
                 if (!docs.empty) {
                   docs.forEach((element) => {
-                    products.push(element.data());
+                    const productData = element.data();
+
+                    products.push({ 
+                      ...productData,
+                      name: productData.name,
+                      price: productData.price,
+                      description: productData.description,
+                      options: productData.options,
+                      id: productData.id,
+                    });
                   });
                   products.sort(customSort);
                 }
@@ -159,14 +161,6 @@ const RouteManager = () => {
               categories: doc.data()?.categories ? doc.data()?.categories : [],
             });
 
-            // setOnlineStoreState({
-            //   urlEnding: doc.data()?.urlEnding,
-            //   onlineStoreActive: doc.data()?.onlineStoreActive,
-            //   onlineStoreSetUp: doc.data()?.onlineStoreSetUp,
-            //   stripePublicKey: doc.data()?.stripePublicKey,
-            //   stripeSecretKey: doc.data()?.stripeSecretKey,
-            // });
-
             if (doc.data()?.wooCredentials) {
               setWoocommerceState(doc.data()?.wooCredentials);
             }
@@ -175,27 +169,20 @@ const RouteManager = () => {
             }
 
             doc.ref
-              .collection("wooOrders")
-              .get()
-              .then((docs) => {
-                if (!docs.empty) {
-                  docs.forEach((element) => {
-                    setwooOrders((prev) => [...prev, element.data()]);
-                  });
-                }
-              })
-              .catch((e) =>
-                console.log("Error has occured with db wooorders: ", e)
-              );
-
-            doc.ref
               .collection("employees")
               .get()
               .then((docs) => {
                 if (!docs.empty) {
-                  const localEmployees = [];
+                  const localEmployees: Employee[] = [];
                   docs.forEach((element) => {
-                    localEmployees.push(element.data());
+                    const employeeData = element.data();
+
+                    localEmployees.push({
+                      ...employeeData,
+                      name: employeeData.name,
+                      pin: employeeData.pin,
+                      id: employeeData.id,
+                    });
                   });
                   setEmployeesState(localEmployees);
                 }
@@ -297,12 +284,12 @@ const RouteManager = () => {
                         });
                       } else if (element.data().status === "canceled") {
                         db.collection("users")
-                          .doc(auth.currentUser.uid)
+                          .doc(auth.currentUser?.uid)
                           .update({
                             onlineStoreActive: false,
                           });
                         db.collection("public")
-                          .doc(auth.currentUser.uid)
+                          .doc(auth.currentUser?.uid)
                           .update({
                             onlineStoreActive: false,
                           });
@@ -316,12 +303,12 @@ const RouteManager = () => {
                         });
                       } else {
                         db.collection("users")
-                          .doc(auth.currentUser.uid)
+                          .doc(auth.currentUser?.uid)
                           .update({
                             onlineStoreActive: false,
                           });
                         db.collection("public")
-                          .doc(auth.currentUser.uid)
+                          .doc(auth.currentUser?.uid)
                           .update({
                             onlineStoreActive: false,
                           });
@@ -358,10 +345,21 @@ const RouteManager = () => {
               .collection("customers")
               .get()
               .then((docs) => {
-                const newCustomerList = [];
+                const newCustomerList: CustomerProp[] = [];
 
                 docs.forEach((element) => {
-                  newCustomerList.push({ ...element.data(), id: element.id });
+                  const customerData = element.data();
+
+                  newCustomerList.push({
+                    ...element.data(),
+                    name: customerData.name,
+                    phone: customerData.phone,
+                    address: customerData.address,
+                    buzzCode: customerData.buzzCode,
+                    unitNumber: customerData.unitNumber,
+                    orders: customerData.orders,
+                    id: element.id,
+                  });
                 });
 
                 setCustomersList(newCustomerList);
@@ -387,7 +385,7 @@ const RouteManager = () => {
               }
             }
 
-            function getCookie(name) {
+            function getCookie(name: string) {
               const match = document.cookie.match(
                 new RegExp("(^| )" + name + "=([^;]+)")
               );
@@ -414,15 +412,34 @@ const RouteManager = () => {
               .collection("devices")
               .get()
               .then((docs) => {
-                const devices = [];
+                const devices: Device[] = [];
 
                 docs.forEach((element) => {
-                  devices.push({ ...element.data(), docID: element.id });
+                  const deviceData = element.data();
+
+                  devices.push({
+                    ...element.data(),
+                    name: deviceData.name,
+                    id: deviceData.id,
+                    docID: element.id,
+                    useDifferentDeviceToPrint:
+                      deviceData.useDifferentDeviceToPrint,
+                    printToPrinter: deviceData.printToPrinter,
+                    sendPrintToUserID: deviceData.sendPrintToUserID,
+                    printOnlineOrders: deviceData.printOnlineOrders,
+                  });
+
                   if (element.data().id === deviceID) {
-                    // console.log("found device: ", element.data());
                     setMyDeviceDetailsState({
                       ...element.data(),
+                      name: deviceData.name,
+                      id: deviceData.id,
                       docID: element.id,
+                      useDifferentDeviceToPrint:
+                        deviceData.useDifferentDeviceToPrint,
+                      printToPrinter: deviceData.printToPrinter,
+                      sendPrintToUserID: deviceData.sendPrintToUserID,
+                      printOnlineOrders: deviceData.printOnlineOrders,
                     });
                   }
                 });
@@ -465,8 +482,7 @@ const RouteManager = () => {
           .catch((e) => console.log("Error has occured with db users: ", e));
       } else {
         localStorage.removeItem("savedUserState");
-        setUserState(null);
-        setUserStoreState({ products: null, categories: null });
+        setUserStoreState({ products: [], categories: [] });
         setisNewUser(false);
         setisSubscribed(false);
         setloading(false);
@@ -502,7 +518,7 @@ const RouteManager = () => {
     <Router>
       <ScrollToTop />
       <Switch>
-        {userS && (
+        {auth.currentUser && (
           <>
             <NavigationContent />
             <Modal
@@ -532,7 +548,9 @@ const RouteManager = () => {
             </Modal>
           </>
         )}
-        {!userS && !loading && <Route path="/" component={NonAuthRoute} />}
+        {!auth.currentUser && !loading && (
+          <Route path="/" component={NonAuthRoute} />
+        )}
       </Switch>
     </Router>
   );

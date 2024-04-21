@@ -2,15 +2,16 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
 import SearchDate from "components/functional/SearchDateFunction";
+import { CustomerProp, TransListStateItem } from "types/global";
 
-const CustomersBox = ({ customers }) => {
+const CustomersBox = ({ customers }: { customers: CustomerProp[] }) => {
   const [period, setperiod] = useState("Today");
   const [details, setdetails] = useState({
     newCustomers: 0,
   });
 
   useEffect(() => {
-    const calculateTotals = (transactions) => {
+    const calculateTotals = (transactions: CustomerProp[] | TransListStateItem[]) => {
       let totalNewCustomers = 0;
       transactions.forEach(() => {
         totalNewCustomers += 1;
@@ -20,8 +21,17 @@ const CustomersBox = ({ customers }) => {
       };
     };
 
-    const getDateRange = (period) => {
+    const getDateRange = (period: string) => {
       const today = new Date();
+      const weekStart = new Date(
+        today.setDate(today.getDate() - today.getDay())
+      );
+      const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      const yearStart = new Date(today.getFullYear(), 0, 1);
+      const yearEnd = new Date(today.getFullYear(), 11, 31);
+
       switch (period) {
         case "Today":
           return {
@@ -29,28 +39,16 @@ const CustomersBox = ({ customers }) => {
             end: new Date().toDateString(),
           };
         case "This Week":
-          const weekStart = new Date(
-            today.setDate(today.getDate() - today.getDay())
-          );
-          const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
           return {
             start: weekStart.toDateString(),
             end: weekEnd.toDateString(),
           };
         case "This Month":
-          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-          const monthEnd = new Date(
-            today.getFullYear(),
-            today.getMonth() + 1,
-            0
-          );
           return {
             start: monthStart.toDateString(),
             end: monthEnd.toDateString(),
           };
         case "This Year":
-          const yearStart = new Date(today.getFullYear(), 0, 1);
-          const yearEnd = new Date(today.getFullYear(), 11, 31);
           return {
             start: yearStart.toDateString(),
             end: yearEnd.toDateString(),
@@ -75,6 +73,7 @@ const CustomersBox = ({ customers }) => {
       // No date filtering for "All Time" or unspecified periods
       filteredCustomers = customers;
     }
+    if (!filteredCustomers) return setdetails({ newCustomers: 0 });
 
     const { newCustomers } = calculateTotals(filteredCustomers);
     setdetails({ newCustomers });
@@ -104,31 +103,6 @@ const CustomersBox = ({ customers }) => {
             </View>
           </View>
         </View>
-        {/* <View style={styles.returningCustomersItem}>
-          <View style={styles.returningCustomersInnerContainer}>
-            <View style={styles.returningCustomersInnerLeft}>
-              <Image
-                source={require("../../assets/images/image_cdRe..png")}
-                resizeMode="contain"
-                style={styles.personIcon}
-              />
-              <View style={styles.returningCustomersInnerInnerRightSide}>
-                <Text style={styles.returningCustomersValue}>3</Text>
-                <Text style={styles.returningCustomersTxt}>
-                  Returning Customers
-                </Text>
-              </View>
-            </View>
-            <View style={styles.returningCustomersRightSide}>
-              <Image
-                source={require("../../assets/images/image_DvGX..png")}
-                resizeMode="contain"
-                style={styles.decreaseIcon}
-              />
-              <Text style={styles.returningCustomerPercent}>- 10%</Text>
-            </View>
-          </View>
-        </View> */}
       </View>
     </View>
   );

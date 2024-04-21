@@ -21,7 +21,7 @@ import {
   storeDetailState,
 } from "state/state";
 
-const validateEmail = (email) => {
+const validateEmail = (email: string) => {
   const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
   return emailRegex.test(email);
 };

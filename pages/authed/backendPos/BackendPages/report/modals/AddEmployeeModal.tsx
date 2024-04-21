@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -11,7 +11,15 @@ import { auth, db } from "state/firebaseConfig";
 import { employeesState, setEmployeesState } from "state/state";
 import { useAlert } from "react-alert";
 
-function AddEmployeeModal({ setaddEmployeeModal, addEmployeeModal }) {
+interface AddEmployeeModalProps {
+  setaddEmployeeModal: (val: boolean) => void;
+  addEmployeeModal: boolean;
+}
+
+function AddEmployeeModal({
+  setaddEmployeeModal,
+  addEmployeeModal,
+}: AddEmployeeModalProps) {
   const { height, width } = useWindowDimensions();
   const employees = employeesState.use();
   const [name, setname] = useState("");
@@ -40,7 +48,7 @@ function AddEmployeeModal({ setaddEmployeeModal, addEmployeeModal }) {
       return;
     }
     db.collection("users")
-      .doc(auth.currentUser.uid)
+      .doc(auth.currentUser?.uid)
       .collection("employees")
       .doc(employee.id.toString())
       .set(employee);
@@ -57,7 +65,6 @@ function AddEmployeeModal({ setaddEmployeeModal, addEmployeeModal }) {
         height: height,
         width: width,
       }}
-      activeOpacity={1}
     >
       <Pressable>
         <div style={{ cursor: "default" }}>
@@ -90,14 +97,12 @@ function AddEmployeeModal({ setaddEmployeeModal, addEmployeeModal }) {
               <View style={styles.bottomBtnsRow}>
                 <Pressable
                   style={styles.cancelBtn}
-                  activeOpacity={0.6}
                   onPress={() => setaddEmployeeModal(false)}
                 >
                   <Text style={styles.cancelBtnTxt}>Cancel</Text>
                 </Pressable>
                 <Pressable
                   style={styles.saveBtn}
-                  activeOpacity={0.6}
                   onPress={AddEmployee}
                 >
                   <Text style={styles.saveBtnTxt}>Save</Text>

@@ -21,8 +21,9 @@ import CategorySection from "components/MainPosPage/components/CategorySection";
 import Cart from "components/MainPosPage/components/Cart";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import CartMobile from "components/MainPosPage/phoneComponents/CartMobile";
+import { UserStoreStateProps } from "types/global";
 
-function OrderCartMain({ catalog }) {
+function OrderCartMain({ catalog }: { catalog: UserStoreStateProps }) {
   const orderDetails = OrderDetailsState.use();
   const storeDetails = storeDetailState.use();
   const page = orderDetails.page;
@@ -46,8 +47,9 @@ function OrderCartMain({ catalog }) {
       let newVal = 0;
       for (let i = 0; i < cart.length; i++) {
         try {
-          if (cart[i].quantity > 1) {
-            newVal += parseFloat(cart[i].price) * cart[i].quantity;
+          if (cart[i].quantity ?? 0 > 1) {
+            newVal +=
+              parseFloat(cart[i].price) * parseFloat(cart[i].quantity ?? "0");
             // console.log("Cart item quantity ", cart[i].quantity);
           } else {
             newVal += parseFloat(cart[i].price);
@@ -67,11 +69,13 @@ function OrderCartMain({ catalog }) {
   }, [cart]);
 
   useEffect(() => {
-    catalog.products.map((product, index) => {
+    catalog.products.map((product) => {
+      const element = document.getElementById(product.id);
+      if (!element) return;
       if (product.category === section) {
-        document.getElementById(product.id).style.display = "flex";
+        element.style.display = "flex";
       } else {
-        document.getElementById(product.id).style.display = "none";
+        element.style.display = "none";
       }
     });
   }, [section]);
@@ -160,7 +164,7 @@ function OrderCartMain({ catalog }) {
         />
       )}
       <Modal
-        isVisible={ProductBuilderProps.isOpen}
+        isVisible={ProductBuilderProps.isOpen ? true : false}
         animationIn="slideInLeft"
         animationOut="slideOutLeft"
         backdropOpacity={0}

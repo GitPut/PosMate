@@ -1,8 +1,13 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import React from "react";
+import { StyleSheet, View, Text, ViewStyle } from "react-native";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 
-function SavedCustomerItem({ style, customerName }) {
+interface SavedCustomerItemProps {
+  style?: ViewStyle;
+  customerName: string;
+}
+
+function SavedCustomerItem({ style, customerName } : SavedCustomerItemProps) {
   return (
     <View style={[styles.container, style]}>
       <View style={styles.leftSide1}>

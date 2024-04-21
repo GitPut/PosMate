@@ -1,7 +1,13 @@
-import { View, Text, Image, Animated } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import { Animated, ImageSourcePropType, ImageStyle } from "react-native";
+import React, { useEffect, useRef } from "react";
 
-const ProductImage = ({ source, style, resizeMode }) => {
+interface ProductImageProps {
+  source: ImageSourcePropType;
+  style: ImageStyle;
+  resizeMode: ImageStyle["resizeMode"];
+}
+
+const ProductImage = ({ source, style, resizeMode }: ProductImageProps) => {
   const loadingImgAnim = useRef(new Animated.Value(1)).current;
   const productImgAnim = useRef(new Animated.Value(0)).current;
 

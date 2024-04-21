@@ -4,11 +4,10 @@ import {
   Text,
   useWindowDimensions,
   View,
-  TextInput,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
-import { employeesState, setEmployeesState } from "state/state";
+import React from "react";
+import { employeesState } from "state/state";
 import { Ionicons } from "@expo/vector-icons";
 import EmployeeClockInItem from "./components/EmployeeClockInItem";
 import Modal from "react-native-modal-web";
@@ -64,16 +63,14 @@ const ClockinModal = () => {
                       }
                     >
                       {employees.map((employee) => {
-                        const isClockedIn = employee.clockedIn;
+                        const isClockedIn = employee.clockedIn?.startTime;
 
                         return (
                           <EmployeeClockInItem
                             key={employee.id}
-                            style={styles.employeeClockInItem}
                             employee={employee}
                             employees={employees}
-                            setEmployeesState={setEmployeesState}
-                            isClockedIn={isClockedIn}
+                            isClockedIn={isClockedIn ? true : false}
                           />
                         );
                       })}

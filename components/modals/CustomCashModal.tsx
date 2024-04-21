@@ -43,6 +43,7 @@ const CustomcustomCashModal = () => {
         qz.websocket
           .connect()
           .then(function () {
+            if(!myDeviceDetails.printToPrinter) return
             const config = qz.configs.create(myDeviceDetails.printToPrinter);
             return qz.print(config, [
               "\x1B" + "\x40", // init
@@ -128,6 +129,7 @@ const CustomcustomCashModal = () => {
       qz.websocket
         .connect()
         .then(function () {
+          if(!myDeviceDetails.printToPrinter) return
           const config = qz.configs.create(myDeviceDetails.printToPrinter);
           return qz.print(config, [
             "\x1B" + "\x40", // init

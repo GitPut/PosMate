@@ -3,35 +3,35 @@ import { auth, db } from "state/firebaseConfig";
 import { resetPosHomeState, updatePosHomeState } from "state/posHomeState";
 import { setCartState, setCustomersList } from "state/state";
 import qz from "qz-tray";
+import {
+  AddressType,
+  CartItemProp,
+  CustomerProp,
+  CustomersOrdersProp,
+  MyDeviceDetailsProps,
+  StoreDetailsProps,
+} from "types/global";
 
 interface PrintProps {
   dontAddToOngoing: boolean;
-  method: string;
-  discountAmount: string;
+  method?: "deliveryOrder" | "pickupOrder" | "inStoreOrder" | "Card" | "Cash";
+  discountAmount: string | null;
   deliveryChecked: boolean;
   changeDue: string;
-  savedCustomerDetails: string;
+  savedCustomerDetails: {
+    id: string;
+    orders: CustomersOrdersProp[];
+  } | null;
   name: string;
   phone: string;
-  address: string;
-  buzzCode: string;
-  unitNumber: string;
+  address?: AddressType | null;
+  buzzCode?: string | null;
+  unitNumber?: string | null;
   cartNote: string;
-  customers: any[];
-  cart: any[];
-  storeDetails: object;
-  myDeviceDetails: {
-    name: string;
-    id: string;
-    docID: string;
-    useDifferentDeviceToPrint: boolean;
-    printToPrinter: string;
-    sendPrintToUserID: {
-      label: string;
-      value: string;
-    };
-    printOnlineOrders: boolean;
-  };
+  customers: CustomerProp[];
+  cart: CartItemProp[];
+  storeDetails: StoreDetailsProps;
+  myDeviceDetails: MyDeviceDetailsProps;
 }
 
 const Print = ({ ...props }: PrintProps) => {
@@ -53,22 +53,15 @@ const Print = ({ ...props }: PrintProps) => {
     storeDetails,
     myDeviceDetails,
   } = props;
-  // const customers = customersList.use();
-  // const cart = cartState.use();
-  // const storeDetails = storeDetailState.use();
-  // const myDeviceDetails = myDeviceDetailsState.use();
 
   try {
     let newVal = 0;
     const finalCart = cart;
     for (let i = 0; i < cart.length; i++) {
+      const element = cart[i];
+      const quantity = element.quantity ? element.quantity : 1;
       try {
-        if (cart[i].quantity > 1) {
-          newVal += parseFloat(cart[i].price) * cart[i].quantity;
-          // console.log("Cart item quantity ", cart[i].quantity);
-        } else {
-          newVal += parseFloat(cart[i].price);
-        }
+        newVal += cart[i].price * quantity;
       } catch (error) {
         console.log(error);
       }
@@ -146,7 +139,7 @@ const Print = ({ ...props }: PrintProps) => {
         cartNote: cartNote,
         date: today,
         transNum: transNum,
-        method: "deliveryOrder",
+        method: method,
         cart: finalCart,
         customer: {
           name: name,
@@ -198,6 +191,7 @@ const Print = ({ ...props }: PrintProps) => {
         qz.websocket
           .connect()
           .then(function () {
+            if (!myDeviceDetails.printToPrinter) return;
             const config = qz.configs.create(myDeviceDetails.printToPrinter);
             return qz.print(config, data.data);
           })
@@ -242,7 +236,7 @@ const Print = ({ ...props }: PrintProps) => {
         cartNote: cartNote,
         date: today,
         transNum: transNum,
-        method: "pickupOrder",
+        method: method,
         cart: finalCart,
         customer: {
           name: name,
@@ -290,6 +284,7 @@ const Print = ({ ...props }: PrintProps) => {
         qz.websocket
           .connect()
           .then(function () {
+            if (!myDeviceDetails.printToPrinter) return;
             const config = qz.configs.create(myDeviceDetails.printToPrinter);
             return qz.print(config, data.data);
           })
@@ -328,37 +323,20 @@ const Print = ({ ...props }: PrintProps) => {
         cartNote: cartNote,
         date: today,
         transNum: transNum,
-        method: "inStoreOrder",
+        method: "inStoreOrder" as const,
         cart: finalCart,
         customer: {
           name: name,
           phone: phone,
           address: address,
+          buzzCode: buzzCode,
+          unitNumber: unitNumber,
         },
         changeDue: changeDue,
         paymentMethod: method,
       };
 
       const data = ReceiptPrint(element, storeDetails);
-
-      // console.log(
-      //   "Data fields: ",
-      //   "date: ",
-      //   today,
-      //   "\ntransNum: ",
-      //   transNum,
-      //   "\ntotal: ",
-      //   data.total,
-      //   "\nmethod: ",
-      //   "inStoreOrder",
-      //   "\npaymentMethod: ",
-      //   method,
-      //   "\ncart: ",
-      //   finalCart,
-      //   "\ncartNote: ",
-      //   cartNote
-      // );
-      // return
 
       db.collection("users")
         .doc(auth.currentUser?.uid)
@@ -389,6 +367,7 @@ const Print = ({ ...props }: PrintProps) => {
         qz.websocket
           .connect()
           .then(function () {
+            if (!myDeviceDetails.printToPrinter) return;
             const config = qz.configs.create(myDeviceDetails.printToPrinter);
             return qz.print(config, data.data);
           })

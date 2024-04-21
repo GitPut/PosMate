@@ -2,19 +2,25 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Image, Text, ScrollView } from "react-native";
 import ItemNoOptionsView from "./ItemNoOptionsView";
 import DisplayOption from "components/MainPosPage/components/ProductBuilderModal/PosComponents/DisplayOption";
+import { ProductProp } from "types/global";
 
-function ProductBuilderView({ product, imageUrl }) {
+interface ProductBuilderViewProps {
+  product: ProductProp;
+  imageUrl: string | null;
+}
+
+function ProductBuilderView({ product, imageUrl }: ProductBuilderViewProps) {
   const myObj = product;
   const [myObjProfile, setmyObjProfile] = useState(myObj);
   const [total, settotal] = useState(myObj.total ? myObj.total : myObj.price);
-  const [openOptions, setopenOptions] = useState(null);
+  const [openOptions, setopenOptions] = useState<string | null>(null);
 
   useEffect(() => {
     setmyObjProfile(product);
   }, [product]);
 
   useEffect(() => {
-    settotal(getPrice());
+    settotal(getPrice().toString());
   }, [myObjProfile]);
 
   const getPrice = () => {
@@ -28,7 +34,7 @@ function ProductBuilderView({ product, imageUrl }) {
     });
     myObjProfile.options.forEach((op) => {
       op.optionsList
-        .filter((f) => f.selectedTimes > 0)
+        .filter((f) => f.selectedTimes ?? 0 > 0)
         .map((e) => {
           const thisItemSelectedTimes = e.selectedTimes
             ? parseInt(e.selectedTimes)
@@ -65,7 +71,7 @@ function ProductBuilderView({ product, imageUrl }) {
                     resizeMode="contain"
                     style={[
                       styles.itemImg,
-                      myObj.description && { width: 300, height: 150 },
+                      myObj.description ? { width: 300, height: 150 } : {},
                     ]}
                   />
                 )}

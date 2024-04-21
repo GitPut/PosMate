@@ -1,26 +1,10 @@
-interface Customer {
-  createdAt?: {
-    seconds: number;
-  };
-  // Add other customer properties as needed
-}
-
-interface Transaction {
-  originalData: {
-    date_created?: string;
-    date?: {
-      seconds: number;
-    };
-    // Include other properties of originalData as necessary
-  };
-  // Include other properties of Transaction as necessary
-}
+import { CustomerProp, TransListStateItem } from "types/global";
 
 interface SearchDateProps {
   startDate: string; // Assuming ISO date string format
   endDate: string; // Assuming ISO date string format
-  transactions: Transaction[];
-  customers?: Customer[];
+  transactions: TransListStateItem[];
+  customers?: CustomerProp[];
 }
 
 const SearchDate = ({
@@ -56,7 +40,7 @@ const SearchDate = ({
   } else {
     // Filter the list based on the date range
     const filtered = transactions.filter((item) => {
-      const itemDate = item.originalData.date_created
+      const itemDate = item.originalData?.date_created
       ? new Date(item.originalData.date_created)
       : item.originalData?.date ? new Date(item.originalData.date.seconds * 1000) : undefined;
 

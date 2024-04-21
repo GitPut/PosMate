@@ -1,10 +1,9 @@
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   View,
   Text,
   Pressable,
-  ScrollView,
   Modal,
   Image,
 } from "react-native";
@@ -13,9 +12,20 @@ import { logout } from "state/firebaseFunctions";
 import { storeDetailState } from "state/state";
 import { auth } from "state/firebaseConfig";
 
-function HeaderLogoutDropdown({ isPosHeader }) {
-  const dropdownRef = useRef(); // Reference to the original button
-  const [dropdownLayout, setDropdownLayout] = useState();
+interface HeaderLogoutDropdownProps {
+  isPosHeader: boolean;
+}
+
+interface DropdownLayout {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+function HeaderLogoutDropdown({ isPosHeader } : HeaderLogoutDropdownProps) {
+  const dropdownRef = useRef<View | null>(null); // Reference to the original button
+  const [dropdownLayout, setDropdownLayout] = useState<DropdownLayout | null>(null);
   const [openDropdown, setopenDropdown] = useState(false);
   const storeDetails = storeDetailState.use();
 
@@ -40,7 +50,6 @@ function HeaderLogoutDropdown({ isPosHeader }) {
     <View style={{ zIndex: 1000 }}>
       <Pressable
         style={styles.userBtn}
-        activeOpacity={0.8}
         onPress={() => setopenDropdown((prev) => !prev)}
         ref={dropdownRef}
       >

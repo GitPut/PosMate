@@ -4,10 +4,8 @@ import { useHistory } from "react-router-dom";
 import {
   StyleSheet,
   View,
-  Image,
   Text,
   ImageBackground,
-  Modal,
   Pressable,
   TextInput,
   ScrollView,
@@ -21,9 +19,8 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [name, setname] = useState("");
   const [phoneNumber, setphoneNumber] = useState("");
-  const [error, seterror] = useState(false);
   const history = useHistory();
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const [useSmallDesign, setuseSmallDesign] = useState(width < 1024);
   const [secureEntry, setsecureEntry] = useState(true);
   const alertP = useAlert();
@@ -169,8 +166,8 @@ function Signup() {
                   style={{ textDecoration: "none", marginBottom: 25 }}
                 >
                   <Text style={styles.signUpTxt}>
-                    By creating an account, I agree to Divine POS's terms of
-                    service
+                    By creating an account, I agree to Divine POS&apos;s terms
+                    of service
                   </Text>
                 </a>
                 <Pressable style={styles.loginBtn} onPress={attemptSignUp}>

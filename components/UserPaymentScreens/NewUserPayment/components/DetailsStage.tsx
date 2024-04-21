@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 import HeaderTxt from "./HeaderTxt";
 import PeriodSlider from "./PeriodSlider";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import { TextInput } from "@react-native-material/core";
 
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 import ViewPlan from "./ViewPlan";
@@ -17,7 +16,7 @@ interface DetailsStageProps {
   setphoneNumber: (phoneNumber: string) => void;
   setwebsite: (website: string) => void;
   setaddress: (address: AddressType) => void;
-  address: AddressType;
+  address: AddressType | null;
   paymentTerm: string;
   setpaymentTerm: (paymentTerm: string) => void;
   planType: string | null;

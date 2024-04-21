@@ -16,11 +16,12 @@ import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 import Modal from "react-native-modal-web";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import { useAlert } from "react-alert";
+import { AddressType } from "types/global";
 
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
 
 const PhoneOrderModal = () => {
-  const [localAddress, setlocalAddress] = useState(null);
+  const [localAddress, setlocalAddress] = useState<AddressType | null>(null);
   const [saveCustomerChecked, setsaveCustomerChecked] = useState(false);
   const customers = customersList.use();
   const storeDetails = storeDetailState.use();
@@ -40,7 +41,12 @@ const PhoneOrderModal = () => {
   const alertP = useAlert();
 
   // Function to calculate distance between two points using Haversine formula
-  function calculateDistance(lat1, lon1, lat2, lon2) {
+  function calculateDistance(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ) {
     const R = 6371; // Radius of the Earth in km
     const dLat = (lat2 - lat1) * (Math.PI / 180); // Convert degrees to radians
     const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -56,7 +62,7 @@ const PhoneOrderModal = () => {
   }
 
   // Function to get the latitude and longitude of an address using the Google Maps Geocoding API
-  async function getLatLng(placeId) {
+  async function getLatLng(placeId : string) {
     const response = await fetch(
       "https://us-central1-posmate-5fc0a.cloudfunctions.net/getLatLng",
       {
@@ -85,7 +91,7 @@ const PhoneOrderModal = () => {
   }
 
   // Function to calculate distance between two addresses using Google Places API
-  async function calculateDistanceBetweenAddresses(address1, address2) {
+  async function calculateDistanceBetweenAddresses(address1: string, address2: string) {
     try {
       const { lat: lat1, lng: lon1 } = await getLatLng(address1);
       const { lat: lat2, lng: lon2 } = await getLatLng(address2);
@@ -143,12 +149,13 @@ const PhoneOrderModal = () => {
   };
 
   useEffect(() => {
-    if (address) {
+    if(!address) return;
+    if (address.value?.reference && storeDetails?.address?.value?.reference) {
       setlocalAddress(address);
       try {
         calculateDistanceBetweenAddresses(
-          storeDetails.address.value.reference,
-          address.value.reference
+          storeDetails?.address?.value?.reference,
+          address.value?.reference
         ).then((distance) => {
           if (distance !== null) {
             console.log(
@@ -171,7 +178,8 @@ const PhoneOrderModal = () => {
   }, []);
 
   useEffect(() => {
-    if (localAddress) {
+    if (!localAddress) return;
+    if (localAddress.value?.reference && storeDetails.address?.value?.reference) {
       // setAddress(localAddress);
       updatePosHomeState({ address: localAddress });
       try {
@@ -258,17 +266,8 @@ const PhoneOrderModal = () => {
                     <Pressable
                       onPress={() => {
                         if (ongoingDelivery || updatingOrder) {
-                          // setDeliveryModal(false);
                           updatePosHomeState({ deliveryModal: false });
                         } else {
-                          // setDeliveryModal(false);
-                          // setOngoingDelivery(false);
-                          // setName("");
-                          // setPhone("");
-                          // setAddress(null);
-                          // setBuzzCode("");
-                          // setUnitNumber("");
-                          // setDeliveryChecked(false);
                           updatePosHomeState({
                             deliveryModal: false,
                             ongoingDelivery: false,
@@ -333,7 +332,7 @@ const PhoneOrderModal = () => {
                     <View style={styles.deliveryRow}>
                       <Text style={styles.delivery}>Delivery</Text>
                       <GeneralSwitch
-                        isActive={deliveryChecked}
+                        isActive={deliveryChecked ?? false}
                         toggleSwitch={() =>
                           // setDeliveryChecked(!deliveryChecked)
                           updatePosHomeState({
@@ -358,7 +357,7 @@ const PhoneOrderModal = () => {
                           debounce={800}
                           apiKey={GOOGLE_API_KEY}
                           selectProps={{
-                            localAddress,
+                            value:localAddress,
                             onChange: setlocalAddress,
                             placeholder: "Enter customer address",
                             defaultValue: address,
@@ -378,7 +377,7 @@ const PhoneOrderModal = () => {
                           borderRadius: 10,
                           padding: 10,
                         }}
-                        value={unitNumber}
+                        value={unitNumber ?? ""}
                         onChangeText={(val) => {
                           updatePosHomeState({ unitNumber: val });
                         }}
@@ -394,7 +393,7 @@ const PhoneOrderModal = () => {
                           borderRadius: 10,
                           padding: 10,
                         }}
-                        value={buzzCode}
+                        value={buzzCode ?? ""}
                         onChangeText={(val) => {
                           updatePosHomeState({ buzzCode: val });
                         }}
@@ -411,8 +410,6 @@ const PhoneOrderModal = () => {
                     disabled={!name || !phone}
                     onPress={() => {
                       if (name && phone) {
-                        // setDeliveryModal(false);
-                        // setOngoingDelivery(true);
                         updatePosHomeState({
                           deliveryModal: false,
                           ongoingDelivery: true,

@@ -2,8 +2,13 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
 import SearchDate from "components/functional/SearchDateFunction";
+import { TransListStateItem } from "types/global";
 
-const OrderWaitTimeBox = ({ allTransactions }) => {
+const OrderWaitTimeBox = ({
+  allTransactions,
+}: {
+  allTransactions: TransListStateItem[];
+}) => {
   const [period, setperiod] = useState("Today");
   const [details, setdetails] = useState({
     shortest: 0,
@@ -13,7 +18,7 @@ const OrderWaitTimeBox = ({ allTransactions }) => {
   });
 
   useEffect(() => {
-    const calculateTotals = (transactions) => {
+    const calculateTotals = (transactions: TransListStateItem[]) => {
       let shortest = 0;
       let longest = 0;
       let average = 0;
@@ -22,15 +27,16 @@ const OrderWaitTimeBox = ({ allTransactions }) => {
       let totalOrders = 0;
       transactions.forEach((transaction) => {
         //get time between date and dateCompleted
-        const date = transaction.originalData.date_created
-          ? new Date(transaction.originalData.date_created)
-          : new Date(transaction.originalData.date.seconds * 1000);
+        const date = transaction.originalData?.date_created
+          ? new Date(transaction.originalData?.date_created)
+          : new Date(transaction.originalData?.date.seconds * 1000);
 
-        if (transaction.originalData.dateCompleted) {
+        if (transaction.originalData?.dateCompleted) {
           const dateCompleted = new Date(
             transaction.originalData.dateCompleted.seconds * 1000
           );
-          const diff = dateCompleted - date;
+
+          const diff = Number(dateCompleted) - Number(date);
           const minutes = Math.floor(diff / 60000);
           total += minutes;
           totalOrders += 1;
@@ -54,8 +60,17 @@ const OrderWaitTimeBox = ({ allTransactions }) => {
       };
     };
 
-    const getDateRange = (period) => {
+    const getDateRange = (period: string) => {
       const today = new Date();
+      const weekStart = new Date(
+        today.setDate(today.getDate() - today.getDay())
+      );
+      const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      const yearStart = new Date(today.getFullYear(), 0, 1);
+      const yearEnd = new Date(today.getFullYear(), 11, 31);
+
       switch (period) {
         case "Today":
           return {
@@ -63,28 +78,16 @@ const OrderWaitTimeBox = ({ allTransactions }) => {
             end: new Date().toDateString(),
           };
         case "This Week":
-          const weekStart = new Date(
-            today.setDate(today.getDate() - today.getDay())
-          );
-          const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
           return {
             start: weekStart.toDateString(),
             end: weekEnd.toDateString(),
           };
         case "This Month":
-          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-          const monthEnd = new Date(
-            today.getFullYear(),
-            today.getMonth() + 1,
-            0
-          );
           return {
             start: monthStart.toDateString(),
             end: monthEnd.toDateString(),
           };
         case "This Year":
-          const yearStart = new Date(today.getFullYear(), 0, 1);
-          const yearEnd = new Date(today.getFullYear(), 11, 31);
           return {
             start: yearStart.toDateString(),
             end: yearEnd.toDateString(),

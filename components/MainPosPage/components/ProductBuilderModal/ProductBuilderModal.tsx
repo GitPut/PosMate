@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -19,20 +19,24 @@ import {
 } from "state/state";
 import { useAlert } from "react-alert";
 import DisplayOption from "./PosComponents/DisplayOption";
+import { ProductProp } from "types/global";
 
 function ProductBuilderModal() {
   const { product, itemIndex, imageUrl, isOnlineOrder } =
     ProductBuilderState.use();
+  if (!product) return null;
+
   const cart = cartState.use();
   const myObj = product;
-  const [myObjProfile, setmyObjProfile] = useState(myObj);
-  const [total, settotal] = useState(myObj.total ? myObj.total : myObj.price);
-  const [extraInput, setextraInput] = useState(
+  const [myObjProfile, setmyObjProfile] = useState<ProductProp>(myObj);
+  const [total, settotal] = useState<number>(parseFloat(myObj.price) ?? 0);
+
+  const [extraInput, setextraInput] = useState<string>(
     myObj.extraDetails ? myObj.extraDetails : ""
   );
-  const [openOptions, setopenOptions] = useState(null);
+  const [openOptions, setopenOptions] = useState<string | null>(null);
   const alertP = useAlert();
-  const [scrollY, setscrollY] = useState(0);
+  const [scrollY, setscrollY] = useState<number>(0);
   const width = useWindowDimensions().width;
 
   const goBack = () => resetProductBuilderState();
@@ -47,21 +51,22 @@ function ProductBuilderModal() {
       op.optionsList
         .filter((f) => f.selected === true)
         .map(
-          (e) => (total += e.priceIncrease ? parseFloat(e.priceIncrease) : 0)
+          (e) =>
+            (total += parseFloat(e.priceIncrease ?? "0")
+              ? parseFloat(e.priceIncrease ?? "0")
+              : 0)
         );
     });
     myObjProfile.options.forEach((op) => {
       op.optionsList
-        .filter((f) => f.selectedTimes > 0)
+        .filter((f) => f.selectedTimes ?? 0 > 0)
         .map((e) => {
-          const thisItemSelectedTimes = e.selectedTimes
-            ? parseInt(e.selectedTimes)
-            : 0;
-          const thisItemCountsAs = e.countsAs ? parseInt(e.countsAs) : 1;
+          const thisItemSelectedTimes = e.selectedTimes ? e.selectedTimes : "0";
+          const thisItemCountsAs = e.countsAs ? e.countsAs : "1";
           total += e.priceIncrease
             ? parseFloat(e.priceIncrease) *
-              thisItemCountsAs *
-              thisItemSelectedTimes
+              parseFloat(thisItemCountsAs) *
+              parseFloat(thisItemSelectedTimes)
             : 0;
         });
     });
@@ -69,7 +74,7 @@ function ProductBuilderModal() {
   };
 
   const AddToCart = () => {
-    const opsArray = [];
+    const opsArray: string[] = [];
     let stop = false;
 
     myObjProfile.options.forEach((op) => {
@@ -100,7 +105,7 @@ function ProductBuilderModal() {
         }
       } else {
         const selectedItems = op.optionsList.filter(
-          (op) => op.selectedTimes > 0
+          (op) => op.selectedTimes ?? 0 > 0
         );
         if (selectedItems.length > 0) {
           let opWVal = `${op.label}:\n`;
@@ -117,28 +122,19 @@ function ProductBuilderModal() {
     });
     if (!stop) {
       const objWTotal = {
-        ...myObjProfile,
-        total: total,
+        name: myObjProfile.name,
+        price: myObjProfile.price,
+        description: myObj.description,
+        options: myObjProfile.options,
+        total: total.toString(),
         extraDetails: extraInput,
       };
 
-      if (itemIndex !== null) {
-        const copyCart = structuredClone(cart);
-        copyCart[itemIndex] = {
-          name: myObjProfile.name,
-          price: total,
-          description: myObj.description,
-          options: opsArray,
-          extraDetails: extraInput,
-          editableObj: objWTotal,
-          imageUrl: imageUrl ? imageUrl : null,
-        };
-        setCartState(copyCart);
-      } else {
+      if (!itemIndex) {
         addCartState(
           {
             name: myObjProfile.name,
-            price: total,
+            price: total.toString(),
             description: myObj.description,
             options: opsArray,
             extraDetails: extraInput,
@@ -147,11 +143,23 @@ function ProductBuilderModal() {
           },
           cart
         );
+      } else {
+        const copyCart = structuredClone(cart);
+        copyCart[itemIndex] = {
+          name: myObjProfile.name,
+          price: total.toString(),
+          description: myObj.description,
+          options: opsArray,
+          extraDetails: extraInput,
+          editableObj: objWTotal,
+          imageUrl: imageUrl ? imageUrl : null,
+        };
+        setCartState(copyCart);
       }
 
       goBack();
       setmyObjProfile(myObj);
-      settotal(myObjProfile.price);
+      settotal(parseFloat(myObjProfile.price));
       setextraInput("");
     }
   };
@@ -201,7 +209,7 @@ function ProductBuilderModal() {
             <View
               style={[
                 width > 800 && styles.groupsContainer,
-                myObj.description && { marginTop: 50 },
+                myObj.description?.length > 0 && { marginTop: 50 },
               ]}
             >
               <View style={width > 800 && styles.leftSideGroup}>
@@ -211,19 +219,24 @@ function ProductBuilderModal() {
                     width > 800 && { height: "60%" },
                   ]}
                 >
-                  <Image
-                    source={
-                      imageUrl
-                        ? { uri: imageUrl }
-                        : require("../../assets/images/image_xJCw..png")
-                    }
-                    resizeMode="contain"
-                    style={[
-                      styles.itemImg,
-                      myObj.description && { width: 300, height: 150 },
-                      width < 800 && { width: 300, height: 200 },
-                    ]}
-                  />
+                  {imageUrl && (
+                    <Image
+                      source={
+                        imageUrl
+                          ? { uri: imageUrl }
+                          : require("../../assets/images/image_xJCw..png")
+                      }
+                      resizeMode="contain"
+                      style={[
+                        styles.itemImg,
+                        myObj.description?.length > 0 && {
+                          width: 300,
+                          height: 150,
+                        },
+                        width < 800 && { width: 300, height: 200 },
+                      ]}
+                    />
+                  )}
                   <View style={styles.itemInfoTxtGroup}>
                     <View style={styles.topTxtGroup}>
                       <Text style={styles.productName}>{myObj.name}</Text>
@@ -298,28 +311,30 @@ function ProductBuilderModal() {
                 </ScrollView>
                 <View style={styles.totalLblRow}>
                   <Text style={styles.totalLbl}>
-                    Total: ${parseFloat(total).toFixed(2)}
+                    Total: ${total.toFixed(2)}
                   </Text>
                 </View>
               </View>
             </View>
-            {width < 800 && <View
-              style={[
-                styles.writeNoteContainer,
-                width < 800 && { marginTop: 15, height: 120 },
-              ]}
-            >
-              <Text style={styles.notesLbl}>Notes:</Text>
-              <TextInput
-                style={styles.noteInput}
-                placeholder="Write any extra info here..."
-                placeholderTextColor="#90949a"
-                multiline={true}
-                numberOfLines={4}
-                onChangeText={(val) => setextraInput(val)}
-                value={extraInput}
-              />
-            </View>}
+            {width < 800 && (
+              <View
+                style={[
+                  styles.writeNoteContainer,
+                  width < 800 && { marginTop: 15, height: 120 },
+                ]}
+              >
+                <Text style={styles.notesLbl}>Notes:</Text>
+                <TextInput
+                  style={styles.noteInput}
+                  placeholder="Write any extra info here..."
+                  placeholderTextColor="#90949a"
+                  multiline={true}
+                  numberOfLines={4}
+                  onChangeText={(val) => setextraInput(val)}
+                  value={extraInput}
+                />
+              </View>
+            )}
             <View style={styles.addToCartRow}>
               <AddToCartBtn
                 style={styles.addToCartBtn}
@@ -379,8 +394,8 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
   },
   itemImg: {
-    height: 250,
-    width: 250,
+    height: 180,
+    width: 200,
     resizeMode: "contain",
   },
   itemInfoTxtGroup: {

@@ -1,27 +1,28 @@
 import { entity } from "simpler-state";
+import { AddressType, CustomerProp, OngoingListStateProp } from "types/global";
 
 interface PosHomeState {
   section: string;
   deliveryModal: boolean;
   cashModal: boolean;
-  ongoingDelivery: any;
+  ongoingDelivery: boolean;
   name: string;
   phone: string;
-  address: any;
-  buzzCode: string;
-  unitNumber: string;
-  deliveryChecked: boolean;
+  address?: AddressType | null;
+  buzzCode?: string | null;
+  unitNumber?: string | null;
+  deliveryChecked: boolean | null;
   changeDue: string;
   cartSub: number;
   saveCustomerModal: boolean;
-  savedCustomerDetails: any;
+  savedCustomerDetails: CustomerProp | null;
   ongoingOrderListModal: boolean;
   settingsPasswordModalVis: boolean;
-  updatingOrder: any;
-  ongoingListState: any[];
+  updatingOrder: OngoingListStateProp | null;
+  ongoingListState: OngoingListStateProp[];
   clockinModal: boolean;
   discountModal: boolean;
-  discountAmount: any;
+  discountAmount: string | null;
   cartNote: string;
   customCashModal: boolean;
   authPasswordModal: boolean;
@@ -33,7 +34,7 @@ export const posHomeState = entity<PosHomeState>({
   section: "",
   deliveryModal: false,
   cashModal: false,
-  ongoingDelivery: null,
+  ongoingDelivery: false,
   name: "",
   phone: "",
   address: null,
@@ -46,16 +47,16 @@ export const posHomeState = entity<PosHomeState>({
   savedCustomerDetails: null,
   ongoingOrderListModal: false,
   settingsPasswordModalVis: false,
-  updatingOrder: false,
+  updatingOrder: null,
   ongoingListState: [],
   clockinModal: false,
   discountModal: false,
   discountAmount: null,
-  cartNote: '',
+  cartNote: "",
   customCashModal: false,
   authPasswordModal: false,
   managerAuthorizedStatus: false,
-  pendingAuthAction: ""
+  pendingAuthAction: "",
 });
 
 export const setPosHomeState = (val: PosHomeState): void => {
@@ -67,7 +68,7 @@ export const resetPosHomeState = (): void => {
     ...posHomeState.get(),
     deliveryModal: false,
     cashModal: false,
-    ongoingDelivery: null,
+    ongoingDelivery: false,
     name: "",
     phone: "",
     address: null,
@@ -80,15 +81,15 @@ export const resetPosHomeState = (): void => {
     savedCustomerDetails: null,
     ongoingOrderListModal: false,
     settingsPasswordModalVis: false,
-    updatingOrder: false,
+    updatingOrder: null,
     clockinModal: false,
     discountModal: false,
     discountAmount: null,
-    cartNote: null,
+    cartNote: "",
     customCashModal: false,
     authPasswordModal: false,
     managerAuthorizedStatus: false,
-    pendingAuthAction: ""
+    pendingAuthAction: "",
   });
 };
 

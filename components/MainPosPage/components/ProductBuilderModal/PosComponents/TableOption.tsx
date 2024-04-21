@@ -1,27 +1,40 @@
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
   Text,
   Pressable,
   ScrollView,
-  TextInput,
   useWindowDimensions,
 } from "react-native";
 import { Entypo, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import Modal from "react-native-modal-web";
 import OptionSelectorItemContainer from "./OptionSelectorItemContainer";
+import { Option, OptionsList, ProductProp } from "types/global";
+
+interface TableOptionProps {
+  label: string;
+  isRequired: boolean;
+  myObjProfile: ProductProp;
+  setMyObjProfile: (
+    val: ((prev: ProductProp) => ProductProp) | ProductProp
+  ) => void;
+  index: number;
+  e: Option;
+  optionsSelectedLabel: string;
+}
 
 function TableOption({
   label,
   isRequired,
   myObjProfile,
-  setmyObjProfile,
+  setMyObjProfile,
   index,
   e,
   optionsSelectedLabel,
-}) {
-  const [localMyObjProfile, setlocalMyObjProfile] = useState(myObjProfile);
+}: TableOptionProps) {
+  const [localMyObjProfile, setlocalMyObjProfile] =
+    useState<ProductProp>(myObjProfile);
   const [modalVisible, setmodalVisible] = useState(false);
   const { height, width } = useWindowDimensions();
 
@@ -29,50 +42,75 @@ function TableOption({
     setlocalMyObjProfile(myObjProfile);
   }, [myObjProfile]);
 
-  const onMinusPress = ({ option, listIndex }) => {
+  const onMinusPress = ({
+    option,
+    listIndex,
+  }: {
+    option: OptionsList;
+    listIndex: number;
+  }) => {
     const newMyObjProfile = structuredClone(localMyObjProfile);
     //filter out all options[index].optionsList that have selectedTimes > 0 then map through and multiply by countsAs
-    const thisItemCountsAs = option.countsAs ? parseInt(option.countsAs) : 1;
+    const thisItemCountsAs = option.countsAs ?? "1";
+    const selectedTimes = parseFloat(
+      newMyObjProfile.options[index].optionsList[listIndex].selectedTimes ?? "0"
+    );
 
-    if (
-      newMyObjProfile.options[index].optionsList[listIndex].selectedTimes > 0
-    ) {
-      newMyObjProfile.options[index].optionsList[listIndex].selectedTimes -=
-        1 * thisItemCountsAs;
+    if (selectedTimes > 0) {
+      newMyObjProfile.options[index].optionsList[listIndex].selectedTimes = (
+        selectedTimes -
+        1 * parseFloat(thisItemCountsAs)
+      ).toString();
     }
 
     setlocalMyObjProfile(newMyObjProfile);
   };
 
-  const onPlusPress = ({ option, listIndex }) => {
+  const onPlusPress = ({
+    option,
+    listIndex,
+  }: {
+    option: OptionsList;
+    listIndex: number;
+  }) => {
     const newMyObjProfile = structuredClone(localMyObjProfile);
     //filter out all options[index].optionsList that have selectedTimes > 0 then map through and multiply by countsAs
 
     const selectedItems = newMyObjProfile.options[index].optionsList.filter(
-      (op) => op.selectedTimes > 0
+      (op) => {
+        const opSelectedTimes = parseFloat(op.selectedTimes ?? "0");
+        return opSelectedTimes > 0;
+      }
     );
 
-    const thisItemCountsAs = option.countsAs ? parseInt(option.countsAs) : 1;
+    const thisItemCountsAs = parseFloat(option.countsAs ?? "1");
 
     let selectedTimesTotal = thisItemCountsAs;
 
     selectedItems.map((op) => {
-      selectedTimesTotal += op.countsAs
-        ? parseInt(op.selectedTimes) * parseInt(op.countsAs)
-        : parseInt(op.selectedTimes);
+      selectedTimesTotal +=
+        op.countsAs ?? false
+          ? parseFloat(op.selectedTimes ?? "0") * thisItemCountsAs ?? 1
+          : parseFloat(op.selectedTimes ?? "0");
     });
 
     if (
-      parseInt(e.numOfSelectable) >= selectedTimesTotal ||
+      (e.numOfSelectable ?? 0 >= selectedTimesTotal) ||
       !e.numOfSelectable ||
-      parseInt(e.numOfSelectable) === 0
+      e.numOfSelectable === 0
     ) {
-      if (newMyObjProfile.options[index].optionsList[listIndex].selectedTimes) {
-        newMyObjProfile.options[index].optionsList[
-          listIndex
-        ].selectedTimes += 1;
+      const selectedTimes = parseFloat(
+        newMyObjProfile.options[index].optionsList[listIndex].selectedTimes ??
+          "0"
+      );
+
+      if (selectedTimes ?? 0 > 0) {
+        newMyObjProfile.options[index].optionsList[listIndex].selectedTimes = (
+          selectedTimes + 1
+        ).toString();
       } else {
-        newMyObjProfile.options[index].optionsList[listIndex].selectedTimes = 1;
+        newMyObjProfile.options[index].optionsList[listIndex].selectedTimes =
+          "1";
       }
       setlocalMyObjProfile(newMyObjProfile);
     }
@@ -81,7 +119,7 @@ function TableOption({
   const clearOptions = () => {
     const newMyObjProfile = structuredClone(localMyObjProfile);
     newMyObjProfile.options[index].optionsList.map((op) => {
-      op.selectedTimes = 0;
+      op.selectedTimes = "0";
     });
     setlocalMyObjProfile(newMyObjProfile);
   };
@@ -89,9 +127,9 @@ function TableOption({
   const clearOptionsMain = () => {
     const newMyObjProfile = structuredClone(localMyObjProfile);
     newMyObjProfile.options[index].optionsList.map((op) => {
-      op.selectedTimes = 0;
+      op.selectedTimes = "0";
     });
-    setmyObjProfile(newMyObjProfile);
+    setMyObjProfile(newMyObjProfile);
   };
 
   return (
@@ -143,7 +181,7 @@ function TableOption({
           <Pressable
             onPress={() => {
               setmodalVisible(false);
-              setmyObjProfile(localMyObjProfile); // Save the local changes
+              setMyObjProfile(localMyObjProfile); // Save the local changes
             }}
             style={{
               justifyContent: "center",
@@ -179,7 +217,7 @@ function TableOption({
                       <Pressable
                         onPress={() => {
                           setmodalVisible(false);
-                          setmyObjProfile(localMyObjProfile);
+                          setMyObjProfile(localMyObjProfile);
                         }}
                         style={{
                           backgroundColor: "#314ab0",

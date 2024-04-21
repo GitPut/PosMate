@@ -28,7 +28,7 @@ const DiscountModal = () => {
   );
   const alertP = useAlert();
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: { key: string }) => {
     if (e.key === "Enter") {
       if (
         !storeDetails.settingsPassword ||
@@ -50,11 +50,11 @@ const DiscountModal = () => {
     let newVal = 0;
     for (let i = 0; i < cart.length; i++) {
       try {
-        if (cart[i].quantity > 1) {
-          newVal += parseFloat(cart[i].price) * cart[i].quantity;
+        if (cart[i].quantity ?? 0 > 1) {
+          newVal += cart[i].price * (cart[i].quantity ?? 1);
           // console.log("Cart item quantity ", cart[i].quantity);
         } else {
-          newVal += parseFloat(cart[i].price);
+          newVal += cart[i].price;
         }
       } catch (error) {
         console.log(error);
@@ -126,7 +126,7 @@ const DiscountModal = () => {
                           placeholder="Enter Custom Amount or Percentage"
                           onChangeText={(text) => setLocalDiscountAmount(text)}
                           value={localDiscountAmount}
-                          onKeyPress={handleKeyDown}
+                          onKeyPress={(val) => handleKeyDown({ key: val.key })}
                         />
                         <View style={styles.percentageBtnsRow}>
                           <PercentageBtn
@@ -159,7 +159,7 @@ const DiscountModal = () => {
                         placeholder="Enter Manager's Code"
                         onChangeText={(text) => setcode(text)}
                         style={styles.managerCodeInput}
-                        onKeyPress={handleKeyDown}
+                        onKeyPress={(val) => handleKeyDown(val)}
                       />
                     </View>
                   </View>

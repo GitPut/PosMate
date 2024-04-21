@@ -16,6 +16,7 @@ import {
   setOrderDetailsState,
   storeDetailState,
 } from "state/state";
+import { AddressType } from "types/global";
 
 function DeliveryDetails() {
   const orderDetails = OrderDetailsState.use();
@@ -24,7 +25,9 @@ function DeliveryDetails() {
   const [localPhoneNumber, setlocalPhoneNumber] = useState(
     orderDetails.customer.phone
   );
-  const [localAddress, setlocalAddress] = useState(orderDetails.address);
+  const [localAddress, setlocalAddress] = useState<AddressType | null>(
+    orderDetails.address
+  );
   const [localBuzzCode, setlocalBuzzCode] = useState(
     orderDetails.customer.buzzCode
   );
@@ -36,7 +39,12 @@ function DeliveryDetails() {
   const width = useWindowDimensions().width;
 
   // Function to calculate distance between two points using Haversine formula
-  function calculateDistance(lat1, lon1, lat2, lon2) {
+  function calculateDistance(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ) {
     const R = 6371; // Radius of the Earth in km
     const dLat = (lat2 - lat1) * (Math.PI / 180); // Convert degrees to radians
     const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -52,7 +60,7 @@ function DeliveryDetails() {
   }
 
   // Function to get the latitude and longitude of an address using the Google Maps Geocoding API
-  async function getLatLng(placeId) {
+  async function getLatLng(placeId: string) {
     const response = await fetch(
       "https://us-central1-posmate-5fc0a.cloudfunctions.net/getLatLng",
       {
@@ -81,7 +89,10 @@ function DeliveryDetails() {
   }
 
   // Function to calculate distance between two addresses using Google Places API
-  async function calculateDistanceBetweenAddresses(address1, address2) {
+  async function calculateDistanceBetweenAddresses(
+    address1: string,
+    address2: string
+  ) {
     try {
       const { lat: lat1, lng: lon1 } = await getLatLng(address1);
       const { lat: lat2, lng: lon2 } = await getLatLng(address2);
@@ -129,7 +140,7 @@ function DeliveryDetails() {
               apiKey={GOOGLE_API_KEY}
               // onSelect={handleAddress}
               selectProps={{
-                address: localAddress,
+                value: localAddress,
                 onChange: (address) => setlocalAddress(address),
                 defaultValue: localAddress,
                 menuPortalTarget: document.body,
@@ -178,7 +189,7 @@ function DeliveryDetails() {
           {
             opacity:
               checkingDeliveryRange ||
-              localAddress === "" ||
+              (localAddress ?? false) ||
               localName === "" ||
               localPhoneNumber === ""
                 ? 0.8
@@ -187,18 +198,43 @@ function DeliveryDetails() {
         ]}
         disabled={
           checkingDeliveryRange ||
-          localAddress === "" ||
+          (localAddress ?? false) ||
           localName === "" ||
           localPhoneNumber === ""
+            ? true
+            : false
         }
         onPress={() => {
           setcheckingDeliveryRange(true);
           if (
             localName === "" ||
             localPhoneNumber === "" ||
-            localAddress === ""
+            (localAddress ?? false)
           )
             return alertP.error("Please fill in all fields");
+
+          if (!storeDetails || !localAddress) return;
+
+          if (
+            !(
+              typeof storeDetails.address === "object" &&
+              "value" in storeDetails.address &&
+              typeof storeDetails.address.value === "object" &&
+              "reference" in storeDetails.address.value
+            )
+          )
+            return;
+
+          if (
+            !(
+              typeof localAddress === "object" &&
+              "value" in localAddress &&
+              typeof localAddress.value === "object" &&
+              "reference" in localAddress.value
+            )
+          )
+            return;
+
           calculateDistanceBetweenAddresses(
             storeDetails.address.value.reference,
             localAddress.value.reference

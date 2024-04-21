@@ -1,29 +1,46 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import React, { useEffect, useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
 import { Fontisto } from "@expo/vector-icons";
 import SearchDate from "components/functional/SearchDateFunction";
 import BarGraph from "./BarGraph";
+import { TransListStateItem } from "types/global";
+import ParseDate from "components/functional/ParseDate";
 
-const TotalRevenueBox = ({ style, allTransactions }) => {
+const TotalRevenueBox = ({
+  style,
+  allTransactions,
+}: {
+  style?: ViewStyle;
+  allTransactions: TransListStateItem[];
+}) => {
   const [period, setperiod] = useState("Today");
   const [details, setdetails] = useState({ orders: 0, revenue: 0 });
   const [data, setdata] = useState([]);
 
   useEffect(() => {
-    const calculateTotals = (transactions) => {
+    const calculateTotals = (transactions: TransListStateItem[]) => {
       let totalRevenue = 0;
       let totalOrders = 0;
 
       transactions.forEach((transaction) => {
-        totalRevenue += parseFloat(transaction.total);
+        totalRevenue += parseFloat(transaction.total ?? "0");
         totalOrders += 1;
       });
       return { orders: totalOrders, revenue: totalRevenue.toFixed(0) };
     };
 
-    const getDateRange = (period) => {
+    const getDateRange = (period: string) => {
       const today = new Date();
+      const weekStart = new Date(
+        today.setDate(today.getDate() - today.getDay())
+      );
+      const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      const yearStart = new Date(today.getFullYear(), 0, 1);
+      const yearEnd = new Date(today.getFullYear(), 11, 31);
+
       switch (period) {
         case "Today":
           return {
@@ -31,28 +48,16 @@ const TotalRevenueBox = ({ style, allTransactions }) => {
             end: new Date().toDateString(),
           };
         case "This Week":
-          const weekStart = new Date(
-            today.setDate(today.getDate() - today.getDay())
-          );
-          const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
           return {
             start: weekStart.toDateString(),
             end: weekEnd.toDateString(),
           };
         case "This Month":
-          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-          const monthEnd = new Date(
-            today.getFullYear(),
-            today.getMonth() + 1,
-            0
-          );
           return {
             start: monthStart.toDateString(),
             end: monthEnd.toDateString(),
           };
         case "This Year":
-          const yearStart = new Date(today.getFullYear(), 0, 1);
-          const yearEnd = new Date(today.getFullYear(), 11, 31);
           return {
             start: yearStart.toDateString(),
             end: yearEnd.toDateString(),
@@ -158,32 +163,12 @@ const TotalRevenueBox = ({ style, allTransactions }) => {
     ];
 
     allTransactions.forEach((transaction) => {
-      const dateString = transaction.date;
-
-      // Check if the date string contains 'pm' and adjust the hour if necessary
-      const adjustedDateString = dateString.replace(
-        /(\d{2}):(\d{2})\s*(am|pm)/i,
-        (match, hour, minute, meridian) => {
-          hour = parseInt(hour, 10);
-          meridian = meridian.toLowerCase();
-
-          // Convert to 24-hour format if 'pm' is found and it's not already in 24-hour format
-          if (meridian === "pm" && hour < 12) {
-            hour += 12;
-          } else if (meridian === "am" && hour === 12) {
-            // Handle midnight specifically
-            hour = 0;
-          }
-          // Return the adjusted time in 24-hour format without 'am'/'pm'
-          return `${hour}:${minute}`;
-        }
-      );
-
       // Now you can safely parse the adjusted date string
-      const date = new Date(adjustedDateString);
+      const date = ParseDate(transaction.date);
+      if (!date) return;
       const month = date.getMonth();
       if (localData[month]) {
-        localData[month].uv += parseFloat(transaction.total);
+        localData[month].uv += parseFloat(transaction.total ?? "0");
         localData[month].pv += 1;
         localData[month].amt += 1;
       }

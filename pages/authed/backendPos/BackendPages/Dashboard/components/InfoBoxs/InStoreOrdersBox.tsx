@@ -4,26 +4,40 @@ import DropdownPeriod from "../DropdownPeriod";
 import RevenueBox from "../RevenueBox";
 import OrdersBox from "../OrdersBox";
 import SearchDate from "components/functional/SearchDateFunction";
+import { TransListStateItem } from "types/global";
 
-const InStoreOrdersBox = ({ allTransactions }) => {
+const InStoreOrdersBox = ({
+  allTransactions,
+}: {
+  allTransactions: TransListStateItem[];
+}) => {
   const [period, setperiod] = useState("Today");
   const [details, setdetails] = useState({ orders: 0, revenue: 0 });
 
   useEffect(() => {
-    const calculateTotals = (transactions) => {
+    const calculateTotals = (transactions: TransListStateItem[]) => {
       let totalRevenue = 0;
       let totalOrders = 0;
       transactions.forEach((transaction) => {
         if (transaction.method === "inStoreOrder") {
-          totalRevenue += parseFloat(transaction.total);
+          totalRevenue += parseFloat(transaction.total ?? "0");
           totalOrders += 1;
         }
       });
       return { orders: totalOrders, revenue: totalRevenue.toFixed(0) };
     };
 
-    const getDateRange = (period) => {
+    const getDateRange = (period: string) => {
       const today = new Date();
+      const weekStart = new Date(
+        today.setDate(today.getDate() - today.getDay())
+      );
+      const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      const yearStart = new Date(today.getFullYear(), 0, 1);
+      const yearEnd = new Date(today.getFullYear(), 11, 31);
+
       switch (period) {
         case "Today":
           return {
@@ -31,28 +45,16 @@ const InStoreOrdersBox = ({ allTransactions }) => {
             end: new Date().toDateString(),
           };
         case "This Week":
-          const weekStart = new Date(
-            today.setDate(today.getDate() - today.getDay())
-          );
-          const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
           return {
             start: weekStart.toDateString(),
             end: weekEnd.toDateString(),
           };
         case "This Month":
-          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-          const monthEnd = new Date(
-            today.getFullYear(),
-            today.getMonth() + 1,
-            0
-          );
           return {
             start: monthStart.toDateString(),
             end: monthEnd.toDateString(),
           };
         case "This Year":
-          const yearStart = new Date(today.getFullYear(), 0, 1);
-          const yearEnd = new Date(today.getFullYear(), 11, 31);
           return {
             start: yearStart.toDateString(),
             end: yearEnd.toDateString(),
@@ -79,7 +81,7 @@ const InStoreOrdersBox = ({ allTransactions }) => {
     }
 
     const { orders, revenue } = calculateTotals(filteredTransactions);
-    setdetails({ orders, revenue });
+    setdetails({ orders, revenue: parseFloat(revenue) });
   }, [period, allTransactions]);
 
   return (

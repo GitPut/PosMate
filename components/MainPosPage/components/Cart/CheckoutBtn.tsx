@@ -59,7 +59,7 @@ const CheckoutBtn = () => {
             Print({
               method: deliveryChecked ? "deliveryOrder" : "pickupOrder",
               dontAddToOngoing: false,
-              discountAmount,
+              discountAmount: discountAmount as string,
               deliveryChecked,
               changeDue,
               savedCustomerDetails,

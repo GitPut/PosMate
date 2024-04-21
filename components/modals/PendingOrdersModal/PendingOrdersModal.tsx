@@ -16,19 +16,22 @@ import Modal from "react-native-modal-web";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import { setCartState } from "state/state";
 import { auth, db } from "state/firebaseConfig";
+import { CurrentOrderProp, OngoingListStateProp } from "types/global";
+import ParseDate from "components/functional/ParseDate";
 
 const PendingOrdersModal = () => {
   const { height, width } = useWindowDimensions();
-  const [currentOrder, setcurrentOrder] = useState({
+  const [currentOrder, setcurrentOrder] = useState<CurrentOrderProp>({
     element: null,
     index: null,
+    cart: [],
   });
   const xPos = useRef(new Animated.Value(0)).current;
   const { ongoingListState, ongoingOrderListModal } = posHomeState.use();
 
-  const updateOrderHandler = (order) => {
+  const updateOrderHandler = (order: OngoingListStateProp) => {
     setCartState(order.cart);
-    if (order.cartNote?.length > 0) {
+    if (order.cartNote) {
       updatePosHomeState({ cartNote: order.cartNote });
     }
     if (order.isInStoreOrder) {
@@ -69,43 +72,20 @@ const PendingOrdersModal = () => {
     }).start();
   };
 
-  const fadeOut = (customFuncAfter) => {
+  const fadeOut = (customFuncAfter: boolean) => {
     Animated.timing(xPos, {
       toValue: 0,
       duration: 200,
       useNativeDriver: false,
     }).start(() => {
-      if (customFuncAfter !== false) {
-        customFuncAfter();
+      if (customFuncAfter) {
+        //   customFuncAfter();
+        console.log("I turned this off because i dont know what it does");
       } else {
-        setcurrentOrder({ element: null, index: null });
+        setcurrentOrder({ element: null, index: null, cart: [] });
       }
     });
   };
-
-  function parseDate(input) {
-    // Check if the input is a Date object
-    if (Object.prototype.toString.call(input) === "[object Date]") {
-      if (!isNaN(input.getTime())) {
-        // It's a valid Date object, return it
-        return input;
-      }
-    }
-
-    // Check if the input is a string
-    if (typeof input === "string") {
-      const dateObject = new Date(input);
-
-      // Check if the dateObject is a valid Date
-      if (!isNaN(dateObject.getTime())) {
-        // It's a valid Date object, return it
-        return dateObject;
-      }
-    }
-
-    // If neither a Date object nor a valid date string, return null or handle accordingly
-    return null;
-  }
 
   return (
     <Modal
@@ -159,10 +139,9 @@ const PendingOrdersModal = () => {
                         ongoingListState?.map((element, index) => {
                           let date = null;
 
-                          if (element.online) {
-                            date = parseDate(element.date);
-                          } else {
-                            date = element.date.toDate();
+                          const parsedDate = ParseDate(element.date);
+                          if (parsedDate !== null) {
+                            date = parsedDate;
                           }
 
                           let cartString = "";
@@ -172,7 +151,7 @@ const PendingOrdersModal = () => {
                               cartItem.name
                             }\n`;
 
-                            if (cartItem.quantity > 1) {
+                            if (cartItem.quantity) {
                               cartString += `     Quantity: ${cartItem.quantity}\n`;
                               cartString += `     Price: $${
                                 cartItem.price * cartItem.quantity
@@ -209,7 +188,6 @@ const PendingOrdersModal = () => {
                               cartString={cartString}
                               key={index}
                               setcurrentOrder={setcurrentOrder}
-                              updateOrderHandler={updateOrderHandler}
                               fadeIn={fadeIn}
                             />
                           );
@@ -248,10 +226,9 @@ const PendingOrdersModal = () => {
                       <PendingOrderShowDetails
                         currentOrder={currentOrder}
                         updateOrderHandler={updateOrderHandler}
-                        fadeIn={fadeIn}
                         fadeOut={fadeOut}
                         setcurrentOrder={setcurrentOrder}
-                        setongoingOrderListModal={(val) =>
+                        setongoingOrderListModal={(val: boolean) =>
                           updatePosHomeState({
                             ongoingOrderListModal: val,
                           })

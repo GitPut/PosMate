@@ -1,21 +1,27 @@
-import React, { Component, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { StyleSheet, View, Text, Pressable, TextInput } from "react-native";
-import { Entypo, Ionicons, Feather } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
 import { updateTransList } from "state/firebaseFunctions";
 import { myDeviceDetailsState, storeDetailState } from "state/state";
 import { useAlert } from "react-alert";
 import qz from "qz-tray";
+import { CurrentOrderProp, OngoingListStateProp } from "types/global";
+
+interface FinishPaymentCashProps {
+  currentOrder: CurrentOrderProp;
+  fadeIn: () => void;
+  fadeOut: (customFuncAfter: boolean) => void;
+  setcurrentOrder: Dispatch<SetStateAction<CurrentOrderProp>>;
+  updateOrderHandler: (order: OngoingListStateProp) => void; // Add this line
+}
 
 function FinishPaymentCash({
   currentOrder,
-  updateOrderHandler,
-  fadeIn,
   fadeOut,
   setcurrentOrder,
-}) {
-  const { element, index, type, cartString, date } = currentOrder;
-  const total = element?.total ? element?.total : 0;
+}: FinishPaymentCashProps) {
+  const { element } = currentOrder;
+  const total = element?.total ? element?.total : "0";
   const [cash, setCash] = useState("");
   const storeDetails = storeDetailState.use();
   const myDeviceDetails = myDeviceDetailsState.use();
@@ -42,11 +48,11 @@ function FinishPaymentCash({
       storeDetails.phoneNumber + "\x0A", // text and line break
       "\x0A",
       "Pickup Order Paid" + "\x0A", // text and line break
-      `Transaction ID ${element.transNum}` + "\x0A",
+      `Transaction ID ${element?.transNum}` + "\x0A",
       "\x0A",
-      `Customer Name: ${element.customer.name}` + "\x0A", // text and line break
+      `Customer Name: ${element?.customer.name}` + "\x0A", // text and line break
       "\x0A",
-      `Customer Phone: ${element.customer.phone}` + "\x0A", // text and line break
+      `Customer Phone: ${element?.customer.phone}` + "\x0A", // text and line break
       "\x0A",
       "\x0A",
       "\x0A",
@@ -85,6 +91,7 @@ function FinishPaymentCash({
       qz.websocket
         .connect()
         .then(function () {
+          if (!myDeviceDetails.printToPrinter) return;
           const config = qz.configs.create(myDeviceDetails.printToPrinter);
           return qz.print(config, data);
         })
@@ -94,7 +101,9 @@ function FinishPaymentCash({
             err.message.includes("A printer must be specified before printing")
           ) {
             alertP.error("You must specify a printer in device settings");
-          } else if (err.message.includes("Unable to establish connection with QZ")) {
+          } else if (
+            err.message.includes("Unable to establish connection with QZ")
+          ) {
             alertP.error(
               "You do not have Divine POS Helper installed. Please download from general settings"
             );
@@ -109,13 +118,15 @@ function FinishPaymentCash({
           }
         });
     } else {
-      alertP.error('Please set up a device and printer in "Settings -> Devices"');
+      alertP.error(
+        'Please set up a device and printer in "Settings -> Devices"'
+      );
     }
 
     db.collection("users")
       .doc(auth.currentUser?.uid)
       .collection("pendingOrders")
-      .doc(currentOrder.element.id)
+      .doc(currentOrder?.element?.id)
       .delete();
     updateTransList(currentOrder.element);
     setcurrentOrder({ element: null, index: null });
@@ -125,7 +136,7 @@ function FinishPaymentCash({
     db.collection("users")
       .doc(auth.currentUser?.uid)
       .collection("pendingOrders")
-      .doc(currentOrder.element.id)
+      .doc(currentOrder.element?.id)
       .delete();
     updateTransList(currentOrder.element);
     setcurrentOrder({ element: null, index: null });
@@ -135,9 +146,7 @@ function FinishPaymentCash({
     <View style={styles.container}>
       <Text style={styles.paymentDetailsLabel}>Payment Details</Text>
       <View style={styles.mainPartGroup}>
-        <Text style={styles.orderTotal}>
-          Total: ${isNaN(total) ? 0 : total}
-        </Text>
+        <Text style={styles.orderTotal}>Total: ${total ?? 0}</Text>
         <TextInput
           style={styles.amountPaidTxtInput}
           placeholder="Enter Cash Recieved"

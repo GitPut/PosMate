@@ -1,7 +1,19 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import React from "react";
+import { StyleSheet, Text, Pressable, ViewStyle } from "react-native";
 
-function PercentageBtn({ percentageAmount, style, isSelected, onPress }) {
+interface PercentageBtnProps {
+  percentageAmount: string;
+  style?: ViewStyle;
+  isSelected: boolean;
+  onPress: () => void;
+}
+
+function PercentageBtn({
+  percentageAmount,
+  style,
+  isSelected,
+  onPress,
+}: PercentageBtnProps) {
   return (
     <Pressable
       style={[

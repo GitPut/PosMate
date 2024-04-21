@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -9,17 +9,32 @@ import {
 } from "react-native";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 
-function GeneralDropdown({
-  style,
-  placeholder,
-  value,
-  setValue,
-  options,
-  scrollY, 
-  isDefaultValueDropdown,
-}) {
-  const dropdownRef = useRef(); // Reference to the original button
-  const [dropdownLayout, setDropdownLayout] = useState();
+interface GeneralDropdownProps<T> {
+  placeholder: string;
+  value: string | null;
+  setValue: T;
+  options: Array<{ label: string; value: string }> | string[];
+  scrollY: number;
+  isDefaultValueDropdown?: boolean | null;
+}
+
+// Define separate function signatures for setValue based on the type of options
+type SetValueFunction =
+  | ((value: string | null, index?: number) => void)
+  | ((value: { label: string; value: string; id?: string }, index?: number) => void);
+
+// Define function overloads for setValue
+function GeneralDropdown(
+  props: GeneralDropdownProps<SetValueFunction>
+): JSX.Element {
+  const { placeholder, value, setValue, options, scrollY } = props;
+  const dropdownRef = useRef<View>(null); // Reference to the original button
+  const [dropdownLayout, setDropdownLayout] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>();
   const [openDropdown, setopenDropdown] = useState(false);
 
   useEffect(() => {
@@ -44,7 +59,6 @@ function GeneralDropdown({
       <Pressable
         style={styles.dropdown}
         onPress={() => setopenDropdown((prev) => !prev)}
-        activeOpacity={1}
         ref={dropdownRef}
       >
         <Text style={styles.placeholder}>{value ? value : placeholder}</Text>
@@ -115,33 +129,50 @@ function GeneralDropdown({
                   borderColor: "#9e9e9e",
                 }}
               >
-                {options.map((option, listIndex) => (
-                  <Pressable
-                    key={listIndex}
-                    onPress={() => {
-                      setValue(option, listIndex);
-                      setopenDropdown(false);
-                    }}
-                    style={[
-                      {
-                        width: "100%",
-                        height: 50,
-                        backgroundColor: "white",
-                        padding: 10,
-                        justifyContent: "center",
-                      },
-                      listIndex < options.length - 1 && {
-                        borderBottomWidth: 1,
-                        borderColor: "#9e9e9e",
-                      },
-                    ]}
-                    activeOpacity={1}
-                  >
-                    <Text style={styles.placeholder}>
-                      {isDefaultValueDropdown ? option.label : option}
-                    </Text>
-                  </Pressable>
-                ))}
+                {options.map((option, listIndex) => {
+                  let valueTxt: string = "";
+                  if (typeof option === "object" && "label" in option) {
+                    valueTxt = option.label;
+                  } else {
+                    valueTxt = option;
+                  }
+
+                  return (
+                    <Pressable
+                      key={listIndex}
+                      onPress={() => {
+                        if (typeof option === "object") {
+                          setValue(
+                            option as {
+                              label: string;
+                              value: string;
+                              id?: string;
+                            },
+                            listIndex
+                          );
+                        } else {
+                          setValue(option as string, listIndex);
+                        }
+                        setopenDropdown(false);
+                      }}
+                      style={[
+                        {
+                          width: "100%",
+                          height: 50,
+                          backgroundColor: "white",
+                          padding: 10,
+                          justifyContent: "center",
+                        },
+                        listIndex < options.length - 1 && {
+                          borderBottomWidth: 1,
+                          borderColor: "#9e9e9e",
+                        },
+                      ]}
+                    >
+                      <Text style={styles.placeholder}>{valueTxt}</Text>
+                    </Pressable>
+                  );
+                })}
               </ScrollView>
             )}
           </View>

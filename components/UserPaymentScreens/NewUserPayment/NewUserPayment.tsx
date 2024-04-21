@@ -17,14 +17,18 @@ import SideBar from "./components/SideBar";
 import DetailsStage from "./components/DetailsStage";
 import { AddressType } from "types/global";
 
-const NewUserPayment = ({ resetLoader }) => {
+interface NewUserPaymentProps {
+  resetLoader: () => void;
+}
+
+const NewUserPayment = ({ resetLoader }: NewUserPaymentProps) => {
   const [planType, setplanType] = useState<string | null>(null);
   const [stageNum, setstageNum] = useState(1);
   const storeDetails = storeDetailState.use();
   const [storeName, setstoreName] = useState(storeDetails.name);
   const [phoneNumber, setphoneNumber] = useState(storeDetails.phoneNumber);
-  const [address, setaddress] = useState<string | AddressType>(
-    storeDetails.address
+  const [address, setaddress] = useState<null | AddressType>(
+    storeDetails.address ? storeDetails.address : null
   );
   const [website, setwebsite] = useState(storeDetails.website);
   const [paymentTerm, setpaymentTerm] = useState<string>("monthly");
@@ -94,7 +98,7 @@ const NewUserPayment = ({ resetLoader }) => {
       }
       await db
         .collection("users")
-        .doc(auth.currentUser.uid)
+        .doc(auth.currentUser?.uid)
         .collection("checkout_sessions")
         .add({
           price: priceId, // todo price Id from your products price in the Stripe Dashboard

@@ -7,8 +7,15 @@ import { logout } from "state/firebaseFunctions";
 import Select from "react-select";
 import { useAlert } from "react-alert";
 
-const TrialEnded = ({ resetLoader }) => {
-  const [planType, setplanType] = useState({
+interface TrialEndedProps {
+  resetLoader: () => void;
+}
+
+const TrialEnded = ({ resetLoader }: TrialEndedProps) => {
+  const [planType, setplanType] = useState<{
+    value: string;
+    label: string;
+  } | null>({
     value: "monthly",
     label: "Monthly",
   });
@@ -16,6 +23,7 @@ const TrialEnded = ({ resetLoader }) => {
   const alertP = useAlert();
 
   const Checkout = async () => {
+    if (!planType) return;
     resetLoader();
     setloading(true);
 
@@ -30,7 +38,7 @@ const TrialEnded = ({ resetLoader }) => {
     // }
     await db
       .collection("users")
-      .doc(auth.currentUser.uid)
+      .doc(auth.currentUser?.uid)
       .collection("checkout_sessions")
       .add({
         price: priceId, // todo price Id from your products price in the Stripe Dashboard
@@ -86,10 +94,10 @@ const TrialEnded = ({ resetLoader }) => {
           </View>
           <Text style={styles.allYearPayment}>Choose A Plan To Continue</Text>
           <View style={styles.group6}>
-            {planType.value === "monthly" && (
+            {planType?.value === "monthly" && (
               <Text style={styles.overview1}>$50.00 CAD</Text>
             )}
-            {planType.value === "yearly" && (
+            {planType?.value === "yearly" && (
               <Text style={styles.overview1}>$480.00 CAD</Text>
             )}
             <Text style={styles.monthly5}>/</Text>
@@ -106,7 +114,7 @@ const TrialEnded = ({ resetLoader }) => {
               onChange={(e) => setplanType(e)}
             />
           </View>
-          {planType.value === "yearly" && (
+          {planType?.value === "yearly" && (
             <Text style={{ fontSize: 12, color: "red", marginBottom: 15 }}>
               Paying anually saves you $10 a month!
             </Text>

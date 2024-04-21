@@ -1,28 +1,33 @@
 import { entity } from "simpler-state";
-import { AddressType } from "types/global";
+import {
+  AddressType,
+  CartItemProp,
+  CustomerProp,
+  Device,
+  Employee,
+  MyDeviceDetailsProps,
+  ProductProp,
+  StoreDetailsProps,
+  TransListStateItem,
+  UserStoreStateProps,
+} from "types/global";
 
-export const userState = entity<null>(null);
+export const cartState = entity<CartItemProp[]>([]);
 
-export const setUserState = (val: any): void => {
-  userState.set(val);
-};
-
-export const cartState = entity<any[]>([]);
-
-export const setCartState = (val: any[]): void => {
+export const setCartState = (val: CartItemProp[]): void => {
   cartState.set(val);
 };
 
-export const addCartState = (val: any, currentState: any[]): void => {
+export const addCartState = (val: CartItemProp, currentState: CartItemProp[]): void => {
   const doesExist = currentState.findIndex(
-    (item: any) =>
+    (item: CartItemProp) =>
       item.name === val.name &&
       JSON.stringify(item.options) === JSON.stringify(val.options) &&
       item.extraDetails === val.extraDetails
   );
 
   if (doesExist !== -1) {
-    const newState = currentState.map((item: any) => {
+    const newState = currentState.map((item: CartItemProp) => {
       const copyItem = { ...item };
       delete copyItem.quantity;
 
@@ -34,62 +39,45 @@ export const addCartState = (val: any, currentState: any[]): void => {
     });
     cartState.set(newState);
   } else {
-    cartState.set((prevState: any[]) => [...prevState, val]);
+    cartState.set([...currentState, val]);
   }
 };
 
-export const userStoreState = entity<{ products: any[]; categories: any[] }>({
+export const userStoreState = entity<UserStoreStateProps>({
   products: [],
   categories: [],
 });
 
-export const updateUserStoreState = (val: any): void => {
-  userStoreState.set((prevState: any) => ({
-    ...prevState,
-    ...val,
-  }));
+export const updateUserStoreState = (val: Partial<UserStoreStateProps>) => {
+  userStoreState.set({ ...userStoreState.get(), ...val });
 };
 
-export const setUserStoreState = (val: any): void => {
-  // console.log("Setting user store state: ", val);
+export const setUserStoreState = (val: UserStoreStateProps) => {
   userStoreState.set(val);
 };
 
-export const woocommerceState = entity<{
+interface WoocommerceStateProps {
   apiUrl: string;
   ck: string;
   cs: string;
   useWoocommerce: boolean;
-}>({
+}
+
+export const woocommerceState = entity<WoocommerceStateProps>({
   apiUrl: "",
   ck: "",
   cs: "",
   useWoocommerce: false,
 });
 
-export const setWoocommerceState = (val: any): void => {
+export const setWoocommerceState = (val: WoocommerceStateProps): void => {
   woocommerceState.set(val);
 };
 
-interface StoreDetailsStateProps {
-  name: string;
-  address: AddressType;
-  phoneNumber: string;
-  website: string;
-  comSelected: string;
-  deliveryPrice: string;
-  settingsPassword: string;
-  taxRate: string;
-  acceptDelivery: boolean;
-  deliveryRange: string;
-}
-
-export const storeDetailState = entity<StoreDetailsStateProps>({
+export const storeDetailState = entity<StoreDetailsProps>({
   name: "",
-  address: "",
   phoneNumber: "",
   website: "",
-  comSelected: "",
   deliveryPrice: "",
   settingsPassword: "",
   taxRate: "",
@@ -97,26 +85,22 @@ export const storeDetailState = entity<StoreDetailsStateProps>({
   deliveryRange: "",
 });
 
-export const setStoreDetailState = (val: any): void => {
+export const setStoreDetailState = (val: StoreDetailsProps): void => {
   storeDetailState.set(val);
 };
 
-export const trialDetailsState = entity<{ endDate: null; hasEnded: null }>({
+interface TrialDetailsStateProps {
+  endDate: Date | null;
+  hasEnded: boolean | null;
+}
+
+export const trialDetailsState = entity<TrialDetailsStateProps>({
   endDate: null,
   hasEnded: null,
 });
 
-export const setTrialDetailsState = (val: any): void => {
+export const setTrialDetailsState = (val: TrialDetailsStateProps): void => {
   trialDetailsState.set(val);
-};
-
-export const tutorialDetailsState = entity<{ complete: null; step: null }>({
-  complete: null,
-  step: null,
-});
-
-export const setTutorialDetailsState = (val: any): void => {
-  tutorialDetailsState.set(val);
 };
 
 export const isSignedInSettingsState = entity<boolean>(false);
@@ -125,37 +109,13 @@ export const setIsSignedInSettingsState = (val: boolean): void => {
   isSignedInSettingsState.set(val);
 };
 
-export const selectedProductState = entity<any>({});
+export const customersList = entity<CustomerProp[]>([]);
 
-export const setSelectedProductState = (val: any): void => {
-  selectedProductState.set(val);
-};
-
-interface Customer {
-  name: string;
-  phone: string;
-  address: string | null;
-  buzzCode: string | null;
-  unitNumber: string | null;
-  orders: any[];
-  id: string;
-}
-
-export const customersList = entity<Customer[]>([]);
-
-export const setCustomersList = (val: Customer[]): void => {
+export const setCustomersList = (val: CustomerProp[]): void => {
   customersList.set(val);
 };
 
-export const myDeviceDetailsState = entity<{
-  name: null;
-  id: null;
-  docID: null;
-  useDifferentDeviceToPrint: boolean;
-  printToPrinter: null;
-  sendPrintToUserID: null;
-  printOnlineOrders: boolean;
-}>({
+export const myDeviceDetailsState = entity<MyDeviceDetailsProps>({
   name: null,
   id: null,
   docID: null,
@@ -165,7 +125,7 @@ export const myDeviceDetailsState = entity<{
   printOnlineOrders: false,
 });
 
-export const setMyDeviceDetailsState = (val: any): void => {
+export const setMyDeviceDetailsState = (val: MyDeviceDetailsProps): void => {
   myDeviceDetailsState.set(val);
 };
 
@@ -181,20 +141,22 @@ export const resetMyDeviceDetailsState = (): void => {
   });
 };
 
-export const employeesState = entity<any[]>([]);
+export const employeesState = entity<Employee[]>([]);
 
-export const setEmployeesState = (val: any[]): void => {
+export const setEmployeesState = (val: Employee[]): void => {
   employeesState.set(val);
 };
 
-export const onlineStoreState = entity<{
+interface OnlineStoreStateProps {
   onlineStoreActive: boolean;
   onlineStoreSetUp: boolean;
   urlEnding: string;
-  stripePublicKey: string;
-  stripeSecretKey: string;
-  paidStatus: null;
-}>({
+  stripePublicKey: string | null;
+  stripeSecretKey: string | null;
+  paidStatus: string | null;
+}
+
+export const onlineStoreState = entity<OnlineStoreStateProps>({
   onlineStoreActive: false,
   onlineStoreSetUp: false,
   urlEnding: "",
@@ -203,46 +165,48 @@ export const onlineStoreState = entity<{
   paidStatus: null,
 });
 
-export const setOnlineStoreState = (val: any): void => {
+export const setOnlineStoreState = (val: OnlineStoreStateProps) => {
   onlineStoreState.set(val);
 };
 
-export const deviceIdState = entity<null>(null);
+export const deviceIdState = entity<string | null>(null);
 
-export const setDeviceIdState = (val: any): void => {
+export const setDeviceIdState = (val: string | null): void => {
   deviceIdState.set(val);
 };
 
-export const deviceTreeState = entity<{
+interface DeviceTreeProps {
+  devices: Device[];
   extraDevicesPayingFor: number;
-  devices: any[];
-}>({
+}
+
+export const deviceTreeState = entity<DeviceTreeProps>({
   extraDevicesPayingFor: 0,
   devices: [],
 });
 
-export const setDeviceTreeState = (val: any): void => {
+export const setDeviceTreeState = (val: DeviceTreeProps): void => {
   deviceTreeState.set(val);
 };
 
-export const transListState = entity<any[]>([]);
+export const transListState = entity<TransListStateItem[]>([]);
 
-export const setTransListState = (val: any[]): void => {
+export const setTransListState = (val: TransListStateItem[]): void => {
   transListState.set(val);
 };
 
-export const transListTableOrgState = entity<any[]>([]);
+export const transListTableOrgState = entity<TransListStateItem[]>([]);
 
-export const setTransListTableOrgState = (val: any[]): void => {
+export const setTransListTableOrgState = (val: TransListStateItem[]): void => {
   transListTableOrgState.set(val);
 };
 
 interface ProductBuilderStateProps {
-  product: object | null;
+  product: ProductProp | null;
   itemIndex?: number | null;
-  imageUrl?: string;
-  isOnlineOrder: boolean;
-  isOpen: boolean;
+  imageUrl?: string | null;
+  isOnlineOrder?: boolean | null;
+  isOpen: boolean | null;
 }
 
 export const ProductBuilderState = entity<ProductBuilderStateProps>({
@@ -281,17 +245,17 @@ interface OrderDetailsStateProps {
   total: string | null;
   method: "deliveryOrder" | "pickupOrder" | null;
   online: boolean;
-  delivery: any | null;
-  address: any | null;
+  delivery: boolean | null;
+  address: AddressType | null;
   customer: {
     name: string;
     phone: string;
     email: string;
-    address: any | null;
+    address: AddressType | null;
     buzzCode?: string;
     unitNumber?: string;
   };
-  cart: any[];
+  cart: CartItemProp[];
   page: number;
 }
 

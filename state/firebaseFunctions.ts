@@ -1,3 +1,4 @@
+import { TransListStateItem } from "types/global";
 import { auth, db } from "./firebaseConfig";
 
 export const signIn = (email: string, password: string) =>
@@ -38,7 +39,7 @@ export const signUp = (
     }
   });
 
-export const updateData = (categories: any) => {
+export const updateData = (categories: string[]) => {
   db.collection("users")
     .doc(auth.currentUser?.uid)
     .update({
@@ -47,13 +48,13 @@ export const updateData = (categories: any) => {
     .catch((e) => console.log("ERROR HAS OCCURE FB: ", e));
 };
 
-export const updateWooCredentials = (wooCredentials: any) => {
-  db.collection("users").doc(auth.currentUser?.uid).update({
-    wooCredentials: wooCredentials,
-  });
-};
+// export const updateWooCredentials = (wooCredentials: any) => {
+//   db.collection("users").doc(auth.currentUser?.uid).update({
+//     wooCredentials: wooCredentials,
+//   });
+// };
 
-export const updateTransList = (receipt: any) => {
+export const updateTransList = (receipt: TransListStateItem) => {
   db.collection("users")
     .doc(auth.currentUser?.uid)
     .collection("transList")

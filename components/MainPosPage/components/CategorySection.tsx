@@ -2,11 +2,17 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import CategoryBtn from './cartOrder/CategoryBtn';
 import { updatePosHomeState } from 'state/posHomeState';
+import { UserStoreStateProps } from 'types/global';
+
+interface CategorySectionProps {
+    catalog: UserStoreStateProps;
+    section: string;
+}
 
 const CategorySection = ({
     catalog,
     section,
-}) => {
+}: CategorySectionProps) => {
   return (
     <View style={styles.categoryContainer}>
       <Text style={styles.lblTxt}>Menu Category</Text>
@@ -35,7 +41,7 @@ const CategorySection = ({
                       catalog.products.findIndex(
                         (x) => x.category === category && x.hasImage
                       )
-                    ]?.imageUrl
+                    ]?.imageUrl ?? null
                   }
                 />
               );
@@ -49,7 +55,6 @@ const CategorySection = ({
                   }}
                   isSelected={section === category}
                   style={styles.categoryBtn}
-                  imageUrl={null}
                 />
               );
             }

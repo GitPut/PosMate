@@ -3,8 +3,6 @@ import {
   useWindowDimensions,
   Image,
   Animated,
-  TextInput,
-  Modal,
   StyleSheet,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
@@ -22,18 +20,19 @@ import {
   setProductBuilderState,
   setStoreDetailState,
 } from "state/state";
+import { ProductProp, UserStoreStateProps } from "types/global";
 
 const OrderPage = () => {
   const history = useHistory();
   const { urlEnding } = useParams();
-  const [catalog, setcatalog] = useState({
+  const [catalog, setcatalog] = useState<UserStoreStateProps>({
     categories: [],
     products: [],
   });
   const orderDetails = OrderDetailsState.use();
   const page = orderDetails.page;
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  const [data, setdata] = useState([]);
+  const [data, setdata] = useState<ProductProp[]>([]);
   const screenWidth = useWindowDimensions().width;
 
   const customSort = (a, b) => {
@@ -62,7 +61,7 @@ const OrderPage = () => {
           history.push("/404");
         }
 
-        const products = [];
+        const products: ProductProp[] = [];
 
         setProductBuilderState({
           product: null,
@@ -84,16 +83,29 @@ const OrderPage = () => {
           .then((docs) => {
             if (!docs.empty) {
               docs.forEach((element) => {
-                products.push(element.data());
+                const productData = element.data();
+                products.push({
+                  ...productData,
+                  name: productData.name,
+                  price: productData.price,
+                  description: productData.description,
+                  options: productData.options,
+                  id: productData.id,
+                });
               });
               // Move logging and operations that depend on 'products' being populated inside the .then() block
               if (products.length > 0) {
                 setdata([]);
                 products.sort(customSort).map((product, index) => {
                   setdata((prev) => {
-                    const productsWithCategory = prev.filter(
-                      (item) => item.category === product.category
-                    );
+                    const productsWithCategory: ProductProp[] = [];
+
+                    prev.forEach((item) => {
+                      if (item.category === product.category) {
+                        productsWithCategory.push(item);
+                      }
+                    });
+
                     if (productsWithCategory.length > 0) {
                       const indexOfLastItem = prev.indexOf(
                         productsWithCategory[productsWithCategory.length - 1]
@@ -138,7 +150,11 @@ const OrderPage = () => {
       toValue: 0,
       duration: 500,
       useNativeDriver: false,
-    }).start(() => (document.getElementById("loader").style.display = "none"));
+    }).start(() => {
+      const loader = document.getElementById("loader");
+      if (!loader) return;
+      loader.style.display = "none";
+    });
   };
 
   return (

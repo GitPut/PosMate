@@ -14,12 +14,12 @@ import { Feather } from "@expo/vector-icons";
 import { useAlert } from "react-alert";
 
 function Login() {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
   const history = useHistory();
   const { width } = useWindowDimensions();
-  const [useSmallDesign, setuseSmallDesign] = useState(width < 1024);
-  const [secureEntry, setsecureEntry] = useState(true);
+  const [useSmallDesign, setuseSmallDesign] = useState<boolean>(width < 1024);
+  const [secureEntry, setsecureEntry] = useState<boolean>(true);
   const alertP = useAlert();
 
   useEffect(() => {
@@ -131,7 +131,7 @@ function Login() {
               </Pressable>
               <Pressable onPress={() => history.push("/sign-up")}>
                 <Text style={styles.signUpTxt}>
-                  Don't have an account? Sign Up
+                  Don&apos;t have an account? Sign Up
                 </Text>
               </Pressable>
               <Pressable onPress={() => history.push("/reset-password")}>

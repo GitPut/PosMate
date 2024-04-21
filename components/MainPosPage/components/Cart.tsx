@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import CartItem from "./cartOrder/CartItem";
-import UntitledComponent from "./cartOrder/UntitledComponent";
+import CartAmountDisplayRow from "./cartOrder/CartAmountDisplayRow";
 import { MaterialIcons } from "@expo/vector-icons";
 import CheckoutBtn from "./Cart/CheckoutBtn";
 import {
@@ -21,11 +21,7 @@ import {
   setOrderDetailsState,
   storeDetailState,
 } from "state/state";
-import {
-  posHomeState,
-  setPosHomeState,
-  updatePosHomeState,
-} from "state/posHomeState";
+import { posHomeState, updatePosHomeState } from "state/posHomeState";
 
 const Cart = () => {
   const { discountAmount, deliveryChecked, cartSub, cartNote } =
@@ -43,11 +39,11 @@ const Cart = () => {
         let newVal = 0;
         for (let i = 0; i < cart.length; i++) {
           try {
-            if (cart[i].quantity > 1) {
-              newVal += parseFloat(cart[i].price) * cart[i].quantity;
+            if (cart[i].quantity ?? 0 > 1) {
+              newVal += parseFloat(cart[i].price ?? '0')* parseFloat(cart[i].quantity ?? '1');
               // console.log("Cart item quantity ", cart[i].quantity);
             } else {
-              newVal += parseFloat(cart[i].price);
+              newVal += parseFloat(cart[i].price ?? '0');
             }
           } catch (error) {
             console.log(error);
@@ -140,16 +136,18 @@ const Cart = () => {
                 }}
                 decreaseAction={() => {
                   const local = structuredClone(cart);
-                  local[index].quantity--;
+                  const quantity = local[index].quantity ?? false;
+                  if (quantity && parseFloat(quantity) > 1) {
+                    local[index].quantity = (parseFloat(quantity) - 1).toString();
+                  } else {
+                    local[index].quantity = '1';
+                  }
                   setCartState(local);
                 }}
                 increaseAction={() => {
                   const local = structuredClone(cart);
-                  if (local[index].quantity) {
-                    local[index].quantity++;
-                  } else {
-                    local[index].quantity = 2;
-                  }
+                  const quantity = local[index].quantity ?? false;
+                  local[index].quantity = (quantity ? parseFloat(quantity) + 1 : 2).toString();
                   setCartState(local);
                 }}
               />
@@ -195,7 +193,7 @@ const Cart = () => {
               }}
             />
             <View>
-              <UntitledComponent
+              <CartAmountDisplayRow
                 amountValue={
                   discountAmount
                     ? discountAmount.includes("%")
@@ -232,7 +230,7 @@ const Cart = () => {
             </View>
           </View>
           {deliveryChecked && parseFloat(storeDetails.deliveryPrice) && (
-            <UntitledComponent
+            <CartAmountDisplayRow
               amountValue={`$${parseFloat(storeDetails.deliveryPrice).toFixed(
                 2
               )}`}
@@ -240,7 +238,7 @@ const Cart = () => {
               style={styles.discountRow}
             />
           )}
-          <UntitledComponent
+          <CartAmountDisplayRow
             amountValue={
               deliveryChecked &&
               parseFloat(storeDetails.deliveryPrice) &&
@@ -253,7 +251,7 @@ const Cart = () => {
             amountLbl="Subtotal"
             style={styles.subtotalRow}
           />
-          <UntitledComponent
+          <CartAmountDisplayRow
             amountValue={`$${(
               cartSub *
               (parseFloat(storeDetails.taxRate) >= 0

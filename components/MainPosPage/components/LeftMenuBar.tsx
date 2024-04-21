@@ -152,7 +152,7 @@ const LeftMenuBar = () => {
             } else {
               setIsSignedInSettingsState(true);
               history.push("/authed/dashboard");
-              localStorage.setItem("isAuthedBackend", true);
+              localStorage.setItem("isAuthedBackend", 'true');
             }
           }}
         >

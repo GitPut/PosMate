@@ -26,7 +26,7 @@ const Header = ({ onPressLogo, isPosHeader }: HeaderProps) => {
             <Text style={styles.pos}>POS</Text>
           </Pressable>
         )}
-        <HeaderLogoutDropdown isPosHeader={isPosHeader} />
+        <HeaderLogoutDropdown isPosHeader={isPosHeader ? isPosHeader : false} />
       </View>
     </View>
   );

@@ -4,11 +4,16 @@ import { auth, db } from "state/firebaseConfig";
 import { loadStripe } from "@stripe/stripe-js";
 import firebase from "firebase/compat/app";
 import Logo from "assets/dpos-logo-black.png";
-import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
+import { SimpleLineIcons } from "@expo/vector-icons";
 import { logout } from "state/firebaseFunctions";
 import { useAlert } from "react-alert";
 
-const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
+interface PaymentUpdateNotificationProps {
+  resetLoader: () => void;
+  isCanceled: boolean;
+}
+
+const PaymentUpdateNotification = ({ resetLoader, isCanceled } : PaymentUpdateNotificationProps) => {
   const alertP = useAlert();
 
   const sendToCheckout = async () => {
@@ -60,7 +65,7 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
         console.log(response.data);
         window.location = response.data.url;
       })
-      .catch((error) => {
+      .catch(() => {
         alertP.error("Unknown error has occured");
       });
   };
@@ -90,7 +95,7 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
             <Text style={styles.attentionNeeded}>ATTENTION NEEDED</Text>
           </View>
         </View>
-        <Text style={styles.txt1}>We're sad to see you go :(</Text>
+        <Text style={styles.txt1}>We&apos;re sad to see you go :(</Text>
         <Text style={styles.txt2}>
           Please let us make this right! If theres a feature that missing or
           something you dont like about the software, we can change that.

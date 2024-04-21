@@ -4,8 +4,6 @@ import {
   View,
   ScrollView,
   useWindowDimensions,
-  Pressable,
-  Text
 } from "react-native";
 import TotalRevenueBox from "./components/InfoBoxs/TotalRevenueBox";
 import MostOrderedItemsBox from "./components/InfoBoxs/MostOrderedItemsBox";
@@ -14,11 +12,7 @@ import DeliveryOrdersBox from "./components/InfoBoxs/DeliveryOrdersBox";
 import InStoreOrdersBox from "./components/InfoBoxs/InStoreOrdersBox";
 import CustomersBox from "./components/InfoBoxs/CustomersBox";
 import OrderWaitTimeBox from "./components/InfoBoxs/OrderWaitTimeBox";
-import {
-  customersList,
-  transListTableOrgState,
-  storeDetailState,
-} from "state/state";
+import { customersList, transListTableOrgState } from "state/state";
 
 function Dashboard() {
   const { width } = useWindowDimensions();
@@ -32,12 +26,12 @@ function Dashboard() {
       >
         <View style={styles.wrap}>
           <TotalRevenueBox
-            style={width < 1300 && { width: "100%" }}
+            style={width < 1300 ? { width: "100%" } : {}}
             allTransactions={transListTableOrg}
           />
           {width > 1300 && (
             <MostOrderedItemsBox
-              style={null}
+              style={{}}
               allTransactions={transListTableOrg}
             />
           )}
