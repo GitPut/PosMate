@@ -41,8 +41,8 @@ function OptionsItemOpenInner({
   const [highlightedOptionID, sethighlightedOptionID] = useState<string | null>(
     null
   );
-  const DropdownOptions: { label: string; value?: string; id?: string }[] = [];
   const caseList = e.selectedCaseList ?? [];
+  const DropdownOptions: { label: string; value?: string; id?: string }[] = [];
 
   testMap.forEach((testOption) =>
     DropdownOptions.push({
@@ -53,11 +53,13 @@ function OptionsItemOpenInner({
   );
 
   const optionLbls: string[] = [];
-  newProduct.options.forEach((element) => {
-    if (element.label !== e.label && element.label) {
-      optionLbls.push(element.label);
-    }
-  });
+  if (newProduct.options.length > 1) {
+    newProduct.options.forEach((element) => {
+      if (element.label !== e.label && element.label) {
+        optionLbls.push(element.label);
+      }
+    });
+  }
 
   return (
     <View style={styles.innerOptionContainer1}>
@@ -98,7 +100,7 @@ function OptionsItemOpenInner({
                   setnewProductOptions((prev) => {
                     const clone = structuredClone(prev);
                     clone[index] = {
-                      ...e,
+                      ...prev[index],
                       optionType: val,
                     };
                     return clone;
@@ -280,7 +282,7 @@ function OptionsItemOpenInner({
           />
         ))}
       {caseList.length > 0 && <View style={styles.spacer7}></View>}
-      {optionLbls.length > 1 && (
+      {optionLbls.length >= 1 && (
         <View style={[styles.addAnotherSelectionBtnRow1]}>
           <Pressable
             style={styles.addAnotherSelectionBtn2}

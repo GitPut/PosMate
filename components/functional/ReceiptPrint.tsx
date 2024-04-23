@@ -153,7 +153,7 @@ function ReceiptPrint(
         parseFloat(storeDetails.taxRate) >= 0 ? storeDetails.taxRate : "13"
       }% Tax): ` +
         "$" +
-        total +
+        total.toFixed(2) +
         "\x0A" +
         "\x0A",
       "------------------------------------------" + "\x0A",
@@ -275,7 +275,7 @@ function ReceiptPrint(
         parseFloat(storeDetails.taxRate) >= 0 ? storeDetails.taxRate : "13"
       }% Tax): ` +
         "$" +
-        total +
+        total.toFixed(2) +
         "\x0A" +
         "\x0A",
       "------------------------------------------" + "\x0A",
@@ -371,7 +371,7 @@ function ReceiptPrint(
             : "13"
         }% Tax): ` +
           "$" +
-          total +
+          total.toFixed(2) +
           "\x0A" +
           "\x0A",
         "Change Due: " + "$" + element.changeDue + "\x0A" + "\x0A",
@@ -408,7 +408,7 @@ function ReceiptPrint(
             : "13"
         }% Tax): ` +
           "$" +
-          total +
+          total.toFixed(2) +
           "\x0A" +
           "\x0A",
         "------------------------------------------" + "\x0A",

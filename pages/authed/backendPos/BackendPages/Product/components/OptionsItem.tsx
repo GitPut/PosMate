@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { RefObject, useState } from "react";
-import { StyleSheet, View, Text, Pressable, ViewStyle, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  ViewStyle,
+  ScrollView,
+} from "react-native";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import OptionsItemOpenInner from "./OptionsItemOpenInner";
 import { Tooltip } from "react-tooltip";
@@ -86,15 +93,10 @@ function OptionsItem({
             // Calculate the bottom position of the element within the ScrollView
             let elementBottomPosition = y + height;
 
-            const caseList =
-              newProductOptions[index].selectedCaseList ?? []
+            const caseList = newProductOptions[index].selectedCaseList ?? [];
 
-            if (
-              addOptionClicked &&
-              caseList.length > 0
-            ) {
-              elementBottomPosition -=
-                135 * caseList.length;
+            if (addOptionClicked && caseList.length > 0) {
+              elementBottomPosition -= 135 * caseList.length;
               setaddOptionClicked(false);
               if (moveToOptionPos !== null) {
                 elementBottomPosition -=
@@ -199,7 +201,7 @@ function OptionsItem({
                   }));
                   setindexOn(null);
                   scrollToPositionIncluding(100);
-                  setselectedID(item.id ?? '');
+                  setselectedID(item.id ?? "");
                 }
               }}
               nativeID="moveDownBtn"
@@ -240,7 +242,7 @@ function OptionsItem({
                   }));
                   setindexOn(null);
                   scrollToPositionIncluding(-100);
-                  setselectedID(item.id ?? '');
+                  setselectedID(item.id ?? "");
                 }
               }}
               nativeID="moveUpBtn"

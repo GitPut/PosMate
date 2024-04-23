@@ -40,7 +40,7 @@ function OneTimeSelectableOptionGroup({
             <OneTimeSelectableBtn
               key={option.id}
               label={
-                option.priceIncrease ?? 0 > 0
+                parseFloat(option.priceIncrease ?? '0') > 0
                   ? `${option.label} (+$${option.priceIncrease})`
                   : option.label
               }
@@ -50,7 +50,7 @@ function OneTimeSelectableOptionGroup({
                   option: {
                     label: option.label,
                     priceIncrease:
-                      option.priceIncrease !== null ? option.priceIncrease : '0',
+                      option.priceIncrease ?? '0',
                     id: option.id,
                   },
                   listIndex: listIndex,

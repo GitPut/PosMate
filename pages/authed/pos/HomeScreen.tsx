@@ -78,7 +78,7 @@ function HomeScreen() {
             date: doc.data().date,
             method: doc.data().method,
             online: doc.data().online,
-            isInStoreOrder: doc.data().isInStoreOrder,
+            isInStoreOrder: doc.data().method === "inStoreOrder",
           });
           if (
             doc.data().online &&

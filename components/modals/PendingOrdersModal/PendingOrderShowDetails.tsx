@@ -51,7 +51,7 @@ function PendingOrderShowDetails({
       updateOrderHandler({
         ...element,
         index: index,
-        isInStoreOrder: !element?.online && !element?.customer,
+        isInStoreOrder: element?.isInStoreOrder ?? false,
         id: element?.id ?? "", // Assign an empty string if 'element?.id' is undefined
         cart: element?.cart ?? [], // Assign an empty array if 'element?.cart' is undefined
         cartNote: element?.cartNote ?? "", // Assign an empty string if 'element?.cartNote' is undefined
@@ -148,7 +148,7 @@ function PendingOrderShowDetails({
                   updateOrderHandler({
                     ...element,
                     index: index,
-                    isInStoreOrder: !element.online && !element.customer,
+                    isInStoreOrder: element?.isInStoreOrder ?? false,
                     id: element.id,
                     cart: element.cart ?? [],
                     cartNote: element.cartNote ?? "",

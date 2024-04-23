@@ -206,7 +206,7 @@ export type TransListStateItem = {
   transNum?: string;
   changeDue?: string;
   date_created?: string;
-  isInStoreOrder?: string;
+  isInStoreOrder?: boolean;
 };
 
 export type HourItem = {

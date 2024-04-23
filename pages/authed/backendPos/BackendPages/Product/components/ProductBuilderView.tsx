@@ -107,7 +107,7 @@ function ProductBuilderView({ product, imageUrl }: ProductBuilderViewProps) {
                 <View>
                   {myObjProfile.options.map((option, index) => (
                     <DisplayOption
-                      key={index}
+                      key={option.id}
                       e={option}
                       index={index}
                       myObjProfile={myObjProfile}

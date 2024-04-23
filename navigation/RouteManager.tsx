@@ -129,8 +129,8 @@ const RouteManager = () => {
           .doc(user.uid)
           .get()
           .then((doc) => {
-            const products: ProductProp[] = [];
             let extraDevicesPayingFor = 0;
+            const products: ProductProp[] = [];
 
             doc.ref
               .collection("products")
@@ -463,18 +463,47 @@ const RouteManager = () => {
             const unsub = db
               .collection("users")
               .doc(user.uid)
-              .onSnapshot((doc) => {
+              .onSnapshot((updatedDoc) => {
+                const updatedProducts: ProductProp[] = [];
+
+                updatedDoc.ref
+                  .collection("products")
+                  .get()
+                  .then((updatedProductDocs) => {
+                    if (!updatedProductDocs.empty) {
+                      updatedProductDocs.forEach((element) => {
+                        const productData = element.data();
+
+                        updatedProducts.push({
+                          ...productData,
+                          name: productData.name,
+                          price: productData.price,
+                          description: productData.description,
+                          options: productData.options,
+                          id: productData.id,
+                        });
+                      });
+                      updatedProducts.sort(customSort);
+                    }
+                  })
+                  .catch(() =>
+                    // console.log("Error has occured with db products: ", e)
+                    alertP.error(
+                      "An error has occured with starting up the app. Please refresh the page."
+                    )
+                  );
+
                 setUserStoreState({
-                  products: products.sort(customSort),
-                  categories: doc.data()?.categories
-                    ? doc.data()?.categories
+                  products: updatedProducts.sort(customSort),
+                  categories: updatedDoc.data()?.categories
+                    ? updatedDoc.data()?.categories
                     : [],
                 });
-                if (doc.data()?.wooCredentials) {
-                  setWoocommerceState(doc.data()?.wooCredentials);
-                }
-                if (doc.data()?.storeDetails) {
-                  setStoreDetailState(doc.data()?.storeDetails);
+                // if (updatedDoc.data()?.wooCredentials) {
+                //   setWoocommerceState(updatedDoc.data()?.wooCredentials);
+                // }
+                if (updatedDoc.data()?.storeDetails) {
+                  setStoreDetailState(updatedDoc.data()?.storeDetails);
                 }
               });
 
@@ -497,6 +526,7 @@ const RouteManager = () => {
         setisNewUser(false);
         setisSubscribed(false);
         setloading(false);
+        setviewVisible(false);
       }
     });
 

@@ -145,8 +145,8 @@ const Print = ({ ...props }: PrintProps) => {
           name: name,
           phone: phone,
           address: address ?? null,
-          buzzCode: buzzCode,
-          unitNumber: unitNumber,
+          buzzCode: buzzCode ?? null,
+          unitNumber: unitNumber ?? null,
         },
         id: transNum,
       };
@@ -164,14 +164,15 @@ const Print = ({ ...props }: PrintProps) => {
             method: "deliveryOrder",
             cart: finalCart,
             cartNote: cartNote,
-            total: data.total,
+            total: data.total.toFixed(2),
             customer: {
-              name: name,
-              phone: phone,
-              address: address ? address : null,
-              buzzCode: buzzCode,
-              unitNumber: unitNumber,
+              name: name ?? null,
+              phone: phone ?? null,
+              address: address ?? null,
+              buzzCode: buzzCode ?? null,
+              unitNumber: unitNumber ?? null,
             },
+            online: false,
           });
       }
 
@@ -260,12 +261,15 @@ const Print = ({ ...props }: PrintProps) => {
             method: "pickupOrder",
             cart: finalCart,
             cartNote: cartNote,
-            total: data.total,
+            total: data.total.toFixed(2),
             customer: {
-              name: name,
-              phone: phone,
-              address: address ? address : "null",
+              name: name ?? null,
+              phone: phone ?? null,
+              address: address ?? null,
+              buzzCode: buzzCode ?? null,
+              unitNumber: unitNumber ?? null,
             },
+            online: false,
           });
       }
 
@@ -330,14 +334,17 @@ const Print = ({ ...props }: PrintProps) => {
         customer: {
           name: name,
           phone: phone,
-          address: address,
-          buzzCode: buzzCode,
-          unitNumber: unitNumber,
+          address: address ?? null,
+          buzzCode: buzzCode ?? null,
+          unitNumber: unitNumber ?? null,
         },
         changeDue: changeDue,
         paymentMethod: method,
         id: transNum,
+
       };
+
+      console.log('Adding element to pending orders: ', element)
 
       const data = ReceiptPrint(element, storeDetails);
 
@@ -347,11 +354,19 @@ const Print = ({ ...props }: PrintProps) => {
         .add({
           date: today,
           transNum: transNum,
-          total: data.total,
           method: "inStoreOrder",
           paymentMethod: method,
           cart: finalCart,
           cartNote: cartNote,
+          total: data.total.toFixed(2),
+          customer: {
+            name: name ?? null,
+            phone: phone ?? null,
+            address: address ?? null,
+            buzzCode: buzzCode ?? null,
+            unitNumber: unitNumber ?? null,
+          },
+          online: false,
         });
       if (
         myDeviceDetails.sendPrintToUserID &&

@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text, Pressable, ViewStyle } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { TransListStateItem } from "types/global";
+import ParseDate from "components/functional/ParseDate";
 
 interface InvoiceItemProps {
   style?: ViewStyle | ViewStyle[];
@@ -18,10 +19,7 @@ function InvoiceItem({
   baseSelectedRows,
   deleteTransaction,
 }: InvoiceItemProps) {
-  let date;
-  if (typeof item.date === "string") {
-    date = item.date.slice(0, -2);
-  }
+  const date = ParseDate(item.date);
 
   return (
     <View style={[styles.container, style]}>
@@ -48,7 +46,7 @@ function InvoiceItem({
         <Text style={styles.peterPutros}>{item.name ? item.name : "N/A"}</Text>
       </View>
       <View style={styles.dateCont1}>
-        <Text style={styles.may252025}>{date}</Text>
+        <Text style={styles.may252025}>{date?.toLocaleString()}</Text>
       </View>
       <View style={styles.totalCont1}>
         <Text style={styles.total3}>${item.amount}</Text>

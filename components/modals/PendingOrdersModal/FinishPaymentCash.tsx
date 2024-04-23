@@ -130,7 +130,7 @@ function FinishPaymentCash({
       .delete();
     if (!currentOrder.element) return;
     updateTransList(currentOrder.element);
-    setcurrentOrder({ element: null, index: null });
+    setcurrentOrder({ element: null, index: null, date: null });
   };
 
   const PayByCard = () => {
@@ -141,14 +141,16 @@ function FinishPaymentCash({
       .delete();
     if (!currentOrder.element) return;
     updateTransList(currentOrder.element);
-    setcurrentOrder({ element: null, index: null });
+    setcurrentOrder({ element: null, index: null, date: null });
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.paymentDetailsLabel}>Payment Details</Text>
       <View style={styles.mainPartGroup}>
-        <Text style={styles.orderTotal}>Total: ${total ?? 0}</Text>
+        <Text style={styles.orderTotal}>
+          Total: ${parseFloat(total ?? "0").toFixed(2)}
+        </Text>
         <TextInput
           style={styles.amountPaidTxtInput}
           placeholder="Enter Cash Recieved"

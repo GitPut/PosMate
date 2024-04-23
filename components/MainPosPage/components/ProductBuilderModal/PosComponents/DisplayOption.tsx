@@ -110,29 +110,47 @@ const DisplayOption = ({
   const handleValueChange = ({
     option,
     listIndex,
+    isOnlyOneSelectable,
   }: {
     option: OptionsList | null;
     listIndex: number | null;
+    isOnlyOneSelectable?: boolean;
   }) => {
     setMyObjProfile((prev: ProductProp) => {
+      if (!option || isNaN(listIndex!) || listIndex === null) return prev;
       // Create a copy of the options array
       const newOptions = [...prev.options];
 
-      // Clone the profile object to ensure immutability
-      const newProfile = structuredClone(prev);
+      const selectedOptions = newOptions[index].optionsList.filter(
+        (op) => op.selected
+      );
 
-      // Loop through the optionsList array and update the selected property
-      newProfile.options[index].optionsList.forEach((opt: OptionsList) => {
-        opt.selected = false;
-      });
+      const NumOfSelectable = parseFloat(e.numOfSelectable ?? "0");
 
-      // Update the selected property of the specific option
-      if (option && listIndex !== null) {
-        newProfile.options[index].optionsList[listIndex].selected = true;
+      if (NumOfSelectable === 1 || isOnlyOneSelectable) {
+        // console.log("NumOfSelectable === 1 || isOnlyOneSelectable");
+        // Loop through the optionsList array and update the selected property
+        newOptions[index].optionsList.forEach((opt: OptionsList, optIndex) => {
+          if (optIndex !== listIndex) {
+            newOptions[index].optionsList[optIndex].selected = false;
+          } else {
+            newOptions[index].optionsList[optIndex].selected = true;
+            setOptionVal(option);
+          }
+        });
+      } else if (
+        NumOfSelectable > 0 &&
+        selectedOptions.length >= NumOfSelectable
+      ) {
+        // console.log("selectedOptions.length >= NumOfSelectable");
+        // If the number of selected options is greater than the number of selectable options, return
+        newOptions[index].optionsList[listIndex].selected = false;
+      } else {
+        // console.log("option is not selected yet: ", option);
+        // Update the selected property of the specific option
+        newOptions[index].optionsList[listIndex].selected =
+          !newOptions[index].optionsList[listIndex].selected;
       }
-
-      // Update the options array with the modified optionsList
-      newOptions[index] = newProfile.options[index];
 
       // Return the updated state object
       return {
@@ -174,7 +192,13 @@ const DisplayOption = ({
             }: {
               option: OptionsList | null;
               listIndex: number | null;
-            }) => handleValueChange({ option, listIndex })}
+            }) =>
+              handleValueChange({
+                option,
+                listIndex,
+                isOnlyOneSelectable: true,
+              })
+            }
             value={optionVal}
             scrollY={scrollY}
           />

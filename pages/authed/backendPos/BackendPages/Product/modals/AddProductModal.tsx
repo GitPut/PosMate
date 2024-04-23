@@ -1,4 +1,12 @@
-import React, { ChangeEvent, ChangeEventHandler, DetailedHTMLProps, InputHTMLAttributes, useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  ChangeEventHandler,
+  DetailedHTMLProps,
+  InputHTMLAttributes,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   StyleSheet,
   View,
@@ -38,8 +46,8 @@ interface AddProductModalProps {
 
 const customSort = (a: ProductProp, b: ProductProp) => {
   // Handle cases where one or both items don't have a rank
-  const rankA = parseFloat(a.rank ?? '0') || Number.MAX_SAFE_INTEGER;
-  const rankB = parseFloat(b.rank ?? '0') || Number.MAX_SAFE_INTEGER;
+  const rankA = parseFloat(a.rank ?? "0") || Number.MAX_SAFE_INTEGER;
+  const rankB = parseFloat(b.rank ?? "0") || Number.MAX_SAFE_INTEGER;
 
   // Compare based on ranks
   return rankA - rankB;

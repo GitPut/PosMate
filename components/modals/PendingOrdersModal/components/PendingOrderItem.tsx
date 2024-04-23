@@ -53,7 +53,9 @@ function PendingOrderItem({
         <View style={styles.orderNameContainer}>
           <Text style={styles.orderNameLbl}>Order Name:</Text>
           <Text style={styles.orderNameValue}>
-            {element.customer ? element.customer?.name?.toUpperCase() : "N/A"}
+            {element.customer?.length > 0
+              ? element.customer?.name?.toUpperCase()
+              : "N/A"}
           </Text>
         </View>
         <View style={styles.orderNumberContainer}>
@@ -71,12 +73,12 @@ function PendingOrderItem({
               Online Order
             </Text>
           )}
-          {!element.online && element.customer && (
+          {!element.online && element.method !== "inStoreOrder" && (
             <Text style={[styles.orderTypeLabel, { color: "#FF0F00" }]}>
               Phone Order
             </Text>
           )}
-          {!element.online && !element.customer && (
+          {element.method === "inStoreOrder" && (
             <Text style={[styles.orderTypeLabel]}>POS Order</Text>
           )}
           <Text style={styles.orderTime}>
@@ -147,6 +149,7 @@ function PendingOrderItem({
                     .collection("pendingOrders")
                     .doc(element.id)
                     .delete();
+                  // console.log("element", element);
                   updateTransList(element);
                 }
               }

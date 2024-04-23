@@ -50,6 +50,7 @@ function BackendPosContainer(props: { match: { url: string } }) {
 
   const Manage = () => {
     resetLoader();
+    console.log("Awaiting billing portal url");
     firebase
       .functions()
       .httpsCallable("ext-firestore-stripe-payments-createPortalLink")({
@@ -57,6 +58,7 @@ function BackendPosContainer(props: { match: { url: string } }) {
         locale: "auto",
       })
       .then((response) => {
+        console.log("Redirecting to billing portal");
         window.location = response.data.url;
       })
       .catch((error) => {
