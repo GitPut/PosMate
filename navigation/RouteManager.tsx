@@ -460,59 +460,59 @@ const RouteManager = () => {
                 setDeviceTreeState({ devices: devices, extraDevicesPayingFor });
               });
 
-            const unsub = db
-              .collection("users")
-              .doc(user.uid)
-              .onSnapshot((updatedDoc) => {
-                const updatedProducts: ProductProp[] = [];
+            // const unsub = db
+            //   .collection("users")
+            //   .doc(user.uid)
+            //   .onSnapshot((updatedDoc) => {
+            //     const updatedProducts: ProductProp[] = [];
 
-                updatedDoc.ref
-                  .collection("products")
-                  .get()
-                  .then((updatedProductDocs) => {
-                    if (!updatedProductDocs.empty) {
-                      updatedProductDocs.forEach((element) => {
-                        const productData = element.data();
+            //     updatedDoc.ref
+            //       .collection("products")
+            //       .get()
+            //       .then((updatedProductDocs) => {
+            //         if (!updatedProductDocs.empty) {
+            //           updatedProductDocs.forEach((element) => {
+            //             const productData = element.data();
 
-                        updatedProducts.push({
-                          ...productData,
-                          name: productData.name,
-                          price: productData.price,
-                          description: productData.description,
-                          options: productData.options,
-                          id: productData.id,
-                        });
-                      });
-                      updatedProducts.sort(customSort);
-                    }
-                  })
-                  .catch(() =>
-                    // console.log("Error has occured with db products: ", e)
-                    alertP.error(
-                      "An error has occured with starting up the app. Please refresh the page."
-                    )
-                  );
+            //             updatedProducts.push({
+            //               ...productData,
+            //               name: productData.name,
+            //               price: productData.price,
+            //               description: productData.description,
+            //               options: productData.options,
+            //               id: productData.id,
+            //             });
+            //           });
+            //           updatedProducts.sort(customSort);
+            //         }
+            //       })
+            //       .catch(() =>
+            //         // console.log("Error has occured with db products: ", e)
+            //         alertP.error(
+            //           "An error has occured with starting up the app. Please refresh the page."
+            //         )
+            //       );
 
-                setUserStoreState({
-                  products: updatedProducts.sort(customSort),
-                  categories: updatedDoc.data()?.categories
-                    ? updatedDoc.data()?.categories
-                    : [],
-                });
-                // if (updatedDoc.data()?.wooCredentials) {
-                //   setWoocommerceState(updatedDoc.data()?.wooCredentials);
-                // }
-                if (updatedDoc.data()?.storeDetails) {
-                  setStoreDetailState(updatedDoc.data()?.storeDetails);
-                }
-              });
+            //     setUserStoreState({
+            //       products: updatedProducts.sort(customSort),
+            //       categories: updatedDoc.data()?.categories
+            //         ? updatedDoc.data()?.categories
+            //         : [],
+            //     });
+            //     // if (updatedDoc.data()?.wooCredentials) {
+            //     //   setWoocommerceState(updatedDoc.data()?.wooCredentials);
+            //     // }
+            //     if (updatedDoc.data()?.storeDetails) {
+            //       setStoreDetailState(updatedDoc.data()?.storeDetails);
+            //     }
+            //   });
 
             setloading(false);
             setviewVisible(false);
 
-            return () => {
-              unsub();
-            };
+            // return () => {
+            //   unsub();
+            // };
           })
           .catch(() => {
             // console.log("Error has occured with db users: ", e)

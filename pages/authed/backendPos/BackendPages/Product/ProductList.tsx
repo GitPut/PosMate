@@ -11,7 +11,7 @@ import ProductOptionBox from "./components/ProductOptionBox";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   onlineStoreState,
-  setUserStoreState,
+  updateUserStoreState,
   userStoreState,
 } from "state/state";
 import { auth, db } from "state/firebaseConfig";
@@ -70,16 +70,12 @@ function ProductList() {
             .doc(ProductID)
             .delete();
         }
-        setUserStoreState({
-          products: localCatalog.products,
-          categories: catalog.categories,
-        });
+        updateUserStoreState({ products: localCatalog.products });
       }
     });
   };
 
   useEffect(() => {
-    console.log("catalog", catalog);
     catalog.products.map((product) => {
       if (
         product.category === selectedCategory &&

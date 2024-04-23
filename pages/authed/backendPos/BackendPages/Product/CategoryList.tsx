@@ -10,7 +10,7 @@ import {
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   onlineStoreState,
-  setUserStoreState,
+  updateUserStoreState,
   userStoreState,
 } from "state/state";
 import { auth, db } from "state/firebaseConfig";
@@ -47,38 +47,31 @@ function CategoryList() {
           color: "#2b3659",
           confirmButtonColor: "#2b3659",
         });
-        // const localCatalog = structuredClone(catalog);
-        // if (localCatalog.categories.length > 1) {
-        //   // localCatalog.categories.splice(props.id - 2, 1);
-        //   localCatalog.categories = catalog.categories.filter(
-        //     (e) => e !== category
-        //   );
-        // } else {
-        //   localCatalog.categories = [];
-        // }
+        const localCatalog = structuredClone(catalog);
+        if (localCatalog.categories.length > 1) {
+          // localCatalog.categories.splice(props.id - 2, 1);
+          localCatalog.categories = catalog.categories.filter(
+            (e) => e !== category
+          );
+        } else {
+          localCatalog.categories = [];
+        }
 
-        db.collection("users")
-          .doc(auth.currentUser?.uid)
-          .update({
-            categories: catalog.categories.filter((e) => e !== category),
-          });
+        db.collection("users").doc(auth.currentUser?.uid).update({
+          categories: localCatalog.categories,
+        });
         // .catch((e) => {
         //   // console.log("ERROR HAS OCCURE FB: ", e)
         // });
         if (onlineStoreDetails.onlineStoreSetUp) {
-          db.collection("public")
-            .doc(auth.currentUser?.uid)
-            .update({
-              categories: catalog.categories.filter((e) => e !== category),
-            });
+          db.collection("public").doc(auth.currentUser?.uid).update({
+            categories: localCatalog.categories,
+          });
           // .catch((e) => {
           //   // console.log("ERROR HAS OCCURE FB: ", e)
           // });
         }
-        setUserStoreState({
-          products: catalog.products,
-          categories: catalog.categories.filter((e) => e !== category),
-        });
+        updateUserStoreState({ categories: localCatalog.categories });
       }
     });
   };
