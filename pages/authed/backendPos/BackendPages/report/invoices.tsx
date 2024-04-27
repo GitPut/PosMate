@@ -104,8 +104,11 @@ function InvoiceReport() {
         } else {
           qz.websocket
             .connect()
-            .then(function () {
-              if (!myDeviceDetails.printToPrinter) return;
+            .then(() => {
+              if (!myDeviceDetails.printToPrinter) {
+                alertP.error("You must specify a printer in device settings");
+                return;
+              }
               const config = qz.configs.create(myDeviceDetails.printToPrinter);
               return qz.print(config, data);
             })
@@ -254,7 +257,7 @@ function InvoiceReport() {
     const salesTotal = filtered.length;
 
     filtered.forEach((item) => {
-      todayTotal += parseFloat(item.amount ?? '0');
+      todayTotal += parseFloat(item.amount ?? "0");
     });
 
     const data = [

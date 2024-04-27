@@ -91,7 +91,10 @@ function FinishPaymentCash({
       qz.websocket
         .connect()
         .then(function () {
-          if (!myDeviceDetails.printToPrinter) return;
+          if (!myDeviceDetails.printToPrinter) {
+            alertP.error("You must specify a printer in device settings");
+            return;
+          }
           const config = qz.configs.create(myDeviceDetails.printToPrinter);
           return qz.print(config, data);
         })

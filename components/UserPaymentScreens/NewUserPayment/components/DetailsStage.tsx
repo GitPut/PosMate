@@ -48,7 +48,7 @@ function DetailsStage({
       <View style={styles.contentContainer}>
         <View style={styles.topSectionOfContainer}>
           <PeriodSlider
-            setpaymentTerm={setpaymentTerm}
+            setpaymentTerm={setpaymentTerm} 
             paymentTerm={paymentTerm}
           />
           <View style={styles.plansRow}>

@@ -55,8 +55,6 @@ export const userStoreState = entity<UserStoreStateProps>({
 });
 
 export const updateUserStoreState = (val: Partial<UserStoreStateProps>) => {
-  console.log("val", val);
-  console.log("new catalog: ", { ...userStoreState.get(), ...val });
   userStoreState.set({ ...userStoreState.get(), ...val });
 };
 

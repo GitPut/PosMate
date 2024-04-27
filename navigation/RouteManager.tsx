@@ -10,7 +10,6 @@ import {
   setStoreDetailState,
   setTrialDetailsState,
   setUserStoreState,
-  setWoocommerceState,
   trialDetailsState,
 } from "state/state";
 import { auth, db } from "state/firebaseConfig";
@@ -61,7 +60,10 @@ const RouteManager = () => {
             qz.websocket
               .connect()
               .then(function () {
-                if (!myDeviceDetails.printToPrinter) return;
+              if (!myDeviceDetails.printToPrinter) {
+                alertP.error("You must specify a printer in device settings");
+                return;
+              }
                 const config = qz.configs.create(
                   myDeviceDetails.printToPrinter
                 );

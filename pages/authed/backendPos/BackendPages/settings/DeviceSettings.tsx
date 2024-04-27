@@ -243,7 +243,7 @@ function Index() {
                     <GeneralSwitch
                       isActive={
                         deviceTree.devices[selectedDevice]
-                          .useDifferentDeviceToPrint
+                          .useDifferentDeviceToPrint ?? false
                       }
                       toggleSwitch={() => {
                         const clone = { ...deviceTree };
@@ -313,13 +313,21 @@ function Index() {
                         .doc(auth?.currentUser?.uid)
                         .collection("devices")
                         .doc(deviceTree.devices[selectedDevice].docID)
-                        .update(deviceTree.devices[selectedDevice]);
+                        .update({
+                          ...deviceTree.devices[selectedDevice],
+                          printOnlineOrders:
+                            deviceTree.devices[selectedDevice]
+                              .printOnlineOrders ?? false,
+                        });
                       if (
                         deviceTree.devices[selectedDevice].id === myDeviceID
                       ) {
-                        setMyDeviceDetailsState(
-                          deviceTree.devices[selectedDevice]
-                        );
+                        setMyDeviceDetailsState({
+                          ...deviceTree.devices[selectedDevice],
+                          printOnlineOrders:
+                            deviceTree.devices[selectedDevice]
+                              .printOnlineOrders ?? false,
+                        });
                       }
                       alertP.success("Device Updated!");
                     }}
