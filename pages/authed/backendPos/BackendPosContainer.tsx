@@ -288,17 +288,44 @@ function BackendPosContainer(props: { match: { url: string } }) {
                 },
               ]}
             />
-            <MenuBtn
+            <DropDownMenuBtn
               labelImg={require("./assets/images/helpLbl.png")}
               labelImgStyle={{
                 height: 18,
                 width: 63,
               }}
               active={pathname.includes("help")}
-              onPress={() => {
-                history.push("/authed/help");
-                setSideMenu("");
-              }}
+              dropDownOpen={isSideMenu === "help"}
+              toggleDropdown={() =>
+                setSideMenu((prev) => (prev === "help" ? "" : "help"))
+              }
+              options={[
+                {
+                  label: "Getting Started",
+                  link: "/authed/help/1",
+                  active: pathname.includes("help/1"),
+                },
+                {
+                  label: "Device & Store Settings",
+                  link: "/authed/help/2",
+                  active: pathname.includes("help/2"),
+                },
+                {
+                  label: "Dashboard & Analytics",
+                  link: "/authed/help/3",
+                  active: pathname.includes("help/3"),
+                },
+                {
+                  label: "Building Products",
+                  link: "/authed/help/4",
+                  active: pathname.includes("help/4"),
+                },
+                {
+                  label: "Managing Reports",
+                  link: "/authed/help/5",
+                  active: pathname.includes("help/5"),
+                },
+              ]}
             />
           </View>
         </View>

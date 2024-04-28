@@ -5,10 +5,10 @@
     <meta charset="utf-8" />
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
     <meta
-    name="description"
-    content="Your one stop shop to running your business"
-  />
-    <!-- 
+      name="description"
+      content="Your one stop shop to running your business"
+    />
+    <!--
       This viewport works for phones with notches.
       It's optimized for gestures by disabling global zoom.
      -->
@@ -18,41 +18,40 @@
     />
     <title>%WEB_TITLE%</title>
     <style>
-
       img {
-    pointer-events: none;
-}
-
+        pointer-events: none;
+      }
 
       .selector {
-    user-drag: none;
-    -webkit-user-drag: none;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-}
+        -webkit-user-drag: none;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+      }
+      * {
+        user-select: none;
+      }
 
-#__react-alert__{
-  z-index: 10000 !important;
+      #__react-alert__ {
+        z-index: 10000 !important;
+      }
 
-}
-
-#__react-alert__ div div div {
-  width: auto !important;
-}
+      #__react-alert__ div div div {
+        width: auto !important;
+      }
 
       h2 {
-  font-family: Helvetica, sans-serif;
-}
+        font-family: Helvetica, sans-serif;
+      }
 
-.swal2-html-container {
-  font-family: Helvetica, sans-serif;
-}
+      .swal2-html-container {
+        font-family: Helvetica, sans-serif;
+      }
 
-.swal2-container {
-  z-index: 10000;
-}
+      .swal2-container {
+        z-index: 10000;
+      }
       /**
        * Extend the react-native-web reset:
        * https://github.com/necolas/react-native-web/blob/master/packages/react-native-web/src/exports/StyleSheet/initialRules.js
@@ -99,16 +98,16 @@
           background-color: black;
         }
       }*/
-      * {
-  user-select: none;
-}
     </style>
-   <!-- Adjusted CSP including 'unsafe-inline' for style-src; review the security implications -->
-<meta http-equiv="Content-Security-Policy" content="style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com;">
+    <!-- Adjusted CSP including 'unsafe-inline' for style-src; review the security implications -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com;"
+    />
   </head>
 
   <body>
-    <!-- 
+    <!--
       A generic no script element with a reload button and a message.
       Feel free to customize this however you'd like.
     -->
@@ -135,11 +134,10 @@
           "
         >
           <p>Your one stop shop to running your business</p>
-          </p>
         </div>
       </form>
     </noscript>
     <!-- The root element for your Expo app. -->
-    <div id="root"></div>
+    <div id="root" />
   </body>
 </html>
