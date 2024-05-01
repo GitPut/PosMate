@@ -172,6 +172,7 @@ const OrderPage = () => {
             source={require("./OnlineOrderPages/assets/images/image_JqcD..png")}
             resizeMode="contain"
             style={[styles.plantImg, screenWidth < 1000 && { width: 100 }]}
+            key={"plantImg"}
           />
           <View style={styles.wingImgContainer}>
             <Image
@@ -190,6 +191,7 @@ const OrderPage = () => {
                   bottom: "15%",
                 },
               ]}
+              key={"wingImg"}
             />
             <View style={styles.pizzaImgContainer}>
               <Image
@@ -205,6 +207,7 @@ const OrderPage = () => {
                     position: "absolute",
                   },
                 ]}
+                key={"pizzaImg"}
               />
             </View>
           </View>
@@ -269,6 +272,7 @@ const OrderPage = () => {
           <Image
             source={require("assets/loading.gif")}
             style={{ width: 450, height: 450, resizeMode: "contain" }}
+            key={"loading"}
           />
         </Animated.View>
       </div>

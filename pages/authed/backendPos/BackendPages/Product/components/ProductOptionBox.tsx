@@ -1,4 +1,4 @@
-import ProductImage from "components/ProductImage";
+import ProductImage from "components/ProductImage/ProductImage";
 import AvocatImage from "assets/AvocatImage.jpg";
 import React from "react";
 import { StyleSheet, Pressable, Text, View, ViewStyle } from "react-native";
@@ -22,7 +22,6 @@ function ProductOptionBox({
   setexistingProduct,
   isTemplate,
 }: ProductOptionBoxProps) {
-
   return (
     <Pressable
       style={[styles.container, style]}
@@ -30,8 +29,7 @@ function ProductOptionBox({
     >
       <View>
         <ProductImage
-          source={product.imageUrl ? { uri: product.imageUrl } : AvocatImage}
-          resizeMode="contain"
+          source={product.imageUrl ? product.imageUrl : "https://via.placeholder.com/150"}
           style={styles.productImage}
         />
       </View>

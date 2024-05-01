@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Pressable, Text, View, ViewStyle } from "react-native";
-import ProductImage from "components/ProductImage";
+import ProductImage from "components/ProductImage/ProductImage";
 
 interface CategoryBtnProps {
   style?: ViewStyle;
@@ -39,9 +39,9 @@ function CategoryBtn({
       {imageUrl && (
         <View>
           <ProductImage
-            source={{ uri: imageUrl }}
-            resizeMode="contain"
+            source={imageUrl}
             style={styles.categoryImg}
+            key={category}
           />
         </View>
       )}

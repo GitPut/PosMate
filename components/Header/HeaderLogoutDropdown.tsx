@@ -1,12 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  Modal,
-  Image,
-} from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, Pressable, Image } from "react-native";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { logout } from "state/firebaseFunctions";
 import { storeDetailState } from "state/state";
@@ -16,129 +9,63 @@ interface HeaderLogoutDropdownProps {
   isPosHeader: boolean;
 }
 
-interface DropdownLayout {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-function HeaderLogoutDropdown({ isPosHeader } : HeaderLogoutDropdownProps) {
-  const dropdownRef = useRef<View | null>(null); // Reference to the original button
-  const [dropdownLayout, setDropdownLayout] = useState<DropdownLayout | null>(null);
+function HeaderLogoutDropdown({ isPosHeader }: HeaderLogoutDropdownProps) {
   const [openDropdown, setopenDropdown] = useState(false);
   const storeDetails = storeDetailState.use();
-
-  useEffect(() => {
-    // Ensure this code runs in a web environment
-    if (dropdownRef.current && typeof window !== "undefined") {
-      const element = dropdownRef.current; // Assuming this ref points to a DOM element
-      // You might need to adjust this to get the actual DOM node in React Native Web
-
-      const boundingRect = element.getBoundingClientRect();
-
-      setDropdownLayout({
-        x: boundingRect.left,
-        y: boundingRect.top, // Adjust based on scroll position
-        width: boundingRect.width,
-        height: boundingRect.height,
-      });
-    }
-  }, [openDropdown]); // Recalculate when scroll position changes
+  const name =
+    (isPosHeader ? storeDetails.name : auth.currentUser?.displayName) ?? "User";
+  const widthOfContainer = name?.length > 10 ? name.length * 10 + 50 : 150;
 
   return (
-    <View style={{ zIndex: 1000 }}>
+    <View style={{ zIndex: 10000 }}>
       <Pressable
         style={styles.userBtn}
         onPress={() => setopenDropdown((prev) => !prev)}
-        ref={dropdownRef}
       >
         <View style={styles.iconWithNameGroup}>
           <Image
             source={require("assets/image_bTyU..png")}
             resizeMode="contain"
             style={styles.userIcon}
+            key={"userIcon"}
           />
-          <Text style={styles.username}>
-            {isPosHeader ? storeDetails.name : auth.currentUser?.displayName}
-          </Text>
+          <Text style={styles.username}>{name}</Text>
         </View>
         <Entypo
           name={openDropdown ? "chevron-small-up" : "chevron-small-down"}
           style={styles.chevronDownIcon}
         />
       </Pressable>
-      <Modal visible={openDropdown} transparent={true}>
+      {openDropdown && (
         <Pressable
           style={{
-            width: "100%",
-            height: "100%",
+            backgroundColor: "rgba(255,255,255,1)",
+            borderRadius: 10,
+            shadowColor: "rgba(0,0,0,1)",
+            shadowOffset: {
+              width: 3,
+              height: 3,
+            },
+            elevation: 30,
+            shadowOpacity: 0.2,
+            shadowRadius: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: widthOfContainer,
+            height: 43,
+            position: "absolute",
+            bottom: -50,
+            left: 0,
+            padding: 10,
+            zIndex: 100000,
           }}
-          onPress={() => {
-            setopenDropdown(false);
-          }} // Hide modal when the background is pressed
-        />
-        {dropdownLayout && (
-          <View
-            style={{
-              position: "absolute",
-              top: dropdownLayout.y,
-              left: dropdownLayout.x,
-              width: dropdownLayout.width,
-              minWidth: 150,
-            }}
-          >
-            <Pressable
-              style={styles.userBtn}
-              onPress={() => setopenDropdown((prev) => !prev)}
-            >
-              <View style={styles.iconWithNameGroup}>
-                <View
-                  style={[styles.userIcon, { backgroundColor: "transparent" }]}
-                />
-                <Text style={styles.username}>
-                  {isPosHeader
-                    ? storeDetails.name
-                    : auth.currentUser?.displayName}
-                </Text>
-              </View>
-              <Entypo
-                name={openDropdown ? "chevron-small-up" : "chevron-small-down"}
-                style={styles.chevronDownIcon}
-              />
-            </Pressable>
-            {openDropdown && (
-              <Pressable
-                style={{
-                  backgroundColor: "rgba(255,255,255,1)",
-                  borderRadius: 10,
-                  shadowColor: "rgba(0,0,0,1)",
-                  shadowOffset: {
-                    width: 3,
-                    height: 3,
-                  },
-                  elevation: 30,
-                  shadowOpacity: 0.2,
-                  shadowRadius: 10,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: dropdownLayout.width,
-                  height: 43,
-                  position: "absolute",
-                  bottom: -50,
-                  left: 0,
-                  padding: 10,
-                }}
-                onPress={logout}
-              >
-                <Text style={styles.logoutFromAccount}>Logout</Text>
-                <Feather name="log-out" style={styles.logoutIcon} />
-              </Pressable>
-            )}
-          </View>
-        )}
-      </Modal>
+          onPress={logout}
+        >
+          <Text style={styles.logoutFromAccount}>Logout</Text>
+          <Feather name="log-out" style={styles.logoutIcon} />
+        </Pressable>
+      )}
     </View>
   );
 }

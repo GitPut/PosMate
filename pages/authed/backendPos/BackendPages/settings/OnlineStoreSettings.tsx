@@ -307,6 +307,7 @@ function OnlineStoreSettings() {
             <Image
               source={require("assets/loading.gif")}
               style={{ width: 450, height: 450, resizeMode: "contain" }}
+              key={"loading"}
             />
           </Animated.View>
         </Modal>

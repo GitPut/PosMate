@@ -433,6 +433,7 @@ function Index() {
                     source={require("./assets/images/image_E3zi..png")}
                     resizeMode="contain"
                     style={styles.windowsDownloadImg}
+                    key={"windowsDownloadImg"}
                   />
                 </a>
                 <a
@@ -443,6 +444,7 @@ function Index() {
                     source={require("./assets/images/image_F2vF..png")}
                     resizeMode="contain"
                     style={styles.macDownloadImg}
+                    key={"macDownloadImg"}
                   />
                 </a>
               </View>
@@ -466,6 +468,7 @@ function Index() {
             <Image
               source={require("assets/loading.gif")}
               style={{ width: 450, height: 450, resizeMode: "contain" }}
+              key={"loading"}
             />
           </Animated.View>
         </Modal>

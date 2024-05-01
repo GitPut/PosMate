@@ -1,89 +1,18 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import DropdownPeriod from "../DropdownPeriod";
 import RevenueBox from "../RevenueBox";
 import OrdersBox from "../OrdersBox";
-import { TransListStateItem } from "types/global";
-import SearchDateTransactions from "components/functional/SearchDateTransactions";
 
 const InStoreOrdersBox = ({
-  allTransactions,
+  details,
+  period,
+  setperiod,
 }: {
-  allTransactions: TransListStateItem[];
+  details: { orders: number; revenue: number };
+  period: string;
+  setperiod: (period: string) => void;
 }) => {
-  const [period, setperiod] = useState("Today");
-  const [details, setdetails] = useState({ orders: 0, revenue: 0 });
-
-  useEffect(() => {
-    const calculateTotals = (transactions: TransListStateItem[]) => {
-      let totalRevenue = 0;
-      let totalOrders = 0;
-      transactions.forEach((transaction) => {
-        if (transaction.method === "inStoreOrder") {
-          totalRevenue += parseFloat(transaction.total ?? "0");
-          totalOrders += 1;
-        }
-      });
-      return { orders: totalOrders, revenue: totalRevenue.toFixed(0) };
-    };
-
-    const getDateRange = (period: string) => {
-      const today = new Date();
-      const weekStart = new Date(
-        today.setDate(today.getDate() - today.getDay())
-      );
-      const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
-      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-      const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-      const yearStart = new Date(today.getFullYear(), 0, 1);
-      const yearEnd = new Date(today.getFullYear(), 11, 31);
-
-      switch (period) {
-        case "Today":
-          return {
-            start: new Date().toDateString(),
-            end: new Date().toDateString(),
-          };
-        case "This Week":
-          return {
-            start: weekStart.toDateString(),
-            end: weekEnd.toDateString(),
-          };
-        case "This Month":
-          return {
-            start: monthStart.toDateString(),
-            end: monthEnd.toDateString(),
-          };
-        case "This Year":
-          return {
-            start: yearStart.toDateString(),
-            end: yearEnd.toDateString(),
-          };
-        default:
-          // Assuming you want to default to "All Time" with no filtering.
-          return null;
-      }
-    };
-
-    const dateRange = getDateRange(period);
-    let filteredTransactions;
-
-    if (dateRange) {
-      const { start, end } = dateRange;
-      filteredTransactions = SearchDateTransactions({
-        startDate: start,
-        endDate: end,
-        transactions: allTransactions,
-      });
-    } else {
-      // No date filtering for "All Time" or unspecified periods
-      filteredTransactions = allTransactions;
-    }
-
-    const { orders, revenue } = calculateTotals(filteredTransactions ?? []);
-    setdetails({ orders, revenue: parseFloat(revenue) });
-  }, [period, allTransactions]);
-
   return (
     <View style={styles.pickupOrdersContainer}>
       <View style={styles.pickupOrdersInnerContainer}>
@@ -96,9 +25,12 @@ const InStoreOrdersBox = ({
         <View style={styles.pickupOrdersRevAndOrdersContainer}>
           <RevenueBox
             style={styles.revenueBox}
-            revenueValue={details.revenue.toString()}
+            revenueValue={details.revenue.toFixed(2)}
           />
-          <OrdersBox style={styles.ordersBox} ordersValue={details.orders.toString()} />
+          <OrdersBox
+            style={styles.ordersBox}
+            ordersValue={details.orders.toString()}
+          />
         </View>
       </View>
     </View>

@@ -40,9 +40,11 @@ const Cart = () => {
         for (let i = 0; i < cart.length; i++) {
           try {
             if (cart[i].quantity ?? 0 > 1) {
-              newVal += parseFloat(cart[i].price ?? '0')* parseFloat(cart[i].quantity ?? '1');
+              newVal +=
+                parseFloat(cart[i].price ?? "0") *
+                parseFloat(cart[i].quantity ?? "1");
             } else {
-              newVal += parseFloat(cart[i].price ?? '0');
+              newVal += parseFloat(cart[i].price ?? "0");
             }
           } catch (error) {
             // console.log(error);
@@ -115,7 +117,7 @@ const Cart = () => {
           <View style={{ height: 40, width: 40 }} />
         )}
       </View>
-      <View style={[styles.cartItems, {height: height * 0.4}]}>
+      <View style={[styles.cartItems, { height: height * 0.4 }]}>
         {cart.length > 0 ? (
           <ScrollView
             horizontal={false}
@@ -136,16 +138,20 @@ const Cart = () => {
                   const local = structuredClone(cart);
                   const quantity = local[index].quantity ?? false;
                   if (quantity && parseFloat(quantity) > 1) {
-                    local[index].quantity = (parseFloat(quantity) - 1).toString();
+                    local[index].quantity = (
+                      parseFloat(quantity) - 1
+                    ).toString();
                   } else {
-                    local[index].quantity = '1';
+                    local[index].quantity = "1";
                   }
                   setCartState(local);
                 }}
                 increaseAction={() => {
                   const local = structuredClone(cart);
                   const quantity = local[index].quantity ?? false;
-                  local[index].quantity = (quantity ? parseFloat(quantity) + 1 : 2).toString();
+                  local[index].quantity = (
+                    quantity ? parseFloat(quantity) + 1 : 2
+                  ).toString();
                   setCartState(local);
                 }}
               />
@@ -167,6 +173,7 @@ const Cart = () => {
                 height: "80%",
                 resizeMode: "contain",
               }}
+              key={"noItemsImg"}
             />
           </View>
         )}

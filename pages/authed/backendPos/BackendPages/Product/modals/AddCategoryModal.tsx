@@ -105,7 +105,7 @@ function AddCategoryModal({
                       <Feather name="minus" style={styles.minusIcon} />
                     </Pressable>
                     <View style={styles.indexContainer}>
-                      <Text style={styles.text}>{categoryPosition}</Text>
+                      <Text style={styles.text}>{categoryPosition + 1}</Text>
                     </View>
                     <Pressable
                       style={styles.plusContainer}

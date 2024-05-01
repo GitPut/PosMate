@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import Modal from "react-native-modal-web";
-import Print from "components/MainPosPage/components/Cart/Print";
+import Print from "pages/authed/pos/MainPosPage/components/Cart/Print";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import {
   cartState,

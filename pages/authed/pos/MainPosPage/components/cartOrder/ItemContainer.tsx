@@ -1,27 +1,23 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  useWindowDimensions,
-} from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import { addCartState, cartState, setProductBuilderState } from "state/state";
-import ProductImage from "components/ProductImage";
+import ProductImage from "components/ProductImage/ProductImage";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ProductProp } from "types/global";
 
 interface ItemContainerProps {
   product: ProductProp;
+  onLayout?: () => void;
+  width: number;
 }
 
-function ItemContainer({ product }: ItemContainerProps) {
+function ItemContainer({ product, onLayout, width }: ItemContainerProps) {
   const cart = cartState.use();
-  const { width } = useWindowDimensions();
 
   return (
     <div id={product.id}>
       <Pressable
+        onLayout={onLayout}
         onPress={() => {
           if (product.options.length > 0) {
             setProductBuilderState({
@@ -46,14 +42,13 @@ function ItemContainer({ product }: ItemContainerProps) {
         }}
         style={width > 1250 ? styles.container : styles.containerMobile}
       >
-        {product.hasImage && (
-          <View>
-            <ProductImage
-              source={{ uri: product.imageUrl ?? "" }}
-              resizeMode="contain"
-              style={[styles.itemImg, width < 1250 ? { height: 100 } : {}]}
-            />
-          </View>
+        {product.hasImage && product.imageUrl && (
+          <ProductImage
+            key={product.id} // Ensure each key is unique
+            source={product.imageUrl}
+            style={width < 1250 ? styles.itemImgSmall : styles.itemImg}
+            alt={product.name}
+          />
         )}
         <View style={styles.rightSide}>
           <Text style={styles.familyCombo}>{product.name}</Text>
@@ -105,7 +100,12 @@ const styles = StyleSheet.create({
   itemImg: {
     height: 133, // Fixed height for the image
     width: 117, // Fixed width for the image
-    margin: 6,
+    // margin: 6,
+  },
+  itemImgSmall: {
+    height: 100, // Fixed height for the image
+    width: 117, // Fixed width for the image
+    // margin: 6,
   },
   rightSide: {
     flex: 1, // Take up the remaining space after the image

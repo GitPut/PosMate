@@ -236,6 +236,7 @@ function ProductBuilderModal() {
                         },
                         width < 800 && { width: 300, height: 200 },
                       ]}
+                      key={myObj.id}
                     />
                   )}
                   <View style={styles.itemInfoTxtGroup}>

@@ -15,7 +15,7 @@ const Header = ({ onPressLogo, isPosHeader }: HeaderProps) => {
   return (
     <View style={styles.header}>
       <Pressable onPress={onPressLogo}>
-        <Image source={Logo} resizeMode="contain" style={styles.logo} />
+        <Image source={Logo} resizeMode="contain" style={styles.logo} key={'logo'} />
       </Pressable>
       <View style={styles.rightSideRow}>
         {isPosHeader && (
@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    zIndex: 100000
   },
   bottom: {
     flexDirection: "row",

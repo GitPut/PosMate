@@ -22,21 +22,27 @@ import DiscountModal from "components/modals/DiscountModal/DiscountModal";
 import PhoneOrderModal from "components/modals/PhoneOrderModal/PhoneOrderModal";
 import SavedCustomersModal from "components/modals/SavedCustomersModal/SavedCustomersModal";
 import ClockinModal from "components/modals/ClockInModal/ClockinModal";
-import LeftMenuBar from "components/MainPosPage/components/LeftMenuBar";
-import Cart from "components/MainPosPage/components/Cart";
+import LeftMenuBar from "pages/authed/pos/MainPosPage/components/LeftMenuBar";
+import Cart from "pages/authed/pos/MainPosPage/components/Cart";
 import Modal from "react-native-modal-web";
-import CategorySection from "components/MainPosPage/components/CategorySection";
-import ProductsSection from "components/MainPosPage/components/ProductsSection";
+// import CategorySection from "pages/authed/pos/MainPosPage/components/CategorySection";
+// import ProductsSection from "pages/authed/pos/MainPosPage/components/ProductsSection";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import CustomCashModal from "components/modals/CustomCashModal";
 import AuthPasswordModal from "components/modals/AuthPasswordModal";
 import { useAlert } from "react-alert";
 import qz from "qz-tray";
-import ProductBuilderModal from "components/MainPosPage/components/ProductBuilderModal/ProductBuilderModal";
-import CartMobile from "components/MainPosPage/phoneComponents/CartMobile";
+import ProductBuilderModal from "pages/authed/pos/MainPosPage/components/ProductBuilderModal/ProductBuilderModal";
+import CartMobile from "pages/authed/pos/MainPosPage/phoneComponents/CartMobile";
 import { Feather } from "@expo/vector-icons";
 import ParseDate from "components/functional/ParseDate";
 import { TransListStateItem } from "types/global";
+const CategorySection = React.lazy(
+  () => import("pages/authed/pos/MainPosPage/components/CategorySection")
+);
+const ProductsSection = React.lazy(
+  () => import("pages/authed/pos/MainPosPage/components/ProductsSection")
+);
 
 function HomeScreen() {
   const { height, width } = useWindowDimensions();
@@ -217,7 +223,7 @@ function HomeScreen() {
         if (element) element.style.display = "none";
       }
     });
-  }, [section]);
+  }, [section, catalog]);
 
   return (
     <View style={[styles.container]}>
@@ -281,8 +287,24 @@ function HomeScreen() {
             </Pressable>
           </View>
         )}
-        <CategorySection catalog={catalog} section={section} />
-        <ProductsSection catalog={catalog} />
+        {catalog.products.length > 0 && (
+          <>
+            <CategorySection catalog={catalog} section={section} />
+            <ProductsSection
+              catalog={catalog}
+              remeasure={() => {
+                catalog.products.map((product) => {
+                  const element = document.getElementById(product.id);
+                  if (product.category === section) {
+                    if (element) element.style.display = "flex";
+                  } else {
+                    if (element) element.style.display = "none";
+                  }
+                });
+              }}
+            />
+          </>
+        )}
       </View>
       {width > 1000 ? (
         <Cart />

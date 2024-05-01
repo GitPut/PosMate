@@ -21,10 +21,6 @@ import ParseDate from "components/functional/ParseDate";
 
 function BackendPosContainer(props: { match: { url: string } }) {
   const { match } = props;
-  const [transList, setTransList] = useState<TransListStateItem[]>([]);
-  const [transListTableOrg, setTransListTableOrg] = useState<
-    TransListStateItem[]
-  >([]);
   const [isSideMenu, setSideMenu] = useState("");
   const history = useHistory();
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -67,6 +63,9 @@ function BackendPosContainer(props: { match: { url: string } }) {
   };
 
   useEffect(() => {
+    const transList: TransListStateItem[] = [];
+    const transListTableOrg: TransListStateItem[] = [];
+
     try {
       db.collection("users")
         .doc(auth.currentUser?.uid)
@@ -89,93 +88,76 @@ function BackendPosContainer(props: { match: { url: string } }) {
 
             const docData = doc.data();
 
-            setTransList((prevState) => [
-              ...prevState,
-              {
+            transList.push({
+              ...docData,
+              id: docData.transNum.toUpperCase(),
+              name: docData.customer?.name ? docData.customer?.name : "N/A",
+              date: docData.date,
+              // date: "test",
+              originalData: {
                 ...docData,
-                id: docData.transNum.toUpperCase(),
-                number: docData.transNum,
-                name: docData.customer?.name ? docData.customer?.name : "N/A",
+                id: docData.id,
+                cart: docData.cart,
+                cartNote: docData.cartNote,
+                customer: docData.customer,
                 date: docData.date,
-                // date: "test",
-                originalData: {
-                  ...docData,
-                  id: docData.id,
-                  cart: docData.cart,
-                  cartNote: docData.cartNote,
-                  customer: docData.customer,
-                  date: docData.date,
-                  method: docData.method,
-                  online: docData.online,
-                  isInStoreOrder: docData.isInStoreOrder,
-                  transNum: docData.transNum,
-                  total: docData.total,
-                },
-                docID: doc.id,
-                amount: docData.total,
-                system: "POS",
-                type: orderType,
                 method: docData.method,
+                online: docData.online,
+                isInStoreOrder: docData.isInStoreOrder,
+                transNum: docData.transNum,
+                total: docData.total,
               },
-            ]);
-            setTransListTableOrg((prevState) => [
-              ...prevState,
-              {
+              docID: doc.id,
+              amount: docData.total,
+              system: "POS",
+              type: orderType,
+              method: docData.method,
+            });
+
+            transListTableOrg.push({
+              ...docData,
+              id: docData.transNum.toUpperCase(),
+              name: docData.customer?.name ? docData.customer?.name : "N/A",
+              date: docData.date,
+              originalData: {
                 ...docData,
-                id: docData.transNum.toUpperCase(),
-                number: docData.transNum,
-                name: docData.customer?.name ? docData.customer?.name : "N/A",
+                id: docData.id,
+                cart: docData.cart,
+                cartNote: docData.cartNote,
+                customer: docData.customer,
                 date: docData.date,
-                // date: "test",
-                originalData: {
-                  ...docData,
-                  id: docData.id,
-                  cart: docData.cart,
-                  cartNote: docData.cartNote,
-                  customer: docData.customer,
-                  date: docData.date,
-                  method: docData.method,
-                  online: docData.online,
-                  isInStoreOrder: docData.isInStoreOrder,
-                  transNum: docData.transNum,
-                  total: docData.total,
-                },
-                docID: doc.id,
-                amount: docData.total,
-                system: "POS",
-                type: orderType,
                 method: docData.method,
+                online: docData.online,
+                isInStoreOrder: docData.isInStoreOrder,
+                transNum: docData.transNum,
+                total: docData.total,
               },
-            ]);
+              docID: doc.id,
+              amount: docData.total,
+              system: "POS",
+              type: orderType,
+              method: docData.method,
+            });
           });
-          //sort by date
-          setTransListTableOrg((prevState) => {
-            const newList = [
-              ...prevState.sort((a, b) => {
-                const aDate = ParseDate(a.date);
-                const bDate = ParseDate(b.date);
+          const newList = [
+            ...transListTableOrg.sort((a, b) => {
+              const aDate = ParseDate(a.date);
+              const bDate = ParseDate(b.date);
 
-                if (aDate && bDate) {
-                  return bDate.getTime() - aDate.getTime();
-                } else {
-                  return 0;
-                }
-              }),
-            ];
-            setTransList(newList);
-
-            return newList;
-          });
+              if (aDate && bDate) {
+                return bDate.getTime() - aDate.getTime();
+              } else {
+                return 0;
+              }
+            }),
+          ];
+          setTransListTableOrgState(newList);
+          setTransListState(transList);
         });
     } catch {
       console.log("Error occured retrieving tranasctions");
     }
   }, []);
-
-  useEffect(() => {
-    setTransListState(transList);
-    setTransListTableOrgState(transListTableOrg);
-  }, [transList, transListTableOrg]);
 
   return (
     <View style={styles.container}>
@@ -247,11 +229,6 @@ function BackendPosContainer(props: { match: { url: string } }) {
                   link: "/authed/report/employeesreport",
                   active: pathname.includes("employeesreport"),
                 },
-                // {
-                //   label: "Add Employee",
-                //   link: "/authed/report/addemployee",
-                //   active: pathname.includes("addemployee"),
-                // },
               ]}
             />
             <DropDownMenuBtn
@@ -381,6 +358,7 @@ function BackendPosContainer(props: { match: { url: string } }) {
             <Image
               source={require("assets/loading.gif")}
               style={{ width: 450, height: 450, resizeMode: "contain" }}
+              key={"loading"}
             />
           </Animated.View>
         </Modal>

@@ -4,90 +4,28 @@ import DropdownPeriod from "../DropdownPeriod";
 import BarGraph from "./BarGraph";
 import { TransListStateItem } from "types/global";
 import ParseDate from "components/functional/ParseDate";
-import SearchDateTransactions from "components/functional/SearchDateTransactions";
 
 const TotalRevenueBox = ({
   style,
   allTransactions,
+  period,
+  setperiod,
+  details,
 }: {
   style?: ViewStyle;
   allTransactions: TransListStateItem[];
+  period: string;
+  setperiod: (period: string) => void;
+  details: {
+    orders: number;
+    revenue: number;
+  };
 }) => {
-  const [period, setperiod] = useState("Today");
-  const [details, setdetails] = useState({ orders: 0, revenue: 0 });
   const [data, setdata] = useState<
     { name: string; uv: number; pv: number; amt: number }[]
   >([]);
 
   useEffect(() => {
-    const calculateTotals = (transactions: TransListStateItem[]) => {
-      let totalRevenue = 0;
-      let totalOrders = 0;
-
-      transactions.forEach((transaction) => {
-        totalRevenue += parseFloat(transaction.total ?? "0");
-        totalOrders += 1;
-      });
-      return { orders: totalOrders, revenue: totalRevenue.toFixed(0) };
-    };
-
-    const getDateRange = (period: string) => {
-      const today = new Date();
-      const weekStart = new Date(
-        today.setDate(today.getDate() - today.getDay())
-      );
-      const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
-      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-      const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-      const yearStart = new Date(today.getFullYear(), 0, 1);
-      const yearEnd = new Date(today.getFullYear(), 11, 31);
-
-      switch (period) {
-        case "Today":
-          return {
-            start: new Date().toDateString(),
-            end: new Date().toDateString(),
-          };
-        case "This Week":
-          return {
-            start: weekStart.toDateString(),
-            end: weekEnd.toDateString(),
-          };
-        case "This Month":
-          return {
-            start: monthStart.toDateString(),
-            end: monthEnd.toDateString(),
-          };
-        case "This Year":
-          return {
-            start: yearStart.toDateString(),
-            end: yearEnd.toDateString(),
-          };
-        default:
-          // Assuming you want to default to "All Time" with no filtering.
-          return null;
-      }
-    };
-
-    const dateRange = getDateRange(period);
-    let filteredTransactions;
-
-    if (dateRange) {
-      const { start, end } = dateRange;
-      filteredTransactions = SearchDateTransactions({
-        startDate: start,
-        endDate: end,
-        transactions: allTransactions,
-      });
-    } else {
-      // No date filtering for "All Time" or unspecified periods
-      filteredTransactions = allTransactions;
-    }
-
-    const { orders, revenue } = calculateTotals(filteredTransactions ?? []);
-
-    setdetails({ orders, revenue: parseFloat(revenue) });
-
     const localData = [
       {
         name: "J\n",
@@ -175,7 +113,7 @@ const TotalRevenueBox = ({
       }
     });
     setdata(localData);
-  }, [period, allTransactions]);
+  }, [allTransactions]);
 
   return (
     <View

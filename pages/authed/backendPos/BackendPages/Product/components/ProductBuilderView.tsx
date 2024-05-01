@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Image, Text, ScrollView } from "react-native";
 import ItemNoOptionsView from "./ItemNoOptionsView";
-import DisplayOption from "components/MainPosPage/components/ProductBuilderModal/PosComponents/DisplayOption";
+import DisplayOption from "pages/authed/pos/MainPosPage/components/ProductBuilderModal/PosComponents/DisplayOption";
 import { ProductProp } from "types/global";
 
 interface ProductBuilderViewProps {
@@ -73,6 +73,7 @@ function ProductBuilderView({ product, imageUrl }: ProductBuilderViewProps) {
                       styles.itemImg,
                       myObj.description ? { width: 300, height: 150 } : {},
                     ]}
+                    key={myObj.id}
                   />
                 )}
                 <View style={styles.itemInfoTxtGroup}>

@@ -194,7 +194,6 @@ function OptionsItemOpenInner({
                     });
                     if (val) {
                       clone[index].optionsList[valIndex].selected = true;
-                      console.log("val: ", clone[index].optionsList[valIndex]);
                     }
 
                     return clone;
@@ -261,7 +260,7 @@ function OptionsItemOpenInner({
           }
         >
           <Text style={styles.addAnotherSelectionBtnLbl1}>
-            Add Another Selection
+            {testMap.length > 0 ? "Add Another Selection" : "Add Selection"}
           </Text>
         </Pressable>
       </View>

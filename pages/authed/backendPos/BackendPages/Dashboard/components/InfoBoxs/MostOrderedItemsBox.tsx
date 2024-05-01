@@ -1,10 +1,7 @@
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import DropdownPeriod from "../DropdownPeriod";
 import MostOrderItemsListItem from "../MostOrderItemsListItem";
-import { userStoreState } from "state/state";
-import { TransListStateItem } from "types/global";
-import SearchDateTransactions from "components/functional/SearchDateTransactions";
 
 interface MostOrderedItemsObject {
   name: string;
@@ -14,104 +11,17 @@ interface MostOrderedItemsObject {
 
 interface MostOrderedItemsBoxProps {
   style: ViewStyle;
-  allTransactions: TransListStateItem[];
+  period: string;
+  setperiod: (period: string) => void;
+  details: MostOrderedItemsObject[];
 }
 
-const MostOrderedItemsBox = ({ style, allTransactions }: MostOrderedItemsBoxProps) => {
-  const [period, setperiod] = useState("Today");
-  const [mostOrderProducts, setmostOrderProducts] = useState<
-    MostOrderedItemsObject[]
-  >([]);
-  const catalog = userStoreState.use();
-
-  useEffect(() => {
-    const getDateRange = (period: string) => {
-      const today = new Date();
- const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
-      const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
-      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-      const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-       const yearStart = new Date(today.getFullYear(), 0, 1);
-       const yearEnd = new Date(today.getFullYear(), 11, 31);
-
-      switch (period) {
-        case "Today":
-          return {
-            start: new Date().toDateString(),
-            end: new Date().toDateString(),
-          };
-        case "This Week":
-          return {
-            start: weekStart.toDateString(),
-            end: weekEnd.toDateString(),
-          };
-        case "This Month":
-          return {
-            start: monthStart.toDateString(),
-            end: monthEnd.toDateString(),
-          };
-        case "This Year":
-          return {
-            start: yearStart.toDateString(),
-            end: yearEnd.toDateString(),
-          };
-        default:
-          // Assuming you want to default to "All Time" with no filtering.
-          return null;
-      }
-    };
-
-    const dateRange = getDateRange(period);
-    let filteredTransactions;
-
-    if (dateRange) {
-      const { start, end } = dateRange;
-      filteredTransactions = SearchDateTransactions({
-        startDate: start,
-        endDate: end,
-        transactions: allTransactions,
-      });
-    } else {
-      // No date filtering for "All Time" or unspecified periods
-      filteredTransactions = allTransactions;
-    }
-
-    const calculateMostOrderedItems = (transactions: TransListStateItem[]) => {
-      const mostOrderedItems = {};
-      transactions.forEach((transaction) => {
-        transaction.cart?.forEach((item) => {
-          if (mostOrderedItems[item.name]) {
-            mostOrderedItems[item.name] += 1;
-          } else {
-            mostOrderedItems[item.name] = 1;
-          }
-        });
-      });
-      const sortedItems = Object.entries(mostOrderedItems).sort(
-        (a, b) => b[1] - a[1]
-      );
-      return sortedItems.slice(0, 3).map((item) => {
-        return {
-          name: item[0],
-          orders: item[1],
-          imageUrl: catalog.products[
-            catalog.products.findIndex((product) => product.name === item[0])
-          ]?.imageUrl
-            ? catalog.products[
-                catalog.products.findIndex(
-                  (product) => product.name === item[0]
-                )
-              ]?.imageUrl
-            : "https://via.placeholder.com/50",
-        };
-      });
-    };
-
-    const calculated = calculateMostOrderedItems(filteredTransactions ?? []);
-
-    setmostOrderProducts(calculated);
-  }, [period, allTransactions]);
-
+const MostOrderedItemsBox = ({
+  style,
+  period,
+  setperiod,
+  details,
+}: MostOrderedItemsBoxProps) => {
   return (
     <View style={[styles.mostOrderItemsContainer, style]}>
       <View style={styles.mostOrderedItemsInnerContainer}>
@@ -124,9 +34,9 @@ const MostOrderedItemsBox = ({ style, allTransactions }: MostOrderedItemsBoxProp
           <Text style={styles.ordersLbl}>Orders</Text>
         </View>
         <View style={styles.topItemsContainer}>
-          {mostOrderProducts.map((item, index) => (
+          {details.map((item) => (
             <MostOrderItemsListItem
-              key={index}
+              key={item.name}
               itemName={item.name}
               itemNumOfOrders={item.orders.toString()}
               imageUrl={item.imageUrl}

@@ -1,4 +1,4 @@
-import ProductImage from "components/ProductImage";
+import ProductImage from "components/ProductImage/ProductImage";
 import AvocatImage from "assets/AvocatImage.jpg";
 import React from "react";
 import { StyleSheet, Pressable, Text, View, ViewStyle } from "react-native";
@@ -36,9 +36,9 @@ function CategoryOptionBox({
     >
       <View>
         <ProductImage
-          source={imageUrl ? { uri: imageUrl } : AvocatImage}
-          resizeMode="contain"
+          source={imageUrl ? imageUrl : "https://via.placeholder.com/150"}
           style={styles.productImage}
+          key={category}
         />
       </View>
       <Text style={styles.productNameTxt}>

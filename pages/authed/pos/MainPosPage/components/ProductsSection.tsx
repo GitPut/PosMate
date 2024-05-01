@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import ItemContainer from "./cartOrder/ItemContainer";
 import { useWindowDimensions } from "react-native";
 import { UserStoreStateProps } from "types/global";
 
 interface ProductsSectionProps {
   catalog: UserStoreStateProps;
+  remeasure: () => void;
 }
 
-const ProductsSection = ({ catalog } : ProductsSectionProps) => {
+const ProductsSection = ({ catalog, remeasure }: ProductsSectionProps) => {
   const { width } = useWindowDimensions();
+  const [hasLoadedAll, sethasLoadedAll] = useState(false);
 
   const styles = {
     scrollAreaProducts: {
@@ -31,12 +33,26 @@ const ProductsSection = ({ catalog } : ProductsSectionProps) => {
   return (
     <div style={styles.scrollAreaProducts}>
       <div style={{ overflowY: "auto", height: "100%" }}>
-        {" "}
-        {/* Adjusted styles */}
         <div style={styles.gridContainer}>
-          {catalog.products.map((product, index) => (
-            <ItemContainer product={product} key={index} />
-          ))}
+          {catalog.products.map((product, index) => {
+            if (index === catalog.products.length - 1 && !hasLoadedAll) {
+              return (
+                <ItemContainer
+                  product={product}
+                  key={index}
+                  onLayout={() => {
+                    sethasLoadedAll(true);
+                    remeasure();
+                  }}
+                  width={width}
+                />
+              );
+            } else {
+              return (
+                <ItemContainer product={product} key={index} width={width} />
+              );
+            }
+          })}
         </div>
       </div>
     </div>

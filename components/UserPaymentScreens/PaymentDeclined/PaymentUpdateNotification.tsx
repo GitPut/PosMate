@@ -91,7 +91,7 @@ const PaymentUpdateNotification = ({
             >
               <SimpleLineIcons name="logout" size={32} color="black" />
             </Pressable>
-            <Image source={Logo} resizeMode="contain" style={styles.logo} />
+            <Image source={Logo} resizeMode="contain" style={styles.logo} key={'logo'} />
           </View>
           <View style={styles.attentionWrapper}>
             <Text style={styles.attentionNeeded}>ATTENTION NEEDED</Text>
@@ -122,7 +122,7 @@ const PaymentUpdateNotification = ({
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Image source={Logo} resizeMode="contain" style={styles.logo}></Image>
+          <Image source={Logo} resizeMode="contain" style={styles.logo} key={'logo'} />
           <View style={styles.attentionWrapper}>
             <Text style={styles.attentionNeeded}>ATTENTION NEEDED</Text>
           </View>

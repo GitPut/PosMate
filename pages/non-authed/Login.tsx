@@ -59,6 +59,7 @@ function Login() {
       imageStyle={{
         resizeMode: "cover",
       }}
+      key={"background"}
     >
       <View
         style={[styles.headerContainer, useSmallDesign && { width: "90%" }]}
@@ -84,6 +85,7 @@ function Login() {
           <img
             src={require("assets/dpos-logo-black.png")}
             style={styles.logo}
+            key={"logo"}
           />
         </a>
       </View>

@@ -4,8 +4,15 @@ import DropdownPeriod from "../DropdownPeriod";
 import { CustomerProp } from "types/global";
 import SearchDateCustomers from "components/functional/SearchDateCustomers";
 
-const CustomersBox = ({ customers }: { customers: CustomerProp[] }) => {
-  const [period, setperiod] = useState("Today");
+const CustomersBox = ({
+  customers,
+  period,
+  setperiod,
+}: {
+  customers: CustomerProp[];
+  period: string;
+  setperiod: (period: string) => void;
+}) => {
   const [details, setdetails] = useState({
     newCustomers: 0,
   });
@@ -93,6 +100,7 @@ const CustomersBox = ({ customers }: { customers: CustomerProp[] }) => {
                 source={require("../../assets/images/image_cdRe..png")}
                 resizeMode="contain"
                 style={styles.customerIcon}
+                key={"customerIcon"}
               />
               <View style={styles.newCustomersRightSideInner}>
                 <Text style={styles.newCustomersValue}>

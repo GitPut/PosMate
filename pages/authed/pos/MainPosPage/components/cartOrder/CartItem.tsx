@@ -50,6 +50,7 @@ function CartItem({
             }
             resizeMode="contain"
             style={styles.cartItemImg}
+            key={cartItem.id}
           />
         )}
         <View

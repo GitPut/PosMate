@@ -1,14 +1,8 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  ViewStyle,
-} from "react-native";
+import { StyleSheet, View, Text, Pressable, ViewStyle } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { addCartState, cartState } from "state/state";
-import ProductImage from "components/ProductImage";
+import ProductImage from "components/ProductImage/ProductImage";
 import { ProductProp } from "types/global";
 
 interface ItemContainerMobileProps {
@@ -17,7 +11,11 @@ interface ItemContainerMobileProps {
   setshowProduct: (product: ProductProp) => void;
 }
 
-function ItemContainerMobile({ product, style, setshowProduct } : ItemContainerMobileProps) {
+function ItemContainerMobile({
+  product,
+  style,
+  setshowProduct,
+}: ItemContainerMobileProps) {
   const cart = cartState.use();
 
   return (
@@ -37,9 +35,9 @@ function ItemContainerMobile({ product, style, setshowProduct } : ItemContainerM
         {product.hasImage && (
           <View>
             <ProductImage
-              source={{ uri: product.imageUrl ?? '' }}
-              resizeMode="contain"
-              style={styles?.itemImg}
+              source={product.imageUrl ?? ""}
+              style={styles.itemImg}
+              key={product.id}
             />
           </View>
         )}

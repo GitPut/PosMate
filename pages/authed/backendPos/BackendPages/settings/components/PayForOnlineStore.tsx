@@ -17,6 +17,7 @@ function PayForOnlineStore({ payOnlineStore }: PayForOnlineStoreProps) {
     <ImageBackground
       source={require("../assets/gradient.png")}
       style={styles.container}
+      key={"payForOnlineStore"}
     >
       <View style={styles.innerContainer}>
         <View style={styles.innerTopContainer}>

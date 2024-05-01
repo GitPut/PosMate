@@ -59,7 +59,6 @@ export const updateUserStoreState = (val: Partial<UserStoreStateProps>) => {
 };
 
 export const setUserStoreState = (val: UserStoreStateProps) => {
-  console.log("Val: ", val);
   userStoreState.set(val);
 };
 

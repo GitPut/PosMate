@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import {
   myDeviceDetailsState,
   setCustomersList,
@@ -15,17 +15,43 @@ import {
 import { auth, db } from "state/firebaseConfig";
 import { updateFreeTrial } from "state/firebaseFunctions";
 import { Animated, Image, View } from "react-native";
-import TrialEnded from "components/UserPaymentScreens/TrialEnded/TrialEnded";
 import qz from "qz-tray";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import AuthRoute from "./authed/AuthRoute";
 import NonAuthRoute from "./non-authed/NonAuthRoute";
 import ScrollToTop from "components/functional/ScrollToTop";
-import PaymentUpdateNotification from "components/UserPaymentScreens/PaymentDeclined/PaymentUpdateNotification";
 import { useAlert } from "react-alert";
-import NewUserPayment from "components/UserPaymentScreens/NewUserPayment/NewUserPayment";
-import Modal from "react-native-modal-web";
 import { CustomerProp, Device, Employee, ProductProp } from "types/global";
+import * as Font from "expo-font";
+import {
+  Feather,
+  Entypo,
+  MaterialIcons,
+  Ionicons,
+  MaterialCommunityIcons,
+  FontAwesome,
+  SimpleLineIcons,
+} from "@expo/vector-icons";
+const NavigationContent = React.lazy(() => import("./NavigationContent"));
+
+const Loader = () => {
+  return (
+    <View
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "white",
+        height: "100%",
+        width: "100%",
+      }}
+    >
+      <Image
+        source={require("assets/loading.gif")}
+        style={{ width: 450, height: 450, resizeMode: "contain" }}
+        key={"loading"}
+      />
+    </View>
+  );
+};
 
 const RouteManager = () => {
   const savedUserState = JSON.parse(
@@ -40,10 +66,29 @@ const RouteManager = () => {
   const trialDetails = trialDetailsState.use();
   const myDeviceDetails = myDeviceDetailsState.use();
   const alertP = useAlert();
-  // const wooCredentials = woocommerceState.use();
-  // const [wooOrders, setwooOrders] = useState([]);
-  // const storeDetails = storeDetailState.use();
-  // const [isWooError, setisWooError] = useState(false);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  async function preloadFonts() {
+    await Font.loadAsync({
+      // Load Feather and other fonts you use here
+      ...Feather.font,
+      ...Entypo.font,
+      ...MaterialIcons.font,
+      ...Ionicons.font,
+      ...MaterialCommunityIcons.font,
+      ...FontAwesome.font,
+      ...SimpleLineIcons.font,
+    });
+  }
+
+  useEffect(() => {
+    async function loadFonts() {
+      await preloadFonts();
+      setFontsLoaded(true);
+    }
+
+    loadFonts();
+  }, []);
 
   useEffect(() => {
     if (myDeviceDetails.docID && auth.currentUser) {
@@ -60,10 +105,10 @@ const RouteManager = () => {
             qz.websocket
               .connect()
               .then(function () {
-              if (!myDeviceDetails.printToPrinter) {
-                alertP.error("You must specify a printer in device settings");
-                return;
-              }
+                if (!myDeviceDetails.printToPrinter) {
+                  alertP.error("You must specify a printer in device settings");
+                  return;
+                }
                 const config = qz.configs.create(
                   myDeviceDetails.printToPrinter
                 );
@@ -151,7 +196,6 @@ const RouteManager = () => {
                       id: productData.id,
                     });
                   });
-                  products.sort(customSort);
                 }
               })
               .catch(() =>
@@ -541,33 +585,27 @@ const RouteManager = () => {
     setviewVisible(true);
   };
 
-  const NavigationContent = () => {
-    return (
-      <>
-        {isSubscribed && <Route path="/" component={AuthRoute} />}
-        {trialDetails.hasEnded && <TrialEnded resetLoader={resetLoader} />}
-        {isNewUser && <NewUserPayment resetLoader={resetLoader} />}
-        {isCanceled && !isSubscribed && !isNewUser && (
-          <PaymentUpdateNotification
-            resetLoader={resetLoader}
-            isCanceled={isCanceled}
-          />
-        )}
-      </>
-    );
-  };
-
   return (
     <Router>
       <ScrollToTop />
-      <Switch>
-        {auth.currentUser && <NavigationContent />}
-        {!auth.currentUser && !loading && (
-          <Route path="/" component={NonAuthRoute} />
-        )}
-      </Switch>
-      <Modal
-        isVisible={viewVisible}
+      {/* <Switch> */}
+      {auth.currentUser && (
+        <Suspense fallback={<Loader />}>
+          <NavigationContent
+            resetLoader={resetLoader}
+            isNewUser={isNewUser}
+            isCanceled={isCanceled}
+            isSubscribed={isSubscribed}
+            trialDetails={trialDetails}
+          />
+        </Suspense>
+      )}
+      {!auth.currentUser && !loading && (
+        <Route path="/" component={NonAuthRoute} />
+      )}
+      {/* </Switch> */}
+      {/* <Modal
+        isVisible={viewVisible || !fontsLoaded}
         animationIn="fadeIn"
         animationOut="fadeOut"
         style={{
@@ -586,11 +624,11 @@ const RouteManager = () => {
         >
           <Image
             source={require("assets/loading.gif")}
-            // source={require("assets/divinepos-loading.gif")}
             style={{ width: 450, height: 450, resizeMode: "contain" }}
+            key={"loading"}
           />
         </View>
-      </Modal>
+      </Modal> */}
     </Router>
   );
 };

@@ -55,6 +55,7 @@ function DropDownMenuBtn({
           source={labelImg}
           resizeMode="contain"
           style={[styles.btnLblImg, labelImgStyle]}
+          key={"btnLblImg"}
         />
         <Entypo
           name={

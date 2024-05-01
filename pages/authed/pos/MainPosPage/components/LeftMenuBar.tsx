@@ -62,6 +62,7 @@ const LeftMenuBar = () => {
                   }
                 : { width: 40, height: 40 }
             }
+            key={"pendingOrderIcon"}
           />
         </Pressable>
         <Pressable
@@ -81,6 +82,7 @@ const LeftMenuBar = () => {
                   }
                 : { width: 40, height: 40 }
             }
+            key={"clockInIcon"}
           />
         </Pressable>
         <Pressable
@@ -100,6 +102,7 @@ const LeftMenuBar = () => {
                   }
                 : { width: 40, height: 40 }
             }
+            key={"phoneOrderIcon"}
           />
         </Pressable>
         <Pressable
@@ -119,6 +122,7 @@ const LeftMenuBar = () => {
                   }
                 : { width: 30, height: 30 }
             }
+            key={"percentIcon"}
           />
         </Pressable>
         <Pressable
@@ -138,6 +142,7 @@ const LeftMenuBar = () => {
                   }
                 : { width: 40, height: 40 }
             }
+            key={"dollarSignIcon"}
           />
         </Pressable>
       </View>
@@ -167,6 +172,7 @@ const LeftMenuBar = () => {
                   }
                 : { width: 40, height: 40 }
             }
+            key={"settingsIcon"}
           />
         </Pressable>
       </View>

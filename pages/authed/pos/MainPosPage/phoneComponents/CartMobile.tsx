@@ -17,8 +17,8 @@ import {
   setOrderDetailsState,
   storeDetailState,
 } from "state/state";
-import CartAmountDisplayRow from "components/MainPosPage/components/cartOrder/CartAmountDisplayRow";
-import CartItem from "components/MainPosPage/components/cartOrder/CartItem";
+import CartAmountDisplayRow from "pages/authed/pos/MainPosPage/components/cartOrder/CartAmountDisplayRow";
+import CartItem from "pages/authed/pos/MainPosPage/components/cartOrder/CartItem";
 import { Feather } from "@expo/vector-icons";
 import { updatePosHomeState } from "state/posHomeState";
 
@@ -42,7 +42,8 @@ const CartMobile = ({ cartOpen, setcartOpen, cartSub }: CartMobileProps) => {
         for (let i = 0; i < cart.length; i++) {
           try {
             if (cart[i].quantity ?? 0 > 1) {
-              newVal += parseFloat(cart[i].price) * parseFloat(cart[i].quantity ?? '1');
+              newVal +=
+                parseFloat(cart[i].price) * parseFloat(cart[i].quantity ?? "1");
               // console.log("Cart item quantity ", cart[i].quantity);
             } else {
               newVal += parseFloat(cart[i].price);
@@ -152,7 +153,9 @@ const CartMobile = ({ cartOpen, setcartOpen, cartSub }: CartMobileProps) => {
                     const local = structuredClone(cart);
                     const quantity = local[index].quantity ?? false;
                     if (quantity && parseFloat(quantity) > 1) {
-                      local[index].quantity = (parseFloat(quantity) - 1).toString();
+                      local[index].quantity = (
+                        parseFloat(quantity) - 1
+                      ).toString();
                       setCartState(local);
                     }
                   }}
@@ -160,9 +163,11 @@ const CartMobile = ({ cartOpen, setcartOpen, cartSub }: CartMobileProps) => {
                     const local = structuredClone(cart);
                     const quantity = local[index].quantity ?? false;
                     if (quantity) {
-                      local[index].quantity = (parseFloat(quantity) + 1).toString();
+                      local[index].quantity = (
+                        parseFloat(quantity) + 1
+                      ).toString();
                     } else {
-                      local[index].quantity = '2';
+                      local[index].quantity = "2";
                     }
                     setCartState(local);
                   }}
@@ -174,6 +179,7 @@ const CartMobile = ({ cartOpen, setcartOpen, cartSub }: CartMobileProps) => {
           <Image
             source={require("../assets/images/noItemsImg.png")}
             style={{ width: 200, height: "35%", resizeMode: "contain" }}
+            key={"noItemsImg"}
           />
         )}
         <View style={[styles.totalsContainer, { height: 150 }]}>

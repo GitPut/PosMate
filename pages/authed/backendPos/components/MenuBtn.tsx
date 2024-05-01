@@ -32,6 +32,7 @@ function MenuBtn({ active, labelImg, labelImgStyle, onPress } : MenuBtnProps) {
         source={labelImg}
         resizeMode="contain"
         style={[styles.btnLblImg, labelImgStyle]}
+        key={"btnLblImg"}
       />
     </Pressable>
   );

@@ -62,6 +62,7 @@ function Signup() {
       imageStyle={{
         resizeMode: "cover",
       }}
+      key={"background"}
     >
       <ScrollView
         style={{ height: "100%", width: "100%" }}
@@ -93,6 +94,7 @@ function Signup() {
             <img
               src={require("assets/dpos-logo-black.png")}
               style={styles.logo}
+              key={"logo"}
             />
           </a>
         </View>

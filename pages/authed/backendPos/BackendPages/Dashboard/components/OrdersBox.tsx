@@ -8,6 +8,7 @@ function OrdersBox({ ordersValue, style } : { ordersValue: string, style: ViewSt
         source={require("../assets/images/image_Y7Ho..png")}
         resizeMode="contain"
         style={styles.ordersIcon}
+        key={"ordersIcon"}
       />
       <View style={styles.rightSide}>
         <Text style={styles.ordersValue}>{ordersValue}</Text>

@@ -15,12 +15,12 @@ import {
   storeDetailState,
 } from "state/state";
 import Modal from "react-native-modal-web";
-import ProductBuilderModal from "components/MainPosPage/components/ProductBuilderModal/ProductBuilderModal";
-import ProductsSection from "components/MainPosPage/components/ProductsSection";
-import CategorySection from "components/MainPosPage/components/CategorySection";
-import Cart from "components/MainPosPage/components/Cart";
+import ProductBuilderModal from "pages/authed/pos/MainPosPage/components/ProductBuilderModal/ProductBuilderModal";
+import ProductsSection from "pages/authed/pos/MainPosPage/components/ProductsSection";
+import CategorySection from "pages/authed/pos/MainPosPage/components/CategorySection";
+import Cart from "pages/authed/pos/MainPosPage/components/Cart";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
-import CartMobile from "components/MainPosPage/phoneComponents/CartMobile";
+import CartMobile from "pages/authed/pos/MainPosPage/phoneComponents/CartMobile";
 import { UserStoreStateProps } from "types/global";
 
 function OrderCartMain({ catalog }: { catalog: UserStoreStateProps }) {
@@ -151,8 +151,24 @@ function OrderCartMain({ catalog }: { catalog: UserStoreStateProps }) {
             </Pressable>
           </View>
         )}
-        <CategorySection catalog={catalog} section={section} />
-        <ProductsSection catalog={catalog} />
+        {catalog.products.length > 0 && (
+          <>
+            <CategorySection catalog={catalog} section={section} />
+            <ProductsSection
+              catalog={catalog}
+              remeasure={() => {
+                catalog.products.map((product) => {
+                  const element = document.getElementById(product.id);
+                  if (product.category === section) {
+                    if (element) element.style.display = "flex";
+                  } else {
+                    if (element) element.style.display = "none";
+                  }
+                });
+              }}
+            />
+          </>
+        )}
       </View>
       {width > 1000 ? (
         <Cart />

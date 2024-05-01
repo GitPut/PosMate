@@ -1,5 +1,6 @@
+import ProductImage from "components/ProductImage/ProductImage";
 import React from "react";
-import { StyleSheet, View, Image, Text } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 
 function MostOrderItemsListItem({
   imageUrl,
@@ -13,11 +14,13 @@ function MostOrderItemsListItem({
   return (
     <View style={[styles.container]}>
       <View style={styles.leftSide}>
-        <Image
-          source={{ uri: imageUrl || "https://via.placeholder.com/70" }}
-          resizeMode="contain"
-          style={styles.itemImg}
-        />
+        <View>
+          <ProductImage
+            source={imageUrl ?? "https://via.placeholder.com/70"}
+            style={styles.itemImg}
+            key={itemName}
+          />
+        </View>
         <Text style={styles.itemName}>{itemName}</Text>
       </View>
       <Text style={styles.itemNumOfOrders}>{itemNumOfOrders}</Text>

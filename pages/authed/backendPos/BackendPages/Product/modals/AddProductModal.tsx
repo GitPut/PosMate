@@ -420,6 +420,7 @@ function AddProductModal({
                               height: 150,
                               resizeMode: "contain",
                             }}
+                            key={selectedFile.name}
                           />
                           <Pressable
                             style={{
@@ -448,6 +449,7 @@ function AddProductModal({
                               height: 150,
                               resizeMode: "contain",
                             }}
+                              key={currentImgUrl}
                           />
                           <Pressable
                             style={{

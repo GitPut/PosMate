@@ -54,6 +54,7 @@ function OnlineOrderHomeCheckout() {
                         source={require("./assets/images/dpos-logo-white.png")}
                         resizeMode="contain"
                         style={styles.logo}
+                        key={"logo"}
                       />
                     </Pressable>
                   ) : (
@@ -87,7 +88,8 @@ function OnlineOrderHomeCheckout() {
                     source={require("./assets/images/image_ridw..png")}
                     resizeMode="contain"
                     style={styles.dash}
-                  ></Image>
+                    key={"dash"}
+                  />
                 </View>
                 {screenWidth > 1000 ? (
                   <Elements stripe={loadStripe(storeDetails.stripePublicKey)}>
@@ -145,11 +147,13 @@ function OnlineOrderHomeCheckout() {
                         source={require("./assets/images/image_pDaA..png")}
                         resizeMode="contain"
                         style={styles.facebookIcon}
+                        key={"facebook"}
                       />
                       <Image
                         source={require("./assets/images/image_CLpi..png")}
                         resizeMode="contain"
                         style={styles.instagramIcon}
+                        key={"instagram"}
                       />
                     </View>
                   )}
