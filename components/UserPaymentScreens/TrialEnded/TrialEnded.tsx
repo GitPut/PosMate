@@ -7,11 +7,7 @@ import { logout } from "state/firebaseFunctions";
 import Select from "react-select";
 import { useAlert } from "react-alert";
 
-interface TrialEndedProps {
-  resetLoader: () => void;
-}
-
-const TrialEnded = ({ resetLoader }: TrialEndedProps) => {
+const TrialEnded = () => {
   const [planType, setplanType] = useState<{
     value: string;
     label: string;
@@ -24,7 +20,6 @@ const TrialEnded = ({ resetLoader }: TrialEndedProps) => {
 
   const Checkout = async () => {
     if (!planType) return;
-    resetLoader();
     setloading(true);
 
     let priceId;

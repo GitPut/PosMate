@@ -9,18 +9,15 @@ import { logout } from "state/firebaseFunctions";
 import { useAlert } from "react-alert";
 
 interface PaymentUpdateNotificationProps {
-  resetLoader: () => void;
   isCanceled: boolean;
 }
 
 const PaymentUpdateNotification = ({
-  resetLoader,
   isCanceled,
 }: PaymentUpdateNotificationProps) => {
   const alertP = useAlert();
 
   const sendToCheckout = async () => {
-    resetLoader();
     const currentUser = auth.currentUser;
     if (currentUser) {
       await db
@@ -57,7 +54,6 @@ const PaymentUpdateNotification = ({
   };
 
   const Manage = () => {
-    resetLoader();
     firebase
       .functions()
       .httpsCallable("ext-firestore-stripe-payments-createPortalLink")({

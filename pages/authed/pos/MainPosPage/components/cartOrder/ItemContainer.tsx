@@ -15,7 +15,7 @@ function ItemContainer({ product, onLayout, width }: ItemContainerProps) {
   const cart = cartState.use();
 
   return (
-    <div id={product.id}>
+    <div id={product.id} style={{ display: "none" }}>
       <Pressable
         onLayout={onLayout}
         onPress={() => {

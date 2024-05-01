@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import ItemContainer from "./cartOrder/ItemContainer";
 import { useWindowDimensions } from "react-native";
 import { UserStoreStateProps } from "types/global";
 
 interface ProductsSectionProps {
   catalog: UserStoreStateProps;
-  remeasure: () => void;
+  setallLoaded: (val: boolean) => void;
 }
 
-const ProductsSection = ({ catalog, remeasure }: ProductsSectionProps) => {
+const ProductsSection = ({ catalog, setallLoaded }: ProductsSectionProps) => {
   const { width } = useWindowDimensions();
-  const [hasLoadedAll, sethasLoadedAll] = useState(false);
 
   const styles = {
     scrollAreaProducts: {
@@ -35,23 +34,18 @@ const ProductsSection = ({ catalog, remeasure }: ProductsSectionProps) => {
       <div style={{ overflowY: "auto", height: "100%" }}>
         <div style={styles.gridContainer}>
           {catalog.products.map((product, index) => {
-            if (index === catalog.products.length - 1 && !hasLoadedAll) {
-              return (
-                <ItemContainer
-                  product={product}
-                  key={index}
-                  onLayout={() => {
-                    sethasLoadedAll(true);
-                    remeasure();
-                  }}
-                  width={width}
-                />
-              );
-            } else {
-              return (
-                <ItemContainer product={product} key={index} width={width} />
-              );
-            }
+            return (
+              <ItemContainer
+                product={product}
+                key={index}
+                width={width}
+                onLayout={
+                  index === catalog.products.length - 1
+                    ? () => setallLoaded(true)
+                    : undefined
+                }
+              />
+            );
           })}
         </div>
       </div>

@@ -9,6 +9,7 @@ import {
   ProductProp,
   StoreDetailsProps,
   TransListStateItem,
+  TrialDetailsStateProps,
   UserStoreStateProps,
 } from "types/global";
 
@@ -94,11 +95,6 @@ export const storeDetailState = entity<StoreDetailsProps>({
 export const setStoreDetailState = (val: StoreDetailsProps): void => {
   storeDetailState.set(val);
 };
-
-interface TrialDetailsStateProps {
-  endDate: Date | null;
-  hasEnded: boolean | null;
-}
 
 export const trialDetailsState = entity<TrialDetailsStateProps>({
   endDate: null,

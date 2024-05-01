@@ -25,8 +25,6 @@ import ClockinModal from "components/modals/ClockInModal/ClockinModal";
 import LeftMenuBar from "pages/authed/pos/MainPosPage/components/LeftMenuBar";
 import Cart from "pages/authed/pos/MainPosPage/components/Cart";
 import Modal from "react-native-modal-web";
-// import CategorySection from "pages/authed/pos/MainPosPage/components/CategorySection";
-// import ProductsSection from "pages/authed/pos/MainPosPage/components/ProductsSection";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import CustomCashModal from "components/modals/CustomCashModal";
 import AuthPasswordModal from "components/modals/AuthPasswordModal";
@@ -52,6 +50,7 @@ function HomeScreen() {
   const myDeviceDetails = myDeviceDetailsState.use();
   const alertP = useAlert();
   const [cartOpen, setcartOpen] = useState(false);
+  const [allLoaded, setallLoaded] = useState<boolean>(false);
   // const [openSideBar, setopenSideBar] = useState(false);
 
   const {
@@ -215,6 +214,10 @@ function HomeScreen() {
   }, [cart, deliveryChecked, discountAmount]);
 
   useEffect(() => {
+    console.log("Catalog: ", catalog);
+  }, [catalog]);
+
+  useEffect(() => {
     catalog.products.map((product) => {
       const element = document.getElementById(product.id);
       if (product.category === section) {
@@ -223,7 +226,7 @@ function HomeScreen() {
         if (element) element.style.display = "none";
       }
     });
-  }, [section, catalog]);
+  }, [section, catalog, allLoaded]);
 
   return (
     <View style={[styles.container]}>
@@ -290,19 +293,7 @@ function HomeScreen() {
         {catalog.products.length > 0 && (
           <>
             <CategorySection catalog={catalog} section={section} />
-            <ProductsSection
-              catalog={catalog}
-              remeasure={() => {
-                catalog.products.map((product) => {
-                  const element = document.getElementById(product.id);
-                  if (product.category === section) {
-                    if (element) element.style.display = "flex";
-                  } else {
-                    if (element) element.style.display = "none";
-                  }
-                });
-              }}
-            />
+            <ProductsSection catalog={catalog} setallLoaded={setallLoaded} />
           </>
         )}
       </View>

@@ -237,3 +237,8 @@ export type CurrentOrderProp = {
   customer?: CustomerProp | null;
   method?: string | null;
 };
+
+export type TrialDetailsStateProps = {
+  endDate: Date | null;
+  hasEnded: boolean | null;
+}

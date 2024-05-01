@@ -17,11 +17,7 @@ import SideBar from "./components/SideBar";
 import DetailsStage from "./components/DetailsStage";
 import { AddressType } from "types/global";
 
-interface NewUserPaymentProps {
-  resetLoader: () => void;
-}
-
-const NewUserPayment = ({ resetLoader }: NewUserPaymentProps) => {
+const NewUserPayment = () => {
   const [planType, setplanType] = useState<string | null>(null);
   const [stageNum, setstageNum] = useState(1);
   const storeDetails = storeDetailState.use();
@@ -62,7 +58,6 @@ const NewUserPayment = ({ resetLoader }: NewUserPaymentProps) => {
   };
 
   const CheckOutFunc = async () => {
-    resetLoader();
     updateStoreDetails({
       name: storeName,
       phoneNumber: phoneNumber,

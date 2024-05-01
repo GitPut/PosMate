@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import {
   myDeviceDetailsState,
   setCustomersList,
@@ -14,11 +14,9 @@ import {
 } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 import { updateFreeTrial } from "state/firebaseFunctions";
-import { Animated, Image, View } from "react-native";
+import { Image, View } from "react-native";
 import qz from "qz-tray";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import NonAuthRoute from "./non-authed/NonAuthRoute";
-import ScrollToTop from "components/functional/ScrollToTop";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { useAlert } from "react-alert";
 import { CustomerProp, Device, Employee, ProductProp } from "types/global";
 import * as Font from "expo-font";
@@ -32,6 +30,10 @@ import {
   SimpleLineIcons,
 } from "@expo/vector-icons";
 const NavigationContent = React.lazy(() => import("./NavigationContent"));
+const NonAuthRoute = React.lazy(() => import("./non-authed/NonAuthRoute"));
+const ScrollToTop = React.lazy(
+  () => import("components/functional/ScrollToTop")
+);
 
 const Loader = () => {
   return (
@@ -60,8 +62,6 @@ const RouteManager = () => {
   const [loading, setloading] = useState<boolean | null>(true);
   const [isNewUser, setisNewUser] = useState<boolean | null>(null);
   const [isSubscribed, setisSubscribed] = useState<boolean | null>(null);
-  const fadeAnim = useRef(new Animated.Value(1)).current;
-  const [viewVisible, setviewVisible] = useState<boolean>(true);
   const [isCanceled, setisCanceled] = useState<boolean | null>(null);
   const trialDetails = trialDetailsState.use();
   const myDeviceDetails = myDeviceDetailsState.use();
@@ -81,14 +81,14 @@ const RouteManager = () => {
     });
   }
 
-  useEffect(() => {
-    async function loadFonts() {
-      await preloadFonts();
-      setFontsLoaded(true);
-    }
+  // useEffect(() => {
+  //   async function loadFonts() {
+  //     await preloadFonts();
+  //     setFontsLoaded(true);
+  //   }
 
-    loadFonts();
-  }, []);
+  //   loadFonts();
+  // }, []);
 
   useEffect(() => {
     if (myDeviceDetails.docID && auth.currentUser) {
@@ -167,19 +167,19 @@ const RouteManager = () => {
 
   useEffect(() => {
     const unsubscribeAuthStateChanged = auth.onAuthStateChanged((user) => {
-      fadeAnim.setValue(1);
-      setviewVisible(true);
       if (user) {
         localStorage.setItem("savedUserState", "true");
 
         db.collection("users")
           .doc(user.uid)
           .get()
-          .then((doc) => {
+          .then(async (doc) => {
             let extraDevicesPayingFor = 0;
             const products: ProductProp[] = [];
 
-            doc.ref
+            await preloadFonts();
+
+            await doc.ref
               .collection("products")
               .get()
               .then((docs) => {
@@ -205,16 +205,20 @@ const RouteManager = () => {
                 )
               );
 
+            const sortedProducts = products.sort(customSort);
+
             setUserStoreState({
-              products: products.sort(customSort),
+              products: sortedProducts,
               categories: doc.data()?.categories ? doc.data()?.categories : [],
             });
+
+            setloading(false);
 
             if (doc.data()?.storeDetails) {
               setStoreDetailState(doc.data()?.storeDetails);
             }
 
-            doc.ref
+            await doc.ref
               .collection("employees")
               .get()
               .then((docs) => {
@@ -237,7 +241,7 @@ const RouteManager = () => {
                 console.log("Error has occured with db employees: ", e)
               );
 
-            doc.ref
+            await doc.ref
               .collection("subscriptions")
               .get()
               .then((docs) => {
@@ -390,7 +394,7 @@ const RouteManager = () => {
                 )
               );
 
-            doc.ref
+            await doc.ref
               .collection("customers")
               .get()
               .then((docs) => {
@@ -460,7 +464,7 @@ const RouteManager = () => {
               setDeviceIdState(deviceID);
             }
 
-            doc.ref
+            await doc.ref
               .collection("devices")
               .get()
               .then((docs) => {
@@ -505,60 +509,6 @@ const RouteManager = () => {
 
                 setDeviceTreeState({ devices: devices, extraDevicesPayingFor });
               });
-
-            // const unsub = db
-            //   .collection("users")
-            //   .doc(user.uid)
-            //   .onSnapshot((updatedDoc) => {
-            //     const updatedProducts: ProductProp[] = [];
-
-            //     updatedDoc.ref
-            //       .collection("products")
-            //       .get()
-            //       .then((updatedProductDocs) => {
-            //         if (!updatedProductDocs.empty) {
-            //           updatedProductDocs.forEach((element) => {
-            //             const productData = element.data();
-
-            //             updatedProducts.push({
-            //               ...productData,
-            //               name: productData.name,
-            //               price: productData.price,
-            //               description: productData.description,
-            //               options: productData.options,
-            //               id: productData.id,
-            //             });
-            //           });
-            //           updatedProducts.sort(customSort);
-            //         }
-            //       })
-            //       .catch(() =>
-            //         // console.log("Error has occured with db products: ", e)
-            //         alertP.error(
-            //           "An error has occured with starting up the app. Please refresh the page."
-            //         )
-            //       );
-
-            //     setUserStoreState({
-            //       products: updatedProducts.sort(customSort),
-            //       categories: updatedDoc.data()?.categories
-            //         ? updatedDoc.data()?.categories
-            //         : [],
-            //     });
-            //     // if (updatedDoc.data()?.wooCredentials) {
-            //     //   setWoocommerceState(updatedDoc.data()?.wooCredentials);
-            //     // }
-            //     if (updatedDoc.data()?.storeDetails) {
-            //       setStoreDetailState(updatedDoc.data()?.storeDetails);
-            //     }
-            //   });
-
-            setloading(false);
-            setviewVisible(false);
-
-            // return () => {
-            //   unsub();
-            // };
           })
           .catch(() => {
             // console.log("Error has occured with db users: ", e)
@@ -572,7 +522,6 @@ const RouteManager = () => {
         setisNewUser(false);
         setisSubscribed(false);
         setloading(false);
-        setviewVisible(false);
       }
     });
 
@@ -581,54 +530,27 @@ const RouteManager = () => {
     };
   }, [savedUserState]);
 
-  const resetLoader = () => {
-    setviewVisible(true);
-  };
+  // Return the loader while loading is true
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <Router>
-      <ScrollToTop />
-      {/* <Switch> */}
-      {auth.currentUser && (
-        <Suspense fallback={<Loader />}>
+      <Suspense fallback={<Loader />}>
+        <ScrollToTop />
+        {auth.currentUser && !loading && (
           <NavigationContent
-            resetLoader={resetLoader}
-            isNewUser={isNewUser}
-            isCanceled={isCanceled}
-            isSubscribed={isSubscribed}
-            trialDetails={trialDetails}
+            isNewUser={isNewUser ?? false}
+            isCanceled={isCanceled ?? false}
+            isSubscribed={isSubscribed ?? false}
+            trialDetails={trialDetails ?? { hasEnded: false }}
           />
-        </Suspense>
-      )}
-      {!auth.currentUser && !loading && (
-        <Route path="/" component={NonAuthRoute} />
-      )}
-      {/* </Switch> */}
-      {/* <Modal
-        isVisible={viewVisible || !fontsLoaded}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        style={{
-          margin: 0,
-        }}
-        backdropOpacity={0}
-      >
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "white",
-            height: "100%",
-            width: "100%",
-          }}
-        >
-          <Image
-            source={require("assets/loading.gif")}
-            style={{ width: 450, height: 450, resizeMode: "contain" }}
-            key={"loading"}
-          />
-        </View>
-      </Modal> */}
+        )}
+        {!auth.currentUser && !loading && (
+          <Route path="/" component={NonAuthRoute} />
+        )}
+      </Suspense>
     </Router>
   );
 };

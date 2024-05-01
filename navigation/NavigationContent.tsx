@@ -1,5 +1,6 @@
 import React from "react";
 import { Route } from "react-router-dom";
+import { TrialDetailsStateProps } from "types/global";
 const PaymentUpdateNotification = React.lazy(
   () =>
     import(
@@ -15,33 +16,24 @@ const NewUserPayment = React.lazy(
 );
 
 interface NavigationContentProps {
-  resetLoader: () => void;
   isNewUser: boolean;
   isCanceled: boolean;
   isSubscribed: boolean;
-  trialDetails: {
-    hasEnded: boolean;
-  };
+  trialDetails: TrialDetailsStateProps;
 }
 
 const NavigationContent = ({
-  resetLoader,
   isNewUser,
   isCanceled,
   isSubscribed,
   trialDetails,
 }: NavigationContentProps) => {
   if (trialDetails.hasEnded) {
-    return <TrialEnded resetLoader={resetLoader} />;
+    return <TrialEnded />;
   } else if (isNewUser) {
-    return <NewUserPayment resetLoader={resetLoader} />;
+    return <NewUserPayment />;
   } else if (isCanceled && !isSubscribed && !isNewUser) {
-    return (
-      <PaymentUpdateNotification
-        resetLoader={resetLoader}
-        isCanceled={isCanceled}
-      />
-    );
+    return <PaymentUpdateNotification isCanceled={isCanceled} />;
   } else {
     return <Route path="/" component={AuthRoute} />;
   }
