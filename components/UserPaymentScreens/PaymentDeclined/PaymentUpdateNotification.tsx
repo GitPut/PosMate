@@ -32,7 +32,7 @@ const PaymentUpdateNotification = ({
         .then((docRef) => {
           // Wait for the checkoutSession to get attached by the extension
           docRef.onSnapshot(async (snap) => {
-            const { error, sessionId } = snap.data();
+            const { error, sessionId } = snap.data() ?? {};
             if (error) {
               // Show an error to your customer and inspect
               // your Cloud Function logs in the Firebase console.
@@ -87,7 +87,12 @@ const PaymentUpdateNotification = ({
             >
               <SimpleLineIcons name="logout" size={32} color="black" />
             </Pressable>
-            <Image source={Logo} resizeMode="contain" style={styles.logo} key={'logo'} />
+            <Image
+              source={Logo}
+              resizeMode="contain"
+              style={styles.logo}
+              key={"logo"}
+            />
           </View>
           <View style={styles.attentionWrapper}>
             <Text style={styles.attentionNeeded}>ATTENTION NEEDED</Text>
@@ -118,7 +123,12 @@ const PaymentUpdateNotification = ({
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Image source={Logo} resizeMode="contain" style={styles.logo} key={'logo'} />
+          <Image
+            source={Logo}
+            resizeMode="contain"
+            style={styles.logo}
+            key={"logo"}
+          />
           <View style={styles.attentionWrapper}>
             <Text style={styles.attentionNeeded}>ATTENTION NEEDED</Text>
           </View>

@@ -214,10 +214,6 @@ function HomeScreen() {
   }, [cart, deliveryChecked, discountAmount]);
 
   useEffect(() => {
-    console.log("Catalog: ", catalog);
-  }, [catalog]);
-
-  useEffect(() => {
     catalog.products.map((product) => {
       const element = document.getElementById(product.id);
       if (product.category === section) {

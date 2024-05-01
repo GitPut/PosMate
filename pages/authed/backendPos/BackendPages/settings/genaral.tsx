@@ -22,7 +22,7 @@ function GeneralSettings() {
     storeDetails.phoneNumber
   );
   const [address, setaddress] = useState<AddressType | undefined>(
-    storeDetails.address
+    storeDetails.address ?? undefined
   );
   const [website, setwebsite] = useState<string>(storeDetails.website);
   const [deliveryPrice, setdeliveryPrice] = useState<string>(

@@ -1,5 +1,5 @@
 interface StyleFunctionProps {
-  [key: string]: any; // Since provided and base can have any additional properties, we use a broad type here
+  [key: string]: string | number; // Since provided and base can have any additional properties, we use a broad type here
 }
 
 interface GooglePlacesStylesProps {

@@ -120,6 +120,8 @@ export type StoreDetailsProps = {
   stripePublicKey?: string;
   stripeSecretKey?: string;
   hasSocial?: boolean;
+  //online prop
+  docID?: string;
 };
 
 export type CustomerProp = {
@@ -241,4 +243,4 @@ export type CurrentOrderProp = {
 export type TrialDetailsStateProps = {
   endDate: Date | null;
   hasEnded: boolean | null;
-}
+};

@@ -33,6 +33,7 @@ function OrderCartMain({ catalog }: { catalog: UserStoreStateProps }) {
   const { height, width } = useWindowDimensions();
   const ProductBuilderProps = ProductBuilderState.use();
   const { section } = posHomeState.use();
+  const [allLoaded, setallLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     if (page === 4) {
@@ -78,7 +79,7 @@ function OrderCartMain({ catalog }: { catalog: UserStoreStateProps }) {
         element.style.display = "none";
       }
     });
-  }, [section]);
+  }, [section, catalog, allLoaded]);
 
   return (
     <View style={styles.container}>
@@ -154,19 +155,7 @@ function OrderCartMain({ catalog }: { catalog: UserStoreStateProps }) {
         {catalog.products.length > 0 && (
           <>
             <CategorySection catalog={catalog} section={section} />
-            <ProductsSection
-              catalog={catalog}
-              remeasure={() => {
-                catalog.products.map((product) => {
-                  const element = document.getElementById(product.id);
-                  if (product.category === section) {
-                    if (element) element.style.display = "flex";
-                  } else {
-                    if (element) element.style.display = "none";
-                  }
-                });
-              }}
-            />
+            <ProductsSection catalog={catalog} setallLoaded={setallLoaded} />
           </>
         )}
       </View>

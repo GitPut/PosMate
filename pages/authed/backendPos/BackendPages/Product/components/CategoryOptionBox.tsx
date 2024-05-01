@@ -1,5 +1,4 @@
 import ProductImage from "components/ProductImage/ProductImage";
-import AvocatImage from "assets/AvocatImage.jpg";
 import React from "react";
 import { StyleSheet, Pressable, Text, View, ViewStyle } from "react-native";
 import { userStoreState } from "state/state";

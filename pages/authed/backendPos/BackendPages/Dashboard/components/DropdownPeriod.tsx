@@ -16,17 +16,17 @@ function DropdownPeriod({ value, setValue }: { value: string; setValue: (val: st
   useEffect(() => {
     // Ensure this code runs in a web environment
     if (dropdownRef.current && typeof window !== "undefined") {
-      const element = dropdownRef.current; // Assuming this ref points to a DOM element
-      // You might need to adjust this to get the actual DOM node in React Native Web
+      const element = dropdownRef.current as unknown; // Convert to unknown first
+      if (typeof element === "object" && element instanceof HTMLElement) {
+        const boundingRect = element.getBoundingClientRect();
 
-      const boundingRect = element.getBoundingClientRect();
-
-      setDropdownLayout({
-        x: boundingRect.left,
-        y: boundingRect.top, // Adjust based on scroll position
-        width: boundingRect.width,
-        height: boundingRect.height,
-      });
+        setDropdownLayout({
+          x: boundingRect.left,
+          y: boundingRect.top, // Adjust based on scroll position
+          width: boundingRect.width,
+          height: boundingRect.height,
+        });
+      }
     }
   }, []); // Recalculate when scroll position changes
 

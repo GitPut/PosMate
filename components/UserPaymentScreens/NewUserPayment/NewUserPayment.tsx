@@ -65,7 +65,7 @@ const NewUserPayment = () => {
       website: website ? website : "",
       deliveryPrice: "",
       settingsPassword: "",
-      taxRate: '13',
+      taxRate: "13",
     });
 
     if (planType === "freeTrial") {
@@ -103,7 +103,7 @@ const NewUserPayment = () => {
         .then((docRef) => {
           // Wait for the checkoutSession to get attached by the extension
           docRef.onSnapshot(async (snap) => {
-            const { error, sessionId } = snap.data();
+            const { error, sessionId } = snap.data() ?? {};
             if (error) {
               // Show an error to your customer and inspect
               // your Cloud Function logs in the Firebase console.

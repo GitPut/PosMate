@@ -66,7 +66,6 @@ const RouteManager = () => {
   const trialDetails = trialDetailsState.use();
   const myDeviceDetails = myDeviceDetailsState.use();
   const alertP = useAlert();
-  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   async function preloadFonts() {
     await Font.loadAsync({
@@ -80,15 +79,6 @@ const RouteManager = () => {
       ...SimpleLineIcons.font,
     });
   }
-
-  // useEffect(() => {
-  //   async function loadFonts() {
-  //     await preloadFonts();
-  //     setFontsLoaded(true);
-  //   }
-
-  //   loadFonts();
-  // }, []);
 
   useEffect(() => {
     if (myDeviceDetails.docID && auth.currentUser) {

@@ -199,8 +199,8 @@ function DeliveryDetails() {
             return alertP.error("Please fill in all fields");
 
           calculateDistanceBetweenAddresses(
-            storeDetails.address?.value?.reference ?? '',
-            localAddress?.value.reference ?? ''
+            storeDetails.address?.value?.reference ?? "",
+            localAddress?.value.reference ?? ""
           ).then((distance) => {
             if (distance !== null) {
               // console.log(

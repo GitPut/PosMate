@@ -24,7 +24,7 @@ import { ProductProp, UserStoreStateProps } from "types/global";
 
 const OrderPage = () => {
   const history = useHistory();
-  const { urlEnding } = useParams();
+  const { urlEnding }: { urlEnding: string } = useParams();
   const [catalog, setcatalog] = useState<UserStoreStateProps>({
     categories: [],
     products: [],
@@ -37,8 +37,8 @@ const OrderPage = () => {
 
   const customSort = (a: ProductProp, b: ProductProp) => {
     // Handle cases where one or both items don't have a rank
-    const rankA = parseFloat(a.rank ?? '0') || Number.MAX_SAFE_INTEGER;
-    const rankB = parseFloat(b.rank ?? '0') || Number.MAX_SAFE_INTEGER;
+    const rankA = parseFloat(a.rank ?? "0") || Number.MAX_SAFE_INTEGER;
+    const rankB = parseFloat(b.rank ?? "0") || Number.MAX_SAFE_INTEGER;
 
     // Compare based on ranks
     return rankA - rankB;
@@ -128,8 +128,8 @@ const OrderPage = () => {
                 });
               }
             }
-          })
-          // .catch((e) => console.log("Error has occurred with db: ", e));
+          });
+        // .catch((e) => console.log("Error has occurred with db: ", e));
 
         setcatalog({
           categories: querySnapshot.docs[0].data().categories,
@@ -138,10 +138,10 @@ const OrderPage = () => {
         });
 
         fadeOut();
-      })
-      // .catch((e) => {
-      //   console.log("Error has occurred");
-      // });
+      });
+    // .catch((e) => {
+    //   console.log("Error has occurred");
+    // });
   }, []);
 
   const fadeOut = () => {

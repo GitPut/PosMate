@@ -5,6 +5,7 @@ import {
   Pressable,
   Text,
   useWindowDimensions,
+  GestureResponderEvent,
 } from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
 import {
@@ -38,7 +39,7 @@ function CheckOutDetails() {
   const elements = useElements();
   const currency = "cad";
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: GestureResponderEvent) => {
     setloading(true);
     event.preventDefault();
 
@@ -62,6 +63,8 @@ function CheckOutDetails() {
     };
 
     try {
+      if (!cardNumberElement) return;
+
       const { token, error } = await stripe.createToken(cardNumberElement);
 
       if (error) {

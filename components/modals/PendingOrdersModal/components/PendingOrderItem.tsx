@@ -53,7 +53,7 @@ function PendingOrderItem({
         <View style={styles.orderNameContainer}>
           <Text style={styles.orderNameLbl}>Order Name:</Text>
           <Text style={styles.orderNameValue}>
-            {element.customer?.length > 0
+            {element.customer?.name?.length ?? 0 > 0
               ? element.customer?.name?.toUpperCase()
               : "N/A"}
           </Text>
