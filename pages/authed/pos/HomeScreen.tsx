@@ -50,7 +50,6 @@ function HomeScreen() {
   const myDeviceDetails = myDeviceDetailsState.use();
   const alertP = useAlert();
   const [cartOpen, setcartOpen] = useState(false);
-  const [allLoaded, setallLoaded] = useState<boolean>(false);
   // const [openSideBar, setopenSideBar] = useState(false);
 
   const {
@@ -222,7 +221,7 @@ function HomeScreen() {
         if (element) element.style.display = "none";
       }
     });
-  }, [section, catalog, allLoaded]);
+  }, [section, catalog]);
 
   return (
     <View style={[styles.container]}>
@@ -289,7 +288,7 @@ function HomeScreen() {
         {catalog.products.length > 0 && (
           <>
             <CategorySection catalog={catalog} section={section} />
-            <ProductsSection catalog={catalog} setallLoaded={setallLoaded} />
+            <ProductsSection catalog={catalog} />
           </>
         )}
       </View>

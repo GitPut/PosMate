@@ -38,7 +38,7 @@ export const addCartState = (
       if (JSON.stringify(copyItem) === JSON.stringify(val)) {
         return {
           ...item,
-          quantity: item.quantity ? String(item.quantity + 1) : "2",
+          quantity: item.quantity ? String(parseFloat(item.quantity) + 1) : "2",
         };
       } else {
         return item;

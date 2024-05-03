@@ -109,7 +109,7 @@ function CartItem({
             <Pressable
               style={styles.cartItemDecreaseBtn}
               onPress={() => {
-                if (parseFloat(cartItem.quantity ?? "0") === 1) {
+                if (parseFloat(cartItem.quantity ?? "0") === 1 || !cartItem.quantity) {
                   removeAction();
                 } else {
                   decreaseAction();

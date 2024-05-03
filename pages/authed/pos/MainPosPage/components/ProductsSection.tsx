@@ -1,14 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ItemContainer from "./cartOrder/ItemContainer";
 import { useWindowDimensions } from "react-native";
 import { UserStoreStateProps } from "types/global";
 
 interface ProductsSectionProps {
   catalog: UserStoreStateProps;
-  setallLoaded: (val: boolean) => void;
 }
 
-const ProductsSection = ({ catalog, setallLoaded }: ProductsSectionProps) => {
+const ProductsSection = ({ catalog }: ProductsSectionProps) => {
   const { width } = useWindowDimensions();
 
   const styles = {
@@ -35,16 +34,7 @@ const ProductsSection = ({ catalog, setallLoaded }: ProductsSectionProps) => {
         <div style={styles.gridContainer}>
           {catalog.products.map((product, index) => {
             return (
-              <ItemContainer
-                product={product}
-                key={index}
-                width={width}
-                onLayout={
-                  index === catalog.products.length - 1
-                    ? () => setallLoaded(true)
-                    : undefined
-                }
-              />
+              <ItemContainer product={product} key={index} width={width} />
             );
           })}
         </div>

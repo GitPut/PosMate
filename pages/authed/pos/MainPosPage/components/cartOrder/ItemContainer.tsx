@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { addCartState, cartState, setProductBuilderState } from "state/state";
 import ProductImage from "components/ProductImage/ProductImage";

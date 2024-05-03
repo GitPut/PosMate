@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -29,7 +29,8 @@ function ProductBuilderModal() {
   const cart = cartState.use();
   const myObj = product;
   const [myObjProfile, setmyObjProfile] = useState<ProductProp>(myObj);
-  const [total, settotal] = useState<number>(parseFloat(myObj.price) ?? 0);
+  const [total, settotal] = useState<number>(parseFloat(myObj.price ?? "0"));
+  const isEditing = typeof itemIndex === "number" ? true : false;
 
   const [extraInput, setextraInput] = useState<string>(
     myObj.extraDetails ? myObj.extraDetails : ""
@@ -39,7 +40,9 @@ function ProductBuilderModal() {
   const [scrollY, setscrollY] = useState<number>(0);
   const width = useWindowDimensions().width;
 
-  const goBack = () => resetProductBuilderState();
+  const goBack = () => {
+    resetProductBuilderState();
+  };
 
   useEffect(() => {
     settotal(getPrice());
@@ -105,7 +108,7 @@ function ProductBuilderModal() {
         }
       } else {
         const selectedItems = op.optionsList.filter(
-          (op) => parseFloat(op.selectedTimes ?? '0') > 0
+          (op) => parseFloat(op.selectedTimes ?? "0") > 0
         );
         if (selectedItems.length > 0) {
           let opWVal = `${op.label}:\n`;
@@ -131,7 +134,7 @@ function ProductBuilderModal() {
         id: myObjProfile.id,
       };
 
-      if (!itemIndex) {
+      if (!isEditing) {
         addCartState(
           {
             name: myObjProfile.name,
@@ -146,6 +149,7 @@ function ProductBuilderModal() {
         );
       } else {
         const copyCart = structuredClone(cart);
+        if (itemIndex === null || itemIndex === undefined) return;
         copyCart[itemIndex] = {
           name: myObjProfile.name,
           price: total.toString(),
@@ -159,9 +163,6 @@ function ProductBuilderModal() {
       }
 
       goBack();
-      setmyObjProfile(myObj);
-      settotal(parseFloat(myObjProfile.price));
-      setextraInput("");
     }
   };
 
@@ -340,7 +341,7 @@ function ProductBuilderModal() {
             <View style={styles.addToCartRow}>
               <AddToCartBtn
                 style={styles.addToCartBtn}
-                title={itemIndex ? "Save" : "Add To Cart"}
+                title={isEditing ? "Save" : "Add To Cart"}
                 onPress={AddToCart}
               />
             </View>
