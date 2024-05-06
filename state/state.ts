@@ -197,12 +197,6 @@ export const setTransListState = (val: TransListStateItem[]): void => {
   transListState.set(val);
 };
 
-export const transListTableOrgState = entity<TransListStateItem[]>([]);
-
-export const setTransListTableOrgState = (val: TransListStateItem[]): void => {
-  transListTableOrgState.set(val);
-};
-
 interface ProductBuilderStateProps {
   product: ProductProp | null;
   itemIndex?: number | null;

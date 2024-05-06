@@ -11,6 +11,7 @@ import {
   MyDeviceDetailsProps,
   StoreDetailsProps,
 } from "types/global";
+import firebase from "firebase/compat/app";
 
 interface PrintProps {
   dontAddToOngoing: boolean;
@@ -133,7 +134,7 @@ const Print = ({ ...props }: PrintProps) => {
     const transNum = Math.random().toString(36).substr(2, 9);
 
     if (method === "deliveryOrder") {
-      const today = new Date();
+      const today = firebase.firestore.Timestamp.now();
 
       const element = {
         cartNote: cartNote,
@@ -193,10 +194,10 @@ const Print = ({ ...props }: PrintProps) => {
         qz.websocket
           .connect()
           .then(function () {
-           if (!myDeviceDetails.printToPrinter) {
-             alert("You must specify a printer in device settings");
-             return;
-           }
+            if (!myDeviceDetails.printToPrinter) {
+              alert("You must specify a printer in device settings");
+              return;
+            }
             const config = qz.configs.create(myDeviceDetails.printToPrinter);
             return qz.print(config, data.data);
           })
@@ -235,7 +236,7 @@ const Print = ({ ...props }: PrintProps) => {
         deliveryModal: false,
       });
     } else if (method === "pickupOrder") {
-      const today = new Date();
+      const today = firebase.firestore.Timestamp.now();
 
       const element = {
         cartNote: cartNote,
@@ -327,7 +328,7 @@ const Print = ({ ...props }: PrintProps) => {
       setCartState([]);
       resetPosHomeState();
     } else {
-      const today = new Date();
+      const today = firebase.firestore.Timestamp.now();
       const element = {
         cartNote: cartNote,
         date: today,
@@ -344,10 +345,9 @@ const Print = ({ ...props }: PrintProps) => {
         changeDue: changeDue,
         paymentMethod: method,
         id: transNum,
-
       };
 
-      console.log('Adding element to pending orders: ', element)
+      console.log("Adding element to pending orders: ", element);
 
       const data = ReceiptPrint(element, storeDetails);
 

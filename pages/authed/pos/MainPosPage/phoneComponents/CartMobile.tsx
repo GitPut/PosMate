@@ -21,6 +21,7 @@ import CartAmountDisplayRow from "pages/authed/pos/MainPosPage/components/cartOr
 import CartItem from "pages/authed/pos/MainPosPage/components/cartOrder/CartItem";
 import { Feather } from "@expo/vector-icons";
 import { updatePosHomeState } from "state/posHomeState";
+import firebase from "firebase/compat/app";
 
 interface CartMobileProps {
   cartOpen: boolean;
@@ -242,7 +243,7 @@ const CartMobile = ({ cartOpen, setcartOpen, cartSub }: CartMobileProps) => {
           ]}
           disabled={cart.length < 1}
           onPress={() => {
-            const today = new Date();
+            const today = firebase.firestore.Timestamp.now();
             const transNum = Math.random().toString(36).substr(2, 9);
 
             if (orderDetails.delivery) {

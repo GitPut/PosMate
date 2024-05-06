@@ -29,31 +29,12 @@ import {
   FontAwesome,
   SimpleLineIcons,
 } from "@expo/vector-icons";
+import Loader from "components/Loader";
 const NavigationContent = React.lazy(() => import("./NavigationContent"));
 const NonAuthRoute = React.lazy(() => import("./non-authed/NonAuthRoute"));
 const ScrollToTop = React.lazy(
   () => import("components/functional/ScrollToTop")
 );
-
-const Loader = () => {
-  return (
-    <View
-      style={{
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "white",
-        height: "100%",
-        width: "100%",
-      }}
-    >
-      <Image
-        source={require("assets/loading.gif")}
-        style={{ width: 450, height: 450, resizeMode: "contain" }}
-        key={"loading"}
-      />
-    </View>
-  );
-};
 
 const RouteManager = () => {
   const savedUserState = JSON.parse(

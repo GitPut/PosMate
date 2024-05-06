@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, View, Text, Pressable, ViewStyle } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { TransListStateItem } from "types/global";
-import ParseDate from "components/functional/ParseDate";
 
 interface InvoiceItemProps {
   style?: ViewStyle | ViewStyle[];
@@ -12,80 +11,83 @@ interface InvoiceItemProps {
   deleteTransaction: () => void;
 }
 
-function InvoiceItem({
-  style,
-  item,
-  setbaseSelectedRows,
-  baseSelectedRows,
-  deleteTransaction,
-}: InvoiceItemProps) {
-  const date = ParseDate(item.date);
+const InvoiceItem = React.memo(
+  ({
+    style,
+    item,
+    setbaseSelectedRows,
+    baseSelectedRows,
+    deleteTransaction,
+  }: InvoiceItemProps) => {
+    const options = { hour12: true };
+    const date = item.date.toDate().toLocaleString("en-US", options);
 
-  return (
-    <View style={[styles.container, style]}>
-      <View style={styles.checkboxCont1}>
+    return (
+      <View style={[styles.container, style]}>
+        <View style={styles.checkboxCont1}>
+          <Pressable
+            style={styles.checkbox2}
+            onPress={() => {
+              setbaseSelectedRows((prev) => {
+                if (prev.includes(item.id!)) {
+                  return prev.filter((id) => id !== item.id);
+                } else {
+                  return [...prev, item.id];
+                }
+              });
+            }}
+          >
+            {baseSelectedRows?.includes(item.id) && "X"}
+          </Pressable>
+        </View>
+        <View style={styles.orderIdCont1}>
+          <Text style={styles.orderId3}>{item.id}</Text>
+        </View>
+        <View style={styles.customerNameCont1}>
+          <Text style={styles.peterPutros}>
+            {item.name ? item.name : "N/A"}
+          </Text>
+        </View>
+        <View style={styles.dateCont1}>
+          <Text style={styles.may252025}>{date?.toLocaleString()}</Text>
+        </View>
+        <View style={styles.totalCont1}>
+          <Text style={styles.total3}>${item.amount}</Text>
+        </View>
+        <View style={styles.systemTypeCont1}>
+          <Text style={styles.pos}>{item.system}</Text>
+        </View>
+        <View style={styles.orderTypeCont1}>
+          <Text style={styles.pickUp}>{item.type}</Text>
+        </View>
         <Pressable
-          style={styles.checkbox2}
-          onPress={() => {
-            setbaseSelectedRows((prev) => {
-              if (prev.includes(item.id!)) {
-                return prev.filter((id) => id !== item.id);
-              } else {
-                return [...prev, item.id];
-              }
-            });
+          onPress={deleteTransaction}
+          style={{
+            height: 30,
+            width: 30,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "red",
+            borderRadius: 5,
+            position: "absolute",
+            right: 10,
           }}
         >
-          {baseSelectedRows?.includes(item.id) && "X"}
+          <Ionicons name="close" size={24} color="white" />
         </Pressable>
       </View>
-      <View style={styles.orderIdCont1}>
-        <Text style={styles.orderId3}>{item.id}</Text>
-      </View>
-      <View style={styles.customerNameCont1}>
-        <Text style={styles.peterPutros}>{item.name ? item.name : "N/A"}</Text>
-      </View>
-      <View style={styles.dateCont1}>
-        <Text style={styles.may252025}>{date?.toLocaleString()}</Text>
-      </View>
-      <View style={styles.totalCont1}>
-        <Text style={styles.total3}>${item.amount}</Text>
-      </View>
-      <View style={styles.systemTypeCont1}>
-        <Text style={styles.pos}>{item.system}</Text>
-      </View>
-      <View style={styles.orderTypeCont1}>
-        <Text style={styles.pickUp}>{item.type}</Text>
-      </View>
-      <Pressable
-        onPress={deleteTransaction}
-        style={{
-          height: 30,
-          width: 30,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "red",
-          borderRadius: 5,
-          position: "absolute",
-          right: 10,
-          top: 10,
-        }}
-      >
-        <Ionicons name="close" size={24} color="white" />
-      </Pressable>
-    </View>
-  );
-}
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    borderWidth: 0,
     borderColor: "rgba(133,127,127,1)",
     borderBottomWidth: 1,
-    paddingBottom: 0,
+    height: 40,
   },
   checkboxCont1: {
     alignItems: "center",
@@ -166,5 +168,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 });
+
+InvoiceItem.displayName = "InvoiceItem";
 
 export default InvoiceItem;

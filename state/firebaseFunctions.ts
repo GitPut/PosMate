@@ -1,5 +1,10 @@
-import { CustomerProp, StoreDetailsProps, TransListStateItem } from "types/global";
+import {
+  CustomerProp,
+  StoreDetailsProps,
+  TransListStateItem,
+} from "types/global";
 import { auth, db } from "./firebaseConfig";
+import firebase from "firebase/compat/app";
 
 export const signIn = (email: string, password: string) =>
   auth.signInWithEmailAndPassword(email, password);
@@ -39,12 +44,10 @@ export const signUp = (
   });
 
 export const updateData = (categories: string[]) => {
-  db.collection("users")
-    .doc(auth.currentUser?.uid)
-    .update({
-      categories: categories,
-    })
-    // .catch((e) => console.log("ERROR HAS OCCURE FB: ", e));
+  db.collection("users").doc(auth.currentUser?.uid).update({
+    categories: categories,
+  });
+  // .catch((e) => console.log("ERROR HAS OCCURE FB: ", e));
 };
 
 export const updateTransList = (receipt: Partial<TransListStateItem>) => {
@@ -53,11 +56,13 @@ export const updateTransList = (receipt: Partial<TransListStateItem>) => {
     .collection("transList")
     .add({
       ...receipt,
-      dateCompleted: new Date(),
+      dateCompleted: firebase.firestore.Timestamp.now(),
     });
 };
 
-export const updateStoreDetails = (storeDetails: Partial<StoreDetailsProps>) => {
+export const updateStoreDetails = (
+  storeDetails: Partial<StoreDetailsProps>
+) => {
   db.collection("users").doc(auth.currentUser?.uid).update({
     storeDetails: storeDetails,
   });
@@ -68,11 +73,11 @@ export const updateStoreDetails = (storeDetails: Partial<StoreDetailsProps>) => 
   }
 };
 
-export const updateFreeTrial = (endDate: Date | null) => {
+export const updateFreeTrial = (endDate: Date) => {
   db.collection("users")
     .doc(auth.currentUser?.uid)
     .update({
-      freeTrial: endDate,
+      freeTrial: firebase.firestore.Timestamp.fromDate(endDate),
     })
     .finally(() => {
       window.location.reload();
@@ -94,5 +99,5 @@ export const addCustomerDetailsToDb = (customer: CustomerProp) =>
     .collection("customers")
     .add({
       ...customer,
-      createdAt: new Date(),
+      createdAt: firebase.firestore.Timestamp.now(),
     });

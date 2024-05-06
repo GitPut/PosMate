@@ -3,18 +3,17 @@ import {
   StyleSheet,
   View,
   Text,
-  ScrollView,
   TextInput,
   Pressable,
+  FlatList,
 } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import InvoiceItem from "./components/InvoiceItem";
 import {
   myDeviceDetailsState,
-  setTransListTableOrgState,
+  setTransListState,
   storeDetailState,
   transListState,
-  transListTableOrgState,
 } from "state/state";
 import { Excel as ExcelDownload } from "antd-table-saveas-excel";
 import { auth, db } from "state/firebaseConfig";
@@ -27,13 +26,12 @@ function InvoiceReport() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [search, setSearch] = useState("");
-  const transListTableOrg = transListTableOrgState.use(); // Assumed this is your original transactions list
+  const transList = transListState.use();
   const [filteredTransList, setFilteredTransList] =
-    useState<TransListStateItem[]>(transListTableOrg);
+    useState<TransListStateItem[]>(transList);
   const storeDetails = storeDetailState.use();
   const [baseSelectedRows, setbaseSelectedRows] = useState<string[]>([]);
   const [updateBaseSelectedRows, setupdateBaseSelectedRows] = useState(false);
-  const transList = transListState.use();
   const myDeviceDetails = myDeviceDetailsState.use();
   const alertP = useAlert();
 
@@ -71,8 +69,8 @@ function InvoiceReport() {
   ];
 
   useEffect(() => {
-    setFilteredTransList(transListTableOrg);
-  }, [transListTableOrg]);
+    setFilteredTransList(transList);
+  }, [transList]);
 
   useEffect(() => {
     if (updateBaseSelectedRows === true) {
@@ -80,7 +78,7 @@ function InvoiceReport() {
         let data: string[] = [];
         baseSelectedRows.forEach((idx) => {
           //find index of item in transList that matches id of selected row
-          const orderIndex = transListTableOrg.findIndex(
+          const orderIndex = transList.findIndex(
             (item) => item.id === idx
           );
 
@@ -149,51 +147,31 @@ function InvoiceReport() {
     }
   }, [baseSelectedRows, updateBaseSelectedRows]);
 
-  const SearchDate = () => {
-    if (!startDate || !endDate) {
-      console.log("Start or end date not provided");
-      return;
-    }
+  const Search = () => {
+    if ((!startDate || !endDate) && search.length > 0) {
+      setFilteredTransList(transList.filter((item) => CheckCase(item)));
+    } else if (startDate && endDate) {
+      const startDateConverted = new Date(startDate);
+      startDateConverted.setHours(0, 0, 0, 0); // Set to start of the day
+      startDateConverted.setDate(startDateConverted.getDate() + 1); // Add a day to the start date
+      const endDateConverted = new Date(endDate);
+      endDateConverted.setDate(endDateConverted.getDate() + 1); // Add a day to the end date
+      endDateConverted.setHours(23, 59, 59, 999); // Set to end of the day
 
-    const startDateConverted = new Date(startDate);
-    startDateConverted.setHours(0, 0, 0, 0); // Set to start of the day
-    startDateConverted.setDate(startDateConverted.getDate() + 1); // Add a day to the start date
-    const endDateConverted = new Date(endDate);
-    endDateConverted.setDate(endDateConverted.getDate() + 1); // Add a day to the end date
-    endDateConverted.setHours(23, 59, 59, 999); // Set to end of the day
-
-    // Filter the list based on the date range
-    const filtered = transListTableOrg
-      .filter((item) => {
-        let itemDate;
-
-        if (typeof item.date !== "string") return false;
-
-        if (item.date) {
-          itemDate = new Date(`${item.date.slice(0, 10)}T00:00`);
-        }
-        // else if (item.originalData.date_created) {
-        //   itemDate = new Date(item.originalData.date_created);
-        // } else if (item.originalData.date) {
-        //   itemDate = new Date(item.originalData.date.seconds * 1000);
-        // }
-        else {
-          return false;
-        }
-
+      // Filter the list based on the date range
+      const filtered = transList.filter((item) => {
         // Check if the item's date is within the start and end dates
-        return itemDate >= startDateConverted && itemDate <= endDateConverted;
-      })
-      .sort((a, b) => {
-        if (typeof a.date !== "string" || typeof b.date !== "string") return 0;
         return (
-          new Date(`${b.date.slice(0, 10)}T00:00`).getTime() -
-          new Date(`${a.date.slice(0, 10)}T00:00`).getTime()
+          item.date.toDate() >= startDateConverted &&
+          item.date.toDate() <= endDateConverted &&
+          CheckCase(item)
         );
       });
 
-    // Update the state with the filtered list
-    setFilteredTransList(filtered);
+      setFilteredTransList(filtered);
+    } else {
+      setFilteredTransList(transList);
+    }
   };
 
   //Printing function
@@ -201,7 +179,7 @@ function InvoiceReport() {
     const invoicesToDownload: TransListStateItem[] = [];
 
     baseSelectedRows.forEach((idx) => {
-      const orderIndex = transListTableOrg.findIndex((item) => item.id === idx);
+      const orderIndex = transList.findIndex((item) => item.id === idx);
       const element = transList[orderIndex];
       invoicesToDownload.push(element);
     });
@@ -236,16 +214,8 @@ function InvoiceReport() {
       999
     );
 
-    const filtered = transListTableOrg.filter((item) => {
-      if (typeof item.date !== "string") return false;
-      const itemDate = item.date
-        ? new Date(`${item.date.slice(0, 10)}T00:00`)
-        : null;
-      // console.log('Item Date: ', itemDate)
-
-      if (!itemDate) return false;
-
-      return itemDate >= todayStart && itemDate <= todayEnd;
+    const filtered = transList.filter((item) => {
+      return item.date.toDate() >= todayStart && item.date.toDate() <= todayEnd;
     });
 
     if (filtered.length === 0) {
@@ -402,12 +372,12 @@ function InvoiceReport() {
                 setStartDate("");
                 setEndDate("");
                 setSearch("");
-                setFilteredTransList(transListTableOrg);
+                setFilteredTransList(transList);
               }}
             >
               <Ionicons name="close" style={styles.clearIcon} />
             </Pressable>
-            <Pressable onPress={SearchDate} style={styles.searchFilterBtn}>
+            <Pressable onPress={Search} style={styles.searchFilterBtn}>
               <Ionicons name="search" style={styles.searchIcon} />
             </Pressable>
           </View>
@@ -509,24 +479,18 @@ function InvoiceReport() {
           </View>
         </View>
         <View style={styles.scrollArea}>
-          <ScrollView
-            horizontal={false}
-            contentContainerStyle={styles.scrollArea_contentContainerStyle}
-          >
-            {filteredTransList.map((item, index) => {
-              if (!CheckCase(item)) {
-                return null;
-              }
-
+          <FlatList
+            data={filteredTransList}
+            keyExtractor={(item) => item.id}
+            initialNumToRender={10}
+            scrollEventThrottle={16}
+            renderItem={({ item }) => {
               return (
                 <InvoiceItem
-                  key={index}
-                  style={styles.invoiceItem}
                   item={item}
                   setbaseSelectedRows={setbaseSelectedRows}
                   baseSelectedRows={baseSelectedRows}
                   deleteTransaction={() => {
-                    console.log("Deleting transaction: ", item);
                     db.collection("users")
                       .doc(auth.currentUser?.uid)
                       .collection("transList")
@@ -539,14 +503,14 @@ function InvoiceReport() {
                         console.error("Error removing document: ", error);
                       });
 
-                    setTransListTableOrgState(
-                      transListTableOrg.filter((e) => e.id !== item.id)
+                    setTransListState(
+                      transList.filter((e) => e.id !== item.id)
                     );
                   }}
                 />
               );
-            })}
-          </ScrollView>
+            }}
+          />
         </View>
       </View>
     </View>

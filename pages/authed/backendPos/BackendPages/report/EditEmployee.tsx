@@ -16,6 +16,7 @@ import { auth, db } from "state/firebaseConfig";
 import { useAlert } from "react-alert";
 import { Employee, HourItem } from "types/global";
 import ParseDate from "components/functional/ParseDate";
+import firebase from "firebase/compat/app";
 
 function EditEmployee() {
   const { height } = useWindowDimensions();
@@ -230,7 +231,9 @@ function EditEmployee() {
                       .doc(employee.id.toString())
                       .collection("hours")
                       .add({
-                        date: dateSelected,
+                        date: firebase.firestore.Timestamp.fromDate(
+                          dateSelected
+                        ),
                         startTime: startTime,
                         endTime: endTime,
                         paid: false,
@@ -239,7 +242,9 @@ function EditEmployee() {
                         setallHours([
                           ...allHours,
                           {
-                            date: dateSelected,
+                            date: firebase.firestore.Timestamp.fromDate(
+                              dateSelected
+                            ),
                             startTime: startTime,
                             endTime: endTime,
                             id: docRef.id,

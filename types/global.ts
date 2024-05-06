@@ -1,3 +1,5 @@
+import { Timestamp } from "@google-cloud/firestore";
+
 export type AddressType = {
   label?: string;
   value?: {
@@ -186,7 +188,8 @@ export type Device = {
 export type TransListStateItem = {
   id: string;
   name?: string;
-  date: { seconds: number | string } | Date | string;
+  // date: { seconds: number | string } | Date | string;
+  date: Timestamp;
   amount?: string;
   system?: string;
   method?: string;

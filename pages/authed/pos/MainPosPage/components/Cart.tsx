@@ -22,6 +22,7 @@ import {
   storeDetailState,
 } from "state/state";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
+import firebase from "firebase/compat/app";
 
 const Cart = () => {
   const { discountAmount, deliveryChecked, cartSub, cartNote } =
@@ -291,7 +292,7 @@ const Cart = () => {
           }}
           disabled={cart.length < 1}
           onPress={() => {
-            const today = new Date();
+            const today = firebase.firestore.Timestamp.now();
             const transNum = Math.random().toString(36).substr(2, 9);
 
             if (orderDetails.delivery) {
