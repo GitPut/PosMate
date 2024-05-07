@@ -40,6 +40,21 @@ function ProductBuilderModal() {
   const [scrollY, setscrollY] = useState<number>(0);
   const width = useWindowDimensions().width;
 
+  async function getDeepCopy(obj: ProductProp) {
+    return await structuredClone(obj);
+  }
+
+  // Usage
+  useEffect(() => {
+    async function loadProduct(productToLoad: ProductProp) {
+      const productCopy = await getDeepCopy(productToLoad);
+      setmyObjProfile(productCopy);
+    }
+    if (product !== null) {
+      loadProduct(product);
+    }
+  }, [product]);
+
   const goBack = () => {
     resetProductBuilderState();
   };
