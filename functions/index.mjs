@@ -246,6 +246,141 @@ export const sendWelcomeEmail = functions.https.onRequest((req, res) => {
   });
 });
 
+// Define and export the dailyStatsUpdate Cloud Function
+export const dailyStatsUpdate = functions
+  .runWith({
+    timeoutSeconds: 540, // 9 minutes
+    memory: "1GB", // Options include 128MB, 256MB, 512MB, 1GB, 2GB
+  })
+  .pubsub.topic("daily-stats-update")
+  .onPublish(async (message) => {
+    if (!message.data) {
+      console.log("No data received in message");
+      return null;
+    }
+
+    const messageData = Buffer.from(message.data, "base64").toString("utf-8");
+    console.log("Received message data:", messageData);
+
+    if (messageData !== "update") {
+      try {
+        const parsedData = JSON.parse(messageData);
+        console.log("Parsed data:", parsedData);
+      } catch (error) {
+        console.error("Failed to parse message data as JSON:", error);
+        return null;
+      }
+    } else {
+      console.log("Proceeding with update trigger...");
+    }
+
+    const userRefs = await admin
+      .firestore()
+      .collection("users")
+      .listDocuments();
+    console.log("Number of user refs:", userRefs.length);
+
+    for (const userRef of userRefs) {
+      try {
+        const transactionsSnapshot = await userRef
+          .collection("transList")
+          .get();
+        console.log(
+          `Transactions for user ${userRef.id}:`,
+          transactionsSnapshot.size
+        );
+        const stats = { totalRevenue: 0, totalOrders: 0, days: {} };
+
+        transactionsSnapshot.docs.forEach((doc) => {
+          const transaction = doc.data();
+          let transactionDate = "default-date"; // Fallback date if none provided or malformed
+
+          if (
+            transaction.dateCompleted &&
+            transaction.dateCompleted.toDate &&
+            typeof transaction.dateCompleted.toDate === "function"
+          ) {
+            transactionDate = new Date(transaction.dateCompleted.toDate())
+              .toISOString()
+              .slice(0, 10);
+          } else {
+            console.error(
+              "Invalid or missing date for transaction:",
+              doc.id,
+              "in user:",
+              userRef.id
+            );
+          }
+
+          if (!stats.days[transactionDate]) {
+            stats.days[transactionDate] = { revenue: 0, orders: 0 };
+          }
+
+          stats.days[transactionDate].revenue += parseFloat(transaction.total);
+          stats.days[transactionDate].orders += 1;
+          stats.totalRevenue += parseFloat(transaction.total);
+          stats.totalOrders += 1;
+        });
+
+        await userRef
+          .collection("stats")
+          .doc("monthly")
+          .set(stats, { merge: true });
+      } catch (error) {
+        console.error("Error updating stats for user " + userRef.id, error);
+      }
+    }
+  });
+
+// Define and export a function to process individual transactions
+export const processTransaction = functions.firestore
+  .document("users/{userId}/transList/{transactionId}")
+  .onWrite(async (change, context) => {
+    const { userId } = context.params;
+    const transactionBefore = change.before.exists
+      ? change.before.data()
+      : null;
+    const transactionAfter = change.after.exists ? change.after.data() : null;
+
+    const statsRef = admin
+      .firestore()
+      .collection("users")
+      .doc(userId)
+      .collection("stats")
+      .doc("monthly");
+
+    const statsDoc = await statsRef.get();
+    let stats = statsDoc.exists
+      ? statsDoc.data()
+      : { totalRevenue: 0, totalOrders: 0, days: {} };
+
+    if (transactionBefore) {
+      const transactionDate = new Date(transactionBefore.dateCompleted.toDate())
+        .toISOString()
+        .slice(0, 10);
+      if (!stats.days[transactionDate]) {
+        stats.days[transactionDate] = { revenue: 0, orders: 0 };
+      }
+      stats.days[transactionDate].revenue -= parseFloat(
+        transactionBefore.total
+      );
+      stats.days[transactionDate].orders -= 1;
+    }
+
+    if (transactionAfter) {
+      const transactionDate = new Date(transactionAfter.dateCompleted.toDate())
+        .toISOString()
+        .slice(0, 10);
+      if (!stats.days[transactionDate]) {
+        stats.days[transactionDate] = { revenue: 0, orders: 0 };
+      }
+      stats.days[transactionDate].revenue += parseFloat(transactionAfter.total);
+      stats.days[transactionDate].orders += 1;
+    }
+
+    await statsRef.set(stats, { merge: true });
+  });
+
 const ResetPasswordEmailHtml = (updatedLink) => {
   return `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
