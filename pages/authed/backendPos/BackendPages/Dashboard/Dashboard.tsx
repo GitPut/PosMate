@@ -12,10 +12,9 @@ import DeliveryOrdersBox from "./components/InfoBoxs/DeliveryOrdersBox";
 import InStoreOrdersBox from "./components/InfoBoxs/InStoreOrdersBox";
 import CustomersBox from "./components/InfoBoxs/CustomersBox";
 import OrderWaitTimeBox from "./components/InfoBoxs/OrderWaitTimeBox";
-import { customersList, transListState, userStoreState } from "state/state";
-import ParseDate from "components/functional/ParseDate";
-import SearchDateTransactions from "components/functional/SearchDateTransactions";
-import { TransListStateItem } from "types/global";
+import { customersList, userStoreState } from "state/state";
+import { auth, db } from "state/firebaseConfig";
+import ComponentLoader from "components/ComponentLoader";
 
 interface DetailsProps {
   averageWaitTime: {
@@ -45,23 +44,38 @@ interface DetailsProps {
     orders: number;
     imageUrl: string;
   }[];
+  newCustomers: number;
+  days: {
+    [key: string]: {
+      revenue: number;
+      orders: number;
+      inStore: number;
+      delivery: number;
+      pickup: number;
+      productCounts: { [key: string]: number };
+      totalWaitTime: number;
+      waitCount: number;
+      averageWaitTime?: number;
+    };
+  };
 }
 
 function Dashboard() {
   const { width } = useWindowDimensions();
-  const transList = transListState.use();
   const catalog = userStoreState.use();
   const customers = customersList.use();
-  const [period, setperiod] = useState("Today");
-  const [details, setdetails] = useState<DetailsProps>({
+  const [period, setPeriod] = useState("Today");
+  const [details, setDetails] = useState<DetailsProps>({
     averageWaitTime: { shortest: 0, longest: 0, average: 0, mean: 0 },
     inStoreOrders: { orders: 0, revenue: 0 },
     deliveryOrders: { orders: 0, revenue: 0 },
     pickupOrders: { orders: 0, revenue: 0 },
     totalRevenue: { orders: 0, revenue: 0 },
     mostOrderProducts: [],
-    // newCustomers: 0,
+    newCustomers: 0,
+    days: {}, // Add days property
   });
+  const [loading, setLoading] = useState(true);
 
   const getDateRange = (period: string) => {
     const today = new Date();
@@ -75,137 +89,147 @@ function Dashboard() {
     switch (period) {
       case "Today":
         return {
-          start: new Date().toDateString(),
-          end: new Date().toDateString(),
+          start: new Date().toISOString().split("T")[0],
+          end: new Date().toISOString().split("T")[0],
         };
       case "This Week":
         return {
-          start: weekStart.toDateString(),
-          end: weekEnd.toDateString(),
+          start: weekStart.toISOString().split("T")[0],
+          end: weekEnd.toISOString().split("T")[0],
         };
       case "This Month":
         return {
-          start: monthStart.toDateString(),
-          end: monthEnd.toDateString(),
+          start: monthStart.toISOString().split("T")[0],
+          end: monthEnd.toISOString().split("T")[0],
         };
       case "This Year":
         return {
-          start: yearStart.toDateString(),
-          end: yearEnd.toDateString(),
+          start: yearStart.toISOString().split("T")[0],
+          end: yearEnd.toISOString().split("T")[0],
+        };
+      case "All Time":
+        return {
+          start: "1970-01-01",
+          end: new Date().toISOString().split("T")[0],
         };
       default:
-        // Assuming you want to default to "All Time" with no filtering.
         return null;
     }
   };
 
-  const calculateDetails = (filtered: TransListStateItem[]) => {
-    let shortest = 0;
-    let longest = 0;
-    let average = 0;
-    let mean = 0;
-    let total = 0;
-    let totalOrders = 0;
+const calculateDetails = (days, statsData, catalog) => {
+  let shortest = Infinity;
+  let longest = 0;
+  let totalWaitTime = 0;
+  let waitCount = 0;
+  let totalOrders = 0;
+  let totalRevenue = 0;
+  const inStoreOrders = { orders: 0, revenue: 0 };
+  const deliveryOrders = { orders: 0, revenue: 0 };
+  const pickupOrders = { orders: 0, revenue: 0 };
+  const mostOrderedItems = {};
 
-    const inStoreOrders = { orders: 0, revenue: 0 };
-    const deliveryOrders = { orders: 0, revenue: 0 };
-    const pickupOrders = { orders: 0, revenue: 0 };
-    const totalRevenue = { orders: 0, revenue: 0 };
+  Object.keys(days).forEach((date) => {
+    const dayStats = days[date];
+    totalOrders += dayStats.orders;
+    totalRevenue += dayStats.revenue;
 
-    const mostOrderedItems: Record<string, number> = {};
+    inStoreOrders.orders += dayStats.inStore;
+    inStoreOrders.revenue += dayStats.inStoreRevenue;
+    deliveryOrders.orders += dayStats.delivery;
+    deliveryOrders.revenue += dayStats.deliveryRevenue;
+    pickupOrders.orders += dayStats.pickup;
+    pickupOrders.revenue += dayStats.pickupRevenue;
 
-    filtered?.forEach((transaction) => {
-      //get time between date and dateCompleted
-      const date = ParseDate(transaction.date);
+    totalWaitTime += dayStats.totalWaitTime;
+    waitCount += dayStats.waitCount;
 
-      if (transaction.method === "inStoreOrder") {
-        inStoreOrders.revenue += parseFloat(transaction.total ?? "0");
-        inStoreOrders.orders += 1;
-      }
-      if (transaction.method === "deliveryOrder") {
-        deliveryOrders.revenue += parseFloat(transaction.total ?? "0");
-        deliveryOrders.orders += 1;
-      }
-      if (transaction.method === "pickupOrder") {
-        pickupOrders.revenue += parseFloat(transaction.total ?? "0");
-        pickupOrders.orders += 1;
-      }
-      totalRevenue.revenue += parseFloat(transaction.total ?? "0");
-      totalRevenue.orders += 1;
-
-      transaction.cart?.forEach((item) => {
-        if (mostOrderedItems[item.name]) {
-          mostOrderedItems[item.name] += 1;
-        } else {
-          mostOrderedItems[item.name] = 1;
-        }
-      });
-
-      if (transaction.originalData?.dateCompleted) {
-        const dateCompleted = ParseDate(
-          transaction.originalData?.dateCompleted
-        );
-
-        const diff = Number(dateCompleted) - Number(date);
-        const minutes = Math.floor(diff / 60000);
-        total += minutes;
-        totalOrders += 1;
-        if (shortest === 0 || minutes < shortest) {
-          shortest = minutes;
-        }
-        if (longest === 0 || minutes > longest) {
-          longest = minutes;
-        }
-      }
+    Object.keys(dayStats.productCounts).forEach((itemName) => {
+      mostOrderedItems[itemName] =
+        (mostOrderedItems[itemName] || 0) + dayStats.productCounts[itemName];
     });
 
-    average = total / totalOrders;
-    mean = total / totalOrders;
+    if (dayStats.averageWaitTime < shortest) {
+      shortest = dayStats.averageWaitTime;
+    }
 
-    const sortedItems = Object.entries(mostOrderedItems).sort(
-      (a, b) => (b[1] as number) - (a[1] as number)
-    );
+    if (dayStats.averageWaitTime > longest) {
+      longest = dayStats.averageWaitTime;
+    }
+  });
 
-    const mostOrderProducts = sortedItems.slice(0, 3).map((item) => {
-      return {
-        name: item[0],
-        orders: item[1] as number, // Explicitly typing orders as number
-        imageUrl:
-          catalog.products[
-            catalog.products.findIndex((product) => product.name === item[0])
-          ]?.imageUrl ?? "https://via.placeholder.com/50",
-      };
-    });
+  const sortedItems = Object.entries(mostOrderedItems).sort(
+    (a, b) => b[1] - a[1]
+  );
+  const mostOrderProducts = sortedItems.slice(0, 3).map((item) => ({
+    name: item[0],
+    orders: item[1],
+    imageUrl:
+      catalog.products.find((product) => product.name === item[0])?.imageUrl ??
+      "https://via.placeholder.com/50",
+  }));
 
-    return {
-      averageWaitTime: { shortest, longest, average, mean },
-      inStoreOrders,
-      deliveryOrders,
-      pickupOrders,
-      totalRevenue,
-      mostOrderProducts,
-    };
+  return {
+    averageWaitTime: {
+      shortest,
+      longest,
+      average: totalWaitTime / waitCount || 0,
+      mean: totalWaitTime / totalOrders || 0,
+    },
+    inStoreOrders,
+    deliveryOrders,
+    pickupOrders,
+    totalRevenue: {
+      orders: totalOrders,
+      revenue: totalRevenue,
+    },
+    mostOrderProducts,
+    newCustomers: customers.length,
   };
+};
+
 
   useEffect(() => {
-    const { start, end } = getDateRange(period) ?? {};
+    const fetchStats = async () => {
+      setLoading(true);
+      const userId = auth.currentUser?.uid;
+      const statsRef = db
+        .collection("users")
+        .doc(userId)
+        .collection("stats")
+        .doc("monthly");
 
-    const filtered =
-      start && end
-        ? SearchDateTransactions({
-            startDate: start,
-            endDate: end,
-            transactions: transList,
-          })
-        : transList;
+      try {
+        const statsDoc = await statsRef.get();
+        if (statsDoc.exists) {
+          const statsData = statsDoc.data();
+          const { start, end } = getDateRange(period) ?? {};
 
-    const newDetails = calculateDetails(filtered ?? []);
+          // Filter statsData.days based on the selected period
+          const filteredDays = Object.keys(statsData.days)
+            .filter((date) => date >= start && date <= end)
+            .reduce((obj, key) => {
+              obj[key] = statsData.days[key];
+              return obj;
+            }, {});
 
-    setdetails((prev) => ({
-      ...prev,
-      ...newDetails,
-    }));
-  }, [period, customers, transList]);
+          // Calculate the details from the filtered days
+          const newDetails = calculateDetails(filteredDays, statsData, catalog);
+          setDetails((prevDetails) => ({
+            ...prevDetails,
+            ...newDetails,
+            days: statsData.days, // Ensure days are included
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, [period]);
 
   return (
     <View style={styles.container}>
@@ -213,82 +237,85 @@ function Dashboard() {
         style={{ height: "100%", width: "100%" }}
         contentContainerStyle={{ paddingRight: 30 }}
       >
-        <View style={styles.wrap}>
-          <TotalRevenueBox
-            style={width < 1300 ? { width: "100%" } : {}}
-            allTransactions={transList}
-            period={period}
-            setperiod={setperiod}
-            details={details.totalRevenue}
-          />
-          {width > 1300 && (
-            <MostOrderedItemsBox
-              style={{}}
+        {loading ? (
+          <ComponentLoader />
+        ) : (
+          <View style={styles.wrap}>
+            <TotalRevenueBox
+              style={width < 1300 ? { width: "100%" } : {}}
               period={period}
-              setperiod={setperiod}
-              details={details.mostOrderProducts}
-            />
-          )}
-          <View style={{ justifyContent: "space-between" }}>
-            <OrderWaitTimeBox
-              period={period}
-              setperiod={setperiod}
-              details={details.averageWaitTime}
+              setperiod={setPeriod}
+              details={details}
             />
             {width > 1300 && (
-              <CustomersBox
-                customers={customers}
-                period={period}
-                setperiod={setperiod}
-              />
-            )}
-            {width < 1300 && (
               <MostOrderedItemsBox
-                style={{ height: 300 }}
+                style={{}}
                 period={period}
-                setperiod={setperiod}
+                setperiod={setPeriod}
                 details={details.mostOrderProducts}
               />
             )}
-          </View>
-          {width < 1300 ? (
             <View style={{ justifyContent: "space-between" }}>
-              <PickupOrdersBox
+              <OrderWaitTimeBox
                 period={period}
-                setperiod={setperiod}
-                details={details.pickupOrders}
+                setperiod={setPeriod}
+                details={details.averageWaitTime}
               />
-              <DeliveryOrdersBox
-                period={period}
-                setperiod={setperiod}
-                details={details.deliveryOrders}
-              />
-              <InStoreOrdersBox
-                period={period}
-                setperiod={setperiod}
-                details={details.inStoreOrders}
-              />
+              {width > 1300 && (
+                <CustomersBox
+                  customers={customers}
+                  period={period}
+                  setperiod={setPeriod}
+                />
+              )}
+              {width < 1300 && (
+                <MostOrderedItemsBox
+                  style={{ height: 300 }}
+                  period={period}
+                  setperiod={setPeriod}
+                  details={details.mostOrderProducts}
+                />
+              )}
             </View>
-          ) : (
-            <>
-              <PickupOrdersBox
-                period={period}
-                setperiod={setperiod}
-                details={details.pickupOrders}
-              />
-              <DeliveryOrdersBox
-                period={period}
-                setperiod={setperiod}
-                details={details.deliveryOrders}
-              />
-              <InStoreOrdersBox
-                period={period}
-                setperiod={setperiod}
-                details={details.inStoreOrders}
-              />
-            </>
-          )}
-        </View>
+            {width < 1300 ? (
+              <View style={{ justifyContent: "space-between" }}>
+                <PickupOrdersBox
+                  period={period}
+                  setperiod={setPeriod}
+                  details={details.pickupOrders}
+                />
+                <DeliveryOrdersBox
+                  period={period}
+                  setperiod={setPeriod}
+                  details={details.deliveryOrders}
+                />
+                <InStoreOrdersBox
+                  period={period}
+                  setperiod={setPeriod}
+                  details={details.inStoreOrders}
+                />
+              </View>
+            ) : (
+              <>
+                <PickupOrdersBox
+                  period={period}
+                  setperiod={setPeriod}
+                  details={details.pickupOrders}
+                />
+                <DeliveryOrdersBox
+                  period={period}
+                  setperiod={setPeriod}
+                  details={details.deliveryOrders}
+                />
+                <InStoreOrdersBox
+                  period={period}
+                  setperiod={setPeriod}
+                  details={details.inStoreOrders}
+                />
+              </>
+            )}
+          </View>
+        )}
       </ScrollView>
     </View>
   );

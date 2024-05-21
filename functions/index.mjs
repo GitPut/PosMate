@@ -246,139 +246,205 @@ export const sendWelcomeEmail = functions.https.onRequest((req, res) => {
   });
 });
 
-// Define and export the dailyStatsUpdate Cloud Function
-export const dailyStatsUpdate = functions
+import { PubSub } from "@google-cloud/pubsub";
+const pubsub = new PubSub();
+
+export const processUserStats = functions
   .runWith({
     timeoutSeconds: 540, // 9 minutes
-    memory: "1GB", // Options include 128MB, 256MB, 512MB, 1GB, 2GB
+    memory: "1GB",
   })
-  .pubsub.topic("daily-stats-update")
+  .pubsub.topic("process-user-stats")
   .onPublish(async (message) => {
-    if (!message.data) {
-      console.log("No data received in message");
-      return null;
+    const { userId, lastDocId } = JSON.parse(
+      Buffer.from(message.data, "base64").toString()
+    );
+    console.log("Processing stats for user:", userId);
+
+    const userRef = admin.firestore().collection("users").doc(userId);
+    let transactionQuery = userRef
+      .collection("transList")
+      .orderBy("date")
+      .limit(500); // Adjust batch size based on your use case
+
+    if (lastDocId) {
+      const lastDoc = await userRef
+        .collection("transList")
+        .doc(lastDocId)
+        .get();
+      transactionQuery = transactionQuery.startAfter(lastDoc);
     }
 
-    const messageData = Buffer.from(message.data, "base64").toString("utf-8");
-    console.log("Received message data:", messageData);
+    const snapshot = await transactionQuery.get();
+    const stats = { totalRevenue: 0, totalOrders: 0, days: {} };
 
-    if (messageData !== "update") {
-      try {
-        const parsedData = JSON.parse(messageData);
-        console.log("Parsed data:", parsedData);
-      } catch (error) {
-        console.error("Failed to parse message data as JSON:", error);
-        return null;
+    snapshot.forEach((doc) => {
+      const transaction = doc.data();
+      const transactionDate =
+        transaction.date && typeof transaction.date.toDate === "function"
+          ? transaction.date.toDate().toISOString().slice(0, 10)
+          : null;
+
+      if (transactionDate) {
+        if (!stats.days[transactionDate]) {
+          stats.days[transactionDate] = {
+            revenue: 0,
+            orders: 0,
+            inStore: 0,
+            inStoreRevenue: 0,
+            delivery: 0,
+            deliveryRevenue: 0,
+            pickup: 0,
+            pickupRevenue: 0,
+            productCounts: {},
+            totalWaitTime: 0,
+            waitCount: 0,
+          };
+        }
+
+        // Process transaction details
+        stats.days[transactionDate].orders++;
+        stats.days[transactionDate].revenue += parseFloat(transaction.total);
+        stats.totalOrders++;
+        stats.totalRevenue += parseFloat(transaction.total);
+
+        if (transaction.method === "inStoreOrder") {
+          stats.days[transactionDate].inStore++;
+          stats.days[transactionDate].inStoreRevenue += parseFloat(
+            transaction.total
+          );
+        } else if (transaction.method === "deliveryOrder") {
+          stats.days[transactionDate].delivery++;
+          stats.days[transactionDate].deliveryRevenue += parseFloat(
+            transaction.total
+          );
+        } else if (transaction.method === "pickupOrder") {
+          stats.days[transactionDate].pickup++;
+          stats.days[transactionDate].pickupRevenue += parseFloat(
+            transaction.total
+          );
+        }
+
+        transaction.cart.forEach((item) => {
+          const itemName = item.name;
+          stats.days[transactionDate].productCounts[itemName] =
+            (stats.days[transactionDate].productCounts[itemName] || 0) + 1;
+        });
+
+        // Process wait time
+        if (transaction.date && transaction.dateCompleted) {
+          const startTime = transaction.date.toDate
+            ? transaction.date.toDate()
+            : new Date(transaction.date);
+          const endTime = transaction.dateCompleted.toDate
+            ? transaction.dateCompleted.toDate()
+            : new Date(transaction.dateCompleted);
+
+          if (!isNaN(startTime.getTime()) && !isNaN(endTime.getTime())) {
+            const waitTime = (endTime - startTime) / 60000; // Convert milliseconds to minutes
+            stats.days[transactionDate].totalWaitTime += waitTime;
+            stats.days[transactionDate].waitCount += 1;
+          } else {
+            console.error("Invalid startTime or endTime", startTime, endTime);
+          }
+        } else {
+          console.error("Missing date or dateCompleted", transaction);
+        }
+      } else {
+        console.error("Invalid transactionDate", transaction.date);
       }
-    } else {
-      console.log("Proceeding with update trigger...");
+    });
+
+    // Fetch existing stats to accumulate
+    const existingStatsDoc = await userRef
+      .collection("stats")
+      .doc("monthly")
+      .get();
+    const existingStats = existingStatsDoc.exists
+      ? existingStatsDoc.data()
+      : { totalRevenue: 0, totalOrders: 0, days: {} };
+
+    // Accumulate stats
+    existingStats.totalRevenue += stats.totalRevenue;
+    existingStats.totalOrders += stats.totalOrders;
+
+    Object.keys(stats.days).forEach((date) => {
+      if (!existingStats.days[date]) {
+        existingStats.days[date] = stats.days[date];
+      } else {
+        existingStats.days[date].revenue += stats.days[date].revenue;
+        existingStats.days[date].orders += stats.days[date].orders;
+        existingStats.days[date].inStore += stats.days[date].inStore;
+        existingStats.days[date].inStoreRevenue +=
+          stats.days[date].inStoreRevenue;
+        existingStats.days[date].delivery += stats.days[date].delivery;
+        existingStats.days[date].deliveryRevenue +=
+          stats.days[date].deliveryRevenue;
+        existingStats.days[date].pickup += stats.days[date].pickup;
+        existingStats.days[date].pickupRevenue +=
+          stats.days[date].pickupRevenue;
+        existingStats.days[date].totalWaitTime +=
+          stats.days[date].totalWaitTime;
+        existingStats.days[date].waitCount += stats.days[date].waitCount;
+
+        Object.keys(stats.days[date].productCounts).forEach((productName) => {
+          existingStats.days[date].productCounts[productName] =
+            (existingStats.days[date].productCounts[productName] || 0) +
+            stats.days[date].productCounts[productName];
+        });
+      }
+    });
+
+    // Calculate average wait time per day
+    Object.keys(existingStats.days).forEach((date) => {
+      if (existingStats.days[date].waitCount > 0) {
+        existingStats.days[date].averageWaitTime =
+          existingStats.days[date].totalWaitTime /
+          existingStats.days[date].waitCount;
+      }
+    });
+
+    await userRef
+      .collection("stats")
+      .doc("monthly")
+      .set(existingStats, { merge: true });
+
+    // Check if there are more documents to process
+    if (!snapshot.empty && snapshot.docs.length === 500) {
+      const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+
+      // Publish a new message to continue processing
+      const nextBatchMessage = {
+        userId,
+        lastDocId: lastVisible.id,
+      };
+
+      await pubsub
+        .topic("process-user-stats")
+        .publish(Buffer.from(JSON.stringify(nextBatchMessage)));
     }
 
+    console.log("Updated stats for user:", userId);
+  });
+
+export const initiateUserStatsProcessing = functions.pubsub
+  .schedule("every day 00:00")
+  .onRun(async (context) => {
     const userRefs = await admin
       .firestore()
       .collection("users")
       .listDocuments();
-    console.log("Number of user refs:", userRefs.length);
+    console.log("Number of user refs to process:", userRefs.length);
 
-    for (const userRef of userRefs) {
-      try {
-        const transactionsSnapshot = await userRef
-          .collection("transList")
-          .get();
-        console.log(
-          `Transactions for user ${userRef.id}:`,
-          transactionsSnapshot.size
-        );
-        const stats = { totalRevenue: 0, totalOrders: 0, days: {} };
+    const messages = userRefs.map((userRef) => {
+      const messageData = { userId: userRef.id };
+      return pubsub
+        .topic("process-user-stats")
+        .publish(Buffer.from(JSON.stringify(messageData)));
+    });
 
-        transactionsSnapshot.docs.forEach((doc) => {
-          const transaction = doc.data();
-          let transactionDate = "default-date"; // Fallback date if none provided or malformed
-
-          if (
-            transaction.dateCompleted &&
-            transaction.dateCompleted.toDate &&
-            typeof transaction.dateCompleted.toDate === "function"
-          ) {
-            transactionDate = new Date(transaction.dateCompleted.toDate())
-              .toISOString()
-              .slice(0, 10);
-          } else {
-            console.error(
-              "Invalid or missing date for transaction:",
-              doc.id,
-              "in user:",
-              userRef.id
-            );
-          }
-
-          if (!stats.days[transactionDate]) {
-            stats.days[transactionDate] = { revenue: 0, orders: 0 };
-          }
-
-          stats.days[transactionDate].revenue += parseFloat(transaction.total);
-          stats.days[transactionDate].orders += 1;
-          stats.totalRevenue += parseFloat(transaction.total);
-          stats.totalOrders += 1;
-        });
-
-        await userRef
-          .collection("stats")
-          .doc("monthly")
-          .set(stats, { merge: true });
-      } catch (error) {
-        console.error("Error updating stats for user " + userRef.id, error);
-      }
-    }
-  });
-
-// Define and export a function to process individual transactions
-export const processTransaction = functions.firestore
-  .document("users/{userId}/transList/{transactionId}")
-  .onWrite(async (change, context) => {
-    const { userId } = context.params;
-    const transactionBefore = change.before.exists
-      ? change.before.data()
-      : null;
-    const transactionAfter = change.after.exists ? change.after.data() : null;
-
-    const statsRef = admin
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .collection("stats")
-      .doc("monthly");
-
-    const statsDoc = await statsRef.get();
-    let stats = statsDoc.exists
-      ? statsDoc.data()
-      : { totalRevenue: 0, totalOrders: 0, days: {} };
-
-    if (transactionBefore) {
-      const transactionDate = new Date(transactionBefore.dateCompleted.toDate())
-        .toISOString()
-        .slice(0, 10);
-      if (!stats.days[transactionDate]) {
-        stats.days[transactionDate] = { revenue: 0, orders: 0 };
-      }
-      stats.days[transactionDate].revenue -= parseFloat(
-        transactionBefore.total
-      );
-      stats.days[transactionDate].orders -= 1;
-    }
-
-    if (transactionAfter) {
-      const transactionDate = new Date(transactionAfter.dateCompleted.toDate())
-        .toISOString()
-        .slice(0, 10);
-      if (!stats.days[transactionDate]) {
-        stats.days[transactionDate] = { revenue: 0, orders: 0 };
-      }
-      stats.days[transactionDate].revenue += parseFloat(transactionAfter.total);
-      stats.days[transactionDate].orders += 1;
-    }
-
-    await statsRef.set(stats, { merge: true });
+    await Promise.all(messages);
+    console.log("Published messages for all users.");
   });
 
 const ResetPasswordEmailHtml = (updatedLink) => {

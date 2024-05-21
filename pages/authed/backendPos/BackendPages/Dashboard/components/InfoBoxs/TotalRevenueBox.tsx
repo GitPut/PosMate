@@ -2,144 +2,70 @@ import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import React, { useEffect, useState } from "react";
 import DropdownPeriod from "../DropdownPeriod";
 import BarGraph from "./BarGraph";
-import { TransListStateItem } from "types/global";
-import ParseDate from "components/functional/ParseDate";
 
 const TotalRevenueBox = ({
   style,
-  allTransactions,
   period,
   setperiod,
   details,
 }: {
   style?: ViewStyle;
-  allTransactions: TransListStateItem[];
   period: string;
   setperiod: (period: string) => void;
-  details: {
-    orders: number;
-    revenue: number;
-  };
+  details: any; // Adjust the type as per your actual data structure
 }) => {
-  const [data, setdata] = useState<
+  const [data, setData] = useState<
     { name: string; uv: number; pv: number; amt: number }[]
   >([]);
 
   useEffect(() => {
     const localData = [
-      {
-        name: "J\n",
-        uv: 0,
-        pv: 0,
-        amt: 0,
-      },
-      {
-        name: "F\n\n",
-        uv: 0,
-        pv: 0,
-        amt: 0,
-      },
-      {
-        name: "M\n\n\n",
-        uv: 0,
-        pv: 0,
-        amt: 0,
-      },
-      {
-        name: "A\n\n\n\n",
-        uv: 0,
-        pv: 0,
-        amt: 0,
-      },
-      {
-        name: "M\n\n\n\n\n",
-        uv: 0,
-        pv: 0,
-        amt: 0,
-      },
-      {
-        name: "J\n\n\n\n\n\n",
-        uv: 0,
-        pv: 0,
-        amt: 0,
-      },
-      {
-        name: "J\n\n\n\n\n\n\n",
-        uv: 0,
-        pv: 0,
-        amt: 0,
-      },
-      {
-        name: "A\n\n\n\n\n\n\n\n",
-        uv: 0,
-        pv: 0,
-        amt: 0,
-      },
-      {
-        name: "S\n\n\n\n\n\n\n\n\n",
-        uv: 0,
-        pv: 0,
-        amt: 0,
-      },
-      {
-        name: "O\n\n\n\n\n\n\n\n\n\n",
-        uv: 0,
-        pv: 0,
-        amt: 0,
-      },
-      {
-        name: "N\n\n\n\n\n\n\n\n\n\n\n",
-        uv: 0,
-        pv: 0,
-        amt: 0,
-      },
-      {
-        name: "D\n\n\n\n\n\n\n\n\n\n\n\n",
-        uv: 0,
-        pv: 0,
-        amt: 0,
-      },
+      { name: "J\n", uv: 0, pv: 0, amt: 0 },
+      { name: "F\n\n", uv: 0, pv: 0, amt: 0 },
+      { name: "M\n\n\n", uv: 0, pv: 0, amt: 0 },
+      { name: "A\n\n\n\n", uv: 0, pv: 0, amt: 0 },
+      { name: "M\n\n\n\n\n", uv: 0, pv: 0, amt: 0 },
+      { name: "J\n\n\n\n\n\n", uv: 0, pv: 0, amt: 0 },
+      { name: "J\n\n\n\n\n\n\n", uv: 0, pv: 0, amt: 0 },
+      { name: "A\n\n\n\n\n\n\n\n", uv: 0, pv: 0, amt: 0 },
+      { name: "S\n\n\n\n\n\n\n\n\n", uv: 0, pv: 0, amt: 0 },
+      { name: "O\n\n\n\n\n\n\n\n\n\n", uv: 0, pv: 0, amt: 0 },
+      { name: "N\n\n\n\n\n\n\n\n\n\n\n", uv: 0, pv: 0, amt: 0 },
+      { name: "D\n\n\n\n\n\n\n\n\n\n\n\n", uv: 0, pv: 0, amt: 0 },
     ];
 
-    allTransactions.forEach((transaction) => {
-      // Now you can safely parse the adjusted date string
-      const date = ParseDate(transaction.date);
-      if (!date) return;
-      const month = date.getMonth();
-      if (localData[month]) {
-        localData[month].uv += parseFloat(transaction.total ?? "0");
-        localData[month].pv += 1;
-        localData[month].amt += 1;
-      }
-    });
-    setdata(localData);
-  }, [allTransactions]);
+    if (details && details.days) {
+      Object.keys(details.days).forEach((date) => {
+        const month = parseInt(date.split("-")[1], 10) - 1;
+        if (localData[month]) {
+          localData[month].uv += details.days[date].revenue || 0;
+          localData[month].pv += details.days[date].orders || 0;
+          localData[month].amt += details.days[date].orders || 0;
+        }
+      });
+    }
+
+    setData(localData);
+  }, [details]);
+
+  const totalRevenue = details?.totalRevenue?.revenue || 0;
+  const totalOrders = details?.totalRevenue?.orders || 0;
 
   return (
-    <View
-      style={[
-        styles.totalRevenueContainer,
-        style,
-        // width > 1260 && height > 1024 && { width: 780 },
-      ]}
-    >
+    <View style={[styles.totalRevenueContainer, style]}>
       <View style={styles.totalRevenueInnerContainer}>
         <Text style={styles.totalRevenue}>Total Revenue</Text>
         <View style={styles.totalRevenueLeftSide}>
           <View style={styles.amountContainer}>
             <View style={styles.amountRow}>
               <Text style={styles.totalRevenue1}>
-                ${details.revenue.toFixed(2)}
+                ${totalRevenue.toFixed(2)}
               </Text>
               <View>
                 <DropdownPeriod value={period} setValue={setperiod} />
               </View>
             </View>
             <View style={styles.percentVsLastWeekRow}>
-              {/* <Fontisto name="arrow-up-l" style={styles.upIcon} />
-              <Text style={styles.percent}>2.1%</Text>
-              <Text style={styles.vs}>vs</Text>
-              <Text style={styles.lastWeek}>last week</Text> */}
               <Text
                 style={{
                   fontSize: 13,
@@ -147,7 +73,7 @@ const TotalRevenueBox = ({
                   marginTop: 3,
                 }}
               >
-                Total Orders For {period}: {details.orders}
+                Total Orders For {period}: {totalOrders}
               </Text>
             </View>
           </View>
@@ -159,16 +85,7 @@ const TotalRevenueBox = ({
               <View style={styles.barChart}>
                 <BarGraph data={data} />
               </View>
-              <View style={styles.chartDescription}>
-                {/* <View style={styles.lastWeekContainer}>
-                  <View style={styles.colorIndicatorGrey}></View>
-                  <Text style={styles.lastWeekTxt}>Last Week</Text>
-                </View>
-                <View style={styles.thisWeekContainer}>
-                  <View style={styles.colorIndicatorBlue}></View>
-                  <Text style={styles.thisWeekTxt}>This Week</Text>
-                </View> */}
-              </View>
+              <View style={styles.chartDescription}></View>
             </View>
           </View>
         </View>
@@ -243,26 +160,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
   },
-  upIcon: {
-    color: "#2ca663",
-    fontSize: 22,
-    marginRight: 8,
-  },
-  percent: {
-    fontWeight: "700",
-    color: "#2ca663",
-    fontSize: 13,
-    marginRight: 3,
-  },
-  vs: {
-    color: "#a0a6b1",
-    fontSize: 13,
-    marginRight: 3,
-  },
-  lastWeek: {
-    color: "#a0a6b1",
-    fontSize: 13,
-  },
   chartContainer: {
     width: 416,
     height: 219,
@@ -279,7 +176,6 @@ const styles = StyleSheet.create({
   barChart: {
     width: 340,
     height: 145,
-    // backgroundColor: "#E6E6E6",
   },
   chartDescription: {
     width: 190,

@@ -4,7 +4,6 @@ import {
   View,
   ScrollView,
   useWindowDimensions,
-  // Button,
 } from "react-native";
 import TotalRevenueBox from "./components/InfoBoxs/TotalRevenueBox";
 import MostOrderedItemsBox from "./components/InfoBoxs/MostOrderedItemsBox";
@@ -13,15 +12,9 @@ import DeliveryOrdersBox from "./components/InfoBoxs/DeliveryOrdersBox";
 import InStoreOrdersBox from "./components/InfoBoxs/InStoreOrdersBox";
 import CustomersBox from "./components/InfoBoxs/CustomersBox";
 import OrderWaitTimeBox from "./components/InfoBoxs/OrderWaitTimeBox";
-import { customersList, transListState, userStoreState } from "state/state";
-import ParseDate from "components/functional/ParseDate";
-import SearchDateTransactions from "components/functional/SearchDateTransactions";
-import { TransListStateItem } from "types/global";
+import { customersList, userStoreState } from "state/state";
 import { auth, db } from "state/firebaseConfig";
-import Loader from "components/Loader";
 import ComponentLoader from "components/ComponentLoader";
-// import { auth, db } from "state/firebaseConfig";
-// import firebase from "firebase/compat/app";
 
 interface DetailsProps {
   averageWaitTime: {
@@ -55,78 +48,188 @@ interface DetailsProps {
 
 function Dashboard() {
   const { width } = useWindowDimensions();
-  const [transList, settransList] = useState<TransListStateItem[]>([]);
   const catalog = userStoreState.use();
   const customers = customersList.use();
-  const [period, setperiod] = useState("Today");
-  const [details, setdetails] = useState<DetailsProps>({
+  const [period, setPeriod] = useState("Today");
+  const [details, setDetails] = useState<DetailsProps>({
     averageWaitTime: { shortest: 0, longest: 0, average: 0, mean: 0 },
     inStoreOrders: { orders: 0, revenue: 0 },
     deliveryOrders: { orders: 0, revenue: 0 },
     pickupOrders: { orders: 0, revenue: 0 },
     totalRevenue: { orders: 0, revenue: 0 },
     mostOrderProducts: [],
-    // newCustomers: 0,
   });
-  const [prevPeriod, setprevPeriod] = useState("Today");
-  const [loading, setloading] = useState(true);
+  const [loading, setLoading] = useState(true);
+
+  const getDateRange = (period: string) => {
+    const today = new Date();
+    const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+    const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    const yearStart = new Date(today.getFullYear(), 0, 1);
+    const yearEnd = new Date(today.getFullYear(), 11, 31);
+
+    switch (period) {
+      case "Today":
+        return {
+          start: new Date().toISOString().split("T")[0],
+          end: new Date().toISOString().split("T")[0],
+        };
+      case "This Week":
+        return {
+          start: weekStart.toISOString().split("T")[0],
+          end: weekEnd.toISOString().split("T")[0],
+        };
+      case "This Month":
+        return {
+          start: monthStart.toISOString().split("T")[0],
+          end: monthEnd.toISOString().split("T")[0],
+        };
+      case "This Year":
+        return {
+          start: yearStart.toISOString().split("T")[0],
+          end: yearEnd.toISOString().split("T")[0],
+        };
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     const fetchStats = async () => {
-      const userId = auth.currentUser?.uid; // or another method to retrieve the user ID
-      const today = new Date();
-      const statsDocId = `${today.getFullYear()}-${today.getMonth() + 1}`; // Adjust based on your stats document naming convention
+      setLoading(true);
+      const userId = auth.currentUser?.uid;
+      const statsRef = db
+        .collection("users")
+        .doc(userId)
+        .collection("stats")
+        .doc("monthly");
 
       try {
-        const doc = await db
-          .collection("users")
-          .doc(userId)
-          .collection("stats")
-          .doc(statsDocId)
-          .get();
-        if (doc.exists) {
-          setDetails(doc.data());
-          setloading(false);
-        } else {
-          console.log("No stats available for this period.");
-          setloading(false);
+        const statsDoc = await statsRef.get();
+        if (statsDoc.exists) {
+          const statsData = statsDoc.data();
+          const { start, end } = getDateRange(period) ?? {};
+
+          // Filter statsData.days based on the selected period
+          const filteredDays = Object.keys(statsData.days)
+            .filter((date) => date >= start && date <= end)
+            .reduce((obj, key) => {
+              obj[key] = statsData.days[key];
+              return obj;
+            }, {});
+
+          // Calculate the details from the filtered days
+          const newDetails = calculateDetails(filteredDays, statsData, catalog);
+          setDetails(newDetails);
         }
       } catch (error) {
         console.error("Error fetching stats:", error);
-        setloading(false);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchStats();
   }, [period]);
 
+  const calculateDetails = (days, statsData, catalog) => {
+    let shortest = Infinity;
+    let longest = 0;
+    let totalWaitTime = 0;
+    let waitCount = 0;
+    let totalOrders = 0;
+    let totalRevenue = 0;
+    const inStoreOrders = { orders: 0, revenue: 0 };
+    const deliveryOrders = { orders: 0, revenue: 0 };
+    const pickupOrders = { orders: 0, revenue: 0 };
+    const mostOrderedItems = {};
 
- return (
-   <View style={styles.container}>
-     <ScrollView
-       style={{ height: "100%", width: "100%" }}
-       contentContainerStyle={{ paddingRight: 30 }}
-     >
-       {loading ? (
-         <ComponentLoader />
-       ) : (
-         <View style={styles.wrap}>
-           <TotalRevenueBox
-             style={width < 1300 ? { width: "100%" } : {}}
-             details={details.totalRevenue}
-           />
-           {width > 1300 && (
-             <MostOrderedItemsBox details={details.mostOrderProducts} />
-           )}
-           <OrderWaitTimeBox details={details.averageWaitTime} />
-           <PickupOrdersBox details={details.pickupOrders} />
-           <DeliveryOrdersBox details={details.deliveryOrders} />
-           <InStoreOrdersBox details={details.inStoreOrders} />
-         </View>
-       )}
-     </ScrollView>
-   </View>
- );
+    Object.keys(days).forEach((date) => {
+      const dayStats = days[date];
+      totalOrders += dayStats.orders;
+      totalRevenue += dayStats.revenue;
+
+      inStoreOrders.orders += dayStats.inStore;
+      inStoreOrders.revenue += dayStats.revenue;
+      deliveryOrders.orders += dayStats.delivery;
+      deliveryOrders.revenue += dayStats.revenue;
+      pickupOrders.orders += dayStats.pickup;
+      pickupOrders.revenue += dayStats.revenue;
+
+      totalWaitTime += dayStats.totalWaitTime;
+      waitCount += dayStats.waitCount;
+
+      Object.keys(dayStats.productCounts).forEach((itemName) => {
+        mostOrderedItems[itemName] =
+          (mostOrderedItems[itemName] || 0) + dayStats.productCounts[itemName];
+      });
+
+      if (dayStats.averageWaitTime < shortest) {
+        shortest = dayStats.averageWaitTime;
+      }
+
+      if (dayStats.averageWaitTime > longest) {
+        longest = dayStats.averageWaitTime;
+      }
+    });
+
+    const sortedItems = Object.entries(mostOrderedItems).sort(
+      (a, b) => b[1] - a[1]
+    );
+    const mostOrderProducts = sortedItems.slice(0, 3).map((item) => ({
+      name: item[0],
+      orders: item[1],
+      imageUrl:
+        catalog.products.find((product) => product.name === item[0])
+          ?.imageUrl ?? "https://via.placeholder.com/50",
+    }));
+
+    return {
+      averageWaitTime: {
+        shortest,
+        longest,
+        average: totalWaitTime / waitCount || 0,
+        mean: totalWaitTime / totalOrders || 0,
+      },
+      inStoreOrders,
+      deliveryOrders,
+      pickupOrders,
+      totalRevenue: {
+        orders: totalOrders,
+        revenue: totalRevenue,
+      },
+      mostOrderProducts,
+    };
+  };
+
+  return (
+    <View style={styles.container}>
+      <ScrollView
+        style={{ height: "100%", width: "100%" }}
+        contentContainerStyle={{ paddingRight: 30 }}
+      >
+        {loading ? (
+          <ComponentLoader />
+        ) : (
+          <View style={styles.wrap}>
+            <TotalRevenueBox
+              style={width < 1300 ? { width: "100%" } : {}}
+              details={details.totalRevenue}
+            />
+            {width > 1300 && (
+              <MostOrderedItemsBox details={details.mostOrderProducts} />
+            )}
+            <OrderWaitTimeBox details={details.averageWaitTime} />
+            <PickupOrdersBox details={details.pickupOrders} />
+            <DeliveryOrdersBox details={details.deliveryOrders} />
+            <InStoreOrdersBox details={details.inStoreOrders} />
+          </View>
+        )}
+      </ScrollView>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
