@@ -4,6 +4,7 @@ import {
   View,
   ScrollView,
   useWindowDimensions,
+  ViewStyle,
 } from "react-native";
 import TotalRevenueBox from "./components/InfoBoxs/TotalRevenueBox";
 import MostOrderedItemsBox from "./components/InfoBoxs/MostOrderedItemsBox";
@@ -15,6 +16,26 @@ import OrderWaitTimeBox from "./components/InfoBoxs/OrderWaitTimeBox";
 import { customersList, userStoreState } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 import ComponentLoader from "components/ComponentLoader";
+import { UserStoreStateProps } from "types/global";
+
+interface ProductCount {
+  [key: string]: number;
+}
+
+interface DayStats {
+  revenue: number;
+  orders: number;
+  inStore: number;
+  delivery: number;
+  pickup: number;
+  productCounts: ProductCount;
+  totalWaitTime: number;
+  waitCount: number;
+  averageWaitTime?: number;
+  inStoreRevenue: number;
+  deliveryRevenue: number;
+  pickupRevenue: number;
+}
 
 interface DetailsProps {
   averageWaitTime: {
@@ -46,25 +67,15 @@ interface DetailsProps {
   }[];
   newCustomers: number;
   days: {
-    [key: string]: {
-      revenue: number;
-      orders: number;
-      inStore: number;
-      delivery: number;
-      pickup: number;
-      productCounts: { [key: string]: number };
-      totalWaitTime: number;
-      waitCount: number;
-      averageWaitTime?: number;
-    };
+    [key: string]: DayStats;
   };
 }
 
-function Dashboard() {
+const Dashboard: React.FC = () => {
   const { width } = useWindowDimensions();
   const catalog = userStoreState.use();
   const customers = customersList.use();
-  const [period, setPeriod] = useState("Today");
+  const [period, setPeriod] = useState<string>("Today");
   const [details, setDetails] = useState<DetailsProps>({
     averageWaitTime: { shortest: 0, longest: 0, average: 0, mean: 0 },
     inStoreOrders: { orders: 0, revenue: 0 },
@@ -73,14 +84,18 @@ function Dashboard() {
     totalRevenue: { orders: 0, revenue: 0 },
     mostOrderProducts: [],
     newCustomers: 0,
-    days: {}, // Add days property
+    days: {},
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const getDateRange = (period: string) => {
+  const getDateRange = (
+    period: string
+  ): { start: string; end: string } | null => {
     const today = new Date();
-    const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
-    const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - today.getDay());
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
     const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
     const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
     const yearStart = new Date(today.getFullYear(), 0, 1);
@@ -89,8 +104,8 @@ function Dashboard() {
     switch (period) {
       case "Today":
         return {
-          start: new Date().toISOString().split("T")[0],
-          end: new Date().toISOString().split("T")[0],
+          start: today.toISOString().split("T")[0],
+          end: today.toISOString().split("T")[0],
         };
       case "This Week":
         return {
@@ -110,84 +125,90 @@ function Dashboard() {
       case "All Time":
         return {
           start: "1970-01-01",
-          end: new Date().toISOString().split("T")[0],
+          end: today.toISOString().split("T")[0],
         };
       default:
         return null;
     }
   };
 
-const calculateDetails = (days, statsData, catalog) => {
-  let shortest = Infinity;
-  let longest = 0;
-  let totalWaitTime = 0;
-  let waitCount = 0;
-  let totalOrders = 0;
-  let totalRevenue = 0;
-  const inStoreOrders = { orders: 0, revenue: 0 };
-  const deliveryOrders = { orders: 0, revenue: 0 };
-  const pickupOrders = { orders: 0, revenue: 0 };
-  const mostOrderedItems = {};
+  const calculateDetails = (
+    days: { [key: string]: DayStats },
+    statsData: DetailsProps,
+    catalog: UserStoreStateProps
+  ): DetailsProps => {
+    let shortest = Infinity;
+    let longest = 0;
+    let totalWaitTime = 0;
+    let waitCount = 0;
+    let totalOrders = 0;
+    let totalRevenue = 0;
+    const inStoreOrders = { orders: 0, revenue: 0 };
+    const deliveryOrders = { orders: 0, revenue: 0 };
+    const pickupOrders = { orders: 0, revenue: 0 };
+    const mostOrderedItems: ProductCount = {};
 
-  Object.keys(days).forEach((date) => {
-    const dayStats = days[date];
-    totalOrders += dayStats.orders;
-    totalRevenue += dayStats.revenue;
+    Object.keys(days).forEach((date) => {
+      const dayStats = days[date];
+      totalOrders += dayStats.orders;
+      totalRevenue += dayStats.revenue;
 
-    inStoreOrders.orders += dayStats.inStore;
-    inStoreOrders.revenue += dayStats.inStoreRevenue;
-    deliveryOrders.orders += dayStats.delivery;
-    deliveryOrders.revenue += dayStats.deliveryRevenue;
-    pickupOrders.orders += dayStats.pickup;
-    pickupOrders.revenue += dayStats.pickupRevenue;
+      inStoreOrders.orders += dayStats.inStore;
+      inStoreOrders.revenue += dayStats.inStoreRevenue;
+      deliveryOrders.orders += dayStats.delivery;
+      deliveryOrders.revenue += dayStats.deliveryRevenue;
+      pickupOrders.orders += dayStats.pickup;
+      pickupOrders.revenue += dayStats.pickupRevenue;
 
-    totalWaitTime += dayStats.totalWaitTime;
-    waitCount += dayStats.waitCount;
+      totalWaitTime += dayStats.totalWaitTime;
+      waitCount += dayStats.waitCount;
 
-    Object.keys(dayStats.productCounts).forEach((itemName) => {
-      mostOrderedItems[itemName] =
-        (mostOrderedItems[itemName] || 0) + dayStats.productCounts[itemName];
+      Object.keys(dayStats.productCounts).forEach((itemName) => {
+        mostOrderedItems[itemName] =
+          (mostOrderedItems[itemName] || 0) + dayStats.productCounts[itemName];
+      });
+
+      const averageWaitTime = dayStats.averageWaitTime ?? 0;
+
+      if (averageWaitTime < shortest) {
+        shortest = averageWaitTime;
+      }
+
+      if (averageWaitTime > longest) {
+        longest = averageWaitTime;
+      }
     });
 
-    if (dayStats.averageWaitTime < shortest) {
-      shortest = dayStats.averageWaitTime;
-    }
+    const sortedItems = Object.entries(mostOrderedItems).sort(
+      (a, b) => b[1] - a[1]
+    );
+    const mostOrderProducts = sortedItems.slice(0, 3).map((item) => ({
+      name: item[0],
+      orders: item[1],
+      imageUrl:
+        catalog.products.find((product) => product.name === item[0])
+          ?.imageUrl ?? "https://via.placeholder.com/50",
+    }));
 
-    if (dayStats.averageWaitTime > longest) {
-      longest = dayStats.averageWaitTime;
-    }
-  });
-
-  const sortedItems = Object.entries(mostOrderedItems).sort(
-    (a, b) => b[1] - a[1]
-  );
-  const mostOrderProducts = sortedItems.slice(0, 3).map((item) => ({
-    name: item[0],
-    orders: item[1],
-    imageUrl:
-      catalog.products.find((product) => product.name === item[0])?.imageUrl ??
-      "https://via.placeholder.com/50",
-  }));
-
-  return {
-    averageWaitTime: {
-      shortest,
-      longest,
-      average: totalWaitTime / waitCount || 0,
-      mean: totalWaitTime / totalOrders || 0,
-    },
-    inStoreOrders,
-    deliveryOrders,
-    pickupOrders,
-    totalRevenue: {
-      orders: totalOrders,
-      revenue: totalRevenue,
-    },
-    mostOrderProducts,
-    newCustomers: customers.length,
+    return {
+      averageWaitTime: {
+        shortest,
+        longest,
+        average: totalWaitTime / waitCount || 0,
+        mean: totalWaitTime / totalOrders || 0,
+      },
+      inStoreOrders,
+      deliveryOrders,
+      pickupOrders,
+      totalRevenue: {
+        orders: totalOrders,
+        revenue: totalRevenue,
+      },
+      mostOrderProducts,
+      newCustomers: customers.length,
+      days,
+    };
   };
-};
-
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -202,24 +223,30 @@ const calculateDetails = (days, statsData, catalog) => {
       try {
         const statsDoc = await statsRef.get();
         if (statsDoc.exists) {
-          const statsData = statsDoc.data();
+          const statsData = statsDoc.data() as DetailsProps;
           const { start, end } = getDateRange(period) ?? {};
 
           // Filter statsData.days based on the selected period
-          const filteredDays = Object.keys(statsData.days)
-            .filter((date) => date >= start && date <= end)
-            .reduce((obj, key) => {
-              obj[key] = statsData.days[key];
-              return obj;
-            }, {});
+          if (start && end) {
+            const filteredDays = Object.keys(statsData.days)
+              .filter((date) => date >= start && date <= end)
+              .reduce((obj, key) => {
+                obj[key] = statsData.days[key];
+                return obj;
+              }, {} as { [key: string]: DayStats });
 
-          // Calculate the details from the filtered days
-          const newDetails = calculateDetails(filteredDays, statsData, catalog);
-          setDetails((prevDetails) => ({
-            ...prevDetails,
-            ...newDetails,
-            days: statsData.days, // Ensure days are included
-          }));
+            // Calculate the details from the filtered days
+            const newDetails = calculateDetails(
+              filteredDays,
+              statsData,
+              catalog
+            );
+            setDetails((prevDetails) => ({
+              ...prevDetails,
+              ...newDetails,
+              days: statsData.days,
+            }));
+          }
         }
       } catch (error) {
         console.error("Error fetching stats:", error);
@@ -319,7 +346,7 @@ const calculateDetails = (days, statsData, catalog) => {
       </ScrollView>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -7,17 +7,13 @@ import {
   useWindowDimensions,
 } from "react-native";
 import DropDownMenuBtn from "./components/DropDownMenuBtn";
-import React, { useEffect, useRef, useState } from "react";
+import React, {  useRef, useState } from "react";
 import { Route, useHistory, useLocation, withRouter } from "react-router-dom";
-import { auth, db } from "state/firebaseConfig";
-import { setTransListState, setTransListTableOrgState } from "state/state";
 import firebase from "firebase/compat/app";
 import MenuBtn from "./components/MenuBtn";
 import index from "./authIndex";
 import { useAlert } from "react-alert";
 import Header from "../../../components/Header/Header";
-import { TransListStateItem } from "types/global";
-import ParseDate from "components/functional/ParseDate";
 
 function BackendPosContainer(props: { match: { url: string } }) {
   const { match } = props;
@@ -61,103 +57,6 @@ function BackendPosContainer(props: { match: { url: string } }) {
         alertP.error("Unknown error has occured: ", error);
       });
   };
-
-  // useEffect(() => {
-  //   const transList: TransListStateItem[] = [];
-  //   const transListTableOrg: TransListStateItem[] = [];
-
-  //   try {
-  //     db.collection("users")
-  //       .doc(auth.currentUser?.uid)
-  //       .collection("transList")
-  //       .get()
-  //       .then((querySnapshot) => {
-  //         querySnapshot.forEach((doc) => {
-  //           // doc.data() is never undefined for query doc snapshots
-  //           // console.log(doc.id, " => ", doc.data());
-  //           let orderType = "";
-  //           if (doc.data().method === "deliveryOrder") {
-  //             orderType = "Delivery";
-  //           }
-  //           if (doc.data().method === "pickupOrder") {
-  //             orderType = "Pickup";
-  //           }
-  //           if (doc.data().method === "inStoreOrder") {
-  //             orderType = "In Store";
-  //           }
-
-  //           const docData = doc.data();
-
-  //           transList.push({
-  //             ...docData,
-  //             id: docData.transNum.toUpperCase(),
-  //             name: docData.customer?.name ? docData.customer?.name : "N/A",
-  //             date: docData.date,
-  //             // date: "test",
-  //             originalData: {
-  //               ...docData,
-  //               id: docData.id,
-  //               cart: docData.cart,
-  //               cartNote: docData.cartNote,
-  //               customer: docData.customer,
-  //               date: docData.date,
-  //               method: docData.method,
-  //               online: docData.online,
-  //               isInStoreOrder: docData.isInStoreOrder,
-  //               transNum: docData.transNum,
-  //               total: docData.total,
-  //             },
-  //             docID: doc.id,
-  //             amount: docData.total,
-  //             system: "POS",
-  //             type: orderType,
-  //             method: docData.method,
-  //           });
-
-  //           transListTableOrg.push({
-  //             ...docData,
-  //             id: docData.transNum.toUpperCase(),
-  //             name: docData.customer?.name ? docData.customer?.name : "N/A",
-  //             date: docData.date,
-  //             originalData: {
-  //               ...docData,
-  //               id: docData.id,
-  //               cart: docData.cart,
-  //               cartNote: docData.cartNote,
-  //               customer: docData.customer,
-  //               date: docData.date,
-  //               method: docData.method,
-  //               online: docData.online,
-  //               isInStoreOrder: docData.isInStoreOrder,
-  //               transNum: docData.transNum,
-  //               total: docData.total,
-  //             },
-  //             docID: doc.id,
-  //             amount: docData.total,
-  //             system: "POS",
-  //             type: orderType,
-  //             method: docData.method,
-  //           });
-  //         });
-  //         const newList = [
-  //           ...transListTableOrg.sort((a, b) => {
-  //             const aDate = ParseDate(a.date);
-  //             const bDate = ParseDate(b.date);
-
-  //             if (aDate && bDate) {
-  //               return bDate.getTime() - aDate.getTime();
-  //             } else {
-  //               return 0;
-  //             }
-  //           }),
-  //         ];
-  //         setTransListTableOrgState(newList);
-  //         setTransListState(transList);
-  //       });
-  //   } catch {
-  //     console.log("Error occured retrieving tranasctions");
-  //   }
-  // }, []);
 
   return (
     <View style={styles.container}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -15,289 +15,304 @@ import { auth, db } from "state/firebaseConfig";
 import ReceiptPrint from "components/functional/ReceiptPrint";
 import { useAlert } from "react-alert";
 import qz from "qz-tray";
-import { TransListStateItem } from "types/global";
-import Loader from "components/Loader";
+import { ExcelTransListStateItem, TransListStateItem } from "types/global";
 import ComponentLoader from "components/ComponentLoader";
+import firebase from "firebase/compat";
 
 const pageSize = 100; // Number of documents to fetch per page
-let lastVisibleDoc: null | object = null; // Track the last visible document to fetch the next page
+let lastVisibleDoc: firebase.firestore.DocumentSnapshot | null = null; // Track the last visible document to fetch the next page
 
 function InvoiceReport() {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [search, setSearch] = useState("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
+  const [search, setSearch] = useState<string>("");
   const [filteredTransList, setFilteredTransList] = useState<
     TransListStateItem[]
   >([]);
   const [invoices, setInvoices] = useState<TransListStateItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [firstLoad, setfirstLoad] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [firstLoad, setFirstLoad] = useState<boolean>(false);
   const storeDetails = storeDetailState.use();
-  const [baseSelectedRows, setbaseSelectedRows] = useState<string[]>([]);
-  const [updateBaseSelectedRows, setupdateBaseSelectedRows] = useState(false);
+  const [baseSelectedRows, setBaseSelectedRows] = useState<string[]>([]);
+  const [updateBaseSelectedRows, setUpdateBaseSelectedRows] =
+    useState<boolean>(false);
   const myDeviceDetails = myDeviceDetailsState.use();
   const alertP = useAlert();
 
   const columns = [
-    {
-      title: "Order ID",
-      dataIndex: "id",
-      key: "id",
-    },
-    {
-      title: "Customer name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-    },
-    {
-      title: "System Type",
-      dataIndex: "system",
-      key: "system",
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-    },
+    { title: "Order ID", dataIndex: "id", key: "id" },
+    { title: "Customer name", dataIndex: "name", key: "name" },
+    { title: "Date", dataIndex: "date", key: "date" },
+    { title: "Total", dataIndex: "total", key: "total" },
+    { title: "System Type", dataIndex: "system", key: "system" },
+    { title: "Type", dataIndex: "type", key: "type" },
   ];
 
   useEffect(() => {
-    if (updateBaseSelectedRows === true) {
-      if (baseSelectedRows.length >= 1) {
-        let data: string[] = [];
-        baseSelectedRows.forEach((idx) => {
-          //find index of item in transList that matches id of selected row
-          let orderIndex;
-          let element;
-          if (filteredTransList.length > 0) {
-            orderIndex = filteredTransList.findIndex((item) => item.id === idx);
-            element = filteredTransList[orderIndex];
-          } else {
-            orderIndex = invoices.findIndex((item) => item.id === idx);
-            element = invoices[orderIndex];
-          }
-
-          const formatedData = ReceiptPrint(element, storeDetails, true);
-          data = data.concat(formatedData.data);
-        });
-        if (
-          myDeviceDetails.sendPrintToUserID &&
-          myDeviceDetails.useDifferentDeviceToPrint
-        ) {
-          console.log("Sending print to different user");
-          db.collection("users")
-            .doc(auth.currentUser?.uid)
-            .collection("devices")
-            .doc(myDeviceDetails.sendPrintToUserID.value)
-            .collection("printRequests")
-            .add({
-              printData: data,
-            });
-        } else {
-          qz.websocket
-            .connect()
-            .then(() => {
-              if (!myDeviceDetails.printToPrinter) {
-                alertP.error("You must specify a printer in device settings");
-                return;
-              }
-              const config = qz.configs.create(myDeviceDetails.printToPrinter);
-              return qz.print(config, data);
-            })
-            .then(qz.websocket.disconnect)
-            .catch(function (err) {
-              if (
-                err.message.includes(
-                  "A printer must be specified before printing"
-                )
-              ) {
-                alertP.error("You must specify a printer in device settings");
-              } else if (
-                err.message.includes("Unable to establish connection with QZ")
-              ) {
-                alertP.error(
-                  "You do not have Divine POS Helper installed. Please download from general settings"
-                );
-              } else if (
-                err.message.includes("Cannot find printer with name")
-              ) {
-                alertP.error(
-                  "Printer not found. Please check your printer settings."
-                );
-              } else {
-                alertP.error(
-                  "An error occured while trying to print. Try refreshing the page and trying again."
-                );
-              }
-            });
-        }
-      } else {
-        alertP.error(
-          "Higlight one or multiple receipt then click to print them"
-        );
-      }
-      setupdateBaseSelectedRows(false);
-      setbaseSelectedRows([]);
+    if (updateBaseSelectedRows) {
+      handlePrintSelectedRows();
     }
   }, [baseSelectedRows, updateBaseSelectedRows]);
 
-  const SearchDate = () => {
-    if (!startDate || !endDate) {
-      db.collection("users")
-        .doc(auth.currentUser?.uid)
-        .collection("transList")
-        .orderBy("date", "desc")
-        .get()
-        .then((querySnapshot) => {
-          const filteredInvoices: TransListStateItem[] = [];
+  const handlePrintSelectedRows = () => {
+    if (baseSelectedRows.length >= 1) {
+      let data: string[] = [];
+      baseSelectedRows.forEach((idx) => {
+        const orderIndex =
+          filteredTransList.length > 0
+            ? filteredTransList.findIndex((item) => item.id === idx)
+            : invoices.findIndex((item) => item.id === idx);
+        const element =
+          filteredTransList.length > 0
+            ? filteredTransList[orderIndex]
+            : invoices[orderIndex];
+        const formattedData = ReceiptPrint(element, storeDetails, true);
+        data = data.concat(formattedData.data);
+      });
 
-          querySnapshot.forEach((doc) => {
-            let orderType = "";
-            if (doc.data().method === "deliveryOrder") {
-              orderType = "Delivery";
+      if (
+        myDeviceDetails.sendPrintToUserID &&
+        myDeviceDetails.useDifferentDeviceToPrint
+      ) {
+        console.log("Sending print to different user");
+        db.collection("users")
+          .doc(auth.currentUser?.uid)
+          .collection("devices")
+          .doc(myDeviceDetails.sendPrintToUserID.value)
+          .collection("printRequests")
+          .add({ printData: data });
+      } else {
+        qz.websocket
+          .connect()
+          .then(() => {
+            if (!myDeviceDetails.printToPrinter) {
+              alertP.error("You must specify a printer in device settings");
+              return;
             }
-            if (doc.data().method === "pickupOrder") {
-              orderType = "Pickup";
-            }
-            if (doc.data().method === "inStoreOrder") {
-              orderType = "In Store";
-            }
-
-            const docData = doc.data();
-            const organziedData = {
-              ...docData,
-              id: docData.transNum.toUpperCase(),
-              name: docData.customer?.name ? docData.customer?.name : "N/A",
-              date: docData.date,
-              originalData: {
-                ...docData,
-                id: docData.id,
-                cart: docData.cart,
-                cartNote: docData.cartNote,
-                customer: docData.customer,
-                date: docData.date,
-                method: docData.method,
-                online: docData.online,
-                isInStoreOrder: docData.isInStoreOrder,
-                transNum: docData.transNum,
-                total: docData.total,
-              },
-              docID: doc.id,
-              amount: docData.total,
-              system: "POS",
-              type: orderType,
-              method: docData.method,
-            };
-
-            if (CheckCase(organziedData)) {
-              filteredInvoices.push(organziedData);
-            }
+            const config = qz.configs.create(myDeviceDetails.printToPrinter);
+            return qz.print(config, data);
+          })
+          .then(qz.websocket.disconnect)
+          .catch((err: Error) => {
+            handlePrintError(err);
           });
-
-          // Update the state with the filtered list
-          setFilteredTransList(filteredInvoices);
-        });
+      }
     } else {
-      const startDateConverted = new Date(startDate);
-      startDateConverted.setHours(0, 0, 0, 0); // Set to start of the day
-      startDateConverted.setDate(startDateConverted.getDate() + 1); // Add a day to the start date
-      const endDateConverted = new Date(endDate);
-      endDateConverted.setDate(endDateConverted.getDate() + 1); // Add a day to the end date
-      endDateConverted.setHours(23, 59, 59, 999); // Set to end of the day
+      alertP.error(
+        "Highlight one or multiple receipt then click to print them"
+      );
+    }
+    setUpdateBaseSelectedRows(false);
+    setBaseSelectedRows([]);
+  };
 
-      db.collection("users")
-        .doc(auth.currentUser?.uid)
-        .collection("transList")
-        .where("date", ">=", startDateConverted)
-        .where("date", "<=", endDateConverted)
-        .get()
-        .then((querySnapshot) => {
-          const filteredInvoices: TransListStateItem[] = [];
-
-          querySnapshot.forEach((doc) => {
-            let orderType = "";
-            if (doc.data().method === "deliveryOrder") {
-              orderType = "Delivery";
-            }
-            if (doc.data().method === "pickupOrder") {
-              orderType = "Pickup";
-            }
-            if (doc.data().method === "inStoreOrder") {
-              orderType = "In Store";
-            }
-
-            const docData = doc.data();
-
-            filteredInvoices.push({
-              ...docData,
-              id: docData.transNum.toUpperCase(),
-              name: docData.customer?.name ? docData.customer?.name : "N/A",
-              date: docData.date,
-              originalData: {
-                ...docData,
-                id: docData.id,
-                cart: docData.cart,
-                cartNote: docData.cartNote,
-                customer: docData.customer,
-                date: docData.date,
-                method: docData.method,
-                online: docData.online,
-                isInStoreOrder: docData.isInStoreOrder,
-                transNum: docData.transNum,
-                total: docData.total,
-              },
-              docID: doc.id,
-              amount: docData.total,
-              system: "POS",
-              type: orderType,
-              method: docData.method,
-            });
-          });
-
-          // Update the state with the filtered list
-          setFilteredTransList(filteredInvoices.filter((e) => CheckCase(e)));
-        });
+  const handlePrintError = (err: Error) => {
+    if (err.message.includes("A printer must be specified before printing")) {
+      alertP.error("You must specify a printer in device settings");
+    } else if (err.message.includes("Unable to establish connection with QZ")) {
+      alertP.error(
+        "You do not have Divine POS Helper installed. Please download from general settings"
+      );
+    } else if (err.message.includes("Cannot find printer with name")) {
+      alertP.error("Printer not found. Please check your printer settings.");
+    } else {
+      alertP.error(
+        "An error occurred while trying to print. Try refreshing the page and trying again."
+      );
     }
   };
 
-  //Printing function
-  const DownloadExcel = () => {
-    const invoicesToDownload: TransListStateItem[] = [];
+  const searchDate = useCallback(() => {
+    let query = db
+      .collection("users")
+      .doc(auth.currentUser?.uid)
+      .collection("transList")
+      .orderBy("date", "desc");
+
+    if (startDate && endDate) {
+      const startDateConverted = new Date(startDate);
+      startDateConverted.setHours(0, 0, 0, 0);
+      startDateConverted.setDate(startDateConverted.getDate() + 1);
+      const endDateConverted = new Date(endDate);
+      endDateConverted.setDate(endDateConverted.getDate() + 1);
+      endDateConverted.setHours(23, 59, 59, 999);
+
+      query = query
+        .where("date", ">=", startDateConverted)
+        .where("date", "<=", endDateConverted);
+    }
+
+    query.get().then(handleQuerySnapshot);
+  }, [startDate, endDate, search]);
+
+  const handleQuerySnapshot = (
+    querySnapshot: firebase.firestore.QuerySnapshot
+  ) => {
+    const filteredInvoices: TransListStateItem[] = [];
+    querySnapshot.forEach((doc) => {
+      const orderType = getOrderType(doc.data().method);
+      const docData = doc.data() as TransListStateItem;
+      const organizedData: TransListStateItem = {
+        ...docData,
+        id: docData.transNum.toUpperCase(),
+        name: docData.customer?.name ? docData.customer?.name : "N/A",
+        date: docData.date,
+        originalData: {
+          ...docData,
+          id: docData.id,
+          cart: docData.cart ?? [],
+          cartNote: docData.cartNote ?? "",
+          customer: docData.customer ?? { name: "", phone: "" },
+          date: docData.date,
+          method: docData.method ?? "",
+          online: docData.online ?? false,
+          isInStoreOrder: docData.isInStoreOrder ?? false,
+          transNum: docData.transNum,
+          total: docData.total ?? "",
+        },
+        docID: doc.id,
+        amount: docData.total,
+        system: "POS",
+        type: orderType,
+        method: docData.method,
+      };
+
+      if (checkCase(organizedData)) {
+        filteredInvoices.push(organizedData);
+      }
+    });
+
+    setFilteredTransList(filteredInvoices);
+  };
+
+  const getOrderType = (method: string) => {
+    switch (method) {
+      case "deliveryOrder":
+        return "Delivery";
+      case "pickupOrder":
+        return "Pickup";
+      case "inStoreOrder":
+        return "In Store";
+      default:
+        return "";
+    }
+  };
+
+  const checkCase = (item: TransListStateItem) => {
+    const searchQuery = search.toLowerCase().replace(/\s/g, "");
+
+    return (
+      item.id.toLowerCase().includes(searchQuery) ||
+      item.name?.toLowerCase().includes(searchQuery) ||
+      item.customer?.phone?.includes(searchQuery) ||
+      item.customer?.address?.label
+        ?.toLowerCase()
+        .replace(/\s/g, "")
+        .includes(searchQuery)
+    );
+  };
+
+  const fetchNextPage = useCallback(() => {
+    if (loading) return;
+    setLoading(true);
+
+    let query = db
+      .collection("users")
+      .doc(auth.currentUser?.uid)
+      .collection("transList")
+      .orderBy("date", "desc")
+      .limit(pageSize);
+
+    if (lastVisibleDoc) {
+      query = query.startAfter(lastVisibleDoc);
+    }
+
+    query
+      .get()
+      .then((querySnapshot) => {
+        const newInvoices: TransListStateItem[] = [];
+
+        querySnapshot.forEach((doc) => {
+          lastVisibleDoc = doc;
+          const orderType = getOrderType(doc.data().method);
+          const docData = doc.data() as TransListStateItem;
+
+          newInvoices.push({
+            ...docData,
+            id: docData.transNum.toUpperCase(),
+            name: docData.customer?.name ? docData.customer?.name : "N/A",
+            date: docData.date,
+            originalData: {
+              ...docData,
+              id: docData.id,
+              cart: docData.cart ?? [],
+              cartNote: docData.cartNote ?? "",
+              customer: docData.customer ?? { name: "", phone: "" },
+              date: docData.date,
+              method: docData.method ?? "",
+              online: docData.online ?? false,
+              isInStoreOrder: docData.isInStoreOrder ?? false,
+              transNum: docData.transNum,
+              total: docData.total ?? "",
+            },
+            docID: doc.id,
+            amount: docData.total,
+            system: "POS",
+            type: orderType,
+            method: docData.method,
+          });
+        });
+
+        setInvoices((prevInvoices) => [...prevInvoices, ...newInvoices]);
+        setLoading(false);
+        if (!firstLoad) {
+          setFirstLoad(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching documents: ", error);
+        setLoading(false);
+        if (!firstLoad) {
+          setFirstLoad(true);
+        }
+      });
+  }, [loading, firstLoad]);
+
+  useEffect(() => {
+    fetchNextPage();
+    return () => {
+      lastVisibleDoc = null;
+    };
+  }, []);
+
+  const handleEndReached = () => {
+    fetchNextPage();
+  };
+
+  const downloadExcel = () => {
+    const invoicesToDownload: ExcelTransListStateItem[] = [];
 
     baseSelectedRows.forEach((idx) => {
-      let orderIndex;
-      let element;
-      if (filteredTransList.length > 0) {
-        orderIndex = filteredTransList.findIndex((item) => item.id === idx);
-        element = filteredTransList[orderIndex];
-      } else {
-        orderIndex = invoices.findIndex((item) => item.id === idx);
-        element = invoices[orderIndex];
-      }
-      invoicesToDownload.push(element);
+      const orderIndex =
+        filteredTransList.length > 0
+          ? filteredTransList.findIndex((item) => item.id === idx)
+          : invoices.findIndex((item) => item.id === idx);
+      const element =
+        filteredTransList.length > 0
+          ? filteredTransList[orderIndex]
+          : invoices[orderIndex];
+      invoicesToDownload.push({ ...element, date: element.date.toDate() });
     });
 
     const excelDownload = new ExcelDownload();
     excelDownload
       .addSheet("history")
       .addColumns(columns)
-      .addDataSource(invoicesToDownload, {
-        str2Percent: true,
-      })
+      .addDataSource(invoicesToDownload, { str2Percent: true })
       .saveAs("StoreReceipts.xlsx");
   };
 
-  const PrintTotals = (date: Date, dateName: string) => {
+  const printTotals = (date: Date, dateName: string) => {
     const todayStart = new Date(
       date.getFullYear(),
       date.getMonth(),
@@ -317,7 +332,6 @@ function InvoiceReport() {
       999
     );
 
-    // Fetch invoices from Firebase and filter them by date range
     db.collection("users")
       .doc(auth.currentUser?.uid)
       .collection("transList")
@@ -326,38 +340,26 @@ function InvoiceReport() {
       .get()
       .then((querySnapshot) => {
         const filteredInvoices: TransListStateItem[] = [];
-
         querySnapshot.forEach((doc) => {
-          let orderType = "";
-          if (doc.data().method === "deliveryOrder") {
-            orderType = "Delivery";
-          }
-          if (doc.data().method === "pickupOrder") {
-            orderType = "Pickup";
-          }
-          if (doc.data().method === "inStoreOrder") {
-            orderType = "In Store";
-          }
-
-          const docData = doc.data();
-
+          const orderType = getOrderType(doc.data().method);
+          const docData = doc.data() as TransListStateItem;
           filteredInvoices.push({
             ...docData,
-            id: docData.transNum.toUpperCase(),
+            id: docData.transNum?.toUpperCase(),
             name: docData.customer?.name ? docData.customer?.name : "N/A",
             date: docData.date,
             originalData: {
               ...docData,
               id: docData.id,
-              cart: docData.cart,
-              cartNote: docData.cartNote,
-              customer: docData.customer,
+              cart: docData.cart ?? [],
+              cartNote: docData.cartNote ?? "",
+              customer: docData.customer ?? { name: "", phone: "" },
               date: docData.date,
-              method: docData.method,
-              online: docData.online,
-              isInStoreOrder: docData.isInStoreOrder,
+              method: docData.method ?? "",
+              online: docData.online ?? false,
+              isInStoreOrder: docData.isInStoreOrder ?? false,
               transNum: docData.transNum,
-              total: docData.total,
+              total: docData.total ?? "",
             },
             docID: doc.id,
             amount: docData.total,
@@ -374,7 +376,6 @@ function InvoiceReport() {
 
         let totalRevenue = 0;
         const totalSales = filteredInvoices.length;
-
         filteredInvoices.forEach((item) => {
           totalRevenue += parseFloat(item.amount ?? "0");
         });
@@ -387,11 +388,11 @@ function InvoiceReport() {
           storeDetails.name,
           "\x0A",
           storeDetails.address?.label + "\x0A",
-          storeDetails.website + "\x0A", // text and line break
-          storeDetails.phoneNumber + "\x0A", // text and line break
+          storeDetails.website + "\x0A",
+          storeDetails.phoneNumber + "\x0A",
           date.toDateString() + "\x0A",
           "\x0A",
-          `${dateName}s Report` + "\x0A", // text and line break
+          `${dateName}s Report` + "\x0A",
           "\x0A",
           "\x0A",
           "\x0A",
@@ -403,12 +404,13 @@ function InvoiceReport() {
           "\x0A",
           "\x0A",
           "------------------------------------------" + "\x0A",
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
-          "\x0A", // line break
+          "\x0A",
+          "\x0A",
+          "\x0A",
+          "\x0A",
+          "\x0A",
+          "\x0A",
+          "\x0A",
           "\x1D" + "\x56" + "\x00",
         ];
 
@@ -422,43 +424,17 @@ function InvoiceReport() {
             .collection("devices")
             .doc(myDeviceDetails.sendPrintToUserID.value)
             .collection("printRequests")
-            .add({
-              printData: data,
-            });
+            .add({ printData: data });
         } else {
           qz.websocket
             .connect()
-            .then(function () {
+            .then(() => {
               if (!myDeviceDetails.printToPrinter) return;
               const config = qz.configs.create(myDeviceDetails.printToPrinter);
               return qz.print(config, data);
             })
             .then(qz.websocket.disconnect)
-            .catch(function (err) {
-              if (
-                err.message.includes(
-                  "A printer must be specified before printing"
-                )
-              ) {
-                alertP.error("You must specify a printer in device settings");
-              } else if (
-                err.message.includes("Unable to establish connection with QZ")
-              ) {
-                alertP.error(
-                  "You do not have Divine POS Helper installed. Please download from general settings"
-                );
-              } else if (
-                err.message.includes("Cannot find printer with name")
-              ) {
-                alertP.error(
-                  "Printer not found. Please check your printer settings."
-                );
-              } else {
-                alertP.error(
-                  "An error occured while trying to print. Try refreshing the page and trying again."
-                );
-              }
-            });
+            .catch(handlePrintError);
         }
       })
       .catch((error) => {
@@ -467,115 +443,22 @@ function InvoiceReport() {
       });
   };
 
-  const CheckCase = (item: TransListStateItem) => {
-    if (search.length > 0) {
-      if (item.customer?.address) {
-        return item.customer.address.label
-          ?.toLowerCase()
-          .replace(/\s/g, "")
-          .includes(search?.toLowerCase().replace(/\s/g, ""));
-      }
-      return (
-        item.id.toLowerCase().includes(search.toLowerCase()) ||
-        item.name?.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-    return true;
-  };
-
-  const fetchNextPage = () => {
-    if (loading) return; // Prevent multiple simultaneous fetches
-    setLoading(true);
-
-    let query = db
-      .collection("users")
+  const deleteTransaction = (item: TransListStateItem) => {
+    console.log("Deleting transaction: ", item);
+    db.collection("users")
       .doc(auth.currentUser?.uid)
       .collection("transList")
-      .orderBy("date", "desc") // Sort by date in descending order
-      .limit(pageSize);
-
-    if (lastVisibleDoc) {
-      query = query.startAfter(lastVisibleDoc);
-    }
-
-    query
-      .get()
-      .then((querySnapshot) => {
-        const newInvoices: TransListStateItem[] = [];
-
-        querySnapshot.forEach((doc) => {
-          // Update last visible document
-          lastVisibleDoc = doc;
-          let orderType = "";
-          if (doc.data().method === "deliveryOrder") {
-            orderType = "Delivery";
-          }
-          if (doc.data().method === "pickupOrder") {
-            orderType = "Pickup";
-          }
-          if (doc.data().method === "inStoreOrder") {
-            orderType = "In Store";
-          }
-
-          const docData = doc.data();
-
-          newInvoices.push({
-            ...docData,
-            id: docData.transNum.toUpperCase(),
-            name: docData.customer?.name ? docData.customer?.name : "N/A",
-            date: docData.date,
-            originalData: {
-              ...docData,
-              id: docData.id,
-              cart: docData.cart,
-              cartNote: docData.cartNote,
-              customer: docData.customer,
-              date: docData.date,
-              method: docData.method,
-              online: docData.online,
-              isInStoreOrder: docData.isInStoreOrder,
-              transNum: docData.transNum,
-              total: docData.total,
-            },
-            docID: doc.id,
-            amount: docData.total,
-            system: "POS",
-            type: orderType,
-            method: docData.method,
-          });
-        });
-
-        // Update invoices state with new invoices
-        setInvoices((prevInvoices) => [...prevInvoices, ...newInvoices]);
-
-        setLoading(false);
-        if (!firstLoad) {
-          setfirstLoad(true);
-        }
+      .doc(item.docID)
+      .delete()
+      .then(() => {
+        console.log("Document successfully deleted!");
       })
       .catch((error) => {
-        console.error("Error fetching documents: ", error);
-        setLoading(false);
-        if (!firstLoad) {
-          setfirstLoad(true);
-        }
+        console.error("Error removing document: ", error);
       });
-  };
 
-  useEffect(() => {
-    // Initial fetch of the first page
-    fetchNextPage();
-
-    // Clean up function
-    return () => {
-      // Reset variables if the component unmounts
-      lastVisibleDoc = null;
-    };
-  }, []); // Only run this effect once on component mount
-
-  // Function to handle reaching the end of the list
-  const handleEndReached = () => {
-    fetchNextPage(); // Fetch the next page when the end of the list is reached
+    setFilteredTransList((prev) => prev.filter((e) => e.id !== item.id));
+    setInvoices((prev) => prev.filter((e) => e.id !== item.id));
   };
 
   return (
@@ -636,21 +519,21 @@ function InvoiceReport() {
             >
               <Ionicons name="close" style={styles.clearIcon} />
             </Pressable>
-            <Pressable onPress={SearchDate} style={styles.searchFilterBtn}>
+            <Pressable onPress={searchDate} style={styles.searchFilterBtn}>
               <Ionicons name="search" style={styles.searchIcon} />
             </Pressable>
           </View>
         </View>
         <View style={styles.downloadAndPrintBtnsGroup}>
           <Pressable
-            onPress={DownloadExcel}
+            onPress={downloadExcel}
             disabled={baseSelectedRows.length === 0}
           >
             <Feather name="download" style={styles.downloadIcon} />
           </Pressable>
           <Pressable
             onPress={() => {
-              setupdateBaseSelectedRows(true);
+              setUpdateBaseSelectedRows(true);
             }}
             disabled={baseSelectedRows.length === 0}
           >
@@ -658,32 +541,20 @@ function InvoiceReport() {
           </Pressable>
         </View>
         <Pressable
-          style={{
-            padding: 10,
-            backgroundColor: "rgba(0, 0, 0, 0.1)",
-            borderRadius: 5,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          style={styles.printTotalsBtn}
           onPress={() => {
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
-            PrintTotals(yesterday, "Yesterday");
+            printTotals(yesterday, "Yesterday");
           }}
         >
           <Text>Print Yesterday</Text>
         </Pressable>
         <Pressable
-          style={{
-            padding: 10,
-            backgroundColor: "rgba(0, 0, 0, 0.1)",
-            borderRadius: 5,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          style={styles.printTotalsBtn}
           onPress={() => {
             const today = new Date();
-            PrintTotals(today, "Today");
+            printTotals(today, "Today");
           }}
         >
           <Text>Print Today</Text>
@@ -695,25 +566,20 @@ function InvoiceReport() {
             <Pressable
               style={styles.checkbox}
               onPress={() => {
+                const newSelectedRows: string[] = [];
                 if (
                   (filteredTransList.length === baseSelectedRows.length ||
                     invoices.length === baseSelectedRows.length) &&
                   baseSelectedRows.length > 0
                 ) {
-                  setbaseSelectedRows([]);
+                  setBaseSelectedRows([]);
                 } else {
-                  const newSelectedRows: string[] = [];
-                  if (filteredTransList.length > 0) {
-                    filteredTransList.forEach((item) => {
-                      newSelectedRows.push(item.id);
-                    });
-                    setbaseSelectedRows(newSelectedRows);
-                  } else {
-                    invoices.forEach((item) => {
-                      newSelectedRows.push(item.id);
-                    });
-                    setbaseSelectedRows(newSelectedRows);
-                  }
+                  const itemsToSelect =
+                    filteredTransList.length > 0 ? filteredTransList : invoices;
+                  itemsToSelect.forEach((item) =>
+                    newSelectedRows.push(item.id)
+                  );
+                  setBaseSelectedRows(newSelectedRows);
                 }
               }}
             >
@@ -749,38 +615,14 @@ function InvoiceReport() {
               keyExtractor={(item) => item.id}
               initialNumToRender={10}
               scrollEventThrottle={16}
-              renderItem={({ item }) => {
-                return (
-                  <InvoiceItem
-                    item={item}
-                    setbaseSelectedRows={setbaseSelectedRows}
-                    baseSelectedRows={baseSelectedRows}
-                    deleteTransaction={() => {
-                      console.log("Deleting transaction: ", item);
-                      db.collection("users")
-                        .doc(auth.currentUser?.uid)
-                        .collection("transList")
-                        .doc(item.docID)
-                        .delete()
-                        .then(() => {
-                          console.log("Document successfully deleted!");
-                        })
-                        .catch((error) => {
-                          console.error("Error removing document: ", error);
-                        });
-
-                      if (filteredTransList.length > 0) {
-                        setFilteredTransList((prev) =>
-                          prev.filter((e) => e.id !== item.id)
-                        );
-                      }
-                      setInvoices((prev) =>
-                        prev.filter((e) => e.id !== item.id)
-                      );
-                    }}
-                  />
-                );
-              }}
+              renderItem={({ item }) => (
+                <InvoiceItem
+                  item={item}
+                  setbaseSelectedRows={setBaseSelectedRows}
+                  baseSelectedRows={baseSelectedRows}
+                  deleteTransaction={() => deleteTransaction(item)}
+                />
+              )}
             />
           ) : (
             <FlatList
@@ -788,54 +630,22 @@ function InvoiceReport() {
               keyExtractor={(item) => item.id}
               initialNumToRender={10}
               scrollEventThrottle={16}
-              renderItem={({ item }) => {
-                return (
-                  <InvoiceItem
-                    item={item}
-                    setbaseSelectedRows={setbaseSelectedRows}
-                    baseSelectedRows={baseSelectedRows}
-                    deleteTransaction={() => {
-                      console.log("Deleting transaction: ", item);
-                      db.collection("users")
-                        .doc(auth.currentUser?.uid)
-                        .collection("transList")
-                        .doc(item.docID)
-                        .delete()
-                        .then(() => {
-                          console.log("Document successfully deleted!");
-                        })
-                        .catch((error) => {
-                          console.error("Error removing document: ", error);
-                        });
-
-                      if (filteredTransList.length > 0) {
-                        setFilteredTransList((prev) =>
-                          prev.filter((e) => e.id !== item.id)
-                        );
-                      }
-                      setInvoices((prev) =>
-                        prev.filter((e) => e.id !== item.id)
-                      );
-                    }}
-                  />
-                );
-              }}
-              onEndReached={handleEndReached} // Call handleEndReached when reaching the end of the list
-              onEndReachedThreshold={0.1} // Trigger onEndReached when the end is within 10% of the list length
+              renderItem={({ item }) => (
+                <InvoiceItem
+                  item={item}
+                  setbaseSelectedRows={setBaseSelectedRows}
+                  baseSelectedRows={baseSelectedRows}
+                  deleteTransaction={() => deleteTransaction(item)}
+                />
+              )}
+              onEndReached={handleEndReached}
+              onEndReachedThreshold={0.1}
             />
           )}
         </View>
       </View>
       {!firstLoad && (
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-          }}
-        >
+        <View style={styles.loaderContainer}>
           <ComponentLoader />
         </View>
       )}
@@ -848,7 +658,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
     alignItems: "center",
-    justifyContent: "flex-start", // Align items to the start to avoid stretching
+    justifyContent: "flex-start",
     width: "100%",
   },
   topRow: {
@@ -948,7 +758,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   bottomGroup: {
-    flex: 1, // Take up remaining space
+    flex: 1,
     justifyContent: "flex-start",
     width: "95%",
     marginTop: 15,
@@ -1039,17 +849,31 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   scrollArea: {
-    flex: 1, // Take up remaining space
+    flex: 1,
     width: "100%",
   },
   scrollArea_contentContainerStyle: {
-    flexGrow: 1, // Allow the container to grow as needed
-    justifyContent: "flex-start", // Align items to the start
+    flexGrow: 1,
+    justifyContent: "flex-start",
     width: "100%",
   },
   invoiceItem: {
     height: 50,
     alignSelf: "stretch",
+  },
+  loaderContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+  },
+  printTotalsBtn: {
+    padding: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

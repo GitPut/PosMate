@@ -208,10 +208,41 @@ export type TransListStateItem = {
   cartNote?: string;
   paymentMethod?: string;
   online?: boolean;
+  transNum: string;
+  changeDue?: string;
+  date_created?: string;
+  isInStoreOrder?: boolean;
+  dateCompleted?: Timestamp;
+};
+
+export type ExcelTransListStateItem = {
+  id: string;
+  name?: string;
+  // date: { seconds: number | string } | Date | string;
+  date: Date;
+  amount?: string;
+  system?: string;
+  method?: string;
+  type?: string;
+  docID?: string;
+  customer?: {
+    name: string;
+    phone: string;
+    address?: AddressType | null;
+    unitNumber?: string | null;
+    buzzCode?: string | null;
+  };
+  total?: string;
+  originalData?: OngoingListStateProp;
+  cart?: CartItemProp[];
+  cartNote?: string;
+  paymentMethod?: string;
+  online?: boolean;
   transNum?: string;
   changeDue?: string;
   date_created?: string;
   isInStoreOrder?: boolean;
+  dateCompleted?: Timestamp;
 };
 
 export type HourItem = {
@@ -246,4 +277,25 @@ export type CurrentOrderProp = {
 export type TrialDetailsStateProps = {
   endDate: Date | null;
   hasEnded: boolean | null;
+};
+
+export type StatsDataProps = {
+  totalRevenue: number;
+  totalOrders: number;
+  days: {
+    [date: string]: {
+      revenue: number;
+      orders: number;
+      inStore: number;
+      inStoreRevenue: number;
+      delivery: number;
+      deliveryRevenue: number;
+      pickup: number;
+      pickupRevenue: number;
+      productCounts: { [itemName: string]: number };
+      totalWaitTime: number;
+      waitCount: number;
+      averageWaitTime?: number;
+    };
+  };
 };
