@@ -9,17 +9,19 @@ import {
   Pressable,
   TextInput,
   useWindowDimensions,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useAlert } from "react-alert";
 
 function Login() {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
   const history = useHistory();
   const { width } = useWindowDimensions();
-  const [useSmallDesign, setuseSmallDesign] = useState(width < 1024);
-  const [secureEntry, setsecureEntry] = useState(true);
+  const [useSmallDesign, setuseSmallDesign] = useState<boolean>(width < 1024);
+  const [secureEntry, setsecureEntry] = useState<boolean>(true);
   const alertP = useAlert();
 
   useEffect(() => {
@@ -33,8 +35,8 @@ function Login() {
 
   const attemptSignIn = () => {
     if (email && password) {
-      signIn(email, password).catch((error) => {
-        console.log(error);
+      signIn(email, password).catch(() => {
+        // console.log(error);
         alertP.error("Invalid email or password");
       });
     } else {
@@ -42,8 +44,10 @@ function Login() {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       attemptSignIn();
     }
   };
@@ -55,6 +59,7 @@ function Login() {
       imageStyle={{
         resizeMode: "cover",
       }}
+      key={"background"}
     >
       <View
         style={[styles.headerContainer, useSmallDesign && { width: "90%" }]}
@@ -80,6 +85,7 @@ function Login() {
           <img
             src={require("assets/dpos-logo-black.png")}
             style={styles.logo}
+            key={"logo"}
           />
         </a>
       </View>
@@ -131,7 +137,7 @@ function Login() {
               </Pressable>
               <Pressable onPress={() => history.push("/sign-up")}>
                 <Text style={styles.signUpTxt}>
-                  Don't have an account? Sign Up
+                  Don&apos;t have an account? Sign Up
                 </Text>
               </Pressable>
               <Pressable onPress={() => history.push("/reset-password")}>

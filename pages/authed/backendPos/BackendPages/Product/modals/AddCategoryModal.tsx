@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -12,9 +12,19 @@ import { updateData } from "state/firebaseFunctions";
 import { setUserStoreState, userStoreState } from "state/state";
 import { useAlert } from "react-alert";
 
-function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
+interface AddCategoryModalProps {
+  setaddCategoryModal: (val: boolean | string | null) => void;
+  existingCategory?: string | null;
+  index: number;
+}
+
+function AddCategoryModal({
+  setaddCategoryModal,
+  existingCategory,
+  index,
+}: AddCategoryModalProps) {
   const { height, width } = useWindowDimensions();
-  const [categoryName, setcategoryName] = useState(
+  const [categoryName, setcategoryName] = useState<string>(
     existingCategory ? existingCategory : ""
   );
   const [categoryPosition, setcategoryPosition] = useState(index);
@@ -27,7 +37,7 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
       return;
     }
     const localCatalog = structuredClone(catalog);
-    const newCategories = [];
+    const newCategories: string[] = [];
     localCatalog.categories = localCatalog.categories.filter(
       (category) => category !== existingCategory
     );
@@ -85,7 +95,6 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
                   <Text style={styles.categoryPosition}>Category Position</Text>
                   <View style={styles.minusPlusSelectorRow}>
                     <Pressable
-                      activeOpacity={0.8}
                       style={styles.minusContainer}
                       onPress={() =>
                         setcategoryPosition((prev) =>
@@ -96,10 +105,9 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
                       <Feather name="minus" style={styles.minusIcon} />
                     </Pressable>
                     <View style={styles.indexContainer}>
-                      <Text style={styles.text}>{categoryPosition}</Text>
+                      <Text style={styles.text}>{categoryPosition + 1}</Text>
                     </View>
                     <Pressable
-                      activeOpacity={0.8}
                       style={styles.plusContainer}
                       onPress={() =>
                         setcategoryPosition((prev) =>
@@ -112,30 +120,14 @@ function AddCategoryModal({ setaddCategoryModal, existingCategory, index }) {
                   </View>
                 </View>
               </View>
-              {/* <View style={styles.displayOnlineRow}>
-                <Text style={styles.displayOnlineStoreTxt}>
-                  Display On online store?:
-                </Text>
-                <GeneralSwitch
-                  isActive={true}
-                  toggleSwitch={() => {
-                    console.log("toggle");
-                  }}
-                />
-              </View> */}
               <View style={styles.btnsRow}>
                 <Pressable
-                  activeOpacity={0.8}
                   onPress={() => setaddCategoryModal(false)}
                   style={styles.cancelBox}
                 >
                   <Text style={styles.cancelTxt}>Cancel</Text>
                 </Pressable>
-                <Pressable
-                  activeOpacity={0.8}
-                  onPress={Update}
-                  style={styles.saveBox}
-                >
+                <Pressable onPress={Update} style={styles.saveBox}>
                   <Text style={styles.saveTxt}>Save</Text>
                 </Pressable>
               </View>

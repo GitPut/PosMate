@@ -3,13 +3,13 @@ import { useHistory } from "react-router-dom";
 import {
   StyleSheet,
   View,
-  Image,
   Text,
   ImageBackground,
-  Modal,
   Pressable,
   TextInput,
   useWindowDimensions,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import Axios from "axios";
@@ -18,7 +18,7 @@ import { useAlert } from "react-alert";
 function ResetPassword() {
   const [email, setEmail] = useState("");
   const history = useHistory();
-  const { height, width } = useWindowDimensions();
+  const {  width } = useWindowDimensions();
   const [useSmallDesign, setuseSmallDesign] = useState(width < 1024);
   const alertP = useAlert();
 
@@ -51,20 +51,22 @@ function ResetPassword() {
     };
 
     Axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
+      .then(function () {
+        // console.log(JSON.stringify(response.data));
         alertP.success("We've sent a link to reset your password.");
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch(function () {
+        // console.log(error);
         // seterror(true);
         alertP.error("There was an error resetting your password.");
       });
     setEmail("");
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       submit();
     }
   };
@@ -76,6 +78,7 @@ function ResetPassword() {
       imageStyle={{
         resizeMode: "cover",
       }}
+      key={"background"}
     >
       <View
         style={[styles.headerContainer, useSmallDesign && { width: "90%" }]}
@@ -96,6 +99,7 @@ function ResetPassword() {
           <img
             src={require("assets/dpos-logo-black.png")}
             style={styles.logo}
+            key={"logo"}
           />
         </a>
       </View>

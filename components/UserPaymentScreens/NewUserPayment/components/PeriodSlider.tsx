@@ -7,7 +7,9 @@ interface PeriodSliderProps {
 }
 
 function PeriodSlider({ setpaymentTerm, paymentTerm }: PeriodSliderProps) {
-  const x = useRef(new Animated.Value(0)).current;
+  const x = useRef(
+    new Animated.Value(paymentTerm === "monthly" ? 0 : 155)
+  ).current;
 
   const handlePress = (term: string) => {
     Animated.spring(x, {

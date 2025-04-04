@@ -4,14 +4,14 @@ import { useHistory } from "react-router-dom";
 import {
   StyleSheet,
   View,
-  Image,
   Text,
   ImageBackground,
-  Modal,
   Pressable,
   TextInput,
   ScrollView,
   useWindowDimensions,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useAlert } from "react-alert";
@@ -21,9 +21,8 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [name, setname] = useState("");
   const [phoneNumber, setphoneNumber] = useState("");
-  const [error, seterror] = useState(false);
   const history = useHistory();
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const [useSmallDesign, setuseSmallDesign] = useState(width < 1024);
   const [secureEntry, setsecureEntry] = useState(true);
   const alertP = useAlert();
@@ -39,8 +38,8 @@ function Signup() {
 
   const attemptSignUp = () => {
     if (email && password) {
-      signUp(email, password, name, phoneNumber).catch((error) => {
-        console.log(error);
+      signUp(email, password, name, phoneNumber).catch(() => {
+        // console.log(error);
         alertP.error("There was a issue signing up. Please try again.");
       });
     } else {
@@ -48,8 +47,10 @@ function Signup() {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       attemptSignUp();
     }
   };
@@ -61,6 +62,7 @@ function Signup() {
       imageStyle={{
         resizeMode: "cover",
       }}
+      key={"background"}
     >
       <ScrollView
         style={{ height: "100%", width: "100%" }}
@@ -92,6 +94,7 @@ function Signup() {
             <img
               src={require("assets/dpos-logo-black.png")}
               style={styles.logo}
+              key={"logo"}
             />
           </a>
         </View>
@@ -169,8 +172,8 @@ function Signup() {
                   style={{ textDecoration: "none", marginBottom: 25 }}
                 >
                   <Text style={styles.signUpTxt}>
-                    By creating an account, I agree to Divine POS's terms of
-                    service
+                    By creating an account, I agree to Divine POS&apos;s terms
+                    of service
                   </Text>
                 </a>
                 <Pressable style={styles.loginBtn} onPress={attemptSignUp}>

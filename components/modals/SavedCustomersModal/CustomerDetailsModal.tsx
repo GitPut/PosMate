@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -9,10 +9,10 @@ import {
   TextInput,
 } from "react-native";
 import {
-  Entypo as EntypoIcon,
+  Entypo,
   Ionicons,
-  FontAwesome as FontAwesomeIcon,
-  MaterialCommunityIcons as MaterialCommunityIconsIcon,
+  FontAwesome,
+  MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import OrderItem from "./components/OrderItem";
 import { auth, db } from "state/firebaseConfig";
@@ -25,14 +25,21 @@ import {
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { GooglePlacesStyles } from "components/functional/GooglePlacesStyles";
 import { updatePosHomeState } from "state/posHomeState";
+import { CustomerProp } from "types/global";
 
 const GOOGLE_API_KEY = "AIzaSyDjx4LBIEDNRYKEt-0_TJ6jUcst4a2YON4";
+
+interface CustomerDetailsModalProps {
+  setcustomerSelected: (val: CustomerProp | null) => void;
+  customerSelected: CustomerProp;
+  closeAll: () => void;
+}
 
 function CustomerDetailsModal({
   setcustomerSelected,
   customerSelected,
   closeAll,
-}) {
+}: CustomerDetailsModalProps) {
   const { height, width } = useWindowDimensions();
   const customers = customersList.use();
   const storeDetails = storeDetailState.use();
@@ -45,7 +52,7 @@ function CustomerDetailsModal({
   );
   const [newBuzzCode, setnewBuzzCode] = useState(customerSelected.buzzCode);
 
-  const removeCustomerOrder = (removeIndex) => {
+  const removeCustomerOrder = (removeIndex: number) => {
     const updatedOrderHistory = structuredClone(customerSelected.orders);
     updatedOrderHistory.splice(removeIndex, 1);
     db.collection("users")
@@ -55,7 +62,15 @@ function CustomerDetailsModal({
       .update({
         orders: updatedOrderHistory,
       });
-    setcustomerSelected((prev) => ({ ...prev, orders: updatedOrderHistory }));
+    setcustomerSelected({
+      orders: updatedOrderHistory,
+      name: customerSelected.name,
+      phone: customerSelected.phone,
+      address: customerSelected.address,
+      buzzCode: customerSelected.buzzCode,
+      unitNumber: customerSelected.unitNumber,
+      id: customerSelected.id,
+    });
   };
 
   return (
@@ -81,7 +96,7 @@ function CustomerDetailsModal({
                     setcustomerSelected(null);
                   }}
                 >
-                  <EntypoIcon name="chevron-left" style={styles.goBackIcon} />
+                  <Entypo name="chevron-left" style={styles.goBackIcon} />
                 </Pressable>
                 <Pressable
                   onPress={() => {
@@ -116,11 +131,11 @@ function CustomerDetailsModal({
                     value={newName}
                     onChangeText={(val) => setnewName(val)}
                   />
-                  <Text style={styles.georgesOrders}>'s Orders</Text>
+                  <Text style={styles.georgesOrders}>&apos;s Orders</Text>
                 </View>
               ) : (
                 <Text style={styles.georgesOrders}>
-                  {customerSelected.name}'s Orders
+                  {customerSelected.name}&apos;s Orders
                 </Text>
               )}
             </View>
@@ -132,7 +147,7 @@ function CustomerDetailsModal({
                 ]}
               >
                 <View style={styles.customerPhoneNumberRow}>
-                  <FontAwesomeIcon name="phone" style={styles.phoneIcon} />
+                  <FontAwesome name="phone" style={styles.phoneIcon} />
                   {edit ? (
                     <TextInput
                       placeholder="Phone Number"
@@ -160,7 +175,7 @@ function CustomerDetailsModal({
                     edit && { alignItems: "flex-start", height: 95 },
                   ]}
                 >
-                  <EntypoIcon name="home" style={styles.addressIcon} />
+                  <Entypo name="home" style={styles.addressIcon} />
                   {edit ? (
                     <View style={{ width: 400 }}>
                       <View
@@ -178,32 +193,13 @@ function CustomerDetailsModal({
                           apiKey={GOOGLE_API_KEY}
                           // onSelect={handleAddress}
                           selectProps={{
-                            newAddress,
+                            value: newAddress,
                             onChange: setnewAddress,
-                            placeholder: "Enter customer address",
+                            placeholder: "Enter customer's address",
                             defaultValue: newAddress,
                             menuPortalTarget: document.body,
                             styles: GooglePlacesStyles,
                           }}
-                          renderSuggestions={(
-                            active,
-                            suggestions,
-                            onSelectSuggestion
-                          ) => (
-                            <div style={{ width: "80%" }}>
-                              {suggestions.map((suggestion, index) => (
-                                <div
-                                  key={index}
-                                  className="suggestion"
-                                  onClick={(event) => {
-                                    onSelectSuggestion(suggestion, event);
-                                  }}
-                                >
-                                  {suggestion.description}
-                                </div>
-                              ))}
-                            </div>
-                          )}
                         />
                       </View>
                       <View
@@ -221,7 +217,7 @@ function CustomerDetailsModal({
                             padding: 10,
                             marginRight: 15,
                           }}
-                          value={newUnitNumber}
+                          value={newUnitNumber ? newUnitNumber : ""}
                           onChangeText={(val) => setnewUnitNumber(val)}
                         />
                         <TextInput
@@ -235,7 +231,7 @@ function CustomerDetailsModal({
                             borderRadius: 10,
                             padding: 10,
                           }}
-                          value={newBuzzCode}
+                          value={newBuzzCode ? newBuzzCode : ""}
                           onChangeText={(val) => setnewBuzzCode(val)}
                         />
                       </View>
@@ -249,18 +245,14 @@ function CustomerDetailsModal({
                             <Text style={styles.address}>
                               {customerSelected.address?.label
                                 ? customerSelected.address?.label
-                                : customerSelected.address
-                                ? customerSelected.address
-                                : null}
+                                : "No Address"}
                             </Text>
                           ) : (
                             <View style={styles.addressGroup}>
                               <Text style={styles.address}>
                                 {customerSelected.address?.label
                                   ? customerSelected.address?.label
-                                  : customerSelected.address
-                                  ? customerSelected.address
-                                  : null}
+                                  : "No Address"}
                               </Text>
                               {!customerSelected.unitNumber &&
                                 !customerSelected.buzzCode && (
@@ -301,8 +293,9 @@ function CustomerDetailsModal({
                             buzzCode: newBuzzCode,
                             unitNumber: newUnitNumber,
                           })
-                          .then(() => console.log("Customer updated"))
-                          .catch((e) => console.log(e));
+                          // .catch((e) => {
+                          //   // console.log(e)
+                          // });
                         const clone = [...customers];
                         const index = clone.findIndex(
                           (e) => e.id === customerSelected.id
@@ -316,19 +309,20 @@ function CustomerDetailsModal({
                           unitNumber: newUnitNumber,
                         };
                         setCustomersList(clone);
-                        setcustomerSelected((prev) => ({
-                          ...prev,
+                        setcustomerSelected({
                           name: newName,
                           phone: newPhoneNumber,
                           address: newAddress,
                           buzzCode: newBuzzCode,
                           unitNumber: newUnitNumber,
-                        }));
+                          orders: customerSelected.orders,
+                          id: customerSelected.id,
+                        });
                         setEdit(false);
                       }}
                       style={{ marginRight: 15 }}
                     >
-                      <MaterialCommunityIconsIcon
+                      <MaterialCommunityIcons
                         name="check"
                         style={styles.editCustomerIcon}
                       />
@@ -340,7 +334,7 @@ function CustomerDetailsModal({
                       }}
                       style={{ marginRight: 15 }}
                     >
-                      <MaterialCommunityIconsIcon
+                      <MaterialCommunityIcons
                         name="pencil"
                         style={styles.editCustomerIcon}
                       />
@@ -353,13 +347,13 @@ function CustomerDetailsModal({
                         .collection("customers")
                         .doc(customerSelected.id)
                         .delete();
-                      setCustomersList(() =>
+                      setCustomersList(
                         customers.filter((e) => e.id !== customerSelected.id)
                       );
                       setcustomerSelected(null);
                     }}
                   >
-                    <FontAwesomeIcon name="trash" style={styles.deleteIcon} />
+                    <FontAwesome name="trash" style={styles.deleteIcon} />
                   </Pressable>
                 </View>
               </View>
@@ -404,7 +398,9 @@ function CustomerDetailsModal({
                         closeAll();
                       }}
                       isDeliverable={
-                        storeDetails.acceptDelivery && customerSelected.address
+                        storeDetails?.acceptDelivery && customerSelected.address
+                          ? true
+                          : false
                       }
                       removeCustomerOrder={() => {
                         removeCustomerOrder(prevOrderIndex);
@@ -416,14 +412,6 @@ function CustomerDetailsModal({
               <View style={styles.addNewOrderRow}>
                 <Pressable
                   onPress={() => {
-                    // setsavedCustomerDetails(customerSelected);
-                    // setOngoingDelivery(true);
-                    // setNameForDelivery(customerSelected.name);
-                    // setPhoneForDelivery(customerSelected.phone);
-                    // setAddressForDelivery(customerSelected.address);
-                    // setBuzzCodeForDelivery(customerSelected.buzzCode);
-                    // setUnitNumberForDelivery(customerSelected.unitNumber);
-                    // setDeliveryChecked(false);
                     updatePosHomeState({
                       deliveryChecked: false,
                       ongoingDelivery: true,

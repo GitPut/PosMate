@@ -17,14 +17,14 @@ import SideBar from "./components/SideBar";
 import DetailsStage from "./components/DetailsStage";
 import { AddressType } from "types/global";
 
-const NewUserPayment = ({ resetLoader }) => {
+const NewUserPayment = () => {
   const [planType, setplanType] = useState<string | null>(null);
   const [stageNum, setstageNum] = useState(1);
   const storeDetails = storeDetailState.use();
   const [storeName, setstoreName] = useState(storeDetails.name);
   const [phoneNumber, setphoneNumber] = useState(storeDetails.phoneNumber);
-  const [address, setaddress] = useState<string | AddressType>(
-    storeDetails.address
+  const [address, setaddress] = useState<null | AddressType>(
+    storeDetails.address ? storeDetails.address : null
   );
   const [website, setwebsite] = useState(storeDetails.website);
   const [paymentTerm, setpaymentTerm] = useState<string>("monthly");
@@ -49,24 +49,23 @@ const NewUserPayment = ({ resetLoader }) => {
     };
 
     Axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
+      .then(function () {
+        // console.log(JSON.stringify(response.data));
       })
-      .catch(function (error) {
-        alertP.error(error);
+      .catch(function () {
+        // alertP.error(error);
       });
   };
 
   const CheckOutFunc = async () => {
-    resetLoader();
     updateStoreDetails({
       name: storeName,
       phoneNumber: phoneNumber,
-      address: address,
+      address: address ?? undefined,
       website: website ? website : "",
       deliveryPrice: "",
       settingsPassword: "",
-      taxRate: 13,
+      taxRate: "13",
     });
 
     if (planType === "freeTrial") {
@@ -94,7 +93,7 @@ const NewUserPayment = ({ resetLoader }) => {
       }
       await db
         .collection("users")
-        .doc(auth.currentUser.uid)
+        .doc(auth.currentUser?.uid)
         .collection("checkout_sessions")
         .add({
           price: priceId, // todo price Id from your products price in the Stripe Dashboard
@@ -104,7 +103,7 @@ const NewUserPayment = ({ resetLoader }) => {
         .then((docRef) => {
           // Wait for the checkoutSession to get attached by the extension
           docRef.onSnapshot(async (snap) => {
-            const { error, sessionId } = snap.data();
+            const { error, sessionId } = snap.data() ?? {};
             if (error) {
               // Show an error to your customer and inspect
               // your Cloud Function logs in the Firebase console.
@@ -117,7 +116,7 @@ const NewUserPayment = ({ resetLoader }) => {
               const stripe = await loadStripe(
                 "pk_live_51MHqrvCIw3L7DOwI0ol9CTCSH7mQXTLKpxTWKzmwOY1MdKwaYwhdJq6WTpkWdBeql3sS44JmybynlRnaO2nSa1FK001dHiEOZO" // todo enter your public stripe key here
               );
-              console.log(`redirecting`);
+              if (!stripe) return;
               await stripe.redirectToCheckout({ sessionId });
             }
           });

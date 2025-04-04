@@ -4,14 +4,12 @@ import {
   BarChart,
   Bar,
   XAxis,
-  YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 
-const getIntroOfPage = (label, orders, amount) => {
+const getIntroOfPage = (label: string, orders: string, amount: string) => {
   if (label === "J\n") {
     return `January\nOrders: ${orders}\nRevenue: $${amount}`;
   }

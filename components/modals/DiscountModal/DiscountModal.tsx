@@ -5,6 +5,8 @@ import {
   Pressable,
   View,
   useWindowDimensions,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import PercentageBtn from "./components/PercentageBtn";
@@ -28,8 +30,10 @@ const DiscountModal = () => {
   );
   const alertP = useAlert();
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       if (
         !storeDetails.settingsPassword ||
         storeDetails.settingsPassword === code
@@ -50,14 +54,14 @@ const DiscountModal = () => {
     let newVal = 0;
     for (let i = 0; i < cart.length; i++) {
       try {
-        if (cart[i].quantity > 1) {
-          newVal += parseFloat(cart[i].price) * cart[i].quantity;
+        if (cart[i].quantity ?? 0 > 1) {
+          newVal += parseFloat(cart[i].price) * parseFloat(cart[i].quantity ?? '1');
           // console.log("Cart item quantity ", cart[i].quantity);
         } else {
           newVal += parseFloat(cart[i].price);
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     }
     if (deliveryChecked) {
@@ -159,7 +163,7 @@ const DiscountModal = () => {
                         placeholder="Enter Manager's Code"
                         onChangeText={(text) => setcode(text)}
                         style={styles.managerCodeInput}
-                        onKeyPress={handleKeyDown}
+                        onKeyPress={(val) => handleKeyDown(val)}
                       />
                     </View>
                   </View>

@@ -1,17 +1,25 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-import { auth, db } from "state/firebaseConfig";
+import { CustomersOrdersProp } from "types/global";
+
+interface OrderItemProps {
+  prevOrder: CustomersOrdersProp;
+  prevOrderIndex: number;
+  setOrderPickUp: () => void;
+  setOrderDelivery: () => void;
+  isDeliverable: boolean;
+  removeCustomerOrder: () => void;
+}
 
 const OrderItem = ({
-  key,
   prevOrder,
   prevOrderIndex,
   setOrderPickUp,
   setOrderDelivery,
   isDeliverable,
   removeCustomerOrder,
-}) => {
+}: OrderItemProps) => {
   return (
     <View style={styles.orderContainer}>
       <View style={styles.topOrderRow}>

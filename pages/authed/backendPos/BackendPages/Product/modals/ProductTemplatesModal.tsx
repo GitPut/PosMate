@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -6,38 +6,29 @@ import {
   Pressable,
   ScrollView,
   useWindowDimensions,
-  TextInput,
-  Image,
-  FlatList,
 } from "react-native";
-import OptionsItem from "../components/OptionsItem";
-import { Ionicons, Feather } from "@expo/vector-icons";
-import {
-  onlineStoreState,
-  setUserStoreState,
-  userState,
-  userStoreState,
-} from "state/state";
-import { useHistory } from "react-router-dom";
-import { auth, db, storage } from "state/firebaseConfig";
-import GeneralDropdown from "components/GeneralDropdown";
-import { Button } from "react-native";
-import GeneralSwitch from "components/GeneralSwitch";
-import productTemplateCatalog from "../assets/productTemplateCatalog";
+import { Ionicons } from "@expo/vector-icons";
+import productTemplateCatalog from "../components/productTemplateCatalog";
 import ProductOptionBox from "../components/ProductOptionBox";
+import { ProductProp } from "types/global";
+
+interface ProductTemplatesModalProps {
+  setproductTemplatesModalVisible: (val: boolean) => void;
+  setexistingProduct: (val: ProductProp) => void;
+  setisProductTemplate: (val: boolean) => void;
+}
 
 function ProductTemplatesModal({
-  productTemplatesModalVisible,
   setproductTemplatesModalVisible,
   setexistingProduct,
   setisProductTemplate,
-}) {
+}: ProductTemplatesModalProps) {
   const { width, height } = useWindowDimensions();
   const catalog = productTemplateCatalog;
-  const [selectedCategory, setselectedCategory] = useState();
+  const [selectedCategory, setselectedCategory] = useState<string | null>();
 
   useEffect(() => {
-    catalog.products.map((product, index) => {
+    catalog.products.map((product) => {
       if (product.category === selectedCategory) {
         const getItem = document.getElementById(product.id);
         if (getItem) {
@@ -110,7 +101,7 @@ function ProductTemplatesModal({
                     ]}
                     onPress={() =>
                       setselectedCategory((prev) =>
-                        prev === category ? null : category
+                        prev === category ? null : category ?? null
                       )
                     }
                   >
@@ -134,20 +125,24 @@ function ProductTemplatesModal({
               >
                 <View style={styles.productsMap}>
                   {catalog.products.map((product, index) => {
-                    const newProduct = {
+                    const newProduct: ProductProp = {
                       ...product,
                       isTemplate: true,
                       id: Math.random().toString(36).substr(2, 9),
+                      name: product.name,
+                      price: product.price,
+                      options: product.options ?? [],
+                      description: product.description,
                     };
+
                     return (
                       <div key={index} id={product.id}>
                         <ProductOptionBox
-                          style={[styles.productOptionBox]}
-                          index={index}
+                          style={styles.productOptionBox}
                           product={newProduct}
                           setexistingProduct={(val) => {
                             setexistingProduct(val);
-                            setisProductTemplate(true)
+                            setisProductTemplate(true);
                             setproductTemplatesModalVisible(false);
                           }}
                           isTemplate={true}

@@ -5,6 +5,8 @@ import {
   useWindowDimensions,
   View,
   TextInput,
+  TextInputKeyPressEventData,
+  NativeSyntheticEvent,
 } from "react-native";
 import React, { useState } from "react";
 import Modal from "react-native-modal-web";
@@ -43,6 +45,10 @@ const CustomcustomCashModal = () => {
         qz.websocket
           .connect()
           .then(function () {
+            if (!myDeviceDetails.printToPrinter) {
+              alertP.error("You must specify a printer in device settings");
+              return;
+            }
             const config = qz.configs.create(myDeviceDetails.printToPrinter);
             return qz.print(config, [
               "\x1B" + "\x40", // init
@@ -128,6 +134,7 @@ const CustomcustomCashModal = () => {
       qz.websocket
         .connect()
         .then(function () {
+          if(!myDeviceDetails.printToPrinter) return
           const config = qz.configs.create(myDeviceDetails.printToPrinter);
           return qz.print(config, [
             "\x1B" + "\x40", // init
@@ -191,8 +198,10 @@ const CustomcustomCashModal = () => {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       if (parseFloat(total) > 0 && parseFloat(cash) > 0) {
         CompletePayment();
       } else {

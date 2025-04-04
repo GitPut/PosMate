@@ -1,15 +1,15 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import ProductImage from "components/ProductImage";
+import ProductImage from "components/ProductImage/ProductImage";
+import { ProductProp } from "types/global";
 
-const ItemNoOptionsView = ({ product }) => {
+const ItemNoOptionsView = ({ product }: { product: ProductProp }) => {
   return (
     <View style={{ marginTop: 50 }}>
       {product.hasImage ? (
         <View style={[styles.container]}>
           <ProductImage
-            source={{ uri: product.imageUrl }}
-            resizeMode="contain"
+            source={product.imageUrl ?? ""}
             style={styles?.itemImg}
           />
           <View style={styles?.rightSide}>

@@ -1,112 +1,21 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import DropdownPeriod from "../DropdownPeriod";
-import SearchDate from "components/functional/SearchDateFunction";
 
-const OrderWaitTimeBox = ({ allTransactions }) => {
-  const [period, setperiod] = useState("Today");
-  const [details, setdetails] = useState({
-    shortest: 0,
-    longest: 0,
-    average: 0,
-    mean: 0,
-  });
-
-  useEffect(() => {
-    const calculateTotals = (transactions) => {
-      let shortest = 0;
-      let longest = 0;
-      let average = 0;
-      let mean = 0;
-      let total = 0;
-      let totalOrders = 0;
-      transactions.forEach((transaction) => {
-        //get time between date and dateCompleted
-        const date = transaction.originalData.date_created
-          ? new Date(transaction.originalData.date_created)
-          : new Date(transaction.originalData.date.seconds * 1000);
-
-        if (transaction.originalData.dateCompleted) {
-          const dateCompleted = new Date(
-            transaction.originalData.dateCompleted.seconds * 1000
-          );
-          const diff = dateCompleted - date;
-          const minutes = Math.floor(diff / 60000);
-          total += minutes;
-          totalOrders += 1;
-          if (shortest === 0 || minutes < shortest) {
-            shortest = minutes;
-          }
-          if (longest === 0 || minutes > longest) {
-            longest = minutes;
-          }
-        }
-      });
-
-      average = total / totalOrders;
-      mean = total / totalOrders;
-
-      return {
-        shortest: shortest,
-        longest: longest,
-        average: average,
-        mean: mean,
-      };
-    };
-
-    const getDateRange = (period) => {
-      const today = new Date();
-      switch (period) {
-        case "Today":
-          return {
-            start: new Date().toDateString(),
-            end: new Date().toDateString(),
-          };
-        case "This Week":
-          const weekStart = new Date(
-            today.setDate(today.getDate() - today.getDay())
-          );
-          const weekEnd = new Date(today.setDate(weekStart.getDate() + 6));
-          return {
-            start: weekStart.toDateString(),
-            end: weekEnd.toDateString(),
-          };
-        case "This Month":
-          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-          const monthEnd = new Date(
-            today.getFullYear(),
-            today.getMonth() + 1,
-            0
-          );
-          return {
-            start: monthStart.toDateString(),
-            end: monthEnd.toDateString(),
-          };
-        case "This Year":
-          const yearStart = new Date(today.getFullYear(), 0, 1);
-          const yearEnd = new Date(today.getFullYear(), 11, 31);
-          return {
-            start: yearStart.toDateString(),
-            end: yearEnd.toDateString(),
-          };
-        default:
-          return {
-            start: new Date().toDateString(),
-            end: new Date().toDateString(),
-          };
-      }
-    };
-
-    const { start, end } = getDateRange(period);
-    const filtered = SearchDate({
-      startDate: start,
-      endDate: end,
-      transactions: allTransactions,
-    });
-    const totals = calculateTotals(filtered);
-    setdetails(totals);
-  }, [period, allTransactions]);
-
+const OrderWaitTimeBox = ({
+  details,
+  period,
+  setperiod,
+}: {
+  details: {
+    shortest: number;
+    longest: number;
+    average: number;
+    mean: number;
+  };
+  period: string;
+  setperiod: (period: string) => void;
+}) => {
   return (
     <View style={styles.orderWaitTimeContainer}>
       <View style={styles.orderWaitTimeInnerContainer}>
@@ -120,6 +29,7 @@ const OrderWaitTimeBox = ({ allTransactions }) => {
               source={require("../../assets/images/image_BUWK..png")}
               resizeMode="contain"
               style={styles.clockIcon}
+              key={"clockIcon"}
             />
             <View style={styles.shortestRightSide}>
               <Text style={styles.shorestTimeValue}>
@@ -133,6 +43,7 @@ const OrderWaitTimeBox = ({ allTransactions }) => {
               source={require("../../assets/images/image_BUWK..png")}
               resizeMode="contain"
               style={styles.clockIcon1}
+              key={"clockIcon1"}
             />
             <View style={styles.longestRightSide}>
               <Text style={styles.longestTimeValue}>
@@ -146,6 +57,7 @@ const OrderWaitTimeBox = ({ allTransactions }) => {
               source={require("../../assets/images/image_BUWK..png")}
               resizeMode="contain"
               style={styles.clockIcon2}
+              key={"clockIcon2"}
             />
             <View style={styles.averageRightSide}>
               <Text style={styles.averageTimeValue}>
@@ -159,6 +71,7 @@ const OrderWaitTimeBox = ({ allTransactions }) => {
               source={require("../../assets/images/image_BUWK..png")}
               resizeMode="contain"
               style={styles.clockIcon3}
+              key={"clockIcon3"}
             />
             <View style={styles.meanRightSide}>
               <Text style={styles.meanTimeValue}>

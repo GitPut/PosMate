@@ -5,6 +5,7 @@ import {
   Pressable,
   Text,
   useWindowDimensions,
+  GestureResponderEvent,
 } from "react-native";
 import FieldInputWithLabel from "./FieldInputWithLabel";
 import {
@@ -21,7 +22,7 @@ import {
   storeDetailState,
 } from "state/state";
 
-const validateEmail = (email) => {
+const validateEmail = (email: string) => {
   const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
   return emailRegex.test(email);
 };
@@ -38,7 +39,7 @@ function CheckOutDetails() {
   const elements = useElements();
   const currency = "cad";
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: GestureResponderEvent) => {
     setloading(true);
     event.preventDefault();
 
@@ -49,7 +50,7 @@ function CheckOutDetails() {
     }
 
     if (!stripe || !elements) {
-      console.log("Stripe.js has not yet loaded.");
+      // console.log("Stripe.js has not yet loaded.");
       alertP.error("Error please try again");
       setloading(false);
       return;
@@ -62,6 +63,8 @@ function CheckOutDetails() {
     };
 
     try {
+      if (!cardNumberElement) return;
+
       const { token, error } = await stripe.createToken(cardNumberElement);
 
       if (error) {
@@ -94,7 +97,7 @@ function CheckOutDetails() {
         if (contentType && contentType.indexOf("application/json") !== -1) {
           const responseData = await response.json();
           if (responseData.success) {
-            console.log("Payment processed successfully!");
+            // console.log("Payment processed successfully!");
             setOrderDetailsState({
               page: 6,
             });

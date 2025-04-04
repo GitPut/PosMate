@@ -3,8 +3,6 @@ import {
   useWindowDimensions,
   Image,
   Animated,
-  TextInput,
-  Modal,
   StyleSheet,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
@@ -22,24 +20,25 @@ import {
   setProductBuilderState,
   setStoreDetailState,
 } from "state/state";
+import { ProductProp, UserStoreStateProps } from "types/global";
 
 const OrderPage = () => {
   const history = useHistory();
-  const { urlEnding } = useParams();
-  const [catalog, setcatalog] = useState({
+  const { urlEnding }: { urlEnding: string } = useParams();
+  const [catalog, setcatalog] = useState<UserStoreStateProps>({
     categories: [],
     products: [],
   });
   const orderDetails = OrderDetailsState.use();
   const page = orderDetails.page;
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  const [data, setdata] = useState([]);
+  const [data, setdata] = useState<ProductProp[]>([]);
   const screenWidth = useWindowDimensions().width;
 
-  const customSort = (a, b) => {
+  const customSort = (a: ProductProp, b: ProductProp) => {
     // Handle cases where one or both items don't have a rank
-    const rankA = a.rank || Number.MAX_SAFE_INTEGER;
-    const rankB = b.rank || Number.MAX_SAFE_INTEGER;
+    const rankA = parseFloat(a.rank ?? "0") || Number.MAX_SAFE_INTEGER;
+    const rankB = parseFloat(b.rank ?? "0") || Number.MAX_SAFE_INTEGER;
 
     // Compare based on ranks
     return rankA - rankB;
@@ -51,18 +50,18 @@ const OrderPage = () => {
       .get()
       .then((querySnapshot) => {
         if (querySnapshot.empty) {
-          console.log("No existing online store");
+          // console.log("No existing online store");
           //send them to a 404 page
           history.push("/404");
         }
 
         if (!querySnapshot.docs[0].data().onlineStoreActive) {
-          console.log("Store is not active");
+          // console.log("Store is not active");
           //send them to a 404 page
           history.push("/404");
         }
 
-        const products = [];
+        const products: ProductProp[] = [];
 
         setProductBuilderState({
           product: null,
@@ -84,16 +83,29 @@ const OrderPage = () => {
           .then((docs) => {
             if (!docs.empty) {
               docs.forEach((element) => {
-                products.push(element.data());
+                const productData = element.data();
+                products.push({
+                  ...productData,
+                  name: productData.name,
+                  price: productData.price,
+                  description: productData.description,
+                  options: productData.options,
+                  id: productData.id,
+                });
               });
               // Move logging and operations that depend on 'products' being populated inside the .then() block
               if (products.length > 0) {
                 setdata([]);
                 products.sort(customSort).map((product, index) => {
                   setdata((prev) => {
-                    const productsWithCategory = prev.filter(
-                      (item) => item.category === product.category
-                    );
+                    const productsWithCategory: ProductProp[] = [];
+
+                    prev.forEach((item) => {
+                      if (item.category === product.category) {
+                        productsWithCategory.push(item);
+                      }
+                    });
+
                     if (productsWithCategory.length > 0) {
                       const indexOfLastItem = prev.indexOf(
                         productsWithCategory[productsWithCategory.length - 1]
@@ -116,8 +128,8 @@ const OrderPage = () => {
                 });
               }
             }
-          })
-          .catch((e) => console.log("Error has occurred with db: ", e));
+          });
+        // .catch((e) => console.log("Error has occurred with db: ", e));
 
         setcatalog({
           categories: querySnapshot.docs[0].data().categories,
@@ -126,10 +138,10 @@ const OrderPage = () => {
         });
 
         fadeOut();
-      })
-      .catch((e) => {
-        console.log("Error has occurred");
       });
+    // .catch((e) => {
+    //   console.log("Error has occurred");
+    // });
   }, []);
 
   const fadeOut = () => {
@@ -138,7 +150,11 @@ const OrderPage = () => {
       toValue: 0,
       duration: 500,
       useNativeDriver: false,
-    }).start(() => (document.getElementById("loader").style.display = "none"));
+    }).start(() => {
+      const loader = document.getElementById("loader");
+      if (!loader) return;
+      loader.style.display = "none";
+    });
   };
 
   return (
@@ -156,6 +172,7 @@ const OrderPage = () => {
             source={require("./OnlineOrderPages/assets/images/image_JqcD..png")}
             resizeMode="contain"
             style={[styles.plantImg, screenWidth < 1000 && { width: 100 }]}
+            key={"plantImg"}
           />
           <View style={styles.wingImgContainer}>
             <Image
@@ -174,6 +191,7 @@ const OrderPage = () => {
                   bottom: "15%",
                 },
               ]}
+              key={"wingImg"}
             />
             <View style={styles.pizzaImgContainer}>
               <Image
@@ -189,6 +207,7 @@ const OrderPage = () => {
                     position: "absolute",
                   },
                 ]}
+                key={"pizzaImg"}
               />
             </View>
           </View>
@@ -253,6 +272,7 @@ const OrderPage = () => {
           <Image
             source={require("assets/loading.gif")}
             style={{ width: 450, height: 450, resizeMode: "contain" }}
+            key={"loading"}
           />
         </Animated.View>
       </div>

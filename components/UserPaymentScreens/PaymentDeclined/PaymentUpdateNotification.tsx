@@ -4,15 +4,20 @@ import { auth, db } from "state/firebaseConfig";
 import { loadStripe } from "@stripe/stripe-js";
 import firebase from "firebase/compat/app";
 import Logo from "assets/dpos-logo-black.png";
-import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
+import { SimpleLineIcons } from "@expo/vector-icons";
 import { logout } from "state/firebaseFunctions";
 import { useAlert } from "react-alert";
 
-const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
+interface PaymentUpdateNotificationProps {
+  isCanceled: boolean;
+}
+
+const PaymentUpdateNotification = ({
+  isCanceled,
+}: PaymentUpdateNotificationProps) => {
   const alertP = useAlert();
 
   const sendToCheckout = async () => {
-    resetLoader();
     const currentUser = auth.currentUser;
     if (currentUser) {
       await db
@@ -27,7 +32,7 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
         .then((docRef) => {
           // Wait for the checkoutSession to get attached by the extension
           docRef.onSnapshot(async (snap) => {
-            const { error, sessionId } = snap.data();
+            const { error, sessionId } = snap.data() ?? {};
             if (error) {
               // Show an error to your customer and inspect
               // your Cloud Function logs in the Firebase console.
@@ -40,7 +45,7 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
               const stripe = await loadStripe(
                 "pk_live_51MHqrvCIw3L7DOwI0ol9CTCSH7mQXTLKpxTWKzmwOY1MdKwaYwhdJq6WTpkWdBeql3sS44JmybynlRnaO2nSa1FK001dHiEOZO" // todo enter your public stripe key here
               );
-              console.log(`redirecting`);
+              if (!stripe) return;
               await stripe.redirectToCheckout({ sessionId });
             }
           });
@@ -49,7 +54,6 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
   };
 
   const Manage = () => {
-    resetLoader();
     firebase
       .functions()
       .httpsCallable("ext-firestore-stripe-payments-createPortalLink")({
@@ -57,10 +61,9 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
         locale: "auto",
       })
       .then((response) => {
-        console.log(response.data);
         window.location = response.data.url;
       })
-      .catch((error) => {
+      .catch(() => {
         alertP.error("Unknown error has occured");
       });
   };
@@ -84,13 +87,18 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
             >
               <SimpleLineIcons name="logout" size={32} color="black" />
             </Pressable>
-            <Image source={Logo} resizeMode="contain" style={styles.logo} />
+            <Image
+              source={Logo}
+              resizeMode="contain"
+              style={styles.logo}
+              key={"logo"}
+            />
           </View>
           <View style={styles.attentionWrapper}>
             <Text style={styles.attentionNeeded}>ATTENTION NEEDED</Text>
           </View>
         </View>
-        <Text style={styles.txt1}>We're sad to see you go :(</Text>
+        <Text style={styles.txt1}>We&apos;re sad to see you go :(</Text>
         <Text style={styles.txt2}>
           Please let us make this right! If theres a feature that missing or
           something you dont like about the software, we can change that.
@@ -115,7 +123,12 @@ const PaymentUpdateNotification = ({ resetLoader, isCanceled }) => {
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Image source={Logo} resizeMode="contain" style={styles.logo}></Image>
+          <Image
+            source={Logo}
+            resizeMode="contain"
+            style={styles.logo}
+            key={"logo"}
+          />
           <View style={styles.attentionWrapper}>
             <Text style={styles.attentionNeeded}>ATTENTION NEEDED</Text>
           </View>

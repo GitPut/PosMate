@@ -20,7 +20,7 @@ match /public/{uid} {
 
     match /users/{uid} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
-      
+
       match /customers/{id} {
         allow read, write: if request.auth.uid == uid;
       }
@@ -46,6 +46,10 @@ match /public/{uid} {
       }
       
       match /transList/{id} {
+        allow read, write: if request.auth.uid == uid;
+      }
+
+      match /stats/{id} {
         allow read, write: if request.auth.uid == uid;
       }
 

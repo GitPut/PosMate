@@ -5,10 +5,12 @@ import {
   useWindowDimensions,
   View,
   TextInput,
+  TextInputKeyPressEventData,
+  NativeSyntheticEvent,
 } from "react-native";
 import React, { useState } from "react";
 import Modal from "react-native-modal-web";
-import Print from "components/MainPosPage/components/Cart/Print";
+import Print from "pages/authed/pos/MainPosPage/components/Cart/Print";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import {
   cartState,
@@ -44,13 +46,15 @@ const CashScreen = () => {
       : cartSub * 1.13
   ).toFixed(2);
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       Print({
         method: "Cash",
         dontAddToOngoing: false,
         discountAmount,
-        deliveryChecked,
+        deliveryChecked: deliveryChecked ? true : false,
         changeDue,
         savedCustomerDetails,
         name,
@@ -124,6 +128,7 @@ const CashScreen = () => {
                       }
                     }}
                     onKeyPress={handleKeyDown}
+                    autoFocus={true}
                   />
                   <View style={styles.changeDueRow}>
                     <Text style={styles.changeDue}>Change Due:</Text>
@@ -143,7 +148,7 @@ const CashScreen = () => {
                         method: "Cash",
                         dontAddToOngoing: false,
                         discountAmount,
-                        deliveryChecked,
+                        deliveryChecked: deliveryChecked ? true : false,
                         changeDue,
                         savedCustomerDetails,
                         name,

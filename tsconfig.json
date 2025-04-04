@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "module": "esnext",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -18,9 +19,14 @@
       "pages/*": ["pages/*"],
       "state/*": ["state/*"],
       "types/*": ["types/*"]
-    },
+    }
   },
   "extends": "expo/tsconfig.base",
-  "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js", "web-build"]
-  // this is new test exclude
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js",
+    "web-build"
+  ]
 }

@@ -22,19 +22,25 @@ import DiscountModal from "components/modals/DiscountModal/DiscountModal";
 import PhoneOrderModal from "components/modals/PhoneOrderModal/PhoneOrderModal";
 import SavedCustomersModal from "components/modals/SavedCustomersModal/SavedCustomersModal";
 import ClockinModal from "components/modals/ClockInModal/ClockinModal";
-import LeftMenuBar from "components/MainPosPage/components/LeftMenuBar";
-import Cart from "components/MainPosPage/components/Cart";
+import LeftMenuBar from "pages/authed/pos/MainPosPage/components/LeftMenuBar";
+import Cart from "pages/authed/pos/MainPosPage/components/Cart";
 import Modal from "react-native-modal-web";
-import CategorySection from "components/MainPosPage/components/CategorySection";
-import ProductsSection from "components/MainPosPage/components/ProductsSection";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
 import CustomCashModal from "components/modals/CustomCashModal";
 import AuthPasswordModal from "components/modals/AuthPasswordModal";
 import { useAlert } from "react-alert";
 import qz from "qz-tray";
-import ProductBuilderModal from "components/MainPosPage/components/ProductBuilderModal/ProductBuilderModal";
-import CartMobile from "components/MainPosPage/phoneComponents/CartMobile";
+import ProductBuilderModal from "pages/authed/pos/MainPosPage/components/ProductBuilderModal/ProductBuilderModal";
+import CartMobile from "pages/authed/pos/MainPosPage/phoneComponents/CartMobile";
 import { Feather } from "@expo/vector-icons";
+import ParseDate from "components/functional/ParseDate";
+import { TransListStateItem } from "types/global";
+const CategorySection = React.lazy(
+  () => import("pages/authed/pos/MainPosPage/components/CategorySection")
+);
+const ProductsSection = React.lazy(
+  () => import("pages/authed/pos/MainPosPage/components/ProductsSection")
+);
 
 function HomeScreen() {
   const { height, width } = useWindowDimensions();
@@ -44,7 +50,7 @@ function HomeScreen() {
   const myDeviceDetails = myDeviceDetailsState.use();
   const alertP = useAlert();
   const [cartOpen, setcartOpen] = useState(false);
-  const [openSideBar, setopenSideBar] = useState(false);
+  // const [openSideBar, setopenSideBar] = useState(false);
 
   const {
     section,
@@ -54,27 +60,7 @@ function HomeScreen() {
     cartSub,
   } = posHomeState.use();
   const ProductBuilderProps = ProductBuilderState.use();
-
-  function parseDate(input: Date) {
-    // Check if the input is a Date object
-    if (Object.prototype.toString.call(input) === "[object Date]") {
-      if (!isNaN(input.getTime())) {
-        // It's a valid Date object, return it
-        return input;
-      }
-    }
-
-    // Check if the input is a string
-    if (typeof input === "string") {
-      const dateObject = new Date(input);
-
-      // Check if the dateObject is a valid Date
-      if (!isNaN(dateObject.getTime())) {
-        // It's a valid Date object, return it
-        return dateObject;
-      }
-    }
-  }
+  if (!storeDetails) return null;
 
   useEffect(() => {
     if (catalog.categories.length > 0) {
@@ -85,19 +71,45 @@ function HomeScreen() {
       .doc(auth.currentUser?.uid)
       .collection("pendingOrders")
       .onSnapshot((snapshot) => {
-        const list = [];
+        const list: TransListStateItem[] = [];
         snapshot.forEach((doc) => {
-          list.push({ ...doc.data(), id: doc.id });
+          list.push({
+            ...doc.data(),
+            id: doc.id,
+            cart: doc.data().cart,
+            cartNote: doc.data().cartNote,
+            customer: doc.data().customer,
+            date: doc.data().date,
+            method: doc.data().method,
+            online: doc.data().online,
+            isInStoreOrder: doc.data().method === "inStoreOrder",
+          });
           if (
             doc.data().online &&
             !doc.data().printed &&
             myDeviceDetails.printOnlineOrders
           ) {
-            console.log("Printing");
-            const data = ReceiptPrint(doc.data(), storeDetails);
+            const data = ReceiptPrint(
+              {
+                ...doc.data(),
+                cart: doc.data().cart,
+                cartNote: doc.data().cartNote,
+                date: doc.data().date,
+                method: doc.data().method,
+                paymentMethod: doc.data().paymentMethod,
+                total: doc.data().total,
+                transNum: doc.data().transNum,
+                id: doc.data().id,
+              },
+              storeDetails
+            );
             qz.websocket
               .connect()
               .then(function () {
+                if (!myDeviceDetails.printToPrinter) {
+                  alertP.error("You must specify a printer in device settings");
+                  return;
+                }
                 const config = qz.configs.create(
                   myDeviceDetails.printToPrinter
                 );
@@ -141,10 +153,15 @@ function HomeScreen() {
         });
 
         const sortedArray = list.sort((a, b) => {
-          const dateA = a.online ? parseDate(a.date) : a.date.toDate();
-          const dateB = b.online ? parseDate(b.date) : b.date.toDate();
+          // Parse the dates once and convert to milliseconds since the Unix epoch or 0 if null
+          const parsedDateA = ParseDate(a.date);
+          const parsedDateB = ParseDate(b.date);
 
-          // Compare dates
+          // Use the parsed dates if not null, otherwise default to 0
+          const dateA = parsedDateA ? parsedDateA.getTime() : 0;
+          const dateB = parsedDateB ? parsedDateB.getTime() : 0;
+
+          // Compare dates by their numeric timestamps
           return dateB - dateA;
         });
 
@@ -161,14 +178,11 @@ function HomeScreen() {
       let newVal = 0;
       for (let i = 0; i < cart.length; i++) {
         try {
-          if (cart[i].quantity > 1) {
-            newVal += parseFloat(cart[i].price) * cart[i].quantity;
-            // console.log("Cart item quantity ", cart[i].quantity);
-          } else {
-            newVal += parseFloat(cart[i].price);
-          }
+          newVal +=
+            parseFloat(cart[i]?.price ?? 0) *
+            parseFloat(cart[i]?.quantity ?? "1");
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       }
       if (deliveryChecked) {
@@ -180,12 +194,12 @@ function HomeScreen() {
           const discount = parseFloat(discountAmount.replace("%", "")) / 100;
           // setCartSub(parseFloat(newVal) - parseFloat(newVal) * discount);
           updatePosHomeState({
-            cartSub: parseFloat(newVal) - parseFloat(newVal) * discount,
+            cartSub: newVal - newVal * discount,
           });
         } else {
           // setCartSub(parseFloat(newVal) - parseFloat(discountAmount));
           updatePosHomeState({
-            cartSub: parseFloat(newVal) - parseFloat(discountAmount),
+            cartSub: newVal - parseFloat(discountAmount),
           });
         }
       } else {
@@ -199,14 +213,15 @@ function HomeScreen() {
   }, [cart, deliveryChecked, discountAmount]);
 
   useEffect(() => {
-    catalog.products.map((product, index) => {
+    catalog.products.map((product) => {
+      const element = document.getElementById(product.id);
       if (product.category === section) {
-        document.getElementById(product.id).style.display = "flex";
+        if (element) element.style.display = "flex";
       } else {
-        document.getElementById(product.id).style.display = "none";
+        if (element) element.style.display = "none";
       }
     });
-  }, [section]);
+  }, [section, catalog]);
 
   return (
     <View style={[styles.container]}>
@@ -231,7 +246,7 @@ function HomeScreen() {
           >
             <Pressable
               onPress={() => {
-                setopenSideBar(true);
+                // setopenSideBar(true);
               }}
               style={{
                 backgroundColor: "#1D294E",
@@ -270,8 +285,12 @@ function HomeScreen() {
             </Pressable>
           </View>
         )}
-        <CategorySection catalog={catalog} section={section} />
-        <ProductsSection catalog={catalog} />
+        {catalog.products.length > 0 && (
+          <>
+            <CategorySection catalog={catalog} section={section} />
+            <ProductsSection catalog={catalog} />
+          </>
+        )}
       </View>
       {width > 1000 ? (
         <Cart />
@@ -312,7 +331,7 @@ function HomeScreen() {
       <DiscountModal />
       <AuthPasswordModal />
       <Modal
-        isVisible={ProductBuilderProps.isOpen}
+        isVisible={ProductBuilderProps.isOpen ? true : false}
         animationIn="slideInLeft"
         animationOut="slideOutLeft"
         backdropOpacity={0}

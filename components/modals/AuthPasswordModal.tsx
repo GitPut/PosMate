@@ -5,6 +5,8 @@ import {
   TextInput,
   Text,
   useWindowDimensions,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from "react-native";
 import React, { useState } from "react";
 import { storeDetailState } from "state/state";
@@ -39,8 +41,10 @@ const AuthPasswordModal = () => {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    if (e.nativeEvent.key === "Enter") {
       Authorize();
     }
   };
@@ -192,7 +196,6 @@ const styles = StyleSheet.create({
     height: 65,
     justifyContent: "space-between",
     alignItems: "center",
-    margin: "",
     marginBottom: 16,
   },
   goBtn: {

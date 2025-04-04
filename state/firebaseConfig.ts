@@ -23,12 +23,12 @@ firebase
     if (err.code === "failed-precondition") {
       // Multiple tabs open, persistence can only be enabled
       // in one tab at a time.
-      console.log("Persistence failed: ", err);
+      // console.log("Persistence failed: ", err);
       alert("Please only keep one tab of Divine POS open at a time.");
     } else if (err.code === "unimplemented") {
       // The current browser does not support all of the
       // features required to enable persistence
-      console.log("Persistence is not available: ", err);
+      // console.log("Persistence is not available: ", err);
     }
   });
 

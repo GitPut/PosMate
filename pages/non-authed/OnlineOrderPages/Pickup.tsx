@@ -48,6 +48,7 @@ function OnlineOrderHomePickup() {
                         source={require("./assets/images/dpos-logo-white.png")}
                         resizeMode="contain"
                         style={styles.logo}
+                        key={"logo"}
                       />
                     </Pressable>
                   ) : (
@@ -79,7 +80,8 @@ function OnlineOrderHomePickup() {
                     source={require("./assets/images/image_ridw..png")}
                     resizeMode="contain"
                     style={styles.dash}
-                  ></Image>
+                  key={'dash'}
+                  />
                 </View>
                 {screenWidth > 1000 ? (
                   <PickupDetails />
@@ -118,13 +120,11 @@ function OnlineOrderHomePickup() {
                       ></Entypo>
                       <Text style={styles.addressTxt}>
                         {
-                          storeDetails.address?.value.structured_formatting
-                            .main_text
+                          storeDetails.address?.value?.structured_formatting?.main_text
                         }
                         {"\n"}
                         {
-                          storeDetails.address?.value.structured_formatting
-                            .secondary_text
+                          storeDetails.address?.value?.structured_formatting?.secondary_text
                         }
                       </Text>
                     </View>
@@ -135,12 +135,14 @@ function OnlineOrderHomePickup() {
                         source={require("./assets/images/image_pDaA..png")}
                         resizeMode="contain"
                         style={styles.facebookIcon}
-                      ></Image>
+                      key={'facebookIcon'}
+                      />
                       <Image
                         source={require("./assets/images/image_CLpi..png")}
                         resizeMode="contain"
                         style={styles.instagramIcon}
-                      ></Image>
+                      key={'instagramIcon'}
+                      />
                     </View>
                   )}
                 </View>

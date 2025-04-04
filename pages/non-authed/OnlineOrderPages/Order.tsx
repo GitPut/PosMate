@@ -15,14 +15,15 @@ import {
   storeDetailState,
 } from "state/state";
 import Modal from "react-native-modal-web";
-import ProductBuilderModal from "components/MainPosPage/components/ProductBuilderModal/ProductBuilderModal";
-import ProductsSection from "components/MainPosPage/components/ProductsSection";
-import CategorySection from "components/MainPosPage/components/CategorySection";
-import Cart from "components/MainPosPage/components/Cart";
+import ProductBuilderModal from "pages/authed/pos/MainPosPage/components/ProductBuilderModal/ProductBuilderModal";
+import ProductsSection from "pages/authed/pos/MainPosPage/components/ProductsSection";
+import CategorySection from "pages/authed/pos/MainPosPage/components/CategorySection";
+import Cart from "pages/authed/pos/MainPosPage/components/Cart";
 import { posHomeState, updatePosHomeState } from "state/posHomeState";
-import CartMobile from "components/MainPosPage/phoneComponents/CartMobile";
+import CartMobile from "pages/authed/pos/MainPosPage/phoneComponents/CartMobile";
+import { UserStoreStateProps } from "types/global";
 
-function OrderCartMain({ catalog }) {
+function OrderCartMain({ catalog }: { catalog: UserStoreStateProps }) {
   const orderDetails = OrderDetailsState.use();
   const storeDetails = storeDetailState.use();
   const page = orderDetails.page;
@@ -32,6 +33,7 @@ function OrderCartMain({ catalog }) {
   const { height, width } = useWindowDimensions();
   const ProductBuilderProps = ProductBuilderState.use();
   const { section } = posHomeState.use();
+  const [allLoaded, setallLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     if (page === 4) {
@@ -46,14 +48,15 @@ function OrderCartMain({ catalog }) {
       let newVal = 0;
       for (let i = 0; i < cart.length; i++) {
         try {
-          if (cart[i].quantity > 1) {
-            newVal += parseFloat(cart[i].price) * cart[i].quantity;
+          if (cart[i].quantity ?? 0 > 1) {
+            newVal +=
+              parseFloat(cart[i].price) * parseFloat(cart[i].quantity ?? "0");
             // console.log("Cart item quantity ", cart[i].quantity);
           } else {
             newVal += parseFloat(cart[i].price);
           }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       }
       if (orderDetails.delivery) {
@@ -67,14 +70,16 @@ function OrderCartMain({ catalog }) {
   }, [cart]);
 
   useEffect(() => {
-    catalog.products.map((product, index) => {
+    catalog.products.map((product) => {
+      const element = document.getElementById(product.id);
+      if (!element) return;
       if (product.category === section) {
-        document.getElementById(product.id).style.display = "flex";
+        element.style.display = "flex";
       } else {
-        document.getElementById(product.id).style.display = "none";
+        element.style.display = "none";
       }
     });
-  }, [section]);
+  }, [section, catalog, allLoaded]);
 
   return (
     <View style={styles.container}>
@@ -147,8 +152,12 @@ function OrderCartMain({ catalog }) {
             </Pressable>
           </View>
         )}
-        <CategorySection catalog={catalog} section={section} />
-        <ProductsSection catalog={catalog} />
+        {catalog.products.length > 0 && (
+          <>
+            <CategorySection catalog={catalog} section={section} />
+            <ProductsSection catalog={catalog} setallLoaded={setallLoaded} />
+          </>
+        )}
       </View>
       {width > 1000 ? (
         <Cart />
@@ -160,7 +169,7 @@ function OrderCartMain({ catalog }) {
         />
       )}
       <Modal
-        isVisible={ProductBuilderProps.isOpen}
+        isVisible={ProductBuilderProps.isOpen ? true : false}
         animationIn="slideInLeft"
         animationOut="slideOutLeft"
         backdropOpacity={0}

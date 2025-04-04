@@ -1,21 +1,27 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text, Pressable, TextInput } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { auth, db } from "state/firebaseConfig";
 import { useAlert } from "react-alert";
+import { Employee } from "types/global";
+import { setEmployeesState } from "state/state";
+
+interface EmployeeClockInItemProps {
+  employee: Employee;
+  employees: Employee[];
+  isClockedIn: boolean;
+}
 
 function EmployeeClockInItem({
   employee,
   employees,
-  setEmployeesState,
   isClockedIn,
-  style,
-}) {
+}: EmployeeClockInItemProps) {
   const [enteredPin, setenteredPin] = useState("");
   const alertP = useAlert();
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container]}>
       <View style={styles.leftSideGroup}>
         <MaterialIcons name="person" style={styles.personIcon} />
         <Text style={styles.employeeName}>{employee.name}</Text>
@@ -44,18 +50,18 @@ function EmployeeClockInItem({
                     : date.getMinutes()
                 }`;
                 db.collection("users")
-                  .doc(auth.currentUser.uid)
+                  .doc(auth?.currentUser?.uid)
                   .collection("employees")
                   .doc(employee.id)
                   .collection("hours")
                   .add({
-                    date: employee.clockedIn.date,
-                    startTime: employee.clockedIn.startTime,
+                    date: employee.clockedIn?.date,
+                    startTime: employee.clockedIn?.startTime,
                     endTime: endTime,
                   })
                   .then(() => {
                     db.collection("users")
-                      .doc(auth.currentUser.uid)
+                      .doc(auth?.currentUser?.uid)
                       .collection("employees")
                       .doc(employee.id)
                       .update({
@@ -63,10 +69,10 @@ function EmployeeClockInItem({
                       });
 
                     const prev = [...employees];
-                    prev[employees.indexOf(employee)].clockedIn = false;
+                    prev[employees.indexOf(employee)].clockedIn = undefined;
                     setEmployeesState(prev);
                   });
-                setenteredPin(null);
+                setenteredPin("");
               } else {
                 const startTime = `${date.getHours()}:${
                   date.getMinutes() < 10
@@ -74,7 +80,7 @@ function EmployeeClockInItem({
                     : date.getMinutes()
                 }`;
                 db.collection("users")
-                  .doc(auth.currentUser.uid)
+                  .doc(auth?.currentUser?.uid)
                   .collection("employees")
                   .doc(employee.id)
                   .update({
@@ -90,7 +96,7 @@ function EmployeeClockInItem({
                   date: date,
                 };
                 setEmployeesState(prev);
-                setenteredPin(null);
+                setenteredPin("");
               }
             }}
           >
@@ -119,6 +125,9 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     alignItems: "center",
     justifyContent: "space-between",
+    height: 84,
+    width: 415,
+    marginBottom: 30,
   },
   leftSideGroup: {
     width: 114,

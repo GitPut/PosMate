@@ -7,8 +7,11 @@ import { logout } from "state/firebaseFunctions";
 import Select from "react-select";
 import { useAlert } from "react-alert";
 
-const TrialEnded = ({ resetLoader }) => {
-  const [planType, setplanType] = useState({
+const TrialEnded = () => {
+  const [planType, setplanType] = useState<{
+    value: string;
+    label: string;
+  } | null>({
     value: "monthly",
     label: "Monthly",
   });
@@ -16,7 +19,7 @@ const TrialEnded = ({ resetLoader }) => {
   const alertP = useAlert();
 
   const Checkout = async () => {
-    resetLoader();
+    if (!planType) return;
     setloading(true);
 
     let priceId;
@@ -30,7 +33,7 @@ const TrialEnded = ({ resetLoader }) => {
     // }
     await db
       .collection("users")
-      .doc(auth.currentUser.uid)
+      .doc(auth.currentUser?.uid)
       .collection("checkout_sessions")
       .add({
         price: priceId, // todo price Id from your products price in the Stripe Dashboard
@@ -40,7 +43,7 @@ const TrialEnded = ({ resetLoader }) => {
       .then((docRef) => {
         // Wait for the checkoutSession to get attached by the extension
         docRef.onSnapshot(async (snap) => {
-          const { error, sessionId } = snap.data();
+          const { error, sessionId } = snap.data() ?? {};
           if (error) {
             // Show an error to your customer and inspect
             // your Cloud Function logs in the Firebase console.
@@ -53,7 +56,7 @@ const TrialEnded = ({ resetLoader }) => {
             const stripe = await loadStripe(
               "pk_live_51MHqrvCIw3L7DOwI0ol9CTCSH7mQXTLKpxTWKzmwOY1MdKwaYwhdJq6WTpkWdBeql3sS44JmybynlRnaO2nSa1FK001dHiEOZO" // todo enter your public stripe key here
             );
-            console.log(`redirecting`);
+            if (!stripe) return;
             await stripe.redirectToCheckout({ sessionId });
           }
         });
@@ -86,10 +89,10 @@ const TrialEnded = ({ resetLoader }) => {
           </View>
           <Text style={styles.allYearPayment}>Choose A Plan To Continue</Text>
           <View style={styles.group6}>
-            {planType.value === "monthly" && (
+            {planType?.value === "monthly" && (
               <Text style={styles.overview1}>$50.00 CAD</Text>
             )}
-            {planType.value === "yearly" && (
+            {planType?.value === "yearly" && (
               <Text style={styles.overview1}>$480.00 CAD</Text>
             )}
             <Text style={styles.monthly5}>/</Text>
@@ -106,7 +109,7 @@ const TrialEnded = ({ resetLoader }) => {
               onChange={(e) => setplanType(e)}
             />
           </View>
-          {planType.value === "yearly" && (
+          {planType?.value === "yearly" && (
             <Text style={{ fontSize: 12, color: "red", marginBottom: 15 }}>
               Paying anually saves you $10 a month!
             </Text>

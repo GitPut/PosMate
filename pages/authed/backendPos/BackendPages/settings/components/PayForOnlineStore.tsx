@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   StyleSheet,
   View,
@@ -8,11 +8,16 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-function PayForOnlineStore({ payOnlineStore }) {
+interface PayForOnlineStoreProps {
+  payOnlineStore: () => void;
+}
+
+function PayForOnlineStore({ payOnlineStore }: PayForOnlineStoreProps) {
   return (
     <ImageBackground
       source={require("../assets/gradient.png")}
       style={styles.container}
+      key={"payForOnlineStore"}
     >
       <View style={styles.innerContainer}>
         <View style={styles.innerTopContainer}>
@@ -56,7 +61,6 @@ function PayForOnlineStore({ payOnlineStore }) {
           </View>
         </View>
         <Pressable
-          activeOpacity={0.7}
           style={styles.getStartedBox}
           onPress={payOnlineStore}
         >
