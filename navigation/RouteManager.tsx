@@ -10,7 +10,10 @@ import {
   setStoreDetailState,
   setTrialDetailsState,
   setUserStoreState,
+  setWoocommerceState,
+  storeDetailState,
   trialDetailsState,
+  woocommerceState,
 } from "state/state";
 import { auth, db } from "state/firebaseConfig";
 import { updateFreeTrial } from "state/firebaseFunctions";
@@ -30,6 +33,7 @@ import {
   SimpleLineIcons,
 } from "@expo/vector-icons";
 import Loader from "components/Loader";
+import useInterval from "components/functional/useInterval";
 const NavigationContent = React.lazy(() => import("./NavigationContent"));
 const NonAuthRoute = React.lazy(() => import("./non-authed/NonAuthRoute"));
 const ScrollToTop = React.lazy(
@@ -44,8 +48,12 @@ const RouteManager = () => {
   const [isNewUser, setisNewUser] = useState<boolean | null>(null);
   const [isSubscribed, setisSubscribed] = useState<boolean | null>(null);
   const [isCanceled, setisCanceled] = useState<boolean | null>(null);
+  const wooCredentials = woocommerceState.use();
+  const [wooOrders, setwooOrders] = useState([]);
+  const [isWooError, setisWooError] = useState(false);
   const trialDetails = trialDetailsState.use();
   const myDeviceDetails = myDeviceDetailsState.use();
+  const storeDetails = storeDetailState.use();
   const alertP = useAlert();
 
   async function preloadFonts() {
@@ -172,7 +180,7 @@ const RouteManager = () => {
               .catch(() =>
                 // console.log("Error has occured with db products: ", e)
                 alertP.error(
-                  "An error has occured with starting up the app. Please refresh the page."
+                  "An error has occured with starting up the app. Please refresh the page. 1"
                 )
               );
 
@@ -182,6 +190,24 @@ const RouteManager = () => {
               products: sortedProducts,
               categories: doc.data()?.categories ? doc.data()?.categories : [],
             });
+
+            if (doc.data()?.wooCredentials) {
+              setWoocommerceState(doc.data()?.wooCredentials);
+            }
+
+            doc.ref
+              .collection("wooOrders")
+              .get()
+              .then((docs) => {
+                if (!docs.empty) {
+                  docs.forEach((element) => {
+                    setwooOrders((prev) => [...prev, element.data()]);
+                  });
+                }
+              })
+              .catch((e) =>
+                console.log("Error has occured with db wooorders: ", e)
+              );
 
             setloading(false);
 
@@ -358,11 +384,14 @@ const RouteManager = () => {
                   setisSubscribed(false);
                 }
               })
-              .catch(() =>
+              .catch((e) =>
                 // console.log("Error has occured with db extra devices")
-                alertP.error(
-                  "An error has occured with starting up the app. Please refresh the page."
-                )
+                {
+                  console.log("ERROR: ", e);
+                  // alertP.error(
+                  //   "An error has occured with starting up the app. Please refresh the page. 2"
+                  // );
+                }
               );
 
             await doc.ref
@@ -391,7 +420,7 @@ const RouteManager = () => {
               .catch(() =>
                 // console.log("Error has occured with db customers: ", e)
                 alertP.error(
-                  "An error has occured with starting up the app. Please refresh the page."
+                  "An error has occured with starting up the app. Please refresh the page. 3"
                 )
               );
 
@@ -484,7 +513,7 @@ const RouteManager = () => {
           .catch(() => {
             // console.log("Error has occured with db users: ", e)
             alertP.error(
-              "An error has occured with starting up the app. Please refresh the page."
+              "An error has occured with starting up the app. Please refresh the page. 4"
             );
           });
       } else {
@@ -500,6 +529,278 @@ const RouteManager = () => {
       unsubscribeAuthStateChanged();
     };
   }, [savedUserState]);
+
+  useInterval(() => {
+    if (
+      wooCredentials.useWoocommerce &&
+      isSubscribed &&
+      !isWooError &&
+      myDeviceDetails.printOnlineOrders
+    ) {
+      const WooCommerceAPI = require("woocommerce-api");
+
+      const WooCommerce = new WooCommerceAPI({
+        url: wooCredentials.apiUrl,
+        consumerKey: wooCredentials.ck,
+        consumerSecret: wooCredentials.cs,
+        wpAPI: true,
+        version: "wc/v3",
+      });
+
+      let page = 1;
+      let orders = [];
+
+      const getOrders = async () => {
+        const response = await WooCommerce.getAsync(
+          `orders?page=${page}&per_page=100`
+        );
+        const data = JSON.parse(response.body);
+        orders = [...orders, ...data];
+        if (data.length === 100) {
+          page++;
+          getOrders();
+        } else {
+          //console.log("WOO ORDERS: ", orders);
+        }
+        // console.log("WOO ORDERS: ", orders);
+      };
+
+      getOrders()
+        .then(() => {
+          if (JSON.stringify(orders) === JSON.stringify(wooOrders)) return;
+          for (let index = 0; index < orders.length; index++) {
+            const order = orders[index];
+            let orderIndex;
+            if (wooOrders.length > 0) {
+              orderIndex = wooOrders.findIndex((e) => e.id === order.id);
+            } else {
+              orderIndex = -1;
+            }
+
+            if (orderIndex === -1 || !wooOrders[orderIndex].printed) {
+              if (orderIndex === -1) {
+                db.collection("users")
+                  .doc(userS.uid)
+                  .collection("wooOrders")
+                  .doc(order.id.toString())
+                  .set({ ...order, printed: true })
+                  .then(() => {
+                    setwooOrders((prev) => [
+                      ...prev,
+                      { ...order, printed: true },
+                    ]);
+                    wooOrders.push({ ...order, printed: true });
+                  })
+                  .catch((e) =>
+                    console.log(
+                      "Error has occured with db wooOrders print: ",
+                      e
+                    )
+                  );
+              } else {
+                db.collection("users")
+                  .doc(userS.uid)
+                  .collection("wooOrders")
+                  .doc(order.id.toString())
+                  .update({ printed: true })
+                  .then(() => {
+                    setwooOrders((prev) => {
+                      const newOrders = [...prev];
+                      newOrders[orderIndex].printed = true;
+                      return newOrders;
+                    });
+                    wooOrders[index].printed = true;
+                  })
+                  .catch((e) =>
+                    console.log(
+                      "Error has occured with db wooOrder print second if: ",
+                      e
+                    )
+                  );
+              }
+
+              const CleanupOps = (metaList) => {
+                const opsArray = [];
+
+                metaList.forEach((op) => {
+                  const arrContaingMe = opsArray.filter(
+                    (filterOp) => filterOp.key === op.key
+                  );
+
+                  if (arrContaingMe.length > 0) {
+                    opsArray.forEach((opsArrItem, index) => {
+                      if (opsArrItem.key === op.key) {
+                        opsArray[index].vals.push(op.value);
+                      }
+                    });
+                  } else {
+                    opsArray.push({ key: op.key, vals: [op.value] });
+                  }
+                });
+                return opsArray;
+              };
+
+              const printData = [];
+              const dateString = order.date_created;
+              const newDate = new Date(dateString + "Z");
+              const targetTimezone =
+                Intl.DateTimeFormat().resolvedOptions().timeZone;
+              const resultDate = tz(newDate)
+                .tz(targetTimezone, true)
+                .format("dddd, MMMM Do YYYY, h:mm:ss a z");
+
+              printData.push(
+                "\x1B" + "\x40", // init
+                "\x1B" + "\x61" + "\x31", // center align
+                storeDetails.name,
+                "\x0A",
+                storeDetails.address?.label + "\x0A",
+                storeDetails.website + "\x0A", // text and line break
+                storeDetails.phoneNumber + "\x0A", // text and line break
+                resultDate + "\x0A",
+                "\x0A",
+                "Online Order" + "\x0A", // text and line break
+                `Transaction ID ${order.number}` + "\x0A",
+                "\x0A",
+                "\x0A",
+                "\x0A",
+                "\x1B" + "\x61" + "\x30" // left align
+              );
+
+              order.line_items?.map((cartItem) => {
+                printData.push("\x0A");
+                printData.push(`Name: ${cartItem.name}`);
+                printData.push("\x0A");
+                printData.push(`Quantity: ${cartItem.quantity}`);
+                printData.push("\x0A");
+                printData.push(`Price: $${cartItem.price}`);
+                printData.push("\x0A");
+
+                if (cartItem.meta) {
+                  CleanupOps(cartItem.meta).map((returnedItem) => {
+                    printData.push(`${returnedItem.key} : `);
+                    printData.push("\x0A");
+                    returnedItem.vals.map((val, index) => {
+                      printData.push(`${val}`);
+                      printData.push("\x0A");
+                      if (index >= 0 && index < returnedItem.vals.length - 1) {
+                        printData.push(", ");
+                      }
+                    });
+                    printData.push("\x0A");
+                  });
+                } else {
+                  printData.push("\x0A" + "\x0A");
+                }
+              });
+
+              printData.push("\x0A");
+              printData.push("\x0A");
+              printData.push(`Customer Details:`);
+              printData.push("\x0A");
+              printData.push(`Address: ${order.shipping.address_1}`);
+              printData.push("\x0A");
+              printData.push(`City: ${order.shipping.city}`);
+              printData.push("\x0A");
+              printData.push(`Zip/Postal Code: ${order.shipping.postcode}`);
+              printData.push("\x0A");
+              printData.push(`Province/State: ${order.shipping.state}`);
+              printData.push("\x0A");
+              printData.push(
+                `Name: ${order.shipping.first_name} ${order.shipping.last_name}`
+              );
+              printData.push("\x0A");
+              printData.push(`Phone Number: ${order.billing.phone}`);
+              printData.push("\x0A");
+              order.shipping_lines.map((line) => {
+                printData.push(`Shipping Method: ${line.method_title}`);
+                printData.push("\x0A");
+              });
+              if (order.customer_note) {
+                printData.push(`Customer Note: ${order.customer_note}`);
+                printData.push("\x0A");
+              }
+              printData.push("\x0A");
+              printData.push("\x0A");
+
+              printData.push(
+                "\x0A",
+                "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + "\x0A",
+                "\x0A" + "\x0A",
+                "Payment Method: " +
+                  order.payment_method_title +
+                  "\x0A" +
+                  "\x0A",
+                `Total Including (${
+                  storeDetails.taxRate >= 0 ? storeDetails.taxRate : "13"
+                }% Tax): ` +
+                  "$" +
+                  order.total +
+                  "\x0A" +
+                  "\x0A",
+                "------------------------------------------" + "\x0A",
+                "\x0A", // line break
+                "\x0A", // line break
+                "\x0A", // line break
+                "\x0A", // line break
+                "\x0A", // line break
+                "\x0A" // line break
+              );
+
+              printData.push("\x1D" + "\x56" + "\x00");
+
+              const doublePrint = printData.concat(printData);
+
+              qz.websocket
+                .connect()
+                .then(function () {
+                  const config = qz.configs.create(
+                    myDeviceDetails.printToPrinter
+                  );
+                  return qz.print(config, doublePrint);
+                })
+                .then(qz.websocket.disconnect)
+                .catch(function (err) {
+                  if (
+                    err.message.includes(
+                      "A printer must be specified before printing"
+                    )
+                  ) {
+                    alertP.error(
+                      "You must specify a printer in device settings"
+                    );
+                  } else if (
+                    err.message.includes(
+                      "Unable to establish connection with QZ"
+                    )
+                  ) {
+                    alertP.error(
+                      "You do not have Divine POS Helper installed. Please download from general settings"
+                    );
+                  } else if (
+                    err.message.includes("Cannot find printer with name")
+                  ) {
+                    alertP.error(
+                      "Printer not found. Please check your printer settings."
+                    );
+                  } else {
+                    alertP.error(
+                      "An error occured while trying to print. Try refreshing the page and trying again."
+                    );
+                  }
+                });
+            }
+          }
+        })
+        .catch((e) => {
+          console.log("Error has occured when trying to get WooOrders: ", e);
+          alertP.error(
+            "There was an error connecting to your woocommerce store. Please refresh the page to try again."
+          );
+          setisWooError(true);
+        });
+    }
+  }, 10000);
 
   // Return the loader while loading is true
   if (loading) {

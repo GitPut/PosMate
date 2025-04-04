@@ -28,7 +28,7 @@ const NavigationContent = ({
   isSubscribed,
   trialDetails,
 }: NavigationContentProps) => {
-  if (trialDetails.hasEnded) {
+  if (trialDetails.hasEnded && !isSubscribed && !isNewUser) { //added these conditions because before if you were a new user and your trial ended, you would see the trial ended screen even if you had already paid
     return <TrialEnded />;
   } else if (isNewUser) {
     return <NewUserPayment />;

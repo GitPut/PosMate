@@ -137,7 +137,7 @@ const Dashboard: React.FC = () => {
     statsData: DetailsProps,
     catalog: UserStoreStateProps
   ): DetailsProps => {
-    let shortest = Infinity;
+    let shortest = 0;
     let longest = 0;
     let totalWaitTime = 0;
     let waitCount = 0;
